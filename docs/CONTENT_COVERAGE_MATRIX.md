@@ -12,8 +12,10 @@ This matrix separates three different things:
 3. **General-knowledge safety** — can the topic be taught from official Claude documentation
    without overstating what the exam will ask?
 
-A verified objective is **not** coverage. Today the product has one technical sample lesson, no
-exam-mapped curriculum lesson, and no reviewed question bank.
+A verified objective is **not** coverage. Today the product has one technical sample lesson, one
+exam-mapped Domain 2 curriculum lesson, and a fourteen-item reviewed Domain 2 bank covering all six
+objectives. That is reviewed content, not a claim that the domain is exhausted or that the bank is a
+full exam simulation.
 
 ## Legend
 
@@ -38,6 +40,12 @@ exam-mapped curriculum lesson, and no reviewed question bank.
 | **P** | [Pearson VUE program page](https://www.pearsonvue.com/us/en/anthropic.html) (HTTP 504 on 2026-10-26; future-revision notice only partially verified) |
 | **Prep** | [Official CCAO-F prep path](https://anthropic-partners.skilljar.com/path/claude-certified-associate-foundations) |
 | **D** | Anthropic product documentation: [Context windows](https://platform.claude.com/docs/en/build-with-claude/context-windows), [Token counting](https://platform.claude.com/docs/en/build-with-claude/token-counting), [Compaction](https://platform.claude.com/docs/en/build-with-claude/compaction), [Context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) |
+| **R** | [Reduce hallucinations](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations) (official Anthropic documentation, read 2026-10-26) |
+| **E** | [Define success criteria and build evaluations](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests) (official Anthropic documentation, read 2026-10-26) |
+| **PB** | [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices) (official Anthropic documentation, read 2026-10-26) |
+| **SO** | [Structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs) (official Anthropic documentation, read 2026-10-26) |
+| **AR** | [What are artifacts and how do I use them?](https://support.claude.com/en/articles/9487310-what-are-artifacts-and-how-do-i-use-them) (official Anthropic Help Center, read 2026-10-26) |
+| **CC** | [Claude's Constitution](https://www.anthropic.com/constitution) (official Anthropic publication, read 2026-10-26) |
 
 ## Coverage summary
 
@@ -45,22 +53,25 @@ exam-mapped curriculum lesson, and no reviewed question bank.
 |---|---|
 | Official domains identified | **7 / 7 verified** |
 | Official objectives identified | **30 / 30 verified** for exam scope |
-| Objectives with a reviewed, exam-mapped lesson | **0 / 30** |
-| Objectives with reviewed original practice items | **0 / 30** |
-| Published lessons | **1** design sample, explicitly unmapped |
-| Authored questions | **1 single-choice** sample |
-| Authored multiple-response questions | **0** (schema and UI support are tested) |
-| Planned lessons | **3**, none routable |
-| Question bank status | **Not started**; no official questions copied |
+| Objectives with a reviewed, exam-mapped lesson | **6 / 30** (all six Domain 2 objectives) |
+| Objectives with reviewed original practice items | **6 / 30** (two to four items per Domain 2 objective) |
+| Published lessons | **2** (1 exam-mapped curriculum lesson + 1 explicitly unmapped design sample) |
+| Authored questions | **16** (1 sample lesson question + 1 Domain 2 lesson question + 14 reviewed bank items) |
+| Authored multiple-response questions | **6** reviewed bank items |
+| Assessment definitions | **2** (1 unmapped sample + 1 reviewed 14-item Domain 2 set) |
+| Assessment core | **Implemented** (Phase C2.1); reviewed Domain 2 bank expanded in Phase C2.2b |
+| Planned lessons | **2**, none routable |
+| Question bank status | **14 reviewed, exam-mapped items** across all six Domain 2 objectives; no official questions copied |
 | Future guide revision | **Not applicable** to the pre-2026-11-14 attempt |
 
 ## Current content
 
 | Item | Type | Exam mapping | Exam scope status | Content verification | Content status | Coverage | Sources |
 |---|---|---|---|---|---|---|---|
-| `context-window` | Sample lesson | **Unmapped**. It has a plausible relationship to Domain 3's context/memory objective, but that mapping has **not** been reviewed and is not claimed | Related objective is **Verified** in G; the lesson itself is **not** exam coverage | Technical claims **Verified** against D on 2026-10-26 | **Published as a sample** | 1 lesson, 1 single-choice question; no multiple-response item | D |
+| `context-window` | Sample lesson | **Unmapped**. It has a plausible relationship to Domain 3's context/memory objective, but that mapping has **not** been reviewed and is not claimed | Related objective is **Verified** in G; the lesson itself is **not** exam coverage | Technical claims **Verified** against D on 2026-10-26 | **Published as a sample** | 1 lesson, 1 single-choice question, 1 sample assessment definition; no multiple-response item | D |
+| `evaluation-basics` | Curriculum lesson | Domain 2 — **verified mapping** to all six objectives | Six objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against R, E, PB, SO, AR and CC on 2026-10-26; bias remains policy-level | **Published** | 1 lesson, 1 single-choice knowledge check, 7 linked reviewed bank questions; route `/learn/evaluation-basics` | G, R, E, PB, SO, AR, CC |
+| `domain-2-output-validation` | Reviewed question bank | Domain 2 — **verified mapping** to all six objectives | Six objectives are **Verified** in G; bank covers all six, with bias treated as framing/equal treatment only | Technical claims **Verified** against R, E, PB, SO, AR and CC on 2026-10-26 | **Published** | 14 original items (8 single-choice, 6 multiple-response), 1 assessment definition; all six objectives have at least two items | G, R, E, PB, SO, AR, CC |
 | `prompt-structure` | Planned lesson | Domain 1 — **planned**, not reviewed | Domain **Verified** | None yet | **Planned** | Roadmap only | G |
-| `evaluation-basics` | Planned lesson | Domain 2 — **planned**, not reviewed | Domain **Verified** | None yet | **Planned** | Roadmap only | G |
 | `workflow-design` | Planned lesson | Domain 4 — **planned**, not reviewed | Domain **Verified** | None yet | **Planned** | Roadmap only | G |
 
 ## Objective coverage
@@ -71,7 +82,7 @@ official product documentation without pretending to know the live item bank.
 
 ### Domain 1 — Prompting and Task Execution (14%)
 
-| Topic ID | Official objective | Exam scope | Content status | Planned coverage | General-knowledge safety | Version |
+| Topic ID | Official objective | Exam scope | Content status | Coverage / next step | General-knowledge safety | Version |
 |---|---|---|---|---|---|---|
 | `prompting-create-effective-prompts` | Create effective prompts for business and technical tasks | **Verified** | **Not started** | `prompt-structure` may cover part of this | Safe: official prompting guidance and worked examples | v1.0 |
 | `prompting-task-decomposition` | Apply task decomposition techniques to structure complex requests | **Verified** | **Not started** | None | Safe: general decomposition patterns; examples must be original | v1.0 |
@@ -80,18 +91,18 @@ official product documentation without pretending to know the live item bank.
 
 ### Domain 2 — Output Evaluation and Validation (21%)
 
-| Topic ID | Official objective | Exam scope | Content status | Planned coverage | General-knowledge safety | Version |
+| Topic ID | Official objective | Exam scope | Content status | Coverage / next step | General-knowledge safety | Version |
 |---|---|---|---|---|---|---|
-| `output-evaluate-accuracy` | Evaluate Claude-generated outputs for accuracy and completeness | **Verified** | **Not started** | `evaluation-basics` may cover part of this | Safe: general evaluation and review practice | v1.0 |
-| `output-identify-hallucinations` | Identify hallucinations, inconsistencies, and biases in responses | **Verified** | **Not started** | `evaluation-basics` may cover part of this | Safe: official docs and general AI-literacy material; distinguish example from claim | v1.0 |
-| `output-fact-check` | Apply fact-checking and validation techniques | **Verified** | **Not started** | `evaluation-basics` may cover part of this | Safe: source-checking workflow; do not invent citations | v1.0 |
-| `output-human-review` | Determine when human review or additional verification is required | **Verified** | **Not started** | None | Safe: risk-based escalation principles | v1.0 |
-| `output-edit-adapt` | Edit, adapt, refine, and compare outputs for the intended audience | **Verified** | **Not started** | None | Safe: editorial comparison exercises | v1.0 |
-| `output-format-selection` | Organize and curate information and select appropriate output formats (artifacts, inline, structured data) | **Verified** | **Not started** | None | Safe with current-doc check: feature names and availability are time-sensitive | v1.0 + current docs |
+| `output-evaluate-accuracy` | Evaluate Claude-generated outputs for accuracy and completeness | **Verified** | **Reviewed lesson + 2 bank items** | `evaluation-basics` plus accuracy/completeness practice | Safe: evaluation guidance plus source-backed review practice | v1.0 + E, R |
+| `output-identify-hallucinations` | Identify hallucinations, inconsistencies, and biases in responses | **Verified** | **Reviewed lesson + 4 bank items** (2 hallucination/inconsistency + 2 bias) | `evaluation-basics` plus practice | Hallucination and inconsistency are source-backed by R; bias is limited to framing and equal-treatment principles in CC, not a comprehensive fairness audit | v1.0 + R, CC |
+| `output-fact-check` | Apply fact-checking and validation techniques | **Verified** | **Reviewed lesson + 2 bank items** | `evaluation-basics` plus practice | Safe: source-checking and retraction workflow from official documentation | v1.0 + R |
+| `output-human-review` | Determine when human review or additional verification is required | **Verified** | **Reviewed lesson + 2 bank items** | `evaluation-basics` plus risk-based escalation practice | Safe: high-stakes validation and expert-judgment guidance from R and E, applied as review principles rather than legal or medical advice | v1.0 + R, E |
+| `output-edit-adapt` | Edit, adapt, refine, and compare outputs for the intended audience | **Verified** | **Reviewed lesson + 2 bank items** | `evaluation-basics` plus audience-editing and draft-comparison practice | Safe: tone/style, relevance, and target-audience criteria from E and PB; factual claims still checked against sources | v1.0 + E, PB, R |
+| `output-format-selection` | Organize and curate information and select appropriate output formats (artifacts, inline, structured data) | **Verified** | **Reviewed lesson + 2 bank items** | `evaluation-basics` plus format-choice practice | Safe with current-doc check: SO and AR support structured-vs-document reasoning; availability and UI details are time-sensitive | v1.0 + SO, AR, PB |
 
 ### Domain 3 — Product and Model Selection (12%)
 
-| Topic ID | Official objective | Exam scope | Content status | Planned coverage | General-knowledge safety | Version |
+| Topic ID | Official objective | Exam scope | Content status | Coverage / next step | General-knowledge safety | Version |
 |---|---|---|---|---|---|---|
 | `product-feature-selection` | Select appropriate Claude product features (Projects, research mode, chat, artifacts) | **Verified** | **Not started** | None | Safe with current-doc check: product surface changes faster than the guide | v1.0 + current docs |
 | `model-family-selection` | Differentiate between Claude model types (Haiku, Sonnet, Opus) | **Verified** | **Not started** | None | Principles safe; v1.0 names these three families. Current documentation may list additional models, so do not claim the public lineup is frozen | v1.0 + current docs |
@@ -100,7 +111,7 @@ official product documentation without pretending to know the live item bank.
 
 ### Domain 4 — Workflow Integration and Solution Design (16%)
 
-| Topic ID | Official objective | Exam scope | Content status | Planned coverage | General-knowledge safety | Version |
+| Topic ID | Official objective | Exam scope | Content status | Coverage / next step | General-knowledge safety | Version |
 |---|---|---|---|---|---|---|
 | `workflow-requirements-analysis` | Apply Claude to analyze requirements and use cases | **Verified** | **Not started** | `workflow-design` may cover part of this | Safe: original business scenarios | v1.0 |
 | `workflow-research-planning` | Leverage Claude for research, planning, and process optimization | **Verified** | **Not started** | `workflow-design` may cover part of this | Safe: general workflow patterns; validate facts with sources | v1.0 |
@@ -110,7 +121,7 @@ official product documentation without pretending to know the live item bank.
 
 ### Domain 5 — Configuration and Knowledge Management (12%)
 
-| Topic ID | Official objective | Exam scope | Content status | Planned coverage | General-knowledge safety | Version |
+| Topic ID | Official objective | Exam scope | Content status | Coverage / next step | General-knowledge safety | Version |
 |---|---|---|---|---|---|---|
 | `config-project-instructions` | Configure Claude Projects with instructions and knowledge sources | **Verified** | **Not started** | None | Safe with current-doc check: Projects UI and limits can change | v1.0 + current docs |
 | `config-knowledge-connectors` | Manage uploaded knowledge and connectors (e.g., Google Drive, Gmail) | **Verified** | **Not started** | None | Safe with current-doc check: connector availability is plan- and region-dependent | v1.0 + current docs |
@@ -119,7 +130,7 @@ official product documentation without pretending to know the live item bank.
 
 ### Domain 6 — Governance, Risk, and Responsible Use (15%)
 
-| Topic ID | Official objective | Exam scope | Content status | Planned coverage | General-knowledge safety | Version |
+| Topic ID | Official objective | Exam scope | Content status | Coverage / next step | General-knowledge safety | Version |
 |---|---|---|---|---|---|---|
 | `governance-use-case-fit` | Identify appropriate and inappropriate use cases | **Verified** | **Not started** | None | Safe: general use-case triage | v1.0 |
 | `governance-data-privacy` | Apply data sensitivity, regulatory, and privacy considerations | **Verified** | **Not started** | None | **Principles only:** do not give legal advice; cite organizational policy and official privacy material | v1.0 + organizational policy |
@@ -128,7 +139,7 @@ official product documentation without pretending to know the live item bank.
 
 ### Domain 7 — Troubleshooting and Optimization (10%)
 
-| Topic ID | Official objective | Exam scope | Content status | Planned coverage | General-knowledge safety | Version |
+| Topic ID | Official objective | Exam scope | Content status | Coverage / next step | General-knowledge safety | Version |
 |---|---|---|---|---|---|---|
 | `troubleshoot-diagnose` | Identify, diagnose, and resolve issues with underperforming prompts or poor outputs | **Verified** | **Not started** | None | Safe: diagnostic checklist based on general prompting and review practice | v1.0 |
 | `troubleshoot-adjust` | Adjust approach based on feedback and results | **Verified** | **Not started** | None | Safe: iteration loop with original examples | v1.0 |
@@ -138,11 +149,31 @@ official product documentation without pretending to know the live item bank.
 
 | Question | Type | Domain / objective | Status | Notes |
 |---|---|---|---|---|
-| `context-window-root-cause` | Single-choice | **Unmapped** | **Sample** | Tests a general context-budgeting decision; not official exam content |
-| Multiple-response example | Multiple-response | Test fixture only | **Tested, not authored as curriculum** | Proves schema validation and UI set-scoring; not part of a lesson |
+| `output-accuracy-review-plan` | Single-choice | Domain 2 · `output-evaluate-accuracy` | **Reviewed / published** | Original item on verifying claims and checking required sections, risks, and edge cases. |
+| `output-accurate-but-incomplete` | Single-choice | Domain 2 · `output-evaluate-accuracy` | **Reviewed / published** | Original item distinguishing factual accuracy from missing required information. |
+| `output-fabricated-policy-detail` | Single-choice | Domain 2 · `output-identify-hallucinations` | **Reviewed / published** | Original item on a fabricated section that contradicts the supplied policy. |
+| `output-hallucination-signals` | Multiple-response | Domain 2 · `output-identify-hallucinations` | **Reviewed / published** | Exact-set item on unsupported claims, inconsistency, and wrong source details. |
+| `output-fact-check-retention` | Single-choice | Domain 2 · `output-fact-check` | **Reviewed / published** | Original item on quoting the source passage and retracting unsupported claims. |
+| `output-reduce-unsupported-claims` | Multiple-response | Domain 2 · `output-fact-check` | **Reviewed / published** | Exact-set item on source restriction, quote-first grounding, and verify/retract. |
+| `output-human-review-high-stakes` | Single-choice | Domain 2 · `output-human-review` | **Reviewed / published** | Original item on clinician verification before using AI-drafted medication instructions. |
+| `output-human-review-triggers` | Multiple-response | Domain 2 · `output-human-review` | **Reviewed / published** | Exact-set item on high-stakes, conflicting-source, and obsolete-source escalation triggers. |
+| `output-edit-preserve-facts` | Single-choice | Domain 2 · `output-edit-adapt` | **Reviewed / published** | Original item on adapting an incident summary for executives without factual drift. |
+| `output-compare-customer-faq-drafts` | Multiple-response | Domain 2 · `output-edit-adapt` | **Reviewed / published** | Exact-set item on source checks, audience criteria, and merge/re-check discipline. |
+| `output-format-fit-deliverable` | Single-choice | Domain 2 · `output-format-selection` | **Reviewed / published** | Original item on matching structured data, executive prose, and an editable artifact to three deliverables. |
+| `output-format-decisions` | Multiple-response | Domain 2 · `output-format-selection` | **Reviewed / published** | Exact-set item on JSON for downstream parsing, inline answers for short updates, and artifacts for reusable documents. |
+| `output-bias-one-sided-framing` | Single-choice | Domain 2 · `output-identify-hallucinations` | **Reviewed / published** | Original item on one-sided evidence, loaded labels, and omitted contrary analysis in a policy summary. |
+| `output-bias-unequal-standards` | Multiple-response | Domain 2 · `output-identify-hallucinations` | **Reviewed / published** | Exact-set item distinguishing unequal standards and protected-characteristic assumptions from style, completeness, and hallucination. |
+| `context-window-root-cause` | Single-choice | **Unmapped** | **Sample, runnable in its lesson** | Tests a general context-budgeting decision; not official exam content. Its `context-window-sample` definition remains in the pack but `/practice` now runs the Domain 2 set instead. |
+| Multiple-response example | Multiple-response | Test fixture only | **Tested, not authored as curriculum** | Proves schema validation, exact-set scoring, and UI set-scoring; not part of a lesson |
 
 No official sample questions from the guide were copied. The three published samples in Guide §8 are
 used only for format calibration; product questions must be original.
+
+The assessment core is not coverage. It makes authored questions runnable. The matrix records
+**6 / 30** objectives with a reviewed lesson and reviewed practice items. All six are Domain 2
+objectives: each has at least two bank items, and bias is represented at the framing/equal-treatment
+level. The other 24 objectives remain uncovered. Domain 2 is still **not** a complete exam simulation,
+and no objective is claimed to be exhaustively covered.
 
 ## What the product may and may not claim
 
@@ -153,10 +184,25 @@ used only for format calibration; product questions must be original.
 - There are seven verified domains with the published weights and 30 verified objectives.
 - The Context Window lesson's technical explanation is source-checked against Anthropic docs.
 - The sample knowledge check is an original practice item, not an official question.
+- The assessment core scores single-choice and multiple-response items deterministically with
+  exact-set matching, no partial credit, and a practice-only raw percentage.
+- The Domain 2 lesson `evaluation-basics` is published, mapped to all six verified Domain 2
+  objectives, and links to reviewed bank questions. It teaches accuracy/completeness, hallucination
+  and inconsistency, fact-checking, human-review escalation, editing/adaptation, and output-format
+  selection.
+- The fourteen Domain 2 bank items are original, reviewed, and mapped across all six objectives; they
+  include both single-choice and multiple-response formats and Vietnamese explanations for every
+  option.
+- Bias is taught and assessed only at the framing/evidence-selection/equal-treatment level supported
+  by Claude's Constitution. The lesson does not claim a comprehensive fairness evaluation.
+- `/practice` runs the fourteen-item Domain 2 set with navigation, flags, submission confirmation,
+  and explanations; it is not saved and is not a mock exam.
 
 **May not claim**
 
-- That any domain or objective is “covered” by a reviewed lesson or question bank.
+- That any domain or objective is fully “covered” by a reviewed lesson or question bank.
+- That Domain 2 is an exhaustive or official exam simulation. All six objectives have reviewed
+  content, but the bank is small, bias treatment is limited, and there is no per-domain score report.
 - That the sample lesson is mapped to Domain 3.
 - That the 60 items are all scored, or that any per-domain item count is official.
 - That the product contains an official practice exam or official questions.
@@ -165,10 +211,12 @@ used only for format calibration; product questions must be original.
 
 ## Next coverage work
 
-1. Rewrite the Context Window sample for the Associate audience, then decide whether it can be
+1. Expand the reviewed bank beyond Domain 2. Domain 1 and Domain 4 are the largest uncovered domains
+   by weight.
+2. Rewrite the Context Window sample for the Associate audience, then decide whether it can be
    verified against Domain 3's `context-memory-management` objective.
-2. Author Domain 2 first: it has the largest weight (21%) and no content.
-3. Build the assessment engine before scaling the bank, so every new item can be exercised in
-   practice, mock exam, and review modes.
-4. Add a per-lesson coverage test that fails when a lesson claims an objective id that is not in the
-   matching blueprint version.
+3. Build Practice Mode selection, persistence, and a saved review queue on top of the reviewed bank
+   and assessment core.
+4. Keep the bank coverage test (`src/test/question-bank.test.ts`) and the Domain 2 content test
+   (`src/test/domain-2-content.test.tsx`) as the gate: every bank entry must map to a verified
+   blueprint objective and cite registered sources, and every lesson-linked question must resolve.

@@ -41,9 +41,9 @@ export function ProgressPage() {
           title="No activity to chart yet"
           actions={undefined}
         >
-          This phase ships the shell and one sample lesson; persistence arrives with the assessment
-          engine. When it does, this page will show domain-level coverage, accuracy over time, and
-          the lessons that still have no practice attached.
+          This phase ships the shell, one sample lesson, and an in-memory assessment core. Saved
+          attempts and persistence are the next step; once they exist, this page will show
+          domain-level coverage, accuracy over time, and lessons that still have no practice attached.
         </EmptyState>
       </section>
 

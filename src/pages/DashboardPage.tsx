@@ -12,11 +12,25 @@ import {
 } from "../content";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 
-const featuredLesson = publishedLessons[0];
+const featuredLesson =
+  publishedLessons.find((lesson) => lesson.kind === "curriculum") ?? publishedLessons[0];
 const knowledgeCheckCount = publishedLessons.reduce(
   (total, lesson) => total + lesson.questions.length,
   0,
 );
+const publishedMappedLessonCount = publishedLessons.filter(
+  (lesson) => lesson.examMapping.status !== "unmapped",
+).length;
+const sampleLessonCount = publishedLessons.filter((lesson) => lesson.kind === "sample").length;
+
+function hasMappedLessonForDomain(domainId: string): boolean {
+  const domain = getDomain(domainId);
+  const objectiveIds = new Set(domain?.objectives.map((objective) => objective.id) ?? []);
+
+  return publishedLessons.some((lesson) =>
+    lesson.examMapping.objectiveIds.some((objectiveId) => objectiveIds.has(objectiveId)),
+  );
+}
 
 export function DashboardPage() {
   useDocumentTitle();
@@ -44,9 +58,13 @@ export function DashboardPage() {
           </h2>
           <p className="feature-text">{featuredLesson.summary}</p>
           <div className="feature-meta">
-            <Badge tone="accent">Sample lesson</Badge>
+            <Badge tone="accent">
+              {featuredLesson.kind === "sample" ? "Sample lesson" : "Domain 2 lesson"}
+            </Badge>
             <Badge>{featuredLesson.estimatedMinutes} min read</Badge>
-            <Badge tone="warn">Not exam-mapped</Badge>
+            <Badge tone={featuredLesson.examMapping.status === "unmapped" ? "warn" : "ok"}>
+              {featuredLesson.examMapping.status === "unmapped" ? "Not exam-mapped" : "Exam-mapped"}
+            </Badge>
           </div>
         </div>
         <Link className="button button--primary" to={`/learn/${featuredLesson.id}`}>
@@ -66,7 +84,10 @@ export function DashboardPage() {
           <article className="stat">
             <span className="stat-label">Lessons available</span>
             <span className="stat-value">{publishedLessons.length}</span>
-            <span className="stat-hint">One design sample; no curriculum lesson yet</span>
+            <span className="stat-hint">
+              {publishedMappedLessonCount} exam-mapped curriculum + {sampleLessonCount} design{" "}
+              {sampleLessonCount === 1 ? "sample" : "samples"}
+            </span>
           </article>
           <article className="stat">
             <span className="stat-label">Knowledge checks</span>
@@ -103,7 +124,10 @@ export function DashboardPage() {
               <span className="row-body">
                 <span className="row-title">{domain.title}</span>
                 <span className="row-meta">
-                  {domain.objectives.length} objectives · lesson mapping not started
+                  {domain.objectives.length} objectives ·{" "}
+                  {hasMappedLessonForDomain(domain.id)
+                    ? "reviewed lesson available"
+                    : "lesson mapping not started"}
                 </span>
               </span>
               <span className="row-tail">{domain.weightPercent}%</span>
@@ -148,7 +172,7 @@ export function DashboardPage() {
           <h2 className="section-title" id="assessment-shortcuts">
             Assessment
           </h2>
-          <span className="section-note">Pages exist as honest placeholders</span>
+          <span className="section-note">Assessment core ready · 14 reviewed Domain 2 items</span>
         </div>
         <div className="row-list">
           <Link className="row" to="/practice">
@@ -157,9 +181,11 @@ export function DashboardPage() {
             </span>
             <span className="row-body">
               <span className="row-title">Practice questions</span>
-              <span className="row-meta">Engine not built — read what it will contain</span>
+              <span className="row-meta">
+                Run the Domain 2 bank — 14 reviewed questions, in-memory only
+              </span>
             </span>
-            <span className="row-tail">Preview</span>
+            <span className="row-tail">Open</span>
           </Link>
           <Link className="row" to="/mock-exam">
             <span className="row-start" aria-hidden="true">

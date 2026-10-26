@@ -1,10 +1,32 @@
 import { ExternalLink, Target } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Callout } from "../../../components/ui/Callout";
-import type { Lesson, Source } from "../../../domain";
+import type { Lesson, QuestionType, Source } from "../../../domain";
 import { ContextWindowDiagram } from "../../visualizations/ContextWindowDiagram";
 import { KnowledgeCheck } from "./KnowledgeCheck";
 
-export function LessonContent({ lesson, sources }: { lesson: Lesson; sources: Source[] }) {
+interface RelatedPracticeItem {
+  id: string;
+  type: QuestionType;
+  objectiveStatement?: string;
+}
+
+export function LessonContent({
+  lesson,
+  sources,
+  relatedPractice,
+}: {
+  lesson: Lesson;
+  sources: Source[];
+  relatedPractice: RelatedPracticeItem[];
+}) {
+  const relatedObjectives = [
+    ...new Set(
+      relatedPractice.flatMap((item) =>
+        item.objectiveStatement ? [item.objectiveStatement] : [],
+      ),
+    ),
+  ];
   return (
     <>
       <section
@@ -135,6 +157,37 @@ export function LessonContent({ lesson, sources }: { lesson: Lesson; sources: So
           <p className="scenario-takeaway">{lesson.scenario.takeaway}</p>
         </div>
       </section>
+
+      {relatedPractice.length > 0 ? (
+        <section
+          className="lesson-section"
+          id="lesson-related-practice"
+          aria-labelledby="lesson-related-practice-title"
+        >
+          <div className="lesson-section-head">
+            <h2 className="lesson-section-title" id="lesson-related-practice-title">
+              Câu hỏi luyện tập đã rà soát
+            </h2>
+          </div>
+          <p className="lesson-prose">
+            Bộ Domain 2 practice có {relatedPractice.length} câu liên kết trực tiếp với bài
+            học này. Các câu hỏi dùng đúng format của kỳ thi: stem và lựa chọn bằng tiếng Anh,
+            giải thích bằng tiếng Việt sau khi nộp.
+          </p>
+          {relatedObjectives.length > 0 ? (
+            <ul className="bullet-list" lang="en">
+              {relatedObjectives.map((objective) => (
+                <li key={objective}>{objective}</li>
+              ))}
+            </ul>
+          ) : null}
+          <p className="lesson-prose">
+            <Link className="inline-link" to="/practice">
+              Mở bộ Domain 2 practice
+            </Link>
+          </p>
+        </section>
+      ) : null}
 
       <section className="lesson-section" id="lesson-check" aria-labelledby="lesson-check-title">
         <div className="lesson-section-head">

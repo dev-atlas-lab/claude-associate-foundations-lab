@@ -2,11 +2,11 @@
 
 A frontend-only interactive learning platform for the **Claude Certified Associate – Foundations (CCAO-F)** certification.
 
-The product pairs Vietnamese explanations with English assessments: lessons, interactive visualizations, practice questions, and a timed mock exam. No backend and no API key are required — progress is stored in the browser.
+The product pairs Vietnamese explanations with English assessments: lessons, interactive visualizations, practice questions, and a planned timed mock exam. No backend and no API key are required; theme preference is stored locally, while attempt persistence is still planned.
 
 ## Current status
 
-Phases B, C0 and C1 are implemented on top of the validated scaffold.
+Phases B, C0, C1, C2.1, C2.2a and C2.2b are implemented on top of the validated scaffold.
 
 - Design tokens, Dark / Light / System themes with localStorage persistence, responsive sidebar and
   mobile drawer, skip link, focus management, and reduced-motion support.
@@ -22,16 +22,37 @@ Phases B, C0 and C1 are implemented on top of the validated scaffold.
   explanation, English technical terms, an interactive budget diagram, a worked scenario, and an
   English knowledge check with Vietnamese explanations for every option. It is explicitly **not**
   mapped to an official objective yet.
-- Practice, mock exam, review and progress are honest placeholders: no fake questions, attempts,
-  scores, or per-domain item quotas. The mock-exam page shows only the verified format.
+- The first exam-mapped curriculum lesson, `/learn/evaluation-basics`, teaches all six Domain 2
+  objectives: accuracy/completeness, hallucination/inconsistency and bias detection, fact-checking,
+  human-review escalation, audience editing, and output-format selection. It links to reviewed bank
+  questions and is explicit about the limits of its bias evidence.
+- A deterministic, certification-neutral assessment core in `src/domain/assessment.ts` supports
+  single-choice and exact-set multiple-response scoring, answer changes, navigation, flags, explicit
+  submission confirmation, review navigation, and idempotent submission. Scores are derived from
+  submitted answers rather than stored in mutable state.
+- A reviewed, source-grounded Domain 2 bank adds 14 original items across all six verified
+  objectives: accuracy/completeness, hallucination/inconsistency and bias detection, source-based
+  fact-checking, human-review escalation, audience editing, and output-format selection. Bank
+  metadata is validated against the blueprint, certification, sources, and review status; no
+  official questions are copied. See `src/domain/question-bank.ts`.
+- Practice (`/practice`) runs the reviewed 14-item Domain 2 set, with English questions and
+  Vietnamese explanations after submission. It is not a full Practice Mode: there is no set
+  selection, timer, persistence, or attempt history. Mock exam, review and progress remain honest
+  partial states: the verified format is shown, but there is no 60-item bank or per-domain report yet.
+- Overall reviewed coverage is **6 / 30** objectives, all in Domain 2. The remaining 24 objectives
+  still need lessons and source-grounded practice items.
+- The Context Window sample lesson and its unmapped knowledge check remain available; the sample
+  assessment definition is still in the pack but is no longer the `/practice` surface.
 - GitHub repository exists at <https://github.com/dev-atlas-lab/claude-associate-foundations-lab> on `main`.
 - No Vercel project has been connected yet.
 
-Quality gates currently pass: typecheck, lint, 49 tests across 7 files, and production build. An
+Quality gates currently pass: typecheck, lint, 92 tests across 12 files, and production build. An
 axe-core re-run on the dashboard, lesson, mock-exam, and glossary routes in both themes reports 0
-violations. The build is a single JavaScript chunk (507.22 kB, 154.02 kB gzip) and now triggers
-Vite's >500 kB warning; route splitting is deferred. See `docs/PROGRESS.md` for the detailed log and
-`docs/DESIGN_SYSTEM.md` for the design decisions.
+violations; the assessment runner and the new Domain 2 lesson still need a dedicated browser audit
+after the latest content changes. The build is a single JavaScript chunk (590.14 kB, 176.05 kB gzip)
+and still triggers Vite's >500 kB warning; route splitting is deferred. See `docs/PROGRESS.md` for
+the detailed log, `docs/ASSESSMENT_ENGINE.md` for assessment decisions, and `docs/DESIGN_SYSTEM.md`
+for the design decisions.
 
 Brand source files live in `brand/`; the runtime favicon and app-icon copies are in `public/brand/`.
 
@@ -98,6 +119,7 @@ No Vercel project ID or deployment URL is committed to this repository.
 - `docs/CONTENT_GUIDELINES.md` — language, sourcing, and question-quality rules
 - `docs/UX_SPEC.md` — visual direction, navigation, accessibility
 - `docs/DESIGN_SYSTEM.md` — implemented tokens, components, theme model, accessibility decisions
+- `docs/ASSESSMENT_ENGINE.md` — assessment model, state transitions, scoring, UI, and non-goals
 - `docs/IMPLEMENTATION_PLAN.md` — phased delivery plan
 - `docs/REPOSITORY_SETUP.md` — GitHub organization/repository state and manual steps
 - `docs/PROGRESS.md` — phase log

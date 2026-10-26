@@ -11,13 +11,6 @@ export const plannedLessons: PlannedLesson[] = z.array(plannedLessonSchema).pars
     note: "Chờ bản nháp nội dung và rà soát nguồn chính thức.",
   },
   {
-    id: "evaluation-basics",
-    certificationId: "claude-associate-foundations",
-    domainId: "output-evaluation-validation",
-    title: "Đánh giá output: tiêu chí, bằng chứng và lỗi thường gặp",
-    note: "Chờ viết và rà soát theo Domain 2.",
-  },
-  {
     id: "workflow-design",
     certificationId: "claude-associate-foundations",
     domainId: "workflow-integration-solution-design",

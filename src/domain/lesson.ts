@@ -186,6 +186,8 @@ export const lessonSchema = z
     keyTerms: z.array(keyTermSchema).min(1),
     scenario: scenarioSchema,
     questions: z.array(questionSchema).min(1),
+    /** Reviewed bank questions that practise the lesson's objectives. */
+    relatedQuestionIds: z.array(identifierSchema).default([]),
     takeaways: z.array(z.string().trim().min(1)).min(1),
     sourceIds: z.array(identifierSchema).min(1),
   })
@@ -222,6 +224,14 @@ export const lessonSchema = z
         code: "custom",
         message: "lessons must cite at least one source",
         path: ["sourceIds"],
+      });
+    }
+
+    if (new Set(lesson.relatedQuestionIds).size !== lesson.relatedQuestionIds.length) {
+      ctx.addIssue({
+        code: "custom",
+        message: "relatedQuestionIds must not contain duplicates",
+        path: ["relatedQuestionIds"],
       });
     }
   });

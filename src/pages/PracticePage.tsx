@@ -4,48 +4,90 @@ import { Badge } from "../components/ui/Badge";
 import { Callout } from "../components/ui/Callout";
 import { EmptyState } from "../components/ui/EmptyState";
 import { PageHeader } from "../components/ui/PageHeader";
-import { publishedLessons } from "../content";
+import { assessments, getAssessmentQuestions } from "../content";
+import { AssessmentRunner } from "../features/assessment/components/AssessmentRunner";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 
 const plannedModes = [
   {
-    title: "Domain practice",
-    note: "Short English scenario sets per verified exam domain, with Vietnamese explanations after each answer.",
+    title: "More domain sets",
+    note: "Reviewed sets for the remaining domains, built on the same bank schema and objective validation.",
   },
   {
     title: "Mixed sets",
-    note: "Questions sampled across domains so you have to choose the right approach, not just recall a definition.",
+    note: "Questions sampled across reviewed objectives so you have to choose the right approach, not just recall a definition.",
   },
   {
-    title: "Flag for review",
-    note: "Mark uncertain questions while practising; flagged items feed the Review page.",
+    title: "Saved review queue",
+    note: "Flagging works inside an attempt today. A queue that survives refreshes arrives with local persistence.",
   },
 ];
 
 export function PracticePage() {
   useDocumentTitle("Practice");
+  const practiceAssessment = assessments.find(
+    (assessment) => assessment.id === "domain-2-output-validation-set",
+  );
+  const practiceQuestions = practiceAssessment
+    ? getAssessmentQuestions(practiceAssessment)
+    : [];
 
   return (
     <div className="page">
       <PageHeader
         eyebrow="Practice"
         title="Practice questions"
-        lede="Scenario-based questions in English with Vietnamese explanations, built to test judgement rather than definitions. The engine does not exist yet, so this page documents what is coming instead of offering a fake start button."
-        meta={<Badge tone="warn">Not implemented</Badge>}
+        lede="Fourteen reviewed, original practice items mapped to all six Domain 2 objectives. Questions are in English, explanations are in Vietnamese, and multiple-response items require the exact set. This is a bank preview, not a full practice mode or mock exam."
+        meta={
+          <>
+            <Badge tone="ok">Domain 2 · 21%</Badge>
+            <Badge tone="ok">Reviewed bank</Badge>
+            <Badge tone="warn">Not official</Badge>
+          </>
+        }
       />
 
-      <Callout tone="note" title="What exists now">
-        The CCAO-F blueprint is verified for exams before 2026-11-17, but the question bank is
-        still empty and the practice engine is not built. The sample lesson has one English
-        knowledge check you can try today.
+      <Callout tone="note" title="What this set covers">
+        Accuracy and completeness, hallucination/inconsistency and bias detection, source-based
+        fact-checking, human-review escalation, audience editing, and output-format selection. The
+        matching <Link to="/learn/evaluation-basics">Domain 2 lesson</Link> teaches the same six
+        objectives. The items are exam-mapped but still original practice material. There is no
+        timer, and refreshing the page discards the attempt. The unmapped{" "}
+        <Link to="/learn/context-window">Context Window sample lesson</Link> remains available.
       </Callout>
+
+      <section className="section" aria-labelledby="available-assessments">
+        <div className="section-heading-row">
+          <h2 className="section-title" id="available-assessments">
+            Domain 2 practice set
+          </h2>
+          <span className="section-note">14 reviewed items · mapped to all 6 objectives</span>
+        </div>
+
+        {practiceAssessment && practiceQuestions.length > 0 ? (
+          <AssessmentRunner definition={practiceAssessment} questions={practiceQuestions} />
+        ) : (
+          <EmptyState
+            icon={ListChecks}
+            title="No assessment definitions are available"
+            actions={
+              <Link className="button button--secondary" to="/learn/evaluation-basics">
+                Read the Domain 2 lesson
+              </Link>
+            }
+          >
+            The content registry did not resolve a runnable assessment. Lesson knowledge checks
+            remain available.
+          </EmptyState>
+        )}
+      </section>
 
       <section className="section" aria-labelledby="planned-modes">
         <div className="section-heading-row">
           <h2 className="section-title" id="planned-modes">
-            Planned modes
+            Next practice capabilities
           </h2>
-          <span className="section-note">Design agreed, implementation later</span>
+          <span className="section-note">Not implemented in this phase</span>
         </div>
         <div className="row-list">
           {plannedModes.map((mode, index) => (
@@ -61,22 +103,6 @@ export function PracticePage() {
             </div>
           ))}
         </div>
-      </section>
-
-      <section className="section">
-        <EmptyState
-          icon={ListChecks}
-          title="No questions to attempt yet"
-          actions={
-            <Link className="button button--secondary" to={`/learn/${publishedLessons[0].id}`}>
-              Try the sample knowledge check
-            </Link>
-          }
-        >
-          The sample lesson ends with one English question and a full explanation of every option.
-          That is the format the practice engine will scale up once the question bank is authored
-          against the verified objectives.
-        </EmptyState>
       </section>
     </div>
   );

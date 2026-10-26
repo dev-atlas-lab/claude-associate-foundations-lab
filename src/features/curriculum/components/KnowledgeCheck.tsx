@@ -1,6 +1,6 @@
 import { Check, RotateCcw, X } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import type { Question } from "../../../domain";
+import { isAnswerCorrect, type Question } from "../../../domain";
 
 export function KnowledgeCheck({ question }: { question: Question }) {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -8,10 +8,7 @@ export function KnowledgeCheck({ question }: { question: Question }) {
   const feedbackRef = useRef<HTMLDivElement>(null);
 
   const isMultipleResponse = question.type === "multiple-response";
-  const isCorrect =
-    submitted &&
-    selectedIds.length === question.correctChoiceIds.length &&
-    selectedIds.every((choiceId) => question.correctChoiceIds.includes(choiceId));
+  const isCorrect = submitted && isAnswerCorrect(question, selectedIds);
 
   useEffect(() => {
     if (submitted) {

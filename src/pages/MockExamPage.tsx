@@ -10,7 +10,7 @@ import { useDocumentTitle } from "../hooks/useDocumentTitle";
 const plannedSteps = [
   "Follow the verified format: 60 items, 120 minutes, mixed multiple-choice and multiple-response.",
   "Answer the full set without seeing correctness until submission.",
-  "Submit to a score with a per-domain breakdown once the scoring engine ships.",
+  "Use the implemented assessment core for exact-set scoring; per-domain reporting still needs reviewed question metadata.",
   "Review every item, including why each distractor is wrong.",
 ];
 
@@ -22,7 +22,7 @@ export function MockExamPage() {
       <PageHeader
         eyebrow="Assessment"
         title="Mock exam"
-        lede="A timed simulation of the real exam, with results you can inspect afterwards. The official format is verified; the timer and question bank are not built yet."
+        lede="A timed simulation of the real exam, with results you can inspect afterwards. The official format is verified; the timer, 60-item bank, and per-domain report are not built yet."
         meta={<Badge tone="ok">Format verified</Badge>}
       />
 
@@ -40,7 +40,7 @@ export function MockExamPage() {
           <h2 className="section-title" id="mock-flow">
             Planned flow
           </h2>
-          <span className="section-note">Format verified · engine not built</span>
+          <span className="section-note">Format verified · timer and bank not built</span>
         </div>
         <ol className="row-list">
           {plannedSteps.map((step, index) => (
@@ -66,10 +66,10 @@ export function MockExamPage() {
             </Link>
           }
         >
-          The rules are known, but there is no question bank or scoring engine yet. When they ship,
-          this page will run the 60-item, 120-minute format and show a per-domain result breakdown.
-          It will not invent per-domain item counts, because the guide publishes weights rather than
-          exact item quotas.
+          The assessment core and exact-set scoring are implemented, but there is no 60-item mock
+          question bank, timer, or per-domain report yet. When they ship, this page will run the
+          verified format and show a per-domain result breakdown. It will not invent per-domain item
+          counts, because the guide publishes weights rather than exact item quotas.
         </EmptyState>
       </section>
     </div>

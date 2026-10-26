@@ -9,6 +9,9 @@ import {
   getCertification,
   getLesson,
   getLessonNeighbours,
+  getObjective,
+  getQuestion,
+  getQuestionBankEntry,
   getSources,
 } from "../content";
 import { LessonContent } from "../features/curriculum/components/LessonContent";
@@ -58,6 +61,16 @@ export function LessonPage() {
 
   const neighbours = getLessonNeighbours(lesson.id);
   const sources = getSources(lesson.sourceIds);
+  const relatedPractice = lesson.relatedQuestionIds.flatMap((questionId) => {
+    const question = getQuestion(questionId);
+    const entry = getQuestionBankEntry(questionId);
+    const objectiveId = entry?.examMapping.objectiveIds[0];
+    const objective = objectiveId ? getObjective(objectiveId) : undefined;
+
+    return question && entry
+      ? [{ id: question.id, type: question.type, objectiveStatement: objective?.objective.statement }]
+      : [];
+  });
   const certification = getCertification(lesson.certificationId);
   const blueprint = getBlueprint(lesson.blueprintId);
   const certificationCode = certification?.code ?? "Certification";
@@ -110,7 +123,7 @@ export function LessonPage() {
               {lesson.examMapping.note} {lesson.verification.note}
             </Callout>
 
-            <LessonContent lesson={lesson} sources={sources} />
+            <LessonContent lesson={lesson} sources={sources} relatedPractice={relatedPractice} />
 
             <LessonPager
               previous={neighbours.previous}

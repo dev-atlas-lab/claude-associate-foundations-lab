@@ -296,6 +296,31 @@ describe("content-pack cross-references", () => {
     ).toBe(false);
   });
 
+  it("rejects assessments with duplicate ids or unknown question references", () => {
+    const assessment = contentPack.assessments[0]!;
+
+    expect(
+      contentPackSchema.safeParse({
+        ...contentPack,
+        assessments: [assessment, assessment],
+      }).success,
+    ).toBe(false);
+
+    expect(
+      contentPackSchema.safeParse({
+        ...contentPack,
+        assessments: [{ ...assessment, questionIds: ["missing-question"] }],
+      }).success,
+    ).toBe(false);
+
+    expect(
+      contentPackSchema.safeParse({
+        ...contentPack,
+        assessments: [{ ...assessment, questionIds: [] }],
+      }).success,
+    ).toBe(false);
+  });
+
   it("rejects domain weights that do not total 100", () => {
     expect(
       blueprintSchema.safeParse({

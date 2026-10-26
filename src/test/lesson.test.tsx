@@ -89,7 +89,9 @@ describe("sample lesson", () => {
     expect(screen.getByText("Your answer")).toBeInTheDocument();
 
     expect(screen.getByText("This is the first lesson")).toBeInTheDocument();
-    expect(screen.getByText(/^Planned: Cấu trúc prompt/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: /Đánh giá output: accuracy, evidence/i }),
+    ).toHaveAttribute("href", "/learn/evaluation-basics");
   });
 });
 

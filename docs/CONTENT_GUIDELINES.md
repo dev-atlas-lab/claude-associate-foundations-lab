@@ -30,10 +30,14 @@ Use this structure flexibly; do not force irrelevant sections into every lesson.
   an objective mapping just to satisfy a schema.
 - Prefer official Anthropic sources for Claude product behavior and certification scope.
 - Cite sources near claims in content data or lesson references. Every source id must resolve in the
-  content pack; every source record states what it supports and when it was accessed.
+  content pack; every source record states what it supports and when it was accessed. Lessons that
+  link reviewed bank questions must use `relatedQuestionIds`, and every reference must resolve.
 - Keep general Claude documentation separate from exam-guide evidence. Product docs support technical
   explanations; only the official exam guide and program pages support exam-scope, format, weight, or
   scoring claims.
+- Do not stretch a source beyond its claim level. For example, Claude's Constitution supports
+  balanced framing and equal treatment, but it is not a comprehensive fairness or bias evaluation
+  methodology. Bias content must state that limitation.
 - Every certification, blueprint, and lesson carries explicit verification metadata: status, checked
   date, note, and source ids. Published content requires `verification.status: "verified"`.
 - Distinguish facts, examples, and recommendations.
@@ -54,8 +58,17 @@ Every question needs:
 - Vietnamese rationale for every choice, including distractors.
 - Source references for the claim or scenario.
 
-The current content schema does not yet store per-question difficulty, tags, or objective ids.
-Domain/objective mapping lives at lesson level and must not be fabricated per question. Add those
-fields only when the assessment engine defines how review, analytics, and scoring will use them.
+Per-question objective mapping and review metadata now live in a `QuestionBankEntry`, which wraps the
+existing question schema instead of duplicating it. Bank entries must map to at least one verified
+objective; unmapped design samples stay inside a lesson. Difficulty and tags are still not stored
+because no reviewed consumer for them exists yet.
+
+A question-bank item is not reviewed merely because its schema parses. It must have:
+- a verified objective mapping in the matching blueprint version;
+- a verification record that includes every question-level source;
+- `contentStatus: "published"` only when the review is verified;
+- original wording and, when a sub-skill is only partly supported by sources, an explicit statement
+  of the limitation. The Domain 2 bias items are the current example: they assess framing and equal
+  treatment, not a full fairness audit.
 
 Avoid ambiguous wording, trick questions with multiple defensible answers, and unsupported claims.

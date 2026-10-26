@@ -24,7 +24,7 @@ export function ReviewPage() {
         actions={
           <>
             <Link className="button button--secondary" to="/practice">
-              Practice overview
+              Practice sample
             </Link>
             <Link className="button button--ghost" to="/learn">
               Read a lesson

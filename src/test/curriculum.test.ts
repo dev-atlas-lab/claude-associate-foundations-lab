@@ -82,6 +82,10 @@ describe("curriculum registry", () => {
     expect(getLesson("not-a-lesson")).toBeUndefined();
     expect(getLessonNeighbours("not-a-lesson")).toEqual({});
     expect(getLessonNeighbours("context-window")).toMatchObject({
+      next: getLesson("evaluation-basics"),
+    });
+    expect(getLessonNeighbours("evaluation-basics")).toMatchObject({
+      previous: getLesson("context-window"),
       plannedNext: contentPack.plannedLessons[0],
     });
   });

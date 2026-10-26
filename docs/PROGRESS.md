@@ -13,7 +13,7 @@
 - [x] Official exam guide researched and verified (2026-10-26).
 - [x] Learning UI shell and design system implemented (Phase B).
 - [x] First lesson vertical slice implemented (sample lesson, not mapped to an official objective).
-- [ ] Quiz and exam engine implemented.
+- [ ] Full practice and mock-exam engines implemented (reusable assessment core in C2.1; 14-item reviewed Domain 2 bank in C2.2b).
 - [x] Tests and production build pass for implemented features.
 - [ ] Vercel deployment verified.
 
@@ -171,7 +171,8 @@
 - Bundle is a single chunk and now exceeds the 500 kB warning threshold; route splitting is deferred.
 - No exam-mapped curriculum lesson yet (0 / 30 objectives). The Context Window sample needs an
   Associate-level rewrite before mapping can be reviewed.
-- No assessment engine, question bank, mock exam, review queue, or local progress yet.
+- No assessment engine, question bank, mock exam, review queue, or local progress yet. (The engine
+  was added in Phase C2.1; the question bank and the rest remain absent.)
 - Multiple-response rendering is tested, but no multiple-response item is authored in lesson content.
 - The future Pearson VUE revision notice is only partially verified; re-check before rescheduling.
 
@@ -183,3 +184,232 @@
 - Added SVG, 16/32 px PNG and 180 px Apple touch favicons to `index.html`.
 - Committed the source brand system under `brand/`; runtime copies live in `public/brand/`.
 - Re-ran typecheck, lint, tests (49), production build and a desktop/mobile dark/light smoke check.
+
+## Phase C2.1 — deterministic assessment core (2026-10-26)
+
+### Implemented
+
+- Added `src/domain/assessment.ts` with certification-neutral schemas and pure operations:
+  - `AssessmentDefinition` (stable id, ordered question ids, configurable policy) and
+    `AssessmentSession` (id, status, current index, answers, flags, timestamps).
+  - `startAssessment`, `chooseAnswer`, `toggleAnswerChoice`, `goToQuestion`,
+    `goToNextQuestion`, `goToPreviousQuestion`, `toggleQuestionFlag`, `submitAssessment`, and
+    `calculateAssessmentResult`.
+  - Typed `AssessmentDefinitionError` / `AssessmentStateError` failures for invalid definitions,
+    missing questions, duplicate references, unknown choices, invalid selections, out-of-range
+    navigation, and post-submission mutations.
+- Added assessment definitions to the content pack schema and registry:
+  - Cross-reference validation rejects empty assessments, duplicate question ids, and unknown
+    question ids at import time.
+  - Added the `context-window-sample` definition over the existing sample question. It is explicitly
+    sample-only and still unmapped to an official CCAO-F objective.
+  - Added `assessments`, `questionBank`, `getQuestion`, `getAssessment`, and
+    `getAssessmentQuestions` lookups without introducing a second question schema.
+- Scoring:
+  - Single-choice and multiple-response both use exact-set equality.
+  - Multiple-response subsets, supersets, and duplicate selections are incorrect; there is no
+    partial credit.
+  - Unanswered questions are reported separately and never count as correct.
+  - Results expose total, answered, correct, incorrect, unanswered, raw percentage (two decimals),
+    and per-question outcomes. Scores are never stored in session state.
+  - Submission is idempotent: repeated submission returns the same session and the result derived
+    from the original timestamp and answers.
+- UI:
+  - Added `AssessmentRunner` with accessible radio/checkbox controls, answered/unanswered state,
+    flag/unflag, boundary-safe previous/next navigation, a question navigator, explicit submit
+    confirmation, and review after submission.
+  - Practice now runs the one-question sample assessment from the content registry instead of a
+    placeholder page. The start screen states that the item is not official, there is no timer, and
+    nothing is saved.
+  - The result panel shows Vietnamese metrics and explanations plus an explicit disclaimer that the
+    raw percentage is not the official 100–1,000 scaled score and does not predict passing.
+  - `KnowledgeCheck` now reuses the assessment core's `isAnswerCorrect`, so lesson checks and
+    assessment scoring cannot diverge.
+  - Added `src/styles/assessment.css` using existing design tokens; no redesign of the shell.
+- Documentation: added `docs/ASSESSMENT_ENGINE.md` with the model, transitions, scoring rules,
+  policy boundaries, UI behaviour, non-goals, and test coverage.
+
+### Verification
+
+- `npm run typecheck`: pass (`tsc -b`, strict).
+- `npm run lint`: pass (`eslint .`, 0 problems).
+- `npm test`: pass — **9 files / 70 tests**, including domain, content-pack, and component assessment tests.
+- `npm run build`: pass. Production bundle: JS **531.97 kB** (gzip **159.92 kB**), CSS
+  **37.68 kB** (gzip **6.71 kB**); the existing Vite >500 kB chunk warning remains.
+
+### Known limitations
+
+- No timer, auto-submit, or expired-session state; expiry is intentionally not modelled until a
+  timer phase exists.
+- No localStorage persistence, migration, attempt history, or review queue. Refreshing the page
+  starts a fresh sample attempt.
+- The assessment core was exercised by one sample question at the end of C2.1. Phase C2.2a added a
+  six-item Domain 2 bank; there is still no 60-item mock exam, per-domain report, or official
+  scaled-score conversion.
+- The runner resolves all questions up front but renders one at a time; large mock exams will need
+  route/state splitting and persistence before they are practical.
+- At the end of C2.1 the coverage matrix recorded **0 / 30** objectives with reviewed practice items;
+  C2.2a moved that to **3 / 30 partial**.
+
+## Phase C2.2a — reviewed Domain 2 question bank (2026-10-26)
+
+### Scope
+
+- Selected three of the six verified Domain 2 objectives, all teachable and assessable from
+  accessible Anthropic documentation:
+  - `output-evaluate-accuracy` — accuracy and completeness review;
+  - `output-identify-hallucinations` — hallucination and inconsistency detection;
+  - `output-fact-check` — source-based fact-checking and retraction.
+- Authored **six original items**: two per objective, four single-choice and two multiple-response.
+- Deferred a bias item. Bias is part of the official objective wording, but no reviewed, accessible
+  Anthropic source supported a defensible item in this pass; the gap is recorded instead of forcing
+  a low-quality question.
+- Did not implement Practice Mode selection, persistence, a full domain bank, or the mock exam.
+
+### Content model
+
+- Added `src/domain/question-bank.ts`. A bank entry wraps the existing `Question` schema with
+  `certificationId`, `blueprintId`, `examMapping`, `contentStatus`, and `verification`; there is no
+  parallel question schema.
+- Bank entries must be mapped to at least one objective. Unmapped design samples must stay inside a
+  lesson.
+- Validation now rejects:
+  - unmapped bank entries;
+  - verified mappings backed by unverified content;
+  - published content without verified content;
+  - question sources missing from the review record;
+  - duplicate question ids across lessons and the bank;
+  - unknown blueprint, certification, objective, or source references.
+- Added `anthropic-reduce-hallucinations-doc` and `anthropic-evaluation-docs` to the source registry,
+  with checked support statements and the 2026-10-26 access date.
+- Added the `domain-2-output-validation-set` assessment definition over all six bank items.
+- `src/content/index.ts` now distinguishes lesson questions, the reviewed bank, and all resolvable
+  questions; `getQuestionBankEntry` exposes mapping/review metadata for future Practice Mode.
+
+### Content
+
+| Question | Format | Objective |
+|---|---|---|
+| `output-accuracy-review-plan` | Single-choice | `output-evaluate-accuracy` |
+| `output-accurate-but-incomplete` | Single-choice | `output-evaluate-accuracy` |
+| `output-fabricated-policy-detail` | Single-choice | `output-identify-hallucinations` |
+| `output-hallucination-signals` | Multiple-response | `output-identify-hallucinations` |
+| `output-fact-check-retention` | Single-choice | `output-fact-check` |
+| `output-reduce-unsupported-claims` | Multiple-response | `output-fact-check` |
+
+- Each item has English learner-facing text, an explicit correct answer, a Vietnamese overall
+  explanation, and a Vietnamese rationale for every distractor.
+- No official guide sample or third-party exam content was copied.
+- Objective mapping is verified against Exam Guide v1.0; technical claims cite the Anthropic
+  evaluation and hallucination documentation.
+
+### UI
+
+- `/practice` now runs the reviewed six-item Domain 2 set instead of the one-item Context Window
+  sample.
+- The page labels the set as reviewed, original, Domain 2 / 21%, and not official; it links back to
+  the unmapped Context Window sample lesson.
+- No timer or persistence was added. Refreshing still discards the attempt, and full Practice Mode
+  selection/history remains a later phase.
+
+### Verification
+
+- `npm run typecheck`: pass (`tsc -b`, strict).
+- `npm run lint`: pass (`eslint .`, 0 problems).
+- `npm test`: pass — **11 files / 85 tests**, including six-entry bank coverage, English/Vietnamese
+  language checks, cross-reference failures, and `/practice` integration.
+- `npm run build`: pass. Production bundle: JS **548.78 kB** (gzip **164.73 kB**), CSS
+  **37.68 kB** (gzip **6.71 kB**); the existing Vite >500 kB chunk warning remains.
+
+### Known limitations
+
+- Domain 2 coverage is **partial**: 3 / 6 objectives, two items each, no lesson, and no bias item.
+- No Practice Mode: no set selection, filters, saved attempts, review queue, or attempt history.
+- No timer, mock exam, per-domain report, or official scaled-score conversion.
+- The Context Window sample remains unmapped; its assessment definition is no longer surfaced on
+  `/practice`.
+- No fresh browser/axe audit was run for the new six-item `/practice` state; component and page tests
+  cover the start screen and existing runner interactions.
+- The production build remains a single chunk above Vite's warning threshold.
+
+## Phase C2.2b — Domain 2 lesson and complete reviewed bank (2026-10-26)
+
+### Scope
+
+- Reviewed the six existing Domain 2 items and preserved all existing question ids.
+- Covered the remaining three Domain 2 objectives:
+  - `output-human-review` — escalation and additional verification;
+  - `output-edit-adapt` — audience editing and draft comparison;
+  - `output-format-selection` — inline, structured, and artifact/document output.
+- Added two bias items to the existing hallucination/inconsistency objective, using Anthropic's
+  Claude's Constitution for the narrow framing/equal-treatment claims it actually supports.
+- Added one Domain 2 curriculum lesson mapped to all six verified objectives.
+- Did not implement local persistence, attempt history, review queue, practice-set selection, a
+  timer, a mock exam, or a scaled-score prediction.
+
+### Content model
+
+- Added `relatedQuestionIds` to the lesson schema. Lessons may link to reviewed bank questions, and
+  content-pack validation rejects references that do not resolve to the bank. The field is optional
+  with an empty default so the existing Context Window sample stays valid.
+- Added source records for Prompting best practices, Structured outputs, artifacts, and Claude's
+  Constitution, each with claim-level support statements and a 2026-10-26 access date.
+- Expanded the bank to **14 items**:
+  - `output-evaluate-accuracy`: 2;
+  - `output-identify-hallucinations`: 4 (2 hallucination/inconsistency + 2 bias);
+  - `output-fact-check`: 2;
+  - `output-human-review`: 2;
+  - `output-edit-adapt`: 2;
+  - `output-format-selection`: 2.
+- Format split: 8 single-choice and 6 multiple-response. Every multiple-response item has exactly
+  three correct choices, and every distractor has a Vietnamese rationale.
+- All items remain original. No official guide sample, exam dump, or third-party question bank was
+  copied.
+
+### Lesson
+
+- Added `lessons/evaluation-basics.ts` with id `evaluation-basics`, replacing the former planned
+  lesson entry.
+- Route: `/learn/evaluation-basics`.
+- The lesson includes objectives, Vietnamese explanations with English terminology, hallucination
+  and bias distinctions, a fact-check workflow, escalation triggers, editing guidance, format
+  selection, a worked scenario, an English knowledge check, and a checklist.
+- Seven reviewed bank questions are linked through `relatedQuestionIds`; the lesson page renders the
+  linked objective statements and a working link to `/practice`.
+- Inline claims name the supporting source; the lesson page also renders the full source list.
+
+### UI and assessment integration
+
+- `/practice` now runs all 14 reviewed items in `domain-2-output-validation-set`.
+- The Practice page links to the new Domain 2 lesson and keeps the Context Window sample lesson
+  linked separately.
+- Learn and Dashboard copy now state that one lesson is exam-mapped and one is a sample, instead of
+  claiming there is no curriculum lesson.
+- The Context Window lesson remains unmapped, its knowledge check remains intact, and its sample
+  assessment definition remains in the pack but is still not the `/practice` surface.
+
+### Verification
+
+- `npm run typecheck`: pass (`tsc -b`, strict).
+- `npm run lint`: pass (`eslint .`, 0 problems).
+- `npm test`: pass — **12 files / 92 tests**, including 14-entry coverage, six-objective mapping,
+  related-question resolution, English/Vietnamese language checks, cross-reference failures, lesson
+  route behavior, and `/practice` integration.
+- `npm run build`: pass. Production bundle: JS **590.14 kB** (gzip **176.05 kB**), CSS
+  **37.68 kB** (gzip **6.71 kB**); the existing Vite >500 kB chunk warning remains.
+
+### Coverage and limitations
+
+- Domain 2 now has **6 / 6** objectives with a reviewed lesson and at least two reviewed items.
+- Overall certification coverage is **6 / 30** objectives with reviewed lessons/items; the other
+  **24 / 30** remain uncovered.
+- Bias coverage is intentionally narrow: one-sided evidence, loaded framing, unequal standards, and
+  protected-characteristic assumptions, grounded in Claude's Constitution. It is not a full fairness
+  evaluation and should not be described as one.
+- Human-review items teach risk-based escalation and validation principles; they are not medical,
+  legal, or financial advice.
+- No Practice Mode set selection, persistence, saved attempts, review queue, timer, mock exam,
+  per-domain report, or official scaled-score conversion exists.
+- No fresh browser or axe audit was run for the new lesson or the 14-item `/practice` state;
+  component/page tests cover the new route, related-practice links, and knowledge-check interaction.
+- The production build remains a single chunk above Vite's warning threshold.

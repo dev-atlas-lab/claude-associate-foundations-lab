@@ -15,6 +15,9 @@ export function lessonOutline(lesson: Lesson): OutlineItem[] {
     ...sectionItems,
     { id: "lesson-terms", label: "Thuật ngữ chính" },
     { id: "lesson-scenario", label: "Tình huống thực tế" },
+    ...(lesson.relatedQuestionIds.length > 0
+      ? [{ id: "lesson-related-practice", label: "Câu hỏi luyện tập" }]
+      : []),
     { id: "lesson-check", label: "Knowledge check" },
     { id: "lesson-summary", label: "Tóm tắt" },
   ];

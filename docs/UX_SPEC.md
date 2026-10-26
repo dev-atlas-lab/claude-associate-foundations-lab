@@ -39,12 +39,18 @@ Do not reveal answers before submission in exam mode.
 
 Design meaningful empty, completed, error, and reset-confirmation states. Do not fabricate learner statistics or progress.
 
-## Phase B implementation notes
+## Implementation notes
 
 - Every route renders inside `AppShell`, including `*` (404) and unknown lesson ids.
-- `/practice`, `/mock-exam`, `/review` and `/progress` are explicit "not implemented" states, not
-  functional-looking mockups.
+- `/practice` runs the reviewed 14-item Domain 2 set through the reusable core. It remains a bank
+  preview, not a full Practice Mode with set selection or saved attempts. `/mock-exam`, `/review`
+  and `/progress` remain explicit "not implemented" states, not functional-looking mockups.
+- `/learn/evaluation-basics` is the first exam-mapped curriculum lesson. It links to reviewed bank
+  questions through validated `relatedQuestionIds` and provides a direct route to `/practice`.
+- The assessment shows English questions and Vietnamese feedback only after submission, confirms
+  submission with the unanswered count, and keeps answer/flag controls locked afterwards.
+- The unmapped Context Window sample remains available through its lesson knowledge check.
 - Theme choice lives in both the topbar and `/settings`; both drive the same React context.
 - Lesson pages add a sticky outline at ≥1200px and keep the reading column at 68ch.
 - Exact tokens, component inventory and accessibility decisions are recorded in
-  `docs/DESIGN_SYSTEM.md`.
+  `docs/DESIGN_SYSTEM.md`; assessment decisions are recorded in `docs/ASSESSMENT_ENGINE.md`.

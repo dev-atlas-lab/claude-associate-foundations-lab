@@ -1,6 +1,11 @@
 import { z } from "zod";
+import {
+  assessmentDefinitionSchema,
+  validateAssessmentDefinition,
+} from "./assessment";
 import { blueprintSchema, certificationSchema, providerSchema } from "./certification";
 import { glossaryEntrySchema, lessonSchema, plannedLessonSchema } from "./lesson";
+import { questionBankEntrySchema } from "./question-bank";
 import { sourceSchema } from "./common";
 
 type Path = Array<string | number>;
@@ -54,7 +59,9 @@ export const contentPackSchema = z
     blueprints: z.array(blueprintSchema).min(1),
     sources: z.array(sourceSchema).min(1),
     lessons: z.array(lessonSchema),
+    questionBank: z.array(questionBankEntrySchema),
     plannedLessons: z.array(plannedLessonSchema),
+    assessments: z.array(assessmentDefinitionSchema),
     glossary: z.array(glossaryEntrySchema),
   })
   .superRefine((pack, ctx) => {
@@ -92,6 +99,12 @@ export const contentPackSchema = z
       pack.plannedLessons.map((lesson) => lesson.id),
       ["plannedLessons"],
       "planned lesson id",
+      ctx,
+    );
+    addDuplicateIssues(
+      pack.assessments.map((assessment) => assessment.id),
+      ["assessments"],
+      "assessment id",
       ctx,
     );
     addDuplicateIssues(
@@ -205,6 +218,9 @@ export const contentPackSchema = z
     });
 
     const questionIds = new Set<string>();
+    const bankQuestionIds = new Set(
+      pack.questionBank.map((entry) => entry.question.id),
+    );
 
     pack.lessons.forEach((lesson, lessonIndex) => {
       const blueprint = blueprintById.get(lesson.blueprintId);
@@ -256,6 +272,16 @@ export const contentPackSchema = z
         ctx,
       );
 
+      lesson.relatedQuestionIds.forEach((questionId, questionIndex) => {
+        if (!bankQuestionIds.has(questionId)) {
+          ctx.addIssue({
+            code: "custom",
+            message: `related question "${questionId}" is not in the reviewed question bank`,
+            path: ["lessons", lessonIndex, "relatedQuestionIds", questionIndex],
+          });
+        }
+      });
+
       const objectiveIds = objectiveIdsByBlueprint.get(lesson.blueprintId);
       if (objectiveIds && lesson.examMapping.status !== "unmapped") {
         lesson.examMapping.objectiveIds.forEach((objectiveId, objectiveIndex) => {
@@ -285,6 +311,104 @@ export const contentPackSchema = z
           ctx,
         );
       });
+    });
+
+    pack.questionBank.forEach((entry, entryIndex) => {
+      const blueprint = blueprintById.get(entry.blueprintId);
+
+      if (!blueprint) {
+        ctx.addIssue({
+          code: "custom",
+          message: `unknown blueprint id "${entry.blueprintId}"`,
+          path: ["questionBank", entryIndex, "blueprintId"],
+        });
+      } else if (blueprint.certificationId !== entry.certificationId) {
+        ctx.addIssue({
+          code: "custom",
+          message: `question-bank certification "${entry.certificationId}" does not match blueprint certification "${blueprint.certificationId}"`,
+          path: ["questionBank", entryIndex, "certificationId"],
+        });
+      }
+
+      if (!certificationIds.has(entry.certificationId)) {
+        ctx.addIssue({
+          code: "custom",
+          message: `unknown certification id "${entry.certificationId}"`,
+          path: ["questionBank", entryIndex, "certificationId"],
+        });
+      }
+
+      addMissingSourceIssues(
+        entry.verification.sourceIds,
+        knownSourceIds,
+        ["questionBank", entryIndex, "verification", "sourceIds"],
+        ctx,
+      );
+      addMissingSourceIssues(
+        entry.question.sourceIds,
+        knownSourceIds,
+        ["questionBank", entryIndex, "question", "sourceIds"],
+        ctx,
+      );
+
+      if (
+        entry.examMapping.status === "verified" &&
+        blueprint !== undefined &&
+        blueprint.verification.status !== "verified"
+      ) {
+        ctx.addIssue({
+          code: "custom",
+          message: "a verified exam mapping requires a verified blueprint",
+          path: ["questionBank", entryIndex, "examMapping", "status"],
+        });
+      }
+
+      const knownObjectiveIds = objectiveIdsByBlueprint.get(entry.blueprintId);
+      if (knownObjectiveIds && entry.examMapping.status !== "unmapped") {
+        entry.examMapping.objectiveIds.forEach((objectiveId, objectiveIndex) => {
+          if (!knownObjectiveIds.has(objectiveId)) {
+            ctx.addIssue({
+              code: "custom",
+              message: `unknown objective id "${objectiveId}" for blueprint "${entry.blueprintId}"`,
+              path: [
+                "questionBank",
+                entryIndex,
+                "examMapping",
+                "objectiveIds",
+                objectiveIndex,
+              ],
+            });
+          }
+        });
+      }
+
+      if (questionIds.has(entry.question.id)) {
+        ctx.addIssue({
+          code: "custom",
+          message: `question id "${entry.question.id}" is not unique across the content pack`,
+          path: ["questionBank", entryIndex, "question", "id"],
+        });
+      }
+      questionIds.add(entry.question.id);
+    });
+
+    const questionById = new Map([
+      ...pack.lessons.flatMap((lesson) =>
+        lesson.questions.map((question) => [question.id, question] as const),
+      ),
+      ...pack.questionBank.map((entry) => [entry.question.id, entry.question] as const),
+    ]);
+
+    pack.assessments.forEach((assessment, index) => {
+      const issues = validateAssessmentDefinition(assessment, questionById);
+
+      for (const issue of issues) {
+        ctx.addIssue({
+          code: "custom",
+          message: issue.message,
+          path: ["assessments", index, "questionIds"],
+        });
+      }
     });
 
     pack.plannedLessons.forEach((planned, index) => {
