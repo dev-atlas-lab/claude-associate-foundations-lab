@@ -3,11 +3,20 @@ import { Link } from "react-router-dom";
 import { Badge } from "../components/ui/Badge";
 import { Callout } from "../components/ui/Callout";
 import { PageHeader } from "../components/ui/PageHeader";
-import { publishedLessons, plannedLessons } from "../features/curriculum/curriculum";
-import { curriculumDisclaimer, provisionalDomains } from "../features/curriculum/domains";
+import {
+  getDomain,
+  plannedLessons,
+  primaryBlueprint,
+  primaryCertification,
+  publishedLessons,
+} from "../content";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 
 const featuredLesson = publishedLessons[0];
+const knowledgeCheckCount = publishedLessons.reduce(
+  (total, lesson) => total + lesson.questions.length,
+  0,
+);
 
 export function DashboardPage() {
   useDocumentTitle();
@@ -15,14 +24,14 @@ export function DashboardPage() {
   return (
     <div className="page">
       <PageHeader
-        eyebrow="Workspace"
+        eyebrow={`Workspace · ${primaryCertification.code}`}
         title="Your study desk"
-        lede="Lessons explain the thinking in Vietnamese, knowledge checks ask you to decide in English, and nothing here needs an account. Start with the sample lesson and see how the format feels."
+        lede="The CCAO-F blueprint is verified for exams before 2026-11-17. Lessons explain the thinking in Vietnamese, knowledge checks ask you to decide in English, and nothing here needs an account."
         meta={
           <>
-            <Badge tone="warn">Curriculum unverified</Badge>
+            <Badge tone="ok">Blueprint v{primaryBlueprint.version} verified</Badge>
+            <Badge>60 items · 120 min</Badge>
             <Badge>Frontend only</Badge>
-            <Badge>Local by design</Badge>
           </>
         }
       />
@@ -37,7 +46,7 @@ export function DashboardPage() {
           <div className="feature-meta">
             <Badge tone="accent">Sample lesson</Badge>
             <Badge>{featuredLesson.estimatedMinutes} min read</Badge>
-            <Badge>Foundation</Badge>
+            <Badge tone="warn">Not exam-mapped</Badge>
           </div>
         </div>
         <Link className="button button--primary" to={`/learn/${featuredLesson.id}`}>
@@ -57,12 +66,12 @@ export function DashboardPage() {
           <article className="stat">
             <span className="stat-label">Lessons available</span>
             <span className="stat-value">{publishedLessons.length}</span>
-            <span className="stat-hint">One sample lesson, mapped to no official objective</span>
+            <span className="stat-hint">One design sample; no curriculum lesson yet</span>
           </article>
           <article className="stat">
             <span className="stat-label">Knowledge checks</span>
-            <span className="stat-value">1</span>
-            <span className="stat-hint">English question with Vietnamese explanations</span>
+            <span className="stat-value">{knowledgeCheckCount}</span>
+            <span className="stat-hint">English questions with Vietnamese explanations</span>
           </article>
           <article className="stat">
             <span className="stat-label">Saved progress</span>
@@ -73,30 +82,31 @@ export function DashboardPage() {
       </section>
 
       <section className="section">
-        <Callout tone="unverified" title="Exam blueprint still unverified">
-          {curriculumDisclaimer} The four domain titles below come from the starter scaffold and are
-          kept only as layout placeholders.
+        <Callout tone="note" title="Blueprint verified for your exam window">
+          {primaryBlueprint.versionNotice}
         </Callout>
       </section>
 
       <section className="section" aria-labelledby="curriculum-map">
         <div className="section-heading-row">
           <h2 className="section-title" id="curriculum-map">
-            Provisional domain map
+            Exam blueprint
           </h2>
-          <span className="section-note">Weights and objectives pending</span>
+          <span className="section-note">Official domains and weights · v{primaryBlueprint.version}</span>
         </div>
         <div className="row-list">
-          {provisionalDomains.map((domain) => (
+          {primaryBlueprint.domains.map((domain) => (
             <div className="row" key={domain.id}>
               <span className="row-start" aria-hidden="true">
-                {domain.number}
+                {domain.code.padStart(2, "0")}
               </span>
               <span className="row-body">
                 <span className="row-title">{domain.title}</span>
-                <span className="row-meta">Lesson mapping not started</span>
+                <span className="row-meta">
+                  {domain.objectives.length} objectives · lesson mapping not started
+                </span>
               </span>
-              <Badge tone="warn">Unverified</Badge>
+              <span className="row-tail">{domain.weightPercent}%</span>
             </div>
           ))}
         </div>
@@ -112,18 +122,24 @@ export function DashboardPage() {
           </Link>
         </div>
         <div className="row-list">
-          {plannedLessons.map((lesson) => (
-            <div className="row" key={lesson.id}>
-              <span className="row-start" aria-hidden="true">
-                <BookOpen size={14} strokeWidth={1.9} />
-              </span>
-              <span className="row-body">
-                <span className="row-title">{lesson.title}</span>
-                <span className="row-meta">{lesson.note}</span>
-              </span>
-              <span className="row-tail">Planned</span>
-            </div>
-          ))}
+          {plannedLessons.map((lesson) => {
+            const domain = lesson.domainId ? getDomain(lesson.domainId) : undefined;
+
+            return (
+              <div className="row" key={lesson.id}>
+                <span className="row-start" aria-hidden="true">
+                  <BookOpen size={14} strokeWidth={1.9} />
+                </span>
+                <span className="row-body">
+                  <span className="row-title">{lesson.title}</span>
+                  <span className="row-meta">
+                    {domain ? `Domain ${domain.code} · ${domain.title}` : lesson.note}
+                  </span>
+                </span>
+                <span className="row-tail">Planned</span>
+              </div>
+            );
+          })}
         </div>
       </section>
 
@@ -151,7 +167,7 @@ export function DashboardPage() {
             </span>
             <span className="row-body">
               <span className="row-title">Mock exam</span>
-              <span className="row-meta">Format unverified — no timed run available yet</span>
+              <span className="row-meta">Format verified — no timed run available yet</span>
             </span>
             <span className="row-tail">Preview</span>
           </Link>

@@ -27,6 +27,14 @@ export function Topbar({
         >
           <Menu size={18} strokeWidth={1.9} aria-hidden="true" />
         </button>
+        <img
+          className="topbar-mark"
+          src="/brand/app-icon.svg"
+          alt=""
+          width={24}
+          height={24}
+          decoding="async"
+        />
         <p className="breadcrumb">
           <span className="breadcrumb-prefix">Claude Foundations</span>
           <span className="breadcrumb-sep" aria-hidden="true">

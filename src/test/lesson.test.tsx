@@ -2,6 +2,8 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it } from "vitest";
+import { questionSchema } from "../domain";
+import { KnowledgeCheck } from "../features/curriculum/components/KnowledgeCheck";
 import { ThemeProvider } from "../hooks/ThemeProvider";
 import { routes } from "../router";
 import { installMatchMedia } from "./match-media";
@@ -18,7 +20,6 @@ describe("sample lesson", () => {
   beforeEach(() => {
     installMatchMedia(true);
   });
-
   it("renders the authored structure: objectives, terms, diagram, and check", () => {
     renderLesson();
 
@@ -89,5 +90,53 @@ describe("sample lesson", () => {
 
     expect(screen.getByText("This is the first lesson")).toBeInTheDocument();
     expect(screen.getByText(/^Planned: Cấu trúc prompt/i)).toBeInTheDocument();
+  });
+});
+
+describe("multiple-response knowledge check", () => {
+  const question = questionSchema.parse({
+    id: "context-noise-multi",
+    type: "multiple-response",
+    stem: "Which two actions reduce context noise? Select two.",
+    choices: [
+      {
+        id: "retrieve",
+        text: "Retrieve only relevant policy sections.",
+        explanation: "Đúng: giảm tài liệu không liên quan.",
+      },
+      {
+        id: "paste",
+        text: "Paste the entire handbook.",
+        explanation: "Sai: tăng nhiễu và chiếm ngân sách.",
+      },
+      {
+        id: "summarize",
+        text: "Summarize older turns.",
+        explanation: "Đúng: giữ lại thông tin cần thiết.",
+      },
+    ],
+    correctChoiceIds: ["retrieve", "summarize"],
+    correctExplanation: "Hai lựa chọn này giảm nhiễu mà vẫn giữ thông tin cần thiết.",
+    sourceIds: ["anthropic-context-windows-doc"],
+  });
+
+  it("uses checkboxes and scores the selected set, not just one option", async () => {
+    const user = userEvent.setup();
+    render(<KnowledgeCheck question={question} />);
+
+    expect(screen.getAllByRole("checkbox")).toHaveLength(3);
+    expect(screen.queryByRole("radio")).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("checkbox", { name: /Retrieve only relevant/i }));
+    await user.click(screen.getByRole("button", { name: "Check answer" }));
+    expect(screen.getByRole("status")).toHaveTextContent("Chưa đúng");
+
+    await user.click(screen.getByRole("button", { name: /Try again/i }));
+    await user.click(screen.getByRole("checkbox", { name: /Retrieve only relevant/i }));
+    await user.click(screen.getByRole("checkbox", { name: /Summarize older turns/i }));
+    await user.click(screen.getByRole("button", { name: "Check answer" }));
+
+    expect(screen.getByRole("status")).toHaveTextContent("Chính xác");
+    expect(screen.getAllByText(/Đáp án đúng/)).toHaveLength(2);
   });
 });

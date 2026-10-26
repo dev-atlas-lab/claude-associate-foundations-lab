@@ -1,6 +1,6 @@
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import type { Lesson, PlannedLesson } from "../types";
+import type { Lesson, PlannedLesson } from "../../../domain";
 
 export function LessonPager({
   previous,

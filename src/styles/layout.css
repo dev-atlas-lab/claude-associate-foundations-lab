@@ -43,17 +43,11 @@
 }
 
 .brand-mark {
-  display: grid;
-  place-items: center;
+  display: block;
   width: 34px;
   height: 34px;
   flex: 0 0 auto;
   border-radius: var(--radius-md);
-  background: var(--accent);
-  color: var(--accent-contrast);
-  font-family: var(--font-mono);
-  font-size: 1rem;
-  font-weight: 700;
 }
 
 .brand-copy {
@@ -258,6 +252,14 @@
   display: none;
 }
 
+.topbar-mark {
+  display: none;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
+  border-radius: 6px;
+}
+
 /* ── Page scaffolding ──────────────────────────────────────────────────── */
 
 .main-content {
@@ -395,6 +397,10 @@
 
   .nav-toggle {
     display: grid;
+  }
+
+  .topbar-mark {
+    display: block;
   }
 
   .nav-scrim {

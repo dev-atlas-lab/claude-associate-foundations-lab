@@ -1,13 +1,17 @@
 import { Check, RotateCcw, X } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import type { KnowledgeCheck as KnowledgeCheckData } from "../types";
+import type { Question } from "../../../domain";
 
-export function KnowledgeCheck({ check }: { check: KnowledgeCheckData }) {
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+export function KnowledgeCheck({ question }: { question: Question }) {
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const feedbackRef = useRef<HTMLDivElement>(null);
 
-  const isCorrect = submitted && selectedId === check.correctOptionId;
+  const isMultipleResponse = question.type === "multiple-response";
+  const isCorrect =
+    submitted &&
+    selectedIds.length === question.correctChoiceIds.length &&
+    selectedIds.every((choiceId) => question.correctChoiceIds.includes(choiceId));
 
   useEffect(() => {
     if (submitted) {
@@ -15,10 +19,27 @@ export function KnowledgeCheck({ check }: { check: KnowledgeCheckData }) {
     }
   }, [submitted]);
 
+  const handleChoiceChange = (choiceId: string) => {
+    if (submitted) {
+      return;
+    }
+
+    if (isMultipleResponse) {
+      setSelectedIds((current) =>
+        current.includes(choiceId)
+          ? current.filter((id) => id !== choiceId)
+          : [...current, choiceId],
+      );
+      return;
+    }
+
+    setSelectedIds([choiceId]);
+  };
+
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!selectedId || submitted) {
+    if (selectedIds.length === 0 || submitted) {
       return;
     }
 
@@ -26,43 +47,55 @@ export function KnowledgeCheck({ check }: { check: KnowledgeCheckData }) {
   };
 
   const handleReset = () => {
-    setSelectedId(null);
+    setSelectedIds([]);
     setSubmitted(false);
   };
 
   return (
-    <form className="quiz" onSubmit={handleSubmit} aria-labelledby="lesson-check-title">
+    <form className="quiz" onSubmit={handleSubmit}>
       <fieldset className="fieldset">
-        <legend className="quiz-legend" lang="en">
-          {check.question}
+        <legend className="quiz-legend" id={`question-${question.id}-stem`} lang="en">
+          {question.stem}
         </legend>
+        <p className="quiz-instruction" lang="en">
+          {isMultipleResponse ? "Select all answers that apply." : "Select one answer."}
+        </p>
         <div className="quiz-options">
-          {check.options.map((option) => {
+          {question.choices.map((choice) => {
+            const isChoiceCorrect = question.correctChoiceIds.includes(choice.id);
+            const isSelected = selectedIds.includes(choice.id);
             const state = !submitted
               ? undefined
-              : option.id === check.correctOptionId
+              : isChoiceCorrect
                 ? "correct"
-                : option.id === selectedId
+                : isSelected
                   ? "incorrect"
+                  : undefined;
+            const note = !submitted
+              ? undefined
+              : isChoiceCorrect
+                ? "Correct answer"
+                : isSelected
+                  ? "Your answer"
                   : undefined;
 
             return (
-              <label className="quiz-option" key={option.id} data-state={state}>
+              <label className="quiz-option" key={choice.id} data-state={state}>
                 <input
-                  type="radio"
-                  name="knowledge-check"
-                  value={option.id}
-                  checked={selectedId === option.id}
-                  onChange={() => setSelectedId(option.id)}
+                  type={isMultipleResponse ? "checkbox" : "radio"}
+                  name={`question-${question.id}`}
+                  value={choice.id}
+                  checked={isSelected}
+                  onChange={() => handleChoiceChange(choice.id)}
                   disabled={submitted}
                 />
                 <span className="quiz-option-body">
                   <span className="quiz-option-label" lang="en">
-                    {option.text}
+                    {choice.text}
                   </span>
-                  {state ? (
-                    <span className="quiz-option-note">
-                      {state === "correct" ? "Correct answer" : "Your answer"}
+                  {note ? (
+                    <span className="quiz-option-note" lang="en">
+                      {note}
                     </span>
                   ) : null}
                 </span>
@@ -76,7 +109,7 @@ export function KnowledgeCheck({ check }: { check: KnowledgeCheckData }) {
         <button
           type="submit"
           className="button button--primary"
-          disabled={!selectedId || submitted}
+          disabled={selectedIds.length === 0 || submitted}
         >
           Check answer
         </button>
@@ -86,7 +119,11 @@ export function KnowledgeCheck({ check }: { check: KnowledgeCheckData }) {
             Try again
           </button>
         ) : (
-          <span className="quiz-hint">Select one option, then check your answer.</span>
+          <span className="quiz-hint">
+            {isMultipleResponse
+              ? "Select every correct option, then check your answer."
+              : "Select one option, then check your answer."}
+          </span>
         )}
       </div>
 
@@ -111,15 +148,17 @@ export function KnowledgeCheck({ check }: { check: KnowledgeCheckData }) {
               </>
             )}
           </p>
-          <p className="quiz-feedback-text">{check.correctExplanation}</p>
+          <p className="quiz-feedback-text">{question.correctExplanation}</p>
           <ul className="quiz-explanations">
-            {check.options.map((option, index) => (
-              <li className="quiz-explanation" key={option.id}>
+            {question.choices.map((choice, index) => (
+              <li className="quiz-explanation" key={choice.id}>
                 <span className="quiz-explanation-key">
                   {String.fromCharCode(65 + index)}.{" "}
-                  {option.id === check.correctOptionId ? "Đáp án đúng" : "Vì sao không chọn"}
+                  {question.correctChoiceIds.includes(choice.id)
+                    ? "Đáp án đúng"
+                    : "Vì sao không chọn"}
                 </span>
-                <span className="quiz-explanation-text">{option.explanation}</span>
+                <span className="quiz-explanation-text">{choice.explanation}</span>
               </li>
             ))}
           </ul>

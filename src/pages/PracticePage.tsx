@@ -4,7 +4,7 @@ import { Badge } from "../components/ui/Badge";
 import { Callout } from "../components/ui/Callout";
 import { EmptyState } from "../components/ui/EmptyState";
 import { PageHeader } from "../components/ui/PageHeader";
-import { publishedLessons } from "../features/curriculum/curriculum";
+import { publishedLessons } from "../content";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 
 const plannedModes = [
@@ -34,9 +34,10 @@ export function PracticePage() {
         meta={<Badge tone="warn">Not implemented</Badge>}
       />
 
-      <Callout tone="note" title="What needs to happen first">
-        Practice questions can only be written against verified objectives. Until the official guide
-        is reviewed, the question bank stays empty on purpose.
+      <Callout tone="note" title="What exists now">
+        The CCAO-F blueprint is verified for exams before 2026-11-17, but the question bank is
+        still empty and the practice engine is not built. The sample lesson has one English
+        knowledge check you can try today.
       </Callout>
 
       <section className="section" aria-labelledby="planned-modes">
@@ -73,7 +74,8 @@ export function PracticePage() {
           }
         >
           The sample lesson ends with one English question and a full explanation of every option.
-          That is the format the practice engine will scale up once the curriculum is verified.
+          That is the format the practice engine will scale up once the question bank is authored
+          against the verified objectives.
         </EmptyState>
       </section>
     </div>

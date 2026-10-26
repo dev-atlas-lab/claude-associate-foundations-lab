@@ -36,6 +36,10 @@
   margin-top: var(--space-5);
 }
 
+.lesson-meta-divider {
+  color: var(--text-tertiary);
+}
+
 .lesson-body {
   min-width: 0;
 }
@@ -359,6 +363,18 @@
   background: var(--surface-2);
 }
 
+.quiz-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.quiz-instruction {
+  margin-top: var(--space-1);
+  color: var(--text-tertiary);
+  font-size: var(--text-sm);
+}
+
 .quiz-legend {
   padding: 0;
   font-size: var(--text-base);
@@ -579,6 +595,14 @@ a.pager-card:hover {
 }
 
 /* ── Sources ───────────────────────────────────────────────────────────── */
+
+.lesson-sources {
+  margin-top: var(--space-5);
+}
+
+.lesson-sources-title {
+  margin-bottom: var(--space-2);
+}
 
 .source-list {
   display: flex;

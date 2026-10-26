@@ -59,6 +59,20 @@ for meta labels at small sizes and is not used for essential instructions. Focus
   anchors are static.
 - Page changes scroll to the top and move focus to `<main>`; the first load does not steal focus.
 
+## Brand assets
+
+- `brand/` is the master brand system: SVG mark, lockups, app icon, favicon, social cards and the
+  static brand guide. It is not served directly by Vite.
+- The assets needed at runtime are copied to `public/brand/`: `app-icon.svg`, `favicon.svg`, the
+  16/32 px PNG favicons and the 180 px Apple touch icon. `index.html` links the favicon set.
+- The sidebar uses the ink-tile app icon at 34 px with the product name “Claude Foundations” and the
+  publisher line “Dev Atlas Lab”. The compact topbar shows the same mark below 1024 px, where the
+  sidebar is off-canvas. The image is decorative (`alt=""`) because the adjacent brand text already
+  names the product.
+- Logo files follow the source brand rules: no stretching or recolouring, and the ink tile is used
+  wherever a square is required. The mark remains legible at 16 px because the favicon has a
+  simplified path.
+
 ## Components
 
 | Component | Path | Purpose |
@@ -75,9 +89,10 @@ for meta labels at small sizes and is not used for essential instructions. Focus
 | `ContextWindowDiagram` | `src/features/visualizations/ContextWindowDiagram.tsx` | Interactive, non-SVG budget diagram |
 | `LessonContent` / `LessonPager` / `LessonToc` | `src/features/curriculum/components/` | Lesson rendering, prev/next, outline |
 
-Lesson data is validated with Zod at module load (`src/features/curriculum/types.ts`), including a
-check that the declared correct option actually exists. The schema separates content from UI so a
-larger bank can be added without touching page components.
+Content is validated with Zod at module load (`src/domain/` schemas, `src/content/` data), including
+source and objective cross-references, choice ids, correct-answer counts, and single-choice vs
+multiple-response rules. The schema separates content from UI so a larger bank can be added without
+touching page components.
 
 ## Accessibility decisions
 
@@ -86,9 +101,10 @@ larger bank can be added without touching page components.
   a parallel class.
 - The diagram is an accessible figure: the colour bar is decorative (`aria-hidden`), while real
   buttons drive the detail panel and expose `aria-pressed`.
-- The knowledge check uses native radios inside a `<fieldset>` with the English question as the
-  legend. After submission, each option is labelled textually ("Correct answer" / "Your answer") so
-  correctness never relies on colour, and focus moves to the `role="status"` feedback panel.
+- The knowledge check uses native radios for single-choice and native checkboxes for
+  multiple-response inside a `<fieldset>` with the English question as the legend. After submission,
+  each option is labelled textually ("Correct answer" / "Your answer") so correctness never relies on
+  colour, and focus moves to the `role="status"` feedback panel.
 - Disabled prev/next pager cards are non-interactive `<div>`s, not dead links.
 - Reduced-motion preferences collapse all transitions and animations.
 - Quiz stems and options are marked `lang="en"` inside a `lang="vi"` document; technical key terms
@@ -98,15 +114,18 @@ larger bank can be added without touching page components.
 
 - No placeholder page shows fake statistics, fake question counts or a start button that does
   nothing. Practice, mock exam and review explain what is missing and why.
-- Exam-specific claims (format, duration, weights) are always wrapped in the `unverified` callout.
+- Exam-specific claims are shown only when the matching blueprint version is verified. The data
+  carries explicit verification status, checked date, and source ids; unverified claims, when shown
+  at all, use the `unverified` callout.
 - The only authored lesson is a context-window sample explicitly marked as unmapped to an official
-  objective.
+  objective. The verified blueprint and the unmapped sample are presented as separate facts.
 
 ## Verification status
 
 - Theme persistence, system-following, reset, topbar switching, navigation, active state, mobile
-  drawer behaviour, unknown routes, lesson quiz scoring/feedback, pager states, diagram interaction
-  and glossary filtering are covered by Vitest + Testing Library tests (`src/test/`, 26 tests).
+  drawer behaviour, unknown routes, lesson quiz scoring/feedback, pager states, diagram interaction,
+  glossary filtering, content-pack validation, and single/multiple-response schemas are covered by
+  Vitest + Testing Library tests (`src/test/`, 49 tests).
 - Layout and both themes were visually checked with headless Edge screenshots at 1440×900 and
   390×844 (dashboard, lesson, glossary, settings, mobile drawer). Screenshots are not committed.
 - axe-core 4.10.2 was injected into the built app and run against all ten routes in dark mode plus

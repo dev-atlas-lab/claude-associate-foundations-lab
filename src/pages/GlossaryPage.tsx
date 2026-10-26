@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { Badge } from "../components/ui/Badge";
 import { EmptyState } from "../components/ui/EmptyState";
 import { PageHeader } from "../components/ui/PageHeader";
-import { glossary } from "../features/curriculum/glossary";
+import { glossary } from "../content";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 
 export function GlossaryPage() {
@@ -31,7 +31,7 @@ export function GlossaryPage() {
         eyebrow="Reference"
         title="Technical glossary"
         lede="English terms kept intact, with a Vietnamese explanation of what each one actually changes in practice. Definitions are general study notes, not official exam wording."
-        meta={<Badge tone="warn">Pending exam review</Badge>}
+        meta={<Badge tone="info">General study notes</Badge>}
       />
 
       <div className="search-row">

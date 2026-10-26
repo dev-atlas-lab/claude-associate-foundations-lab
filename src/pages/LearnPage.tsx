@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Badge } from "../components/ui/Badge";
 import { Callout } from "../components/ui/Callout";
 import { PageHeader } from "../components/ui/PageHeader";
-import { publishedLessons, plannedLessons } from "../features/curriculum/curriculum";
+import { plannedLessons, publishedLessons } from "../content";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 
 export function LearnPage() {
@@ -14,14 +14,20 @@ export function LearnPage() {
       <PageHeader
         eyebrow="Learn"
         title="Learning modules"
-        lede="Vietnamese explanations with English terminology kept intact. Only reviewed lessons appear here; everything else is listed as planned so the roadmap stays visible without pretending it exists."
-        meta={<Badge tone="warn">Objective mapping pending</Badge>}
+        lede="Vietnamese explanations with English terminology kept intact. Only reviewed technical content appears here; the current lesson is a design sample and is not yet mapped to an official CCAO-F objective."
+        meta={
+          <>
+            <Badge tone="ok">Blueprint v1.0 verified</Badge>
+            <Badge tone="warn">Sample only</Badge>
+          </>
+        }
       />
 
       <Callout tone="note" title="How these lessons are built">
         Every lesson follows the same shape: objectives, a Vietnamese explanation, a visual model,
-        a worked scenario, and one English knowledge check with explanations for every option. A
-        lesson is only published after its claims are checked against primary sources.
+        a worked scenario, and English knowledge checks with explanations for every option. A
+        lesson is only published after its claims are checked against primary sources. Exam mapping
+        is a separate status shown on each lesson.
       </Callout>
 
       <section className="section" aria-labelledby="available-lessons">
@@ -41,7 +47,9 @@ export function LearnPage() {
                 <span className="row-title">{lesson.title}</span>
                 <span className="row-meta">
                   <Clock3 size={11} strokeWidth={2} aria-hidden="true" />
-                  {lesson.estimatedMinutes} min · {lesson.level} · sample content
+                  {lesson.estimatedMinutes} min · {lesson.level} ·{" "}
+                  {lesson.kind === "sample" ? "sample content" : "curriculum"}
+                  {lesson.examMapping.status === "unmapped" ? " · no official objective" : ""}
                 </span>
               </span>
               <ArrowRight size={15} strokeWidth={1.9} aria-hidden="true" className="row-tail" />

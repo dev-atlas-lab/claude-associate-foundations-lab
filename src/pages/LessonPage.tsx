@@ -4,7 +4,13 @@ import { Badge } from "../components/ui/Badge";
 import { Callout } from "../components/ui/Callout";
 import { EmptyState } from "../components/ui/EmptyState";
 import { PageHeader } from "../components/ui/PageHeader";
-import { getLesson, getLessonNeighbours } from "../features/curriculum/curriculum";
+import {
+  getBlueprint,
+  getCertification,
+  getLesson,
+  getLessonNeighbours,
+  getSources,
+} from "../content";
 import { LessonContent } from "../features/curriculum/components/LessonContent";
 import { LessonPager } from "../features/curriculum/components/LessonPager";
 import { LessonToc } from "../features/curriculum/components/LessonToc";
@@ -51,6 +57,18 @@ export function LessonPage() {
   }
 
   const neighbours = getLessonNeighbours(lesson.id);
+  const sources = getSources(lesson.sourceIds);
+  const certification = getCertification(lesson.certificationId);
+  const blueprint = getBlueprint(lesson.blueprintId);
+  const certificationCode = certification?.code ?? "Certification";
+  const blueprintVersion = blueprint?.version ?? "—";
+  const isMapped = lesson.examMapping.status !== "unmapped";
+  const mappingTitle =
+    lesson.examMapping.status === "verified"
+      ? "Đã gắn với objective chính thức"
+      : lesson.examMapping.status === "candidate"
+        ? "Objective đề xuất, chưa xác minh"
+        : "Chưa gắn với objective chính thức";
 
   return (
     <div className="page">
@@ -58,10 +76,14 @@ export function LessonPage() {
         <article className="lesson-body" aria-labelledby="lesson-page-title">
           <header className="lesson-header">
             <div className="meta-row">
-              <Badge tone="accent">Sample lesson</Badge>
+              <Badge tone="accent">
+                {lesson.kind === "sample" ? "Sample lesson" : `${certificationCode} lesson`}
+              </Badge>
               <Badge>{lesson.level}</Badge>
               <Badge>{lesson.estimatedMinutes} min</Badge>
-              <Badge tone="warn">No official objective</Badge>
+              <Badge tone={isMapped ? "ok" : "warn"}>
+                {isMapped ? "Exam-mapped" : "No official objective"}
+              </Badge>
             </div>
             <h1 className="lesson-title" id="lesson-page-title">
               {lesson.title}
@@ -74,15 +96,21 @@ export function LessonPage() {
               <Link className="inline-link" to="/learn">
                 <ArrowLeft size={12} strokeWidth={2} aria-hidden="true" /> All modules
               </Link>
+              <span className="lesson-meta-divider" aria-hidden="true">
+                ·
+              </span>
+              <span className="mono">
+                {certificationCode} · Blueprint v{blueprintVersion}
+              </span>
             </div>
           </header>
 
           <div className="stack">
-            <Callout tone="unverified" title="Chưa gắn với objective chính thức">
-              {lesson.verificationNote}
+            <Callout tone={isMapped ? "note" : "unverified"} title={mappingTitle}>
+              {lesson.examMapping.note} {lesson.verification.note}
             </Callout>
 
-            <LessonContent lesson={lesson} />
+            <LessonContent lesson={lesson} sources={sources} />
 
             <LessonPager
               previous={neighbours.previous}

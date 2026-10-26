@@ -1,4 +1,4 @@
-import type { Lesson } from "./types";
+import type { Lesson } from "../../domain";
 
 export type OutlineItem = { id: string; label: string };
 

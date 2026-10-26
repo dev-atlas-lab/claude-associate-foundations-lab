@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it } from "vitest";
 import { ThemeProvider } from "../hooks/ThemeProvider";
-import { glossary } from "../features/curriculum/glossary";
+import { glossary } from "../content";
 import { routes } from "../router";
 import { installMatchMedia } from "./match-media";
 

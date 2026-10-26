@@ -1,10 +1,10 @@
 import { ExternalLink, Target } from "lucide-react";
 import { Callout } from "../../../components/ui/Callout";
+import type { Lesson, Source } from "../../../domain";
 import { ContextWindowDiagram } from "../../visualizations/ContextWindowDiagram";
-import type { Lesson } from "../types";
 import { KnowledgeCheck } from "./KnowledgeCheck";
 
-export function LessonContent({ lesson }: { lesson: Lesson }) {
+export function LessonContent({ lesson, sources }: { lesson: Lesson; sources: Source[] }) {
   return (
     <>
       <section
@@ -79,7 +79,14 @@ export function LessonContent({ lesson }: { lesson: Lesson }) {
             ) : null}
 
             {section.kind === "diagram" ? (
-              <ContextWindowDiagram intro={section.intro} />
+              section.diagramId === "context-budget" ? (
+                <ContextWindowDiagram intro={section.intro} />
+              ) : (
+                <Callout tone="note" title="Visualisation not available">
+                  This lesson references the diagram <span className="mono">{section.diagramId}</span>,
+                  but no renderer is registered for it yet.
+                </Callout>
+              )
             ) : null}
           </section>
         );
@@ -135,7 +142,11 @@ export function LessonContent({ lesson }: { lesson: Lesson }) {
             Knowledge check
           </h2>
         </div>
-        <KnowledgeCheck check={lesson.knowledgeCheck} />
+        <div className="quiz-stack">
+          {lesson.questions.map((question) => (
+            <KnowledgeCheck key={question.id} question={question} />
+          ))}
+        </div>
       </section>
 
       <section
@@ -153,15 +164,15 @@ export function LessonContent({ lesson }: { lesson: Lesson }) {
             <li key={takeaway}>{takeaway}</li>
           ))}
         </ul>
-        <div className="section" style={{ marginTop: "var(--space-5)" }}>
-          <p className="section-note" style={{ marginBottom: "var(--space-2)" }}>
+        <div className="lesson-sources">
+          <p className="section-note lesson-sources-title">
             Nguồn tham khảo
           </p>
           <ul className="source-list">
-            {lesson.sources.map((source) => (
-              <li key={source.url}>
-                <a href={source.url} target="_blank" rel="noreferrer noopener">
-                  {source.label} <ExternalLink size={12} aria-hidden="true" />
+            {sources.map((source) => (
+              <li key={source.id}>
+                <a href={source.url} target="_blank" rel="noreferrer noopener" lang="en">
+                  {source.publisher} — {source.title} <ExternalLink size={12} aria-hidden="true" />
                   <span className="sr-only"> (opens in a new tab)</span>
                 </a>
               </li>

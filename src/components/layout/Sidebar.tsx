@@ -16,12 +16,17 @@ export function Sidebar({
     <aside className="app-sidebar" id="primary-navigation" aria-label="Primary">
       <div className="sidebar-top">
         <Link to="/" className="brand" onClick={onNavigate}>
-          <span className="brand-mark" aria-hidden="true">
-            C
-          </span>
+          <img
+            className="brand-mark"
+            src="/brand/app-icon.svg"
+            alt=""
+            width={34}
+            height={34}
+            decoding="async"
+          />
           <span className="brand-copy">
             <span className="brand-name">Claude Foundations</span>
-            <span className="brand-sub">Learning lab</span>
+            <span className="brand-sub">Dev Atlas Lab</span>
           </span>
         </Link>
         <button
@@ -60,7 +65,7 @@ export function Sidebar({
           <span className="status-dot" aria-hidden="true" />
           Progress stays in this browser
         </p>
-        <p className="sidebar-meta">Scaffold · curriculum pending verification</p>
+        <p className="sidebar-meta">Blueprint verified · content in progress</p>
       </div>
     </aside>
   );

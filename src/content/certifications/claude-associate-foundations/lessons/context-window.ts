@@ -1,22 +1,40 @@
-import { lessonSchema, type Lesson } from "../types";
+import { lessonSchema, type Lesson } from "../../../../domain";
 
 /**
- * Sample lesson used to validate the lesson layout, diagram, and knowledge
- * check before the curriculum is scaled out. It is intentionally labelled as
- * unmapped to any official exam objective.
+ * Design-vertical-slice lesson. The technical content is checked against
+ * Anthropic documentation, but the lesson is deliberately not mapped to an
+ * official CCAO-F objective until it has been rewritten for the Associate
+ * audience and reviewed against the verified blueprint.
  */
 export const contextWindowLesson: Lesson = lessonSchema.parse({
   id: "context-window",
+  certificationId: "claude-associate-foundations",
+  blueprintId: "ccao-f-v1",
   order: 1,
-  status: "published",
+  kind: "sample",
+  contentStatus: "published",
   title: "Context window và ngân sách ngữ cảnh",
   englishTitle: "Context window and context budgeting",
   summary:
     "Hiểu context window như bộ nhớ làm việc của model, biết thứ gì chiếm chỗ trong đó, và chọn lọc ngữ cảnh thay vì nhồi thêm tài liệu.",
   level: "foundation",
   estimatedMinutes: 9,
-  verificationNote:
-    "Bài mẫu cho giai đoạn thiết kế. Nội dung dựa trên tài liệu Anthropic về context window và token counting (truy cập 26/10/2026), nhưng chưa được gắn với objective chính thức nào của kỳ thi CCAO-F.",
+  verification: {
+    status: "verified",
+    checkedAt: "2026-10-26",
+    note: "Nội dung kỹ thuật được đối chiếu với tài liệu Anthropic về context window, token counting, compaction và context engineering (truy cập 26/10/2026). Đây là bài mẫu thiết kế, không phải bài học đã được ánh xạ vào blueprint CCAO-F.",
+    sourceIds: [
+      "anthropic-context-windows-doc",
+      "anthropic-token-counting-doc",
+      "anthropic-compaction-doc",
+      "anthropic-context-engineering-blog",
+    ],
+  },
+  examMapping: {
+    status: "unmapped",
+    objectiveIds: [],
+    note: "Bài mẫu cho giai đoạn thiết kế, chưa được rà soát để gắn với objective chính thức nào của kỳ thi CCAO-F. Nội dung kỹ thuật dựa trên tài liệu Anthropic, không phải bằng chứng về phạm vi kỳ thi.",
+  },
   objectives: [
     "Giải thích context window là gì và vì sao nó giới hạn lượng thông tin model xử lý trong một request.",
     "Phân biệt phần input và phần output cùng chia sẻ một cửa sổ ngữ cảnh.",
@@ -111,56 +129,55 @@ export const contextWindowLesson: Lesson = lessonSchema.parse({
     takeaway:
       "Khi câu trả lời bắt đầu bỏ qua instruction cũ, nguyên nhân thường là ngữ cảnh bị nhiễu chứ không phải model “quên” ngẫu nhiên.",
   },
-  knowledgeCheck: {
-    question:
-      "A support assistant receives the entire policy handbook, three days of chat history, and the system prompt on every turn. Replies are slower, and the assistant sometimes ignores the rule “never promise a refund timeline”. Which change addresses the root cause?",
-    options: [
-      {
-        id: "a",
-        text: "Raise the temperature so the assistant explores more phrasings.",
-        explanation:
-          "Temperature điều chỉnh độ ngẫu nhiên của output, không làm input gọn hơn và không khôi phục instruction bị chìm trong ngữ cảnh.",
-      },
-      {
-        id: "b",
-        text: "Retrieve only the relevant policy sections and summarize older turns, keeping the system prompt intact.",
-        explanation:
-          "Đúng hướng: giảm nhiễu trong context window, giữ instruction quan trọng ổn định, và chừa ngân sách cho output.",
-      },
-      {
-        id: "c",
-        text: "Move the system prompt to the end of every user message so it appears last.",
-        explanation:
-          "Lặp lại system prompt ở mỗi message làm tăng token và dễ tạo mâu thuẫn. Instruction nên nằm trong system prompt ổn định, không phải chèn lặp.",
-      },
-      {
-        id: "d",
-        text: "Increase max_tokens so the model has more room to answer.",
-        explanation:
-          "Tăng max_tokens chỉ mở rộng phần output; nó không làm input gọn hơn mà còn ăn thêm ngân sách của cùng một cửa sổ.",
-      },
-    ],
-    correctOptionId: "b",
-    correctExplanation:
-      "Gốc rễ là input quá lớn và nhiều nhiễu: instruction quan trọng bị pha loãng, còn ngân sách bị tài liệu không liên quan chiếm mất. Thu gọn input và giữ system prompt ổn định xử lý đúng nguyên nhân, thay vì chỉ đổi tham số sinh câu trả lời.",
-  },
+  questions: [
+    {
+      id: "context-window-root-cause",
+      type: "single-choice",
+      stem: "A support assistant receives the entire policy handbook, three days of chat history, and the system prompt on every turn. Replies are slower, and the assistant sometimes ignores the rule “never promise a refund timeline”. Which change addresses the root cause?",
+      choices: [
+        {
+          id: "a",
+          text: "Raise the temperature so the assistant explores more phrasings.",
+          explanation:
+            "Temperature điều chỉnh độ ngẫu nhiên của output, không làm input gọn hơn và không khôi phục instruction bị chìm trong ngữ cảnh.",
+        },
+        {
+          id: "b",
+          text: "Retrieve only the relevant policy sections and summarize older turns, keeping the system prompt intact.",
+          explanation:
+            "Đúng hướng: giảm nhiễu trong context window, giữ instruction quan trọng ổn định, và chừa ngân sách cho output.",
+        },
+        {
+          id: "c",
+          text: "Move the system prompt to the end of every user message so it appears last.",
+          explanation:
+            "Lặp lại system prompt ở mỗi message làm tăng token và dễ tạo mâu thuẫn. Instruction nên nằm trong system prompt ổn định, không phải chèn lặp.",
+        },
+        {
+          id: "d",
+          text: "Increase max_tokens so the model has more room to answer.",
+          explanation:
+            "Tăng max_tokens chỉ mở rộng phần output; nó không làm input gọn hơn mà còn ăn thêm ngân sách của cùng một cửa sổ.",
+        },
+      ],
+      correctChoiceIds: ["b"],
+      correctExplanation:
+        "Gốc rễ là input quá lớn và nhiều nhiễu: instruction quan trọng bị pha loãng, còn ngân sách bị tài liệu không liên quan chiếm mất. Thu gọn input và giữ system prompt ổn định xử lý đúng nguyên nhân, thay vì chỉ đổi tham số sinh câu trả lời.",
+      sourceIds: [
+        "anthropic-context-windows-doc",
+        "anthropic-context-engineering-blog",
+      ],
+    },
+  ],
   takeaways: [
     "Context window là bộ nhớ làm việc: system prompt, messages, tool, tài liệu và output đều tính chung một ngân sách.",
     "Đo token trước khi gửi; đừng ước lượng bằng số từ hoặc số trang.",
     "Thu gọn và chọn lọc ngữ cảnh thường tốt hơn nhồi thêm tài liệu.",
   ],
-  sources: [
-    {
-      label: "Anthropic — Context windows",
-      url: "https://platform.claude.com/docs/en/build-with-claude/context-windows",
-    },
-    {
-      label: "Anthropic — Token counting",
-      url: "https://platform.claude.com/docs/en/build-with-claude/token-counting",
-    },
-    {
-      label: "Anthropic — Compaction",
-      url: "https://platform.claude.com/docs/en/build-with-claude/compaction",
-    },
+  sourceIds: [
+    "anthropic-context-windows-doc",
+    "anthropic-token-counting-doc",
+    "anthropic-compaction-doc",
+    "anthropic-context-engineering-blog",
   ],
 });

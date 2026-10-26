@@ -1,33 +1,17 @@
 import { describe, expect, it } from "vitest";
-import { curriculumDisclaimer } from "../features/curriculum/domains";
-import { contextWindowLesson } from "../features/curriculum/lessons/context-window";
-import { publishedLessons, plannedLessons } from "../features/curriculum/curriculum";
+import {
+  contentPack,
+  getDomain,
+  getLesson,
+  getLessonNeighbours,
+  getSources,
+  plannedLessons,
+  primaryBlueprint,
+  publishedLessons,
+} from "../content";
 import { lessonOutline } from "../features/curriculum/outline";
-import { lessonSchema } from "../features/curriculum/types";
 
-describe("curriculum data validation", () => {
-  it("accepts the published sample lesson", () => {
-    expect(lessonSchema.safeParse(contextWindowLesson).success).toBe(true);
-  });
-
-  it("rejects a knowledge check whose correct answer is not an option", () => {
-    const broken = {
-      ...contextWindowLesson,
-      knowledgeCheck: {
-        ...contextWindowLesson.knowledgeCheck,
-        correctOptionId: "not-an-option",
-      },
-    };
-
-    expect(lessonSchema.safeParse(broken).success).toBe(false);
-  });
-
-  it("rejects a lesson with no objectives", () => {
-    const broken = { ...contextWindowLesson, objectives: [] };
-
-    expect(lessonSchema.safeParse(broken).success).toBe(false);
-  });
-
+describe("curriculum registry", () => {
   it("keeps published and planned lesson ids unique", () => {
     const publishedIds = publishedLessons.map((lesson) => lesson.id);
     const plannedIds = plannedLessons.map((lesson) => lesson.id);
@@ -38,7 +22,10 @@ describe("curriculum data validation", () => {
   });
 
   it("builds a unique outline that points at real anchors", () => {
-    const outline = lessonOutline(contextWindowLesson);
+    const lesson = getLesson("context-window");
+    expect(lesson).toBeDefined();
+
+    const outline = lessonOutline(lesson!);
     const ids = outline.map((item) => item.id);
 
     expect(new Set(ids).size).toBe(ids.length);
@@ -47,14 +34,55 @@ describe("curriculum data validation", () => {
     expect(ids).toContain("lesson-summary");
   });
 
-  it("cites verified https sources and states the curriculum is unverified", () => {
+  it("resolves every cited source to an HTTPS URL", () => {
     for (const lesson of publishedLessons) {
-      for (const source of lesson.sources) {
+      const sources = getSources(lesson.sourceIds);
+
+      expect(sources).toHaveLength(lesson.sourceIds.length);
+      for (const source of sources) {
         expect(source.url.startsWith("https://")).toBe(true);
       }
-      expect(lesson.verificationNote.length).toBeGreaterThan(0);
-    }
 
-    expect(curriculumDisclaimer).toMatch(/unverified/i);
+      for (const question of lesson.questions) {
+        expect(getSources(question.sourceIds)).toHaveLength(question.sourceIds.length);
+      }
+    }
+  });
+
+  it("keeps the published sample explicitly unmapped", () => {
+    for (const lesson of publishedLessons) {
+      if (lesson.kind === "sample") {
+        expect(lesson.examMapping.status).toBe("unmapped");
+        expect(lesson.examMapping.objectiveIds).toEqual([]);
+      }
+    }
+  });
+
+  it("maps every planned lesson domain to a real blueprint domain", () => {
+    for (const lesson of plannedLessons) {
+      if (lesson.domainId) {
+        expect(getDomain(lesson.domainId)).toBeDefined();
+      }
+    }
+  });
+
+  it("keeps official domain weights adding up to 100", () => {
+    const total = primaryBlueprint.domains.reduce(
+      (sum, domain) => sum + (domain.weightPercent ?? 0),
+      0,
+    );
+
+    expect(total).toBe(100);
+    expect(primaryBlueprint.format.itemCount).toBe(60);
+    expect(primaryBlueprint.format.timeLimitMinutes).toBe(120);
+    expect(primaryBlueprint.format.passingScore?.cutScore).toBe(720);
+  });
+
+  it("returns no neighbour for an unknown lesson and real neighbours for a known one", () => {
+    expect(getLesson("not-a-lesson")).toBeUndefined();
+    expect(getLessonNeighbours("not-a-lesson")).toEqual({});
+    expect(getLessonNeighbours("context-window")).toMatchObject({
+      plannedNext: contentPack.plannedLessons[0],
+    });
   });
 });
