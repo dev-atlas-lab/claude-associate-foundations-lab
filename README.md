@@ -1,15 +1,22 @@
 # Claude Foundations Lab
 
-A frontend-only interactive learning platform for preparing for the Claude Certified Associate – Foundations certification.
+A frontend-only interactive learning platform for the **Claude Certified Associate – Foundations (CCAO-F)** certification.
+
+The product pairs Vietnamese explanations with English assessments: lessons, interactive visualizations, practice questions, and a timed mock exam. No backend and no API key are required — progress is stored in the browser.
 
 ## Current status
 
-This repository is a starter scaffold. The curriculum, interactive lessons, question bank, and exam engine are to be researched and implemented by the coding agent using the official certification guide as the source of truth.
+Scaffold prepared and validated. The app shell, routing, theme tokens, curriculum, question bank, and exam engine are not implemented yet.
+
+- Toolchain installed, audited (0 known vulnerabilities), and verified: typecheck, lint, unit test, production build.
+- Exam weights, objectives, duration, and question counts are **not yet verified**. See `docs/EXAM_BLUEPRINT.md`.
+- GitHub repository exists at <https://github.com/dev-atlas-lab/claude-associate-foundations-lab> on `main`.
+- No Vercel project has been connected yet.
 
 ## Requirements
 
-- Node.js LTS
-- npm
+- Node.js `>=20.19.0` (Node 22 LTS is the tested baseline; `.nvmrc` pins major 22)
+- npm 10+
 - Git
 
 ## Local development
@@ -28,27 +35,49 @@ npm run test
 npm run build
 ```
 
+End-to-end tests are scaffolded but not written yet: `npm run test:e2e`.
+
 ## Tech stack
 
-- React + TypeScript + Vite
-- React Router
-- Zod for runtime data validation
-- Vitest + React Testing Library
-- Playwright for end-to-end tests
+- React 19 + TypeScript 5.9 (strict) + Vite 6
+- React Router 7 (`createBrowserRouter`; SPA rewrites in `vercel.json`)
+- Zod 4 for runtime validation of curriculum and question-bank data
+- Vitest 4 + React Testing Library
+- Playwright for end-to-end tests (config not added yet)
 - Vercel for static frontend hosting
 
-Choose and install Tailwind CSS / shadcn/ui and diagram libraries during implementation. Verify compatibility before adding dependencies.
+### Dependency policy
 
-## Product principles
+Version ranges are pinned to a tested, mutually compatible set instead of `latest`, so a fresh clone cannot silently pull a breaking major.
 
-- Learning explanations are in Vietnamese; important English technical terms remain unchanged.
-- All practice and exam question stems, options, and instructions are in English.
-- Answer explanations may be in Vietnamese while preserving key terminology.
-- Original practice questions must not be presented as official exam questions.
-- No backend or Claude API key is required for the MVP.
-- Learning progress is stored locally in the browser and is not synchronized across devices.
-- Never commit tokens, credentials, or `.env` files.
+The current set targets the Node 22.11 runtime available in this workspace. The newest majors (Vite 8, Vitest 5, ESLint 10, TypeScript 7) require Node `>=22.12`/`^22.13` and are therefore intentionally deferred; revisiting them is a follow-up task once Node is upgraded to 24 LTS. `npm audit` reports 0 vulnerabilities for the pinned set.
+
+## Content and language policy
+
+- Lesson explanations: Vietnamese, keeping important English terminology.
+- Question stems, answer choices, and exam instructions: English.
+- Feedback and answer explanations: Vietnamese, retaining technical terms.
+- Practice questions are original study material and are never presented as official exam questions.
+
+## Deployment (Vercel)
+
+1. Push to `main` (the SPA rewrite in `vercel.json` keeps deep links working).
+2. In the Vercel dashboard, **Add New → Project → Import Git Repository** and select `claude-associate-foundations-lab`.
+3. Framework preset: **Vite**. Build command `npm run build`, output directory `dist`, install command `npm ci`.
+4. Deploy, then verify both `/` and a deep route such as `/learn` after a hard refresh.
+
+No Vercel project ID or deployment URL is committed to this repository.
 
 ## Documentation
 
-See `docs/` for product, curriculum, UX, content, architecture, and implementation planning documents.
+- `docs/PRODUCT_SPEC.md` — product definition and non-goals
+- `docs/EXAM_BLUEPRINT.md` — exam research status, coverage matrix, question distribution
+- `docs/CONTENT_GUIDELINES.md` — language and question-quality rules
+- `docs/UX_SPEC.md` — visual direction, navigation, accessibility
+- `docs/IMPLEMENTATION_PLAN.md` — phased delivery plan
+- `docs/REPOSITORY_SETUP.md` — GitHub organization/repository state and manual steps
+- `docs/PROGRESS.md` — phase log
+
+## Security
+
+Never commit tokens, credentials, or `.env` files. `.gitignore` excludes `.env`, `.env.*` (except `.env.example`), build output, dependencies, and test artifacts.

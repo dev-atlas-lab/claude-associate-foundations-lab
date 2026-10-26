@@ -1,4 +1,4 @@
-import { ArrowUpRight, BookOpen, Clock3, Layers3, Target } from "lucide-react";
+import { ArrowUpRight, BookOpen, BrainCircuit, Clock3, Layers3, Target } from "lucide-react";
 
 const domains = [
   { number: "01", title: "Output Evaluation and Validation", weight: "Verify against official guide", tone: "peach" },

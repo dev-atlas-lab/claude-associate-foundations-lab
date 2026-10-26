@@ -34,7 +34,7 @@ Build a high-quality, frontend-only learning platform for Claude Certified Assoc
 - Run typecheck, lint, tests, and production build after meaningful changes.
 - Fix failures instead of merely reporting them. If a check cannot run, state why.
 - Do not leave dead buttons, placeholder routes, fake metrics, or nonfunctional controls.
-- Keep dependencies minimal and compatible; explain significant architectural choices.
+- Keep dependencies minimal and compatible; explain significant architectural choices. Pin tested version ranges instead of `latest`, and keep the Node baseline (`>=20.19.0`, tested on 22.11) in sync with `package.json` `engines`.
 - Update `docs/PROGRESS.md` as phases are completed.
 
 ## GitHub and credentials
