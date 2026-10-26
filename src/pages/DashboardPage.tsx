@@ -1,73 +1,162 @@
-import { ArrowUpRight, BookOpen, BrainCircuit, Clock3, Layers3, Target } from "lucide-react";
+import { ArrowRight, BookOpen, ListChecks, Timer } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Badge } from "../components/ui/Badge";
+import { Callout } from "../components/ui/Callout";
+import { PageHeader } from "../components/ui/PageHeader";
+import { publishedLessons, plannedLessons } from "../features/curriculum/curriculum";
+import { curriculumDisclaimer, provisionalDomains } from "../features/curriculum/domains";
+import { useDocumentTitle } from "../hooks/useDocumentTitle";
 
-const domains = [
-  { number: "01", title: "Output Evaluation and Validation", weight: "Verify against official guide", tone: "peach" },
-  { number: "02", title: "Workflow Integration and Solution Design", weight: "Verify against official guide", tone: "blue" },
-  { number: "03", title: "Governance, Risk, and Responsible Use", weight: "Verify against official guide", tone: "green" },
-  { number: "04", title: "Prompting and Task Execution", weight: "Verify against official guide", tone: "lilac" },
-];
+const featuredLesson = publishedLessons[0];
 
 export function DashboardPage() {
+  useDocumentTitle();
+
   return (
-    <div className="page-content">
-      <section className="welcome-row">
-        <div>
-          <p className="eyebrow">YOUR LEARNING SPACE</p>
-          <h1>Understand the concepts.<br /><span>Think like the exam.</span></h1>
-          <p className="welcome-copy">
-            Build a strong mental model, explore ideas visually, and practice making decisions in English.
-          </p>
+    <div className="page">
+      <PageHeader
+        eyebrow="Workspace"
+        title="Your study desk"
+        lede="Lessons explain the thinking in Vietnamese, knowledge checks ask you to decide in English, and nothing here needs an account. Start with the sample lesson and see how the format feels."
+        meta={
+          <>
+            <Badge tone="warn">Curriculum unverified</Badge>
+            <Badge>Frontend only</Badge>
+            <Badge>Local by design</Badge>
+          </>
+        }
+      />
+
+      <section className="feature" aria-labelledby="featured-lesson-title">
+        <div className="feature-copy">
+          <p className="eyebrow">Start here</p>
+          <h2 className="feature-title" id="featured-lesson-title">
+            {featuredLesson.title}
+          </h2>
+          <p className="feature-text">{featuredLesson.summary}</p>
+          <div className="feature-meta">
+            <Badge tone="accent">Sample lesson</Badge>
+            <Badge>{featuredLesson.estimatedMinutes} min read</Badge>
+            <Badge>Foundation</Badge>
+          </div>
         </div>
-        <div className="orbit-art" aria-hidden="true">
-          <div className="orbit orbit-one" />
-          <div className="orbit orbit-two" />
-          <div className="orbit-core"><BrainCircuit size={34} /></div>
-          <span className="orbit-node node-one" />
-          <span className="orbit-node node-two" />
-          <span className="orbit-node node-three" />
-        </div>
+        <Link className="button button--primary" to={`/learn/${featuredLesson.id}`}>
+          Open lesson
+          <ArrowRight size={15} strokeWidth={2} aria-hidden="true" />
+        </Link>
       </section>
 
-      <section className="stat-grid" aria-label="Learning overview">
-        <article className="stat-card">
-          <div className="stat-icon"><BookOpen size={18} /></div>
-          <p>LESSONS COMPLETED</p>
-          <strong>— <small>/ to be started</small></strong>
-        </article>
-        <article className="stat-card">
-          <div className="stat-icon"><Target size={18} /></div>
-          <p>QUIZ ACCURACY</p>
-          <strong>— <small>no attempts yet</small></strong>
-        </article>
-        <article className="stat-card">
-          <div className="stat-icon"><Clock3 size={18} /></div>
-          <p>STUDY TIME</p>
-          <strong>— <small>no activity yet</small></strong>
-        </article>
-      </section>
-
-      <section className="section-heading">
-        <div>
-          <p className="eyebrow">THE CURRICULUM</p>
-          <h2>Explore the exam domains</h2>
-          <p>Coverage and objectives will be verified against Anthropic’s official exam guide.</p>
+      <section className="section" aria-labelledby="workspace-status">
+        <div className="section-heading-row">
+          <h2 className="section-title" id="workspace-status">
+            Workspace status
+          </h2>
+          <span className="section-note">Nothing is tracked until the progress store ships</span>
         </div>
-        <Layers3 size={22} className="section-icon" />
-      </section>
-
-      <section className="domain-grid">
-        {domains.map((domain) => (
-          <article className="domain-card" key={domain.number}>
-            <div className={`domain-number ${domain.tone}`}>{domain.number}</div>
-            <div className="domain-content">
-              <h3>{domain.title}</h3>
-              <p>{domain.weight}</p>
-              <span className="domain-link">Curriculum research pending <ArrowUpRight size={15} /></span>
-            </div>
+        <div className="stat-grid">
+          <article className="stat">
+            <span className="stat-label">Lessons available</span>
+            <span className="stat-value">{publishedLessons.length}</span>
+            <span className="stat-hint">One sample lesson, mapped to no official objective</span>
           </article>
-        ))}
+          <article className="stat">
+            <span className="stat-label">Knowledge checks</span>
+            <span className="stat-value">1</span>
+            <span className="stat-hint">English question with Vietnamese explanations</span>
+          </article>
+          <article className="stat">
+            <span className="stat-label">Saved progress</span>
+            <span className="stat-value">—</span>
+            <span className="stat-hint">Local tracking is not implemented yet</span>
+          </article>
+        </div>
       </section>
-      <p className="scaffold-note">Starter scaffold · Progress indicators are intentionally empty until real learning data exists.</p>
+
+      <section className="section">
+        <Callout tone="unverified" title="Exam blueprint still unverified">
+          {curriculumDisclaimer} The four domain titles below come from the starter scaffold and are
+          kept only as layout placeholders.
+        </Callout>
+      </section>
+
+      <section className="section" aria-labelledby="curriculum-map">
+        <div className="section-heading-row">
+          <h2 className="section-title" id="curriculum-map">
+            Provisional domain map
+          </h2>
+          <span className="section-note">Weights and objectives pending</span>
+        </div>
+        <div className="row-list">
+          {provisionalDomains.map((domain) => (
+            <div className="row" key={domain.id}>
+              <span className="row-start" aria-hidden="true">
+                {domain.number}
+              </span>
+              <span className="row-body">
+                <span className="row-title">{domain.title}</span>
+                <span className="row-meta">Lesson mapping not started</span>
+              </span>
+              <Badge tone="warn">Unverified</Badge>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="section" aria-labelledby="roadmap">
+        <div className="section-heading-row">
+          <h2 className="section-title" id="roadmap">
+            Next up
+          </h2>
+          <Link className="inline-link" to="/learn">
+            Open learning modules
+          </Link>
+        </div>
+        <div className="row-list">
+          {plannedLessons.map((lesson) => (
+            <div className="row" key={lesson.id}>
+              <span className="row-start" aria-hidden="true">
+                <BookOpen size={14} strokeWidth={1.9} />
+              </span>
+              <span className="row-body">
+                <span className="row-title">{lesson.title}</span>
+                <span className="row-meta">{lesson.note}</span>
+              </span>
+              <span className="row-tail">Planned</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="section" aria-labelledby="assessment-shortcuts">
+        <div className="section-heading-row">
+          <h2 className="section-title" id="assessment-shortcuts">
+            Assessment
+          </h2>
+          <span className="section-note">Pages exist as honest placeholders</span>
+        </div>
+        <div className="row-list">
+          <Link className="row" to="/practice">
+            <span className="row-start" aria-hidden="true">
+              <ListChecks size={14} strokeWidth={1.9} />
+            </span>
+            <span className="row-body">
+              <span className="row-title">Practice questions</span>
+              <span className="row-meta">Engine not built — read what it will contain</span>
+            </span>
+            <span className="row-tail">Preview</span>
+          </Link>
+          <Link className="row" to="/mock-exam">
+            <span className="row-start" aria-hidden="true">
+              <Timer size={14} strokeWidth={1.9} />
+            </span>
+            <span className="row-body">
+              <span className="row-title">Mock exam</span>
+              <span className="row-meta">Format unverified — no timed run available yet</span>
+            </span>
+            <span className="row-tail">Preview</span>
+          </Link>
+        </div>
+      </section>
     </div>
   );
 }

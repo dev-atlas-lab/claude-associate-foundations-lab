@@ -11,6 +11,8 @@ The coding agent should refine this plan after official exam-guide research.
 
 ## Phase B — Design system and app shell
 
+Status: implemented (2026-10-26). See `docs/DESIGN_SYSTEM.md` and `docs/PROGRESS.md`.
+
 - Responsive navigation and layout.
 - Typography, spacing, color tokens, theme handling.
 - Dashboard and curriculum navigation.

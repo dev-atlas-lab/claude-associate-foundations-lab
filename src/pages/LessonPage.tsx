@@ -1,0 +1,99 @@
+import { ArrowLeft, BookOpen } from "lucide-react";
+import { Link, useParams } from "react-router-dom";
+import { Badge } from "../components/ui/Badge";
+import { Callout } from "../components/ui/Callout";
+import { EmptyState } from "../components/ui/EmptyState";
+import { PageHeader } from "../components/ui/PageHeader";
+import { getLesson, getLessonNeighbours } from "../features/curriculum/curriculum";
+import { LessonContent } from "../features/curriculum/components/LessonContent";
+import { LessonPager } from "../features/curriculum/components/LessonPager";
+import { LessonToc } from "../features/curriculum/components/LessonToc";
+import { lessonOutline } from "../features/curriculum/outline";
+import { useDocumentTitle } from "../hooks/useDocumentTitle";
+
+export function LessonPage() {
+  const { lessonId } = useParams();
+  const lesson = getLesson(lessonId);
+
+  useDocumentTitle(lesson ? lesson.title : "Lesson not found");
+
+  if (!lesson) {
+    return (
+      <div className="page page--narrow">
+        <PageHeader
+          eyebrow="Lesson"
+          title="Lesson not found"
+          lede={
+            lessonId
+              ? `No published lesson matches “${lessonId}”. Planned lessons become routable only after they are written and reviewed.`
+              : "This route needs a lesson id."
+          }
+        />
+        <EmptyState
+          icon={BookOpen}
+          title="Nothing to read at this address"
+          actions={
+            <>
+              <Link className="button button--primary" to="/learn">
+                Back to modules
+              </Link>
+              <Link className="button button--secondary" to="/">
+                Dashboard
+              </Link>
+            </>
+          }
+        >
+          Published lessons are listed on the learning modules page. Nothing is hidden behind this
+          error.
+        </EmptyState>
+      </div>
+    );
+  }
+
+  const neighbours = getLessonNeighbours(lesson.id);
+
+  return (
+    <div className="page">
+      <div className="lesson-layout">
+        <article className="lesson-body" aria-labelledby="lesson-page-title">
+          <header className="lesson-header">
+            <div className="meta-row">
+              <Badge tone="accent">Sample lesson</Badge>
+              <Badge>{lesson.level}</Badge>
+              <Badge>{lesson.estimatedMinutes} min</Badge>
+              <Badge tone="warn">No official objective</Badge>
+            </div>
+            <h1 className="lesson-title" id="lesson-page-title">
+              {lesson.title}
+            </h1>
+            <p className="lesson-subtitle" lang="en">
+              {lesson.englishTitle}
+            </p>
+            <p className="lesson-summary">{lesson.summary}</p>
+            <div className="lesson-meta">
+              <Link className="inline-link" to="/learn">
+                <ArrowLeft size={12} strokeWidth={2} aria-hidden="true" /> All modules
+              </Link>
+            </div>
+          </header>
+
+          <div className="stack">
+            <Callout tone="unverified" title="Chưa gắn với objective chính thức">
+              {lesson.verificationNote}
+            </Callout>
+
+            <LessonContent lesson={lesson} />
+
+            <LessonPager
+              previous={neighbours.previous}
+              next={neighbours.next}
+              plannedNext={neighbours.plannedNext}
+            />
+          </div>
+        </article>
+
+        <LessonToc items={lessonOutline(lesson)} />
+      </div>
+    </div>
+  );
+}

@@ -38,3 +38,13 @@ Do not reveal answers before submission in exam mode.
 ## States
 
 Design meaningful empty, completed, error, and reset-confirmation states. Do not fabricate learner statistics or progress.
+
+## Phase B implementation notes
+
+- Every route renders inside `AppShell`, including `*` (404) and unknown lesson ids.
+- `/practice`, `/mock-exam`, `/review` and `/progress` are explicit "not implemented" states, not
+  functional-looking mockups.
+- Theme choice lives in both the topbar and `/settings`; both drive the same React context.
+- Lesson pages add a sticky outline at ≥1200px and keep the reading column at 68ch.
+- Exact tokens, component inventory and accessibility decisions are recorded in
+  `docs/DESIGN_SYSTEM.md`.

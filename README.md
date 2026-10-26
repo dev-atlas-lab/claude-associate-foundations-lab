@@ -6,12 +6,24 @@ The product pairs Vietnamese explanations with English assessments: lessons, int
 
 ## Current status
 
-Scaffold prepared and validated. The app shell, routing, theme tokens, curriculum, question bank, and exam engine are not implemented yet.
+Phase B (design system and application shell) is implemented on top of the validated scaffold.
 
-- Toolchain installed, audited (0 known vulnerabilities), and verified: typecheck, lint, unit test, production build.
-- Exam weights, objectives, duration, and question counts are **not yet verified**. See `docs/EXAM_BLUEPRINT.md`.
+- Design tokens, Dark / Light / System themes with localStorage persistence, responsive sidebar and
+  mobile drawer, skip link, focus management, and reduced-motion support.
+- All eight routes render deliberate states inside one shell; unknown routes get a real 404.
+- One representative lesson (`/learn/context-window`) covers the full reading pattern: Vietnamese
+  explanation, English technical terms, an interactive budget diagram, a worked scenario, and an
+  English knowledge check with Vietnamese explanations for every option.
+- Practice, mock exam, review and progress are honest placeholders: no fake questions, attempts, or
+  exam-format claims.
+- Exam weights, objectives, duration, and question counts are **not yet verified**. See
+  `docs/EXAM_BLUEPRINT.md`.
 - GitHub repository exists at <https://github.com/dev-atlas-lab/claude-associate-foundations-lab> on `main`.
 - No Vercel project has been connected yet.
+
+Quality gates currently pass: typecheck, lint, 26 tests across 6 files, production build. All routes
+were also checked with axe-core (0 violations) and headless-browser screenshots in both themes. See
+`docs/PROGRESS.md` for the detailed log and `docs/DESIGN_SYSTEM.md` for the design decisions.
 
 ## Requirements
 
@@ -74,6 +86,7 @@ No Vercel project ID or deployment URL is committed to this repository.
 - `docs/EXAM_BLUEPRINT.md` — exam research status, coverage matrix, question distribution
 - `docs/CONTENT_GUIDELINES.md` — language and question-quality rules
 - `docs/UX_SPEC.md` — visual direction, navigation, accessibility
+- `docs/DESIGN_SYSTEM.md` — implemented tokens, components, theme model, accessibility decisions
 - `docs/IMPLEMENTATION_PLAN.md` — phased delivery plan
 - `docs/REPOSITORY_SETUP.md` — GitHub organization/repository state and manual steps
 - `docs/PROGRESS.md` — phase log

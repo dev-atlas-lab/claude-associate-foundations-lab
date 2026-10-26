@@ -1,11 +1,38 @@
 <!doctype html>
-<html lang="vi">
+<html lang="vi" data-theme="dark" data-theme-preference="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#101114" />
-    <meta name="description" content="Interactive learning lab for Claude Certified Associate – Foundations." />
+    <meta name="theme-color" content="#0e0f12" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f7f6f3" media="(prefers-color-scheme: light)" />
+    <meta
+      name="description"
+      content="Interactive, frontend-only study workspace for the Claude Certified Associate – Foundations certification."
+    />
     <title>Claude Foundations Lab</title>
+    <script>
+      // Apply the stored theme before first paint to avoid a flash of the wrong theme.
+      (function () {
+        var preference = "dark";
+        try {
+          var stored = localStorage.getItem("cfl.theme");
+          if (stored === "light" || stored === "dark" || stored === "system") {
+            preference = stored;
+          }
+          var prefersDark =
+            typeof window.matchMedia === "function"
+              ? window.matchMedia("(prefers-color-scheme: dark)").matches
+              : true;
+          var resolved = preference === "system" ? (prefersDark ? "dark" : "light") : preference;
+          var root = document.documentElement;
+          root.dataset.theme = resolved;
+          root.dataset.themePreference = preference;
+          root.style.colorScheme = resolved;
+        } catch (error) {
+          document.documentElement.dataset.theme = "dark";
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
