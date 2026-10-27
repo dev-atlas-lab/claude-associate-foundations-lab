@@ -8,6 +8,7 @@ import {
   getAssessmentQuestions,
   practiceSets,
   questionBankEntries,
+  type PracticeSetSummary,
 } from "../content";
 import { findActiveAttempt, findLatestSubmittedAttempt } from "../domain";
 import { PersistedAssessment } from "../features/study/components/PersistedAssessment";
@@ -16,6 +17,17 @@ import { useStudyState } from "../persistence/study-store";
 
 function domainLabel(codes: string[]): string {
   return codes.map((code) => `Domain ${code}`).join(" · ");
+}
+
+/**
+ * The leading badge is a fixed-width slot, so it can only hold a short token.
+ * A single-domain set keeps its domain number; a set that spans several
+ * domains uses a compact "M" instead of concatenating every domain code.
+ */
+function practiceSetBadge(practiceSet: PracticeSetSummary): string {
+  const [onlyDomain] = practiceSet.domains;
+
+  return onlyDomain && practiceSet.domains.length === 1 ? onlyDomain.code : "M";
 }
 
 export function PracticePage() {
@@ -167,7 +179,7 @@ export function PracticePage() {
               to={`/practice?set=${encodeURIComponent(practiceSet.assessment.id)}`}
             >
               <span className="row-start" aria-hidden="true">
-                {practiceSet.domains.map((domain) => domain.code).join("·")}
+                {practiceSetBadge(practiceSet)}
               </span>
               <span className="row-body">
                 <span className="row-title">{practiceSet.assessment.title}</span>

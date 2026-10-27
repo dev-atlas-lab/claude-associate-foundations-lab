@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import { PracticePage } from "../pages/PracticePage";
@@ -26,6 +26,36 @@ describe("practice page", () => {
     expect(
       screen.queryByRole("heading", { name: "Context Window sample check" }),
     ).not.toBeInTheDocument();
+  });
+
+  it("keeps numbered badges on single-domain sets", () => {
+    renderPractice();
+
+    const cases = [
+      [/Domain 1: Prompting and Task Execution/i, "1"],
+      [/Domain 2: Output Evaluation and Validation/i, "2"],
+      [/Domain 3: Context and Memory Management/i, "3"],
+      [/Domain 4: Workflow Integration and Solution Design/i, "4"],
+      [/Domain 6: Governance, Risk, and Responsible Use/i, "6"],
+      [/Domain 7: Troubleshooting and Optimization/i, "7"],
+    ] as const;
+
+    for (const [name, code] of cases) {
+      const card = screen.getByRole("link", { name });
+      expect(card.querySelector(".row-start")).toHaveTextContent(new RegExp(`^${code}$`));
+    }
+  });
+
+  it("uses a compact mixed-set badge instead of the concatenated domain ids", () => {
+    renderPractice();
+
+    const mixedCard = screen.getByRole("link", { name: /Mixed foundations set/i });
+    const badge = mixedCard.querySelector(".row-start");
+
+    expect(badge).toHaveTextContent(/^M$/);
+    expect(badge).not.toHaveTextContent("1·2·3·4·6·7");
+    expect(within(mixedCard).getByText("Mixed foundations set")).toBeInTheDocument();
+    expect(within(mixedCard).getByText("Open")).toBeInTheDocument();
   });
 
   it("opens a selected set from its deep link and runs the reviewed bank", () => {
