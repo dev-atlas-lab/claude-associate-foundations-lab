@@ -27,10 +27,12 @@ describe("application shell navigation", () => {
     installMatchMedia(true);
   });
 
-  it("renders the dashboard with the full navigation", () => {
+  it("renders the dashboard with the full navigation", async () => {
     renderApp();
 
-    expect(screen.getByRole("heading", { level: 1, name: "Your study desk" })).toBeInTheDocument();
+    expect(
+      await screen.findByRole("heading", { level: 1, name: "Your study desk" }),
+    ).toBeInTheDocument();
     expect(within(primaryNav()).getAllByRole("link")).toHaveLength(8);
     expect(within(primaryNav()).getByRole("link", { name: "Dashboard" })).toHaveAttribute(
       "aria-current",
@@ -42,10 +44,11 @@ describe("application shell navigation", () => {
     const user = userEvent.setup();
     renderApp();
 
+    await screen.findByRole("heading", { level: 1, name: "Your study desk" });
     await user.click(within(primaryNav()).getByRole("link", { name: "Practice" }));
 
     expect(
-      screen.getByRole("heading", { level: 1, name: "Practice questions" }),
+      await screen.findByRole("heading", { level: 1, name: "Practice questions" }),
     ).toBeInTheDocument();
     expect(within(primaryNav()).getByRole("link", { name: "Practice" })).toHaveAttribute(
       "aria-current",
@@ -60,9 +63,10 @@ describe("application shell navigation", () => {
     const user = userEvent.setup();
     renderApp();
 
+    await screen.findByRole("heading", { level: 1, name: "Your study desk" });
     await user.click(within(primaryNav()).getByRole("link", { name: "Learn" }));
     expect(
-      screen.getByRole("heading", { level: 2, name: "Available now" }),
+      await screen.findByRole("heading", { level: 2, name: "Available now" }),
     ).toBeInTheDocument();
 
     await user.click(
@@ -70,7 +74,7 @@ describe("application shell navigation", () => {
     );
 
     expect(
-      screen.getByRole("heading", { level: 1, name: "Context window và ngân sách ngữ cảnh" }),
+      await screen.findByRole("heading", { level: 1, name: "Context window và ngân sách ngữ cảnh" }),
     ).toBeInTheDocument();
     expect(within(primaryNav()).getByRole("link", { name: "Learn" })).toHaveAttribute(
       "aria-current",
@@ -79,7 +83,7 @@ describe("application shell navigation", () => {
     expect(screen.getByText("Lesson", { selector: ".breadcrumb-current" })).toBeInTheDocument();
   });
 
-  it("renders every placeholder route inside the same shell", () => {
+  it("renders every placeholder route inside the same shell", async () => {
     const paths: [string, string][] = [
       ["/mock-exam", "Mock exam"],
       ["/review", "Review mistakes"],
@@ -95,7 +99,7 @@ describe("application shell navigation", () => {
         </ThemeProvider>,
       );
 
-      expect(screen.getByRole("heading", { level: 1, name: heading })).toBeInTheDocument();
+      expect(await screen.findByRole("heading", { level: 1, name: heading })).toBeInTheDocument();
       expect(primaryNav()).toBeInTheDocument();
       unmount();
     }
@@ -105,6 +109,7 @@ describe("application shell navigation", () => {
     const user = userEvent.setup();
     renderApp();
 
+    await screen.findByRole("heading", { level: 1, name: "Your study desk" });
     const toggle = screen.getByRole("button", { name: "Open navigation" });
     expect(toggle).toHaveAttribute("aria-expanded", "false");
 

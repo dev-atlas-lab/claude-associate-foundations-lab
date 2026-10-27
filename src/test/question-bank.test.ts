@@ -8,6 +8,7 @@ import {
   contentPack,
   getAssessment,
   getAssessmentQuestions,
+  getDomain,
   getObjective,
   getQuestionBankEntry,
   questionBank,
@@ -24,10 +25,10 @@ function withFirstEntry(overrides: Partial<QuestionBankEntry>): QuestionBankEntr
 const vietnameseDiacriticPattern =
   /[ăâđêôơưàáảãạằắẳẵặầấẩẫậèéẻẽẹềếểễệìíỉĩịòóỏõọồốổỗộờớởỡợùúủũụừứửữựỳýỷỹỵ]/i;
 
-describe("reviewed Domain 2 question bank", () => {
-  it("publishes fourteen valid bank entries and one runnable assessment", () => {
-    expect(questionBankEntries).toHaveLength(14);
-    expect(questionBank).toHaveLength(14);
+describe("reviewed question bank", () => {
+  it("publishes twenty-four valid bank entries and runnable assessments", () => {
+    expect(questionBankEntries).toHaveLength(24);
+    expect(questionBank).toHaveLength(24);
     expect(assessment).toBeDefined();
     expect(assessment?.questionIds).toHaveLength(14);
     expect(assessment?.policy).toEqual({
@@ -38,7 +39,10 @@ describe("reviewed Domain 2 question bank", () => {
     expect(questionBankEntrySchema.safeParse(firstEntry).success).toBe(true);
   });
 
-  it("maps at least two items to each of the six Domain 2 objectives", () => {
+  it("maps every entry to a verified objective and gives each Domain 2 objective two items", () => {
+    const domainTwoObjectiveIds = new Set(
+      getDomain("output-evaluation-validation")?.objectives.map((objective) => objective.id) ?? [],
+    );
     const counts = new Map<string, number>();
 
     for (const entry of questionBankEntries) {
@@ -48,9 +52,11 @@ describe("reviewed Domain 2 question bank", () => {
       const objectiveId = entry.examMapping.objectiveIds[0]!;
       const resolved = getObjective(objectiveId);
 
-      expect(resolved?.domain.id).toBe("output-evaluation-validation");
-      expect(resolved?.domain.weightPercent).toBe(21);
-      counts.set(objectiveId, (counts.get(objectiveId) ?? 0) + 1);
+      expect(resolved).toBeDefined();
+
+      if (domainTwoObjectiveIds.has(objectiveId)) {
+        counts.set(objectiveId, (counts.get(objectiveId) ?? 0) + 1);
+      }
     }
 
     expect([...counts.entries()].sort()).toEqual([
@@ -63,11 +69,23 @@ describe("reviewed Domain 2 question bank", () => {
     ]);
   });
 
+  it("covers six of the seven domains and leaves Domain 5 visibly uncovered", () => {
+    const domainIds = new Set(
+      questionBankEntries.map((entry) => {
+        const objectiveId = entry.examMapping.objectiveIds[0]!;
+        return getObjective(objectiveId)?.domain.id;
+      }),
+    );
+
+    expect(domainIds.size).toBe(6);
+    expect(domainIds.has("configuration-knowledge-management")).toBe(false);
+  });
+
   it("includes both single-choice and multiple-response items", () => {
     const types = questionBank.map((question) => question.type);
 
-    expect(types.filter((type) => type === "single-choice")).toHaveLength(8);
-    expect(types.filter((type) => type === "multiple-response")).toHaveLength(6);
+    expect(types.filter((type) => type === "single-choice")).toHaveLength(13);
+    expect(types.filter((type) => type === "multiple-response")).toHaveLength(11);
     expect(new Set(questionBank.map((question) => question.id)).size).toBe(questionBank.length);
   });
 

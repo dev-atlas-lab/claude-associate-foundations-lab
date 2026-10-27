@@ -4,13 +4,20 @@ import { Badge } from "../components/ui/Badge";
 import { Callout } from "../components/ui/Callout";
 import { PageHeader } from "../components/ui/PageHeader";
 import {
+  allQuestions,
   getDomain,
   plannedLessons,
+  practiceSets,
   primaryBlueprint,
   primaryCertification,
   publishedLessons,
+  questionBankEntries,
 } from "../content";
+import { deriveReviewItems } from "../domain";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
+import { useStudyState } from "../persistence/study-store";
+
+const questionById = new Map(allQuestions.map((question) => [question.id, question]));
 
 const featuredLesson =
   publishedLessons.find((lesson) => lesson.kind === "curriculum") ?? publishedLessons[0];
@@ -34,6 +41,12 @@ function hasMappedLessonForDomain(domainId: string): boolean {
 
 export function DashboardPage() {
   useDocumentTitle();
+  const snapshot = useStudyState();
+  const submittedAttempts = snapshot.state.attempts.filter(
+    (attempt) => attempt.session.status === "submitted",
+  ).length;
+  const activeAttempts = snapshot.state.attempts.length - submittedAttempts;
+  const reviewItems = deriveReviewItems(snapshot.state, questionById);
 
   return (
     <div className="page">
@@ -78,7 +91,7 @@ export function DashboardPage() {
           <h2 className="section-title" id="workspace-status">
             Workspace status
           </h2>
-          <span className="section-note">Nothing is tracked until the progress store ships</span>
+          <span className="section-note">Derived from the content registry and local storage</span>
         </div>
         <div className="stat-grid">
           <article className="stat">
@@ -90,14 +103,18 @@ export function DashboardPage() {
             </span>
           </article>
           <article className="stat">
-            <span className="stat-label">Knowledge checks</span>
-            <span className="stat-value">{knowledgeCheckCount}</span>
-            <span className="stat-hint">English questions with Vietnamese explanations</span>
+            <span className="stat-label">Reviewed bank items</span>
+            <span className="stat-value">{questionBankEntries.length}</span>
+            <span className="stat-hint">
+              {practiceSets.length} practice sets · {knowledgeCheckCount} lesson knowledge checks
+            </span>
           </article>
           <article className="stat">
-            <span className="stat-label">Saved progress</span>
-            <span className="stat-value">—</span>
-            <span className="stat-hint">Local tracking is not implemented yet</span>
+            <span className="stat-label">Saved attempts</span>
+            <span className="stat-value">{submittedAttempts}</span>
+            <span className="stat-hint">
+              {activeAttempts} in progress · {reviewItems.length} open review items
+            </span>
           </article>
         </div>
       </section>
@@ -172,7 +189,9 @@ export function DashboardPage() {
           <h2 className="section-title" id="assessment-shortcuts">
             Assessment
           </h2>
-          <span className="section-note">Assessment core ready · 14 reviewed Domain 2 items</span>
+          <span className="section-note">
+            {questionBankEntries.length} reviewed items · {practiceSets.length} practice sets
+          </span>
         </div>
         <div className="row-list">
           <Link className="row" to="/practice">
@@ -182,7 +201,8 @@ export function DashboardPage() {
             <span className="row-body">
               <span className="row-title">Practice questions</span>
               <span className="row-meta">
-                Run the Domain 2 bank — 14 reviewed questions, in-memory only
+                Choose a domain or mixed set — {questionBankEntries.length} reviewed questions,
+                saved locally
               </span>
             </span>
             <span className="row-tail">Open</span>
@@ -193,7 +213,9 @@ export function DashboardPage() {
             </span>
             <span className="row-body">
               <span className="row-title">Mock exam</span>
-              <span className="row-meta">Format verified — no timed run available yet</span>
+              <span className="row-meta">
+                Blueprint-weighted preview — 24 of 60 items, no timer, no scaled score
+              </span>
             </span>
             <span className="row-tail">Preview</span>
           </Link>

@@ -24,7 +24,8 @@ Status: implemented (2026-10-26). See `docs/DESIGN_SYSTEM.md` and `docs/PROGRESS
 
 Status: C0 and C1 implemented (2026-10-26). C2.1 assessment core implemented (2026-10-26).
 C2.2a added the first reviewed Domain 2 bank. C2.2b added the Domain 2 lesson and completed the
-reviewed Domain 2 bank (2026-10-26).
+reviewed Domain 2 bank. C2.3 expanded the bank to 24 items and added persistence, practice/review/
+progress, and the mock preview (2026-10-27).
 
 ### C0 — Official blueprint verification
 
@@ -80,28 +81,56 @@ Status: C2.1 assessment core implemented (2026-10-26). See `docs/ASSESSMENT_ENGI
 - `/practice` runs all 14 reviewed items; the Context Window sample remains unmapped and available
   through its own lesson.
 
+### C2.3 — Practice workflow, persistence, and mock preview
+
+Status: implemented (2026-10-27).
+
+- Expanded the reviewed bank to 24 items across Domains 1, 2, 3, 4, 6, and 7; coverage is now
+  15 / 30 objectives.
+- Registry-driven practice sets with validated bank references, domain declarations, `?set=` deep
+  links, resume, and an unknown-set state.
+- Versioned `cfl.study.v1` persistence with a content fingerprint, corrupt/incompatible/unavailable
+  handling, raw backup download, and a two-step reset.
+- Derived review queue (incorrect, unanswered, flagged) with explicit resolution and navigation.
+- Progress report that separates bank coverage from personal performance.
+- Blueprint-weighted 24-of-60 mock-exam preview with an honest 36-item shortfall, no filler, no
+  timer, and no scaled score.
+- Route-level `React.lazy`/`Suspense` code splitting; the >500 kB chunk warning is resolved without
+  suppression.
+
 ### Remaining Phase D work
 
-- Expand the reviewed bank beyond Domain 2, starting with the highest-weight uncovered domains.
-- Practice mode with domain/mixed set selection, persistence, and a saved review queue.
-- Mock exam format, timer, auto-submit, and result summary.
-- Saved attempts, review queue, and domain breakdown.
-- Persistence and migrations.
+- Expand the reviewed bank to cover Domain 5 and the 15 remaining objectives, then grow it toward a
+  full 60-item mock form.
+- Add mapped lessons for the domains that currently have only bank items.
+- Mock exam timer, auto-submit, and expiry as a separate versioned layer.
+- A per-domain report and a defensible (non-invented) scaled-score policy only if an official source
+  supports it.
+- Data migration for compatible schema changes; incompatible data still requires backup + reset.
 
 ## Phase E — Progress and glossary
 
-- Safe localStorage persistence and schema versioning.
-- Progress summaries based on actual saved activity.
-- Searchable glossary and settings/reset.
+Status: implemented for local study progress (2026-10-27); glossary and settings shipped in Phase B.
+
+- Safe localStorage persistence and schema versioning: `cfl.study.v1` envelope with content
+  fingerprint and explicit corrupt/incompatible/unavailable states.
+- Progress summaries based on actual saved activity, separated from reviewed-bank coverage.
+- Searchable glossary and settings/reset, including local-data backup and two-step reset.
 
 ## Phase F — Quality
 
+Status: unit/integration and build checks pass (2026-10-27); end-to-end and accessibility automation
+remain outstanding.
+
 - Typecheck, lint, unit/integration tests, production build.
-- End-to-end tests for critical journeys.
-- Accessibility and responsive checks.
-- Content coverage audit.
+- End-to-end tests for critical journeys (not started).
+- Accessibility and responsive checks (manual axe run in Phase B only; not re-run for C2.3).
+- Content coverage audit (`docs/CONTENT_COVERAGE_MATRIX.md`, 2026-10-27).
 
 ## Phase G — GitHub and Vercel
+
+Status: not started for Phase C2.3. All changes are uncommitted in the working tree; no push or
+deployment has been performed.
 
 - Verify target repository and secure Git credentials.
 - Commit and push tested work; no GitHub CLI.

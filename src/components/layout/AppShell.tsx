@@ -1,8 +1,19 @@
-import { useEffect, useRef, useState } from "react";
+import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { findNavItem } from "../../config/navigation";
+import { RouteFallback } from "./RouteFallback";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
+
+/**
+ * Storage recovery is lazy so the shell does not pull the content registry and
+ * persistence layer into the initial chunk.
+ */
+const StudyStorageNotice = lazy(() =>
+  import("../../features/study/components/StudyStorageNotice").then((module) => ({
+    default: module.StudyStorageNotice,
+  })),
+);
 
 function sectionLabelFor(pathname: string): string {
   if (pathname.startsWith("/learn/")) {
@@ -114,7 +125,12 @@ export function AppShell() {
           sectionLabel={sectionLabelFor(location.pathname)}
         />
         <main id="main-content" className="main-content" tabIndex={-1} ref={mainRef}>
-          <Outlet />
+          <Suspense fallback={null}>
+            <StudyStorageNotice />
+          </Suspense>
+          <Suspense fallback={<RouteFallback />}>
+            <Outlet />
+          </Suspense>
         </main>
       </div>
     </div>

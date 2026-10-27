@@ -20,9 +20,10 @@ describe("glossary search", () => {
     installMatchMedia(true);
   });
 
-  it("lists every term with its Vietnamese equivalent", () => {
+  it("lists every term with its Vietnamese equivalent", async () => {
     renderGlossary();
 
+    await screen.findByRole("searchbox", { name: "Search terms" });
     expect(screen.getByRole("status")).toHaveTextContent(`${glossary.length} terms`);
     expect(screen.getByRole("heading", { level: 2, name: "Token" })).toBeInTheDocument();
     expect(screen.getByText("Đơn vị token")).toBeInTheDocument();
@@ -32,6 +33,7 @@ describe("glossary search", () => {
     const user = userEvent.setup();
     renderGlossary();
 
+    await screen.findByRole("searchbox", { name: "Search terms" });
     await user.type(screen.getByRole("searchbox", { name: "Search terms" }), "context");
 
     expect(screen.getByRole("status")).toHaveTextContent(new RegExp(`of ${glossary.length} terms`));
@@ -43,6 +45,7 @@ describe("glossary search", () => {
     const user = userEvent.setup();
     renderGlossary();
 
+    await screen.findByRole("searchbox", { name: "Search terms" });
     await user.type(screen.getByRole("searchbox", { name: "Search terms" }), "zzzz");
 
     expect(screen.getByRole("heading", { level: 2, name: "No matching terms" })).toBeInTheDocument();

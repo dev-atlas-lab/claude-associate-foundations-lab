@@ -14,36 +14,54 @@ import {
   type AssessmentSession,
   type Question,
 } from "../../../domain";
+import { createId } from "../../../lib/ids";
 
 interface AssessmentRunnerProps {
   definition: AssessmentDefinition;
   questions: readonly Question[];
-}
-
-function createSessionId(): string {
-  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
-    return crypto.randomUUID();
-  }
-
-  return `session-${Date.now()}`;
+  /** Resume an existing attempt instead of showing the start screen. */
+  initialSession?: AssessmentSession;
+  /** Create and persist a new attempt. Return null when starting is blocked. */
+  onStart?: () => AssessmentSession | null;
+  /** Called for in-progress changes and the transition to submitted. */
+  onSessionChange?: (session: AssessmentSession) => void;
+  persisted?: boolean;
+  allowNewAttempt?: boolean;
 }
 
 function optionLetters(index: number): string {
   return String.fromCharCode(65 + index);
 }
 
-export function AssessmentRunner({ definition, questions }: AssessmentRunnerProps) {
+export function AssessmentRunner({
+  definition,
+  questions,
+  initialSession,
+  onStart,
+  onSessionChange,
+  persisted = false,
+  allowNewAttempt = true,
+}: AssessmentRunnerProps) {
   const context = useMemo(
     () => createAssessmentContext(definition, questions),
     [definition, questions],
   );
-  const [session, setSession] = useState<AssessmentSession | null>(null);
+  const [session, setSession] = useState<AssessmentSession | null>(initialSession ?? null);
   const [confirming, setConfirming] = useState(false);
   const questionHeadingRef = useRef<HTMLLegendElement>(null);
   const confirmationRef = useRef<HTMLElement>(null);
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const resultHeadingRef = useRef<HTMLHeadingElement>(null);
   const wasConfirmingRef = useRef(false);
+  const onSessionChangeRef = useRef(onSessionChange);
+  const lastSavedStatusRef = useRef<AssessmentSession["status"] | undefined>(
+    initialSession?.status,
+  );
+
+  useEffect(() => {
+    onSessionChangeRef.current = onSessionChange;
+  }, [onSessionChange]);
+
 
   const sessionId = session?.id;
   const sessionStatus = session?.status;
@@ -98,14 +116,37 @@ export function AssessmentRunner({ definition, questions }: AssessmentRunnerProp
     }
   }, [sessionStatus]);
 
+  useEffect(() => {
+    if (session === null || onSessionChangeRef.current === undefined) {
+      return;
+    }
+
+    // Persist the transition into "submitted", but do not rewrite a submitted
+    // attempt when the learner only navigates through its review pages.
+    if (session.status === "submitted" && lastSavedStatusRef.current === "submitted") {
+      return;
+    }
+
+    lastSavedStatusRef.current = session.status;
+    onSessionChangeRef.current(session);
+  }, [session]);
+
   const beginSession = () => {
     setConfirming(false);
-    setSession(
-      startAssessment(context, {
-        sessionId: createSessionId(),
-        startedAt: new Date().toISOString(),
-      }),
-    );
+
+    const nextSession = onStart
+      ? onStart()
+      : startAssessment(context, {
+          sessionId: createId(),
+          startedAt: new Date().toISOString(),
+        });
+
+    if (nextSession === null) {
+      return;
+    }
+
+    lastSavedStatusRef.current = nextSession.status;
+    setSession(nextSession);
   };
 
   const handleChoiceChange = (choiceId: string) => {
@@ -160,8 +201,13 @@ export function AssessmentRunner({ definition, questions }: AssessmentRunnerProp
               Single-choice questions accept one answer. Multiple-response questions need the exact
               set of correct answers — there is no partial credit.
             </li>
-            <li>Unanswered questions are marked incorrect when you submit.</li>
-            <li>Explanations appear after submission. This attempt is not saved.</li>
+            <li>Unanswered questions are scored as not correct and reported separately.</li>
+            <li>
+              Explanations appear after submission.{" "}
+              {persisted
+                ? "This attempt is saved in this browser, so you can resume after a refresh."
+                : "This attempt runs in memory only and is discarded on refresh."}
+            </li>
           </ul>
         </div>
 
@@ -171,7 +217,9 @@ export function AssessmentRunner({ definition, questions }: AssessmentRunnerProp
             Start assessment
           </button>
           <span className="assessment-hint">
-            This attempt runs in memory only. Refreshing the page discards it.
+            {persisted
+              ? "Answers are saved locally after each change. You can resume or review later."
+              : "This attempt runs in memory only. Refreshing the page discards it."}
           </span>
         </div>
       </section>
@@ -240,7 +288,7 @@ export function AssessmentRunner({ definition, questions }: AssessmentRunnerProp
           </p>
         </div>
         <div className="assessment-header-actions">
-          {session.status === "submitted" ? (
+          {session.status === "submitted" && allowNewAttempt ? (
             <button type="button" className="button button--secondary button--sm" onClick={beginSession}>
               <RotateCcw size={13} strokeWidth={2} aria-hidden="true" />
               New attempt

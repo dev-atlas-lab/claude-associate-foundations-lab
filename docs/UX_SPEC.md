@@ -42,9 +42,13 @@ Design meaningful empty, completed, error, and reset-confirmation states. Do not
 ## Implementation notes
 
 - Every route renders inside `AppShell`, including `*` (404) and unknown lesson ids.
-- `/practice` runs the reviewed 14-item Domain 2 set through the reusable core. It remains a bank
-  preview, not a full Practice Mode with set selection or saved attempts. `/mock-exam`, `/review`
-  and `/progress` remain explicit "not implemented" states, not functional-looking mockups.
+- `/practice` is registry-driven: seven reviewed sets (six domain sets plus one mixed set) support
+  `?set=` deep links, resume an in-progress attempt, and persist attempts locally. It is practice,
+  not an official exam form.
+- `/mock-exam` runs a blueprint-weighted 24-of-60 preview with the honest shortfall, no timer, and no
+  scaled score. `/review` derives incorrect, unanswered, and flagged items from submitted attempts
+  and resolves them only on explicit request. `/progress` separates reviewed-bank coverage from
+  personal performance.
 - `/learn/evaluation-basics` is the first exam-mapped curriculum lesson. It links to reviewed bank
   questions through validated `relatedQuestionIds` and provides a direct route to `/practice`.
 - The assessment shows English questions and Vietnamese feedback only after submission, confirms

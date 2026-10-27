@@ -41,9 +41,13 @@ describe("Domain 2 curriculum coverage", () => {
   });
 
   it("gives every Domain 2 objective at least two reviewed bank items", () => {
+    const domainObjectiveIds = new Set(domain.objectives.map((objective) => objective.id));
+    const domainTwoEntries = questionBankEntries.filter((entry) =>
+      entry.examMapping.objectiveIds.some((objectiveId) => domainObjectiveIds.has(objectiveId)),
+    );
     const counts = new Map<string, number>();
 
-    for (const entry of questionBankEntries) {
+    for (const entry of domainTwoEntries) {
       const objectiveId = entry.examMapping.objectiveIds[0]!;
       counts.set(objectiveId, (counts.get(objectiveId) ?? 0) + 1);
     }
@@ -52,9 +56,9 @@ describe("Domain 2 curriculum coverage", () => {
       expect(counts.get(objective.id) ?? 0).toBeGreaterThanOrEqual(2);
     }
 
-    expect(questionBankEntries).toHaveLength(14);
+    expect(domainTwoEntries).toHaveLength(14);
     expect(
-      questionBankEntries.filter((entry) => entry.question.id.startsWith("output-bias-")),
+      domainTwoEntries.filter((entry) => entry.question.id.startsWith("output-bias-")),
     ).toHaveLength(2);
 
     const coveredObjectiveIds = new Set(
@@ -64,10 +68,10 @@ describe("Domain 2 curriculum coverage", () => {
       blueprintDomain.objectives.map((objective) => objective.id),
     );
 
-    expect(coveredObjectiveIds.size).toBe(6);
-    expect(allObjectiveIds.filter((objectiveId) => !coveredObjectiveIds.has(objectiveId))).toHaveLength(
-      24,
-    );
+    expect(coveredObjectiveIds.size).toBe(15);
+    expect(
+      allObjectiveIds.filter((objectiveId) => !coveredObjectiveIds.has(objectiveId)),
+    ).toHaveLength(15);
   });
 
   it("keeps the unmapped Context Window sample out of the reviewed Domain 2 bank", () => {
@@ -136,7 +140,7 @@ describe("Domain 2 lesson route", () => {
     renderRoute("/learn/evaluation-basics");
 
     expect(
-      screen.getByRole("heading", {
+      await screen.findByRole("heading", {
         level: 1,
         name: "Đánh giá output: accuracy, evidence và human review",
       }),

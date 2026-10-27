@@ -13,7 +13,7 @@
 - [x] Official exam guide researched and verified (2026-10-26).
 - [x] Learning UI shell and design system implemented (Phase B).
 - [x] First lesson vertical slice implemented (sample lesson, not mapped to an official objective).
-- [ ] Full practice and mock-exam engines implemented (reusable assessment core in C2.1; 14-item reviewed Domain 2 bank in C2.2b).
+- [x] Practice mode, local persistence, review queue, progress report, and a blueprint-weighted mock-exam preview implemented (Phase C2.3, 2026-10-27); the full 60-item timed mock exam is still outstanding.
 - [x] Tests and production build pass for implemented features.
 - [ ] Vercel deployment verified.
 
@@ -413,3 +413,108 @@
 - No fresh browser or axe audit was run for the new lesson or the 14-item `/practice` state;
   component/page tests cover the new route, related-practice links, and knowledge-check interaction.
 - The production build remains a single chunk above Vite's warning threshold.
+
+## Phase C2.3 — assessment integrity, persistence, and study workflow (2026-10-27)
+
+### Scope
+
+- Expanded the reviewed bank beyond Domain 2 and made Practice Mode registry-driven.
+- Added versioned local persistence with content-fingerprint compatibility checks and explicit
+  recovery for corrupt, incompatible, and unavailable storage.
+- Added attempt history, a derived review queue, a Progress report that separates bank coverage from
+  personal performance, and a blueprint-weighted mock-exam preview.
+- Split routes with `React.lazy`/`Suspense` so the production build no longer ships one oversized
+  chunk.
+- Did not add a timer, a complete 60-item bank, an official scaled score, a backend, or a new state
+  library.
+
+### Content
+
+- Added **10 original reviewed items** across five previously uncovered domains:
+  - Domain 1: `prompting-specific-brief`, `prompting-decompose-steps`;
+  - Domain 3: `context-summarize-and-restart`, `context-high-signal-practices`;
+  - Domain 4: `workflow-requirements-extraction`, `workflow-integration-checkpoints`;
+  - Domain 6: `governance-human-oversight`, `governance-customer-assistant-safeguards`;
+  - Domain 7: `troubleshoot-diagnose-prompt`, `troubleshoot-feedback-loop`.
+- The reviewed bank is now **24 items** (13 single-choice, 11 multiple-response) across six of seven
+  domains. Domain 5 still has **zero** items.
+- Objective coverage moved from **6 / 30** to **15 / 30**; Domain 2 remains the only domain with a
+  mapped lesson. The Context Window sample remains unmapped.
+- Every new item has English learner-facing text, a Vietnamese overall explanation, and a Vietnamese
+  rationale for each option. No official question, dump, or third-party item was copied.
+- Added a `practiceSets` registry that declares each set's assessment and domains. Content-pack
+  validation proves every question is a reviewed bank item and that declared domains exactly match
+  the mapped domains.
+
+### Persistence and assessment integrity
+
+- Added `src/domain/study.ts` with a persisted attempt snapshot (`assessmentId`, immutable
+  `questionIds`, `policy`, `origin`, session) and explicit review resolutions. Scores, queue
+  membership, and progress are derived, never stored.
+- Added `src/persistence/storage.ts` with the versioned `cfl.study.v1` envelope
+  (`schemaVersion`, `contentFingerprint`, `savedAt`, `state`). Load distinguishes empty, ready,
+  corrupt, incompatible, and unavailable; writes classify quota, security, invalid-state, and
+  unavailable failures.
+- Corrupt or incompatible data is preserved in raw form, blocks new writes, and can be downloaded as
+  a backup before a two-step reset. Recoverable data is never deleted automatically.
+- Added `src/content/fingerprint.ts`. The fingerprint covers assessment definitions, question
+  types/choices/answer keys, bank mappings, and blueprint weights; prose and explanations are
+  excluded. A mismatch blocks resume and scoring so old answers cannot be scored against a new key.
+- `startStudyAttempt` rejects a second in-progress attempt for the same assessment; pages resume the
+  existing attempt instead. Submitted attempts are immutable, and later review navigation is not
+  persisted.
+
+### Practice, review, progress, and mock exam
+
+- `PracticePage` lists seven sets (six domain sets + one mixed set), supports `?set=<assessmentId>`
+  deep links, resumes active attempts, and renders an explicit unknown-set state.
+- `ReviewPage` derives the queue from submitted attempts: incorrect, unanswered, and flagged items
+  (including correct-but-flagged). It filters by reason, deep-links an item, shows per-option
+  rationales, supports previous/next navigation, and resolves an item only through an explicit
+  "Mark reviewed" action. Opening an item never auto-resolves it.
+- `ProgressPage` reports reviewed-bank coverage (items, format split, objectives, per-domain counts)
+  separately from personal performance (attempts, answered/correct/incorrect/unanswered, accuracy,
+  raw percentage, per-domain totals). A zero-activity learner sees real coverage and an explicit
+  empty personal state.
+- `MockExamPage` shows the verified 60-item format, selects **24** available reviewed items by
+  published domain weight, reports the **36-item shortfall**, and lists zero availability for
+  Domain 5. It has no timer and produces no scaled score or readiness claim.
+- `DashboardPage` shows real saved-attempt and review counts. `SettingsPage` shows the storage key,
+  schema version, fingerprint, status, and attempt counts, with backup download and two-step reset.
+- Added `StudyStorageNotice`, lazily mounted in the app shell, for corrupt/incompatible/unavailable
+  storage.
+
+### Route splitting
+
+- `src/routes/lazy-pages.ts` lazy-loads every page, with a shared `RouteFallback` and `Suspense` in
+  the router. The storage notice is also lazy-loaded so content and persistence code stay out of the
+  initial chunk.
+- The largest JS chunks are **339.94 kB** (gzip **107.78 kB**) and **227.81 kB** (gzip
+  **64.11 kB**); Vite's >500 kB chunk-size warning is gone and was not suppressed.
+
+### Verification
+
+- `npm run typecheck`: pass (`tsc -b`, strict).
+- `npm run lint`: pass (`eslint .`, 0 problems).
+- `npm test`: pass — **18 files / 123 tests**, including study-domain, storage, mock-exam,
+  progress-selector, persisted-journey, and study-page suites.
+- `npm run build`: pass. CSS **44.96 kB** (gzip **7.42 kB**); JS chunks as listed above; no
+  chunk-size warning.
+- New tests cover immutable submitted attempts, idempotent submission, exact-set and unanswered
+  scoring through persistence, envelope round-trips, corrupt/incompatible/quota/security handling,
+  derived review reasons and explicit resolution, weighted mock allocation and shortfall, coverage
+  vs performance separation, and the persisted practice journey.
+
+### Coverage and limitations
+
+- Coverage is **15 / 30** objectives with reviewed items and **6 / 30** with a mapped lesson.
+  Domain 5 has no content. Nine covered objectives still have no mapped lesson.
+- The mock exam is a **preview**: 24 of 60 slots, shortfall 36, no timer, no auto-submit, no scaled
+  score, and no readiness prediction.
+- No per-domain official score report, partial credit, or migration of incompatible data.
+- No backend, account, sync, or analytics; progress is local to the browser profile.
+- The axe audit remains a one-off browser run, not part of `npm test` or CI, and was not re-run for
+  the new study surfaces in this phase.
+- No Playwright end-to-end suite yet.
+- Repository visibility, the `DevAtlasLab` organization rename, and Vercel deployment remain pending
+  manual action.

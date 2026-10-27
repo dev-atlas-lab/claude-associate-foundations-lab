@@ -20,11 +20,11 @@ describe("sample lesson", () => {
   beforeEach(() => {
     installMatchMedia(true);
   });
-  it("renders the authored structure: objectives, terms, diagram, and check", () => {
+  it("renders the authored structure: objectives, terms, diagram, and check", async () => {
     renderLesson();
 
     expect(
-      screen.getByRole("heading", { level: 1, name: "Context window và ngân sách ngữ cảnh" }),
+      await screen.findByRole("heading", { level: 1, name: "Context window và ngân sách ngữ cảnh" }),
     ).toBeInTheDocument();
     expect(screen.getAllByText("Chưa gắn với objective chính thức").length).toBeGreaterThan(0);
     expect(screen.getByRole("heading", { level: 2, name: "Mục tiêu bài học" })).toBeInTheDocument();
@@ -43,6 +43,7 @@ describe("sample lesson", () => {
     const user = userEvent.setup();
     renderLesson();
 
+    await screen.findByRole("heading", { level: 1, name: "Context window và ngân sách ngữ cảnh" });
     const outputButton = screen.getByRole("button", { name: /Reserved for output/i });
     expect(outputButton).toHaveAttribute("aria-pressed", "false");
 
@@ -56,6 +57,7 @@ describe("sample lesson", () => {
     const user = userEvent.setup();
     renderLesson();
 
+    await screen.findByRole("heading", { level: 1, name: "Context window và ngân sách ngữ cảnh" });
     const submit = screen.getByRole("button", { name: "Check answer" });
     expect(submit).toBeDisabled();
 
@@ -81,6 +83,7 @@ describe("sample lesson", () => {
     const user = userEvent.setup();
     renderLesson();
 
+    await screen.findByRole("heading", { level: 1, name: "Context window và ngân sách ngữ cảnh" });
     await user.click(screen.getByRole("radio", { name: /Raise the temperature/i }));
     await user.click(screen.getByRole("button", { name: "Check answer" }));
 

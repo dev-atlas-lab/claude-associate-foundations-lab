@@ -1,16 +1,22 @@
 import { createBrowserRouter, type RouteObject } from "react-router-dom";
 import { AppShell } from "./components/layout/AppShell";
-import { DashboardPage } from "./pages/DashboardPage";
-import { GlossaryPage } from "./pages/GlossaryPage";
-import { LearnPage } from "./pages/LearnPage";
-import { LessonPage } from "./pages/LessonPage";
-import { MockExamPage } from "./pages/MockExamPage";
-import { NotFoundPage } from "./pages/NotFoundPage";
-import { PracticePage } from "./pages/PracticePage";
-import { ProgressPage } from "./pages/ProgressPage";
-import { ReviewPage } from "./pages/ReviewPage";
-import { SettingsPage } from "./pages/SettingsPage";
+import {
+  DashboardPage,
+  GlossaryPage,
+  LearnPage,
+  LessonPage,
+  MockExamPage,
+  NotFoundPage,
+  PracticePage,
+  ProgressPage,
+  ReviewPage,
+  SettingsPage,
+} from "./routes/lazy-pages";
 
+/**
+ * AppShell stays in the initial chunk; each page loads on first navigation so
+ * the dashboard is not blocked by the assessment runner or content-heavy views.
+ */
 export const routes: RouteObject[] = [
   {
     path: "/",

@@ -1,6 +1,7 @@
 import {
   contentPackSchema,
   type AssessmentDefinition,
+  type Domain,
   type Lesson,
   type Question,
   type Source,
@@ -11,11 +12,18 @@ import {
   associateFoundationsCertification,
   contextWindowLesson,
   contextWindowSampleAssessment,
+  domainFourWorkflowAssessment,
+  domainOnePromptingAssessment,
+  domainSevenTroubleshootingAssessment,
+  domainSixGovernanceAssessment,
+  domainThreeContextAssessment,
   domainTwoOutputValidationAssessment,
-  domainTwoQuestionBank,
   evaluationBasicsLesson,
   glossaryEntries,
+  mixedFoundationsAssessment,
   plannedLessons as plannedLessonData,
+  practiceSets as practiceSetData,
+  reviewedQuestionBank,
 } from "./certifications/claude-associate-foundations";
 import { sources } from "./sources";
 
@@ -29,9 +37,19 @@ export const contentPack = contentPackSchema.parse({
   blueprints: [associateFoundationsBlueprint],
   sources,
   lessons: [contextWindowLesson, evaluationBasicsLesson],
-  questionBank: domainTwoQuestionBank,
+  questionBank: reviewedQuestionBank,
   plannedLessons: plannedLessonData,
-  assessments: [contextWindowSampleAssessment, domainTwoOutputValidationAssessment],
+  assessments: [
+    contextWindowSampleAssessment,
+    domainOnePromptingAssessment,
+    domainTwoOutputValidationAssessment,
+    domainThreeContextAssessment,
+    domainFourWorkflowAssessment,
+    domainSixGovernanceAssessment,
+    domainSevenTroubleshootingAssessment,
+    mixedFoundationsAssessment,
+  ],
+  practiceSets: practiceSetData,
   glossary: glossaryEntries,
 });
 
@@ -69,6 +87,65 @@ const questionBankEntriesById = new Map(
 const assessmentsById = new Map(
   contentPack.assessments.map((assessment) => [assessment.id, assessment]),
 );
+
+export interface PracticeSetSummary {
+  assessment: AssessmentDefinition;
+  domains: Domain[];
+  objectiveIds: string[];
+  questionCount: number;
+  singleChoiceCount: number;
+  multipleResponseCount: number;
+}
+
+/**
+ * Registry-driven practice sets. The content pack has already proved that every
+ * question is a reviewed bank item and that the declared domains match the
+ * question mappings.
+ */
+export const practiceSets: PracticeSetSummary[] = contentPack.practiceSets.map((practiceSet) => {
+  const assessment = assessmentsById.get(practiceSet.assessmentId);
+
+  if (!assessment) {
+    throw new Error(`practice set "${practiceSet.assessmentId}" has no assessment definition`);
+  }
+
+  const domains = practiceSet.domainIds.flatMap((domainId) => {
+    const domain = getDomain(domainId);
+    return domain ? [domain] : [];
+  });
+  const entries = assessment.questionIds.flatMap((questionId) => {
+    const entry = questionBankEntriesById.get(questionId);
+    return entry ? [entry] : [];
+  });
+  const objectiveIds = [...new Set(entries.flatMap((entry) => entry.examMapping.objectiveIds))];
+  const questions = assessment.questionIds.flatMap((questionId) => {
+    const question = questionsById.get(questionId);
+    return question ? [question] : [];
+  });
+
+  return {
+    assessment,
+    domains,
+    objectiveIds,
+    questionCount: questions.length,
+    singleChoiceCount: questions.filter((question) => question.type === "single-choice").length,
+    multipleResponseCount: questions.filter(
+      (question) => question.type === "multiple-response",
+    ).length,
+  };
+});
+
+export function getPracticeSet(
+  assessmentId: string | undefined,
+): PracticeSetSummary | undefined {
+  if (!assessmentId) {
+    return undefined;
+  }
+
+  return practiceSets.find(
+    (practiceSet) => practiceSet.assessment.id === assessmentId,
+  );
+}
 
 export function getLesson(id: string | undefined): Lesson | undefined {
   if (!id) {
@@ -173,4 +250,8 @@ export function getObjective(objectiveId: string) {
   }
 
   return undefined;
+}
+
+export function getDomainForObjective(objectiveId: string): Domain | undefined {
+  return getObjective(objectiveId)?.domain;
 }

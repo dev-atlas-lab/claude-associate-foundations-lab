@@ -1,10 +1,11 @@
 # Assessment Engine
 
-**Status:** assessment core implemented (Phase C2.1); reviewed Domain 2 bank and lesson completed
-(Phase C2.2b, 2026-10-26)  
-**Scope:** deterministic single-choice and multiple-response assessment core, plus 14 reviewed
-Domain 2 practice items, one Domain 2 lesson, and one unmapped Context Window sample. This is **not**
-a complete practice bank, a 60-item mock exam, or an official score predictor.
+**Status:** assessment core, local persistence, registry-driven practice sets, review queue, progress
+report, and a mock-exam preview implemented (Phase C2.3, 2026-10-27)
+**Scope:** deterministic single-choice and multiple-response scoring, 24 reviewed items across six of
+seven domains, versioned localStorage attempts, derived review queue and progress, and a 24-of-60
+blueprint-weighted mock-exam preview. This is **not** a complete 60-item bank, a timed simulation, or
+an official score predictor.
 
 ## 1. Where the code lives
 
@@ -12,14 +13,25 @@ a complete practice bank, a 60-item mock exam, or an official score predictor.
 |---|---|
 | Schemas, policies, sessions, scoring, state transitions | `src/domain/assessment.ts` |
 | Question-bank schema and review metadata | `src/domain/question-bank.ts` |
+| Persisted attempt, origin, resolution, and derived review queue | `src/domain/study.ts` |
+| Deterministic blueprint-weighted mock selection | `src/domain/mock-exam.ts` |
 | Cross-reference validation at content-pack load | `src/domain/content-pack.ts` |
 | CCAO-F assessment definitions | `src/content/certifications/claude-associate-foundations/assessments.ts` |
-| Reviewed Domain 2 question bank | `src/content/certifications/claude-associate-foundations/question-bank.ts` |
+| Reviewed question bank | `src/content/certifications/claude-associate-foundations/question-bank.ts` |
+| Practice-set registry entries | `src/content/certifications/claude-associate-foundations/practice-sets.ts` |
 | Question resolution and registry lookups | `src/content/index.ts` |
-| Practice page integration | `src/pages/PracticePage.tsx` |
+| Content compatibility fingerprint | `src/content/fingerprint.ts` |
+| Mock-exam preview definition and allocation | `src/content/mock-exam.ts` |
+| Versioned localStorage envelope and failure handling | `src/persistence/storage.ts` |
+| External study store and write-blocking rules | `src/persistence/study-store.ts` |
+| Bank coverage and personal-performance selectors | `src/features/progress/selectors.ts` |
+| Persisted runner wrapper | `src/features/study/components/PersistedAssessment.tsx` |
+| Storage recovery notice | `src/features/study/components/StudyStorageNotice.tsx` |
+| Practice, review, progress, and mock-exam pages | `src/pages/*.tsx` |
 | Reusable runner UI | `src/features/assessment/components/AssessmentRunner.tsx` |
 | Immediate lesson knowledge-check UI | `src/features/curriculum/components/KnowledgeCheck.tsx` |
 | Runner styles | `src/styles/assessment.css` |
+| Study/review/progress styles | `src/styles/study.css` |
 
 The assessment core does not import React, a router, a timer, localStorage, or any CCAO-F constant.
 Certification-specific data lives under `src/content/`.
@@ -219,26 +231,96 @@ engine behaviour.
 - a Vietnamese result summary, raw-percentage disclaimer, per-question outcome, and Vietnamese
   explanations for every option.
 
-The Practice page now runs the reviewed `domain-2-output-validation-set` definition from the content
-registry: 14 original items across all six Domain 2 objectives, both question formats, and Vietnamese
-explanations after submission. The page is still a bank preview, not full Practice Mode: there is no
-set selection, filtering, persistence, or attempt history. The Context Window sample assessment
-remains in the pack and its lesson keeps the immediate `KnowledgeCheck`; that sample is still
-explicitly unmapped to an official CCAO-F objective. The Domain 2 lesson also keeps its own
-`KnowledgeCheck` and links to reviewed bank items through `relatedQuestionIds`; both surfaces use the
-same exact-set scoring function (`isAnswerCorrect`).
+The Practice page is registry-driven. `practiceSets` validates each entry against the reviewed bank:
+every question must resolve to a bank entry, and the declared domains must exactly match the
+domains those questions are mapped to. Seven sets exist: one per domain with items plus a mixed set.
+`/practice?set=<assessmentId>` is a stable deep link, and an unknown set renders a deliberate
+not-found state rather than inventing content.
 
-## 8. Deliberate non-goals for C2.1 / C2.2b
+`PersistedAssessment` wraps the runner. It creates the first session snapshot through
+`startStudyAttempt`, resumes an existing in-progress attempt instead of starting a duplicate, and
+saves in-progress changes through `saveStudySession`. A submitted attempt is immutable; later review
+navigation does not rewrite answers or the submission timestamp.
+
+The Context Window sample assessment remains in the pack and its lesson keeps the immediate
+`KnowledgeCheck`; that sample is still explicitly unmapped to an official CCAO-F objective. The
+Domain 2 lesson also keeps its own `KnowledgeCheck` and links to reviewed bank items through
+`relatedQuestionIds`; both surfaces use the same exact-set scoring function (`isAnswerCorrect`).
+
+## 7a. Local persistence and recovery
+
+The storage key is `cfl.study.v1`, containing a versioned envelope:
+
+```ts
+{
+  schemaVersion: 1,
+  contentFingerprint: "study-v1-…",
+  savedAt: "ISO-8601",
+  state: { attempts: StudyAttempt[], reviewResolutions: ReviewResolution[] }
+}
+```
+
+Only attempts and explicit review resolutions are stored. Scores, review-queue membership, and
+progress metrics are derived, so they cannot drift from the answers.
+
+`loadStudyStateFromStorage` distinguishes:
+
+| State | Behaviour |
+|---|---|
+| `empty` | Start with an empty state. |
+| `ready` | Validate the envelope and use the saved state. |
+| `corrupt` | Preserve the raw payload, block new writes, and offer backup + reset. |
+| `incompatible` | Version or content fingerprint mismatch; preserve raw data, block writes. |
+| `unavailable` | No storage, blocked reads, or a `SecurityError`; continue in memory with a warning. |
+
+`saveStudyStateToStorage` classifies `QuotaExceededError`, `SecurityError`, invalid state, and
+unavailable storage. A failed write keeps the latest state in memory and surfaces the failure; it does
+not silently claim success. The app never deletes recoverable data automatically.
+
+The content fingerprint covers assessment definitions, question types/choices/answer keys, bank
+mappings, and blueprint weights. Lesson prose and explanations are excluded because they do not affect
+scoring. A fingerprint change blocks resume and scoring until the learner downloads the raw backup and
+resets, preventing old answers from being scored against a different key.
+
+## 7b. Review queue
+
+`deriveReviewItems` rebuilds the queue from submitted attempts. An item appears when the outcome is
+`incorrect` or `unanswered`, or when the learner flagged the question, including a correct-but-flagged
+question. Each item keeps its attempt id, assessment id, origin (`practice` set or `mock-exam`
+blueprint), submission time, question, score, and reasons.
+
+Opening an item never resolves it. `resolveReviewItem` is an explicit action, idempotent per
+`attemptId:questionId`, and only allowed for submitted attempts and questions inside that attempt. The
+queue is sorted by submission time and question id, and the Review page exposes reason filters and
+previous/next navigation.
+
+## 7c. Progress and mock exam
+
+`deriveProgressSummary` keeps two concerns separate:
+
+- **Bank coverage** from the reviewed registry: total items, format split, objectives covered,
+  domains with items, and per-domain item/objective counts.
+- **Personal performance** from submitted attempts: attempts, answered/correct/incorrect/unanswered,
+  accuracy on answered questions, raw percentage, last submission, and per-domain totals.
+
+A zero-activity learner sees real bank coverage and an explicit empty personal state, not a fake zero
+score. The report never claims readiness or an official scaled score.
+
+The mock-exam preview uses the verified 60-item format but selects only the 24 available reviewed
+items. `selectMockExamQuestions` allocates slots by published domain weight, caps each domain at its
+available pool, deduplicates shared questions, and interleaves the result. The shortfall (36) is
+reported; no filler or duplicate is added. There is no timer and no scaled-score conversion.
+
+## 8. Deliberate non-goals for C2
 
 - No timer, auto-submit, or expiry.
-- No localStorage persistence or schema migrations.
-- No 60-question mock exam and no complete bank for all 30 objectives. The current bank is 14
-  reviewed Domain 2 items only.
-- No practice-mode set selection, filters, attempt history, or review queue.
-- No per-domain score report.
-- No official scaled-score conversion or pass prediction.
+- No 60-question mock exam and no complete bank for all 30 objectives. The current bank is 24
+  reviewed items across six domains.
+- No per-domain official score report or scaled-score conversion.
 - No partial credit.
 - No official exam questions or third-party exam dumps. Every bank item is original.
+- No automatic deletion or migration of unreadable saved data.
+- No server, account, analytics, or sync.
 - No changes to the content model's language policy: questions and instructions are English;
   explanations and result copy are Vietnamese.
 
@@ -253,22 +335,43 @@ question types, and raw-percentage rounding.
 flag, submit confirmation/cancel, exact-set scoring, result metrics, explanations, review navigation,
 unanswered handling, disabled inputs, and starting a new attempt.
 
-`src/test/question-bank.test.ts` covers the 14-entry bank, at least two items per Domain 2 objective,
-both question formats, English-only learner-facing text, Vietnamese explanations for every option,
-source and verification references, unmapped-entry rejection, question-id uniqueness across lessons
-and bank, lesson-to-bank reference validation, and blueprint/certification/objective source
+`src/test/study-domain.test.ts` covers attempt snapshots, in-progress updates, submitted-attempt
+immutability and idempotency, exact-set and unanswered scoring through persisted attempts, derived
+review reasons (including correct-but-flagged), explicit resolution, and invalid resolutions.
+
+`src/test/storage.test.ts` covers envelope round-trips, empty/unavailable storage, corrupt JSON and
+state, schema-version and fingerprint incompatibility, quota/security failures, read failures, and
+clearing the key.
+
+`src/test/study-journey.test.tsx` covers the persisted practice journey: start, submit, write the
+versioned envelope, restore the submitted result, start a new attempt, derive the review queue, and
+resolve an item only on request.
+
+`src/test/mock-exam.test.ts` covers weighted allocation, availability caps, shortfall, deduplication,
+determinism, invalid counts, the 24-of-60 preview, and the zero-availability domain.
+
+`src/test/progress-selectors.test.ts` covers bank coverage independent of activity, personal
+performance from a submitted attempt, domain attribution, and review counts.
+
+`src/test/study-pages.test.tsx` covers the mock-exam preview, progress separation, and Settings local
+data controls.
+
+`src/test/question-bank.test.ts` covers the 24-entry bank, verified objective mapping, six covered
+domains, both question formats, English-only learner-facing text, Vietnamese explanations for every
+option, source and verification references, unmapped-entry rejection, question-id uniqueness across
+lessons and bank, lesson-to-bank reference validation, and blueprint/certification/objective source
 validation.
 
 `src/test/domain-2-content.test.tsx` covers the published Domain 2 lesson, six-objective mapping,
 reviewed-question links, source/verification references, English/Vietnamese language checks, the
 unmapped Context Window boundary, lesson route rendering, and the lesson knowledge-check journey.
 
-`src/test/practice-page.test.tsx` verifies that `/practice` runs the reviewed 14-item Domain 2 set
-rather than the unmapped sample and keeps both lesson links working.
+`src/test/practice-page.test.tsx` covers the practice-set index, the Domain 2 deep link, and the
+unknown-set state.
 
 ## 10. Next step
 
-Build Practice Mode selection and persistence on top of the reviewed bank, or expand the bank beyond
-Domain 2 before starting the Mock Exam foundation. The assessment core and bank schema are ready; the
-next bottleneck is reviewed content for the remaining 24 objectives and saved attempt state. Timer
-behaviour should remain a separate, versioned layer rather than being embedded in scoring.
+Expand reviewed content for the remaining 15 objectives, especially Domain 5, before presenting a
+full mock exam. A timed simulation should be a separate, versioned layer with explicit expiry and
+should not be embedded in scoring. The current store already separates attempts from derived results,
+so a timer can add a session status without rewriting saved answers.

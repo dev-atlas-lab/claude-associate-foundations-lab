@@ -705,3 +705,504 @@ export const domainTwoQuestionBank: QuestionBankEntry[] = [
     "anthropic-reduce-hallucinations-doc",
   ]),
 ];
+
+/* ── Domain 1: Prompting and Task Execution ────────────────────────────── */
+
+const specificPromptBrief: Question = questionSchema.parse({
+  id: "prompting-specific-brief",
+  type: "single-choice",
+  stem: "A marketing manager asks Claude to \"write a launch email.\" The first draft is generic and ignores the product's pricing and audience. Which revision is most likely to produce a useful draft?",
+  choices: [
+    {
+      id: "add-context-and-format",
+      text: "State the goal, audience, key product facts, pricing constraints, desired tone, and required call to action; include a short example if the format matters.",
+      explanation:
+        "Đúng: prompt rõ ràng nêu goal, audience, facts, constraints và format. Ví dụ ngắn giúp Claude bám đúng cấu trúc và giọng điệu.",
+    },
+    {
+      id: "ask-harder",
+      text: "Add the instruction \"try harder and be more creative.\"",
+      explanation:
+        "Sai: yêu cầu chung chung không bổ sung thông tin còn thiếu, nên kết quả vẫn có thể bỏ sót pricing và audience.",
+    },
+    {
+      id: "raise-temperature",
+      text: "Raise the temperature so the draft varies more.",
+      explanation:
+        "Sai: temperature chỉ thay đổi độ ngẫu nhiên, không cung cấp facts hay ràng buộc cần thiết.",
+    },
+    {
+      id: "more-adjectives",
+      text: "Add more adjectives and emojis to make the email energetic.",
+      explanation:
+        "Sai: trang trí bề mặt không sửa được thiếu context, pricing hoặc mục tiêu.",
+    },
+  ],
+  correctChoiceIds: ["add-context-and-format"],
+  correctExplanation:
+    "Một prompt tốt cho business task cần nêu rõ mục tiêu, người đọc, dữ kiện quan trọng, ràng buộc, format và tiêu chí thành công. Khi format quan trọng, ví dụ ngắn là cách ổn định để truyền đạt cấu trúc. Các lựa chọn còn lại chỉ thay đổi giọng điệu hoặc tham số mà không bổ sung thông tin.",
+  sourceIds: ["anthropic-prompting-best-practices"],
+});
+
+const decomposeComplexRequest: Question = questionSchema.parse({
+  id: "prompting-decompose-steps",
+  type: "multiple-response",
+  stem: "Which three techniques best decompose a complex request into manageable steps?",
+  choices: [
+    {
+      id: "outline-first",
+      text: "Ask for an outline or plan first, review it, then draft the sections.",
+      explanation:
+        "Đúng: chia thành plan và draft giúp kiểm tra hướng đi trước khi đầu tư vào toàn bộ nội dung.",
+    },
+    {
+      id: "intermediate-artifacts",
+      text: "Define intermediate artifacts and acceptance criteria for each step.",
+      explanation:
+        "Đúng: đầu ra trung gian và tiêu chí rõ ràng giúp phát hiện lỗi sớm và giữ các bước nhất quán.",
+    },
+    {
+      id: "separate-and-reconcile",
+      text: "Run independent sub-tasks separately, then reconcile them with a final consistency check.",
+      explanation:
+        "Đúng: tách các phần độc lập rồi đối chiếu lại giảm tải cho một lần sinh và bắt được mâu thuẫn.",
+    },
+    {
+      id: "one-paragraph",
+      text: "Put every instruction into one long paragraph so nothing is lost.",
+      explanation:
+        "Sai: dồn mọi thứ vào một khối dài làm giảm độ rõ ràng và khó kiểm tra từng bước.",
+    },
+    {
+      id: "final-first",
+      text: "Request the final answer first and skip planning.",
+      explanation:
+        "Sai: bỏ qua bước lập kế hoạch dễ dẫn đến cấu trúc sai và phải làm lại toàn bộ.",
+    },
+    {
+      id: "repeat-average",
+      text: "Repeat the same request three times and average the answers.",
+      explanation:
+        "Sai: lặp lại không tạo ra decomposition; nó chỉ tạo thêm biến thể có thể cùng sai.",
+    },
+  ],
+  correctChoiceIds: ["outline-first", "intermediate-artifacts", "separate-and-reconcile"],
+  correctExplanation:
+    "Decomposition hiệu quả là chia công việc thành các bước có đầu ra và tiêu chí rõ ràng, xử lý các phần độc lập riêng rồi đối chiếu lại. Cách này giúp kiểm soát chất lượng ở từng chặng thay vì hy vọng một câu trả lời dài làm đúng mọi thứ.",
+  sourceIds: ["anthropic-prompting-best-practices", "anthropic-evaluation-docs"],
+});
+
+/* ── Domain 3: Product and Model Selection ─────────────────────────────── */
+
+const summarizeAndRestartContext: Question = questionSchema.parse({
+  id: "context-summarize-and-restart",
+  type: "single-choice",
+  stem: "A long support conversation is approaching the context limit. The team needs to keep the same case facts and decisions in later turns. Which approach best manages the limit?",
+  choices: [
+    {
+      id: "summary-restart",
+      text: "Summarize durable facts, constraints, and decisions, start a fresh context with that summary, and persist it for later turns.",
+      explanation:
+        "Đúng: tóm tắt thông tin bền vững rồi khởi động context mới giữ được facts và decisions mà không mang theo toàn bộ lịch sử.",
+    },
+    {
+      id: "remove-system",
+      text: "Keep every raw message and delete the system instructions to make room.",
+      explanation:
+        "Sai: xóa system instructions có thể làm mất ràng buộc quan trọng, trong khi lịch sử thô vẫn chiếm chỗ.",
+    },
+    {
+      id: "longer-replies",
+      text: "Ask for longer replies so fewer turns are needed.",
+      explanation:
+        "Sai: câu trả lời dài hơn làm tăng token sử dụng và có thể đẩy context đến giới hạn nhanh hơn.",
+    },
+    {
+      id: "forget-without-summary",
+      text: "Tell Claude to forget irrelevant details without recording what must be retained.",
+      explanation:
+        "Sai: không có bản tóm tắt rõ ràng thì facts và decisions cần giữ có thể bị mất.",
+    },
+  ],
+  correctChoiceIds: ["summary-restart"],
+  correctExplanation:
+    "Khi context gần đầy, cách an toàn là chưng cất những gì cần giữ — facts, constraints, decisions — thành bản tóm tắt, bắt đầu context mới với bản tóm tắt đó và lưu lại để dùng tiếp. Anthropic mô tả compaction như một cách tóm tắt hội thoại dài để tiếp tục làm việc, và context engineering nhấn mạnh việc giữ tập token tín hiệu cao thay vì toàn bộ lịch sử.",
+  sourceIds: [
+    "anthropic-context-windows-doc",
+    "anthropic-compaction-doc",
+    "anthropic-context-engineering-blog",
+  ],
+});
+
+const highSignalContext: Question = questionSchema.parse({
+  id: "context-high-signal-practices",
+  type: "multiple-response",
+  stem: "Which three practices keep a long working context high-signal?",
+  choices: [
+    {
+      id: "retrieve-relevant",
+      text: "Retrieve only the sections needed for the current step.",
+      explanation:
+        "Đúng: lấy đúng phần liên quan giảm nhiễu và tiết kiệm ngân sách context.",
+    },
+    {
+      id: "summarize-older",
+      text: "Summarize older turns while keeping decisions and constraints.",
+      explanation:
+        "Đúng: tóm tắt các lượt cũ giữ thông tin quyết định mà không giữ toàn bộ chi tiết.",
+    },
+    {
+      id: "remove-stale",
+      text: "Remove stale tool output that no longer affects the task.",
+      explanation:
+        "Đúng: output cũ không còn tác dụng chỉ chiếm chỗ và có thể gây nhầm lẫn.",
+    },
+    {
+      id: "paste-everything",
+      text: "Paste the entire knowledge base into every turn.",
+      explanation:
+        "Sai: dán toàn bộ tài liệu làm tăng token và giảm khả năng tập trung vào thông tin cần thiết.",
+    },
+    {
+      id: "duplicate-system",
+      text: "Duplicate the system prompt after every message.",
+      explanation:
+        "Sai: lặp lại system prompt không thêm thông tin mới và làm tăng kích thước context.",
+    },
+    {
+      id: "keep-drafts",
+      text: "Keep every intermediate draft forever.",
+      explanation:
+        "Sai: giữ mọi bản nháp làm context phình ra với nội dung đã bị thay thế.",
+    },
+  ],
+  correctChoiceIds: ["retrieve-relevant", "summarize-older", "remove-stale"],
+  correctExplanation:
+    "Context tốt là tập thông tin nhỏ nhưng có tín hiệu cao: phần được truy xuất đúng nhu cầu, bản tóm tắt các lượt cũ giữ quyết định và ràng buộc, và loại bỏ output đã lỗi thời. Dán toàn bộ tài liệu, lặp system prompt hay giữ mọi bản nháp đều làm tăng nhiễu.",
+  sourceIds: [
+    "anthropic-context-windows-doc",
+    "anthropic-context-engineering-blog",
+  ],
+});
+
+/* ── Domain 4: Workflow Integration and Solution Design ───────────────── */
+
+const requirementsExtraction: Question = questionSchema.parse({
+  id: "workflow-requirements-extraction",
+  type: "single-choice",
+  stem: "You are using Claude to turn stakeholder notes into requirements for a new approval workflow. Which approach best supports requirements analysis?",
+  choices: [
+    {
+      id: "extract-and-validate",
+      text: "Extract actors, goals, constraints, and open questions, then validate the list with stakeholders before designing the workflow.",
+      explanation:
+        "Đúng: bóc tách yêu cầu thành các thành phần kiểm tra được rồi xác nhận với stakeholder giúp tránh xây dựng trên giả định sai.",
+    },
+    {
+      id: "design-immediately",
+      text: "Ask for the final system design immediately and skip requirements.",
+      explanation:
+        "Sai: bỏ qua requirements dễ tạo ra thiết kế đẹp nhưng không giải quyết đúng vấn đề.",
+    },
+    {
+      id: "invent-gaps",
+      text: "Ask Claude to invent missing requirements so the document looks complete.",
+      explanation:
+        "Sai: bịa yêu cầu không có trong nguồn là hallucination và có thể dẫn đến quyết định sai.",
+    },
+    {
+      id: "loudest-stakeholder",
+      text: "Summarize only the requests from the most senior stakeholder.",
+      explanation:
+        "Sai: chỉ nghe một phía bỏ qua actor và ràng buộc quan trọng từ các bên khác.",
+    },
+  ],
+  correctChoiceIds: ["extract-and-validate"],
+  correctExplanation:
+    "Phân tích yêu cầu tốt là trích xuất actor, mục tiêu, ràng buộc và câu hỏi mở từ nguồn, rồi xác nhận lại với stakeholder trước khi thiết kế. Điều này tách việc hiểu vấn đề khỏi việc đề xuất giải pháp và giảm nguy cơ bịa hoặc bỏ sót yêu cầu.",
+  sourceIds: ["anthropic-evaluation-docs", "anthropic-prompting-best-practices"],
+});
+
+const workflowCheckpoints: Question = questionSchema.parse({
+  id: "workflow-integration-checkpoints",
+  type: "multiple-response",
+  stem: "Which three practices are appropriate when integrating Claude into an existing business workflow?",
+  choices: [
+    {
+      id: "map-process",
+      text: "Map the current process and identify where Claude adds value.",
+      explanation:
+        "Đúng: hiểu quy trình hiện tại giúp chọn điểm tích hợp có giá trị thay vì tự động hóa mù quáng.",
+    },
+    {
+      id: "human-checkpoints",
+      text: "Add human checkpoints for high-impact or irreversible steps.",
+      explanation:
+        "Đúng: bước có hậu quả lớn hoặc khó đảo ngược cần con người xem xét và phê duyệt.",
+    },
+    {
+      id: "pilot-measure",
+      text: "Pilot with a small group and measure quality before scaling.",
+      explanation:
+        "Đúng: pilot nhỏ với tiêu chí đo lường giúp phát hiện lỗi trước khi mở rộng.",
+    },
+    {
+      id: "automate-all",
+      text: "Automate every step at once to maximize speed.",
+      explanation:
+        "Sai: tự động hóa toàn bộ ngay lập tức khuếch đại lỗi và khó xác định nguyên nhân.",
+    },
+    {
+      id: "remove-review",
+      text: "Remove review because Claude is consistent.",
+      explanation:
+        "Sai: tính nhất quán không thay thế kiểm tra ở bước quan trọng; model vẫn có thể sai.",
+    },
+    {
+      id: "skip-baseline",
+      text: "Skip baseline metrics to avoid slowing the rollout.",
+      explanation:
+        "Sai: không có baseline thì không thể biết tích hợp có cải thiện chất lượng hay không.",
+    },
+  ],
+  correctChoiceIds: ["map-process", "human-checkpoints", "pilot-measure"],
+  correctExplanation:
+    "Tích hợp có trách nhiệm bắt đầu từ bản đồ quy trình hiện tại, thêm human checkpoint ở bước rủi ro cao, và pilot có đo lường trước khi mở rộng. Tự động hóa toàn bộ, bỏ review hoặc bỏ baseline đều làm tăng rủi ro và khó đánh giá kết quả.",
+  sourceIds: ["anthropic-evaluation-docs", "anthropic-claude-constitution"],
+});
+
+/* ── Domain 6: Governance, Risk, and Responsible Use ──────────────────── */
+
+const humanOversightExpense: Question = questionSchema.parse({
+  id: "governance-human-oversight",
+  type: "single-choice",
+  stem: "A team wants Claude to approve expense exceptions automatically. The exceptions can create financial and compliance risk. What is the most responsible design?",
+  choices: [
+    {
+      id: "recommend-human-decides",
+      text: "Use Claude to prepare a recommendation and supporting evidence, keep a human decision-maker for approval, and log the decision.",
+      explanation:
+        "Đúng: Claude hỗ trợ phân tích nhưng con người vẫn chịu trách nhiệm ở quyết định có rủi ro tài chính và tuân thủ; log giúp truy vết.",
+    },
+    {
+      id: "auto-approve-all",
+      text: "Let Claude approve all exceptions to reduce delays.",
+      explanation:
+        "Sai: tự động phê duyệt mọi ngoại lệ bỏ qua human oversight ở bước có hậu quả lớn.",
+    },
+    {
+      id: "confidence-only",
+      text: "Approve automatically whenever Claude reports high confidence.",
+      explanation:
+        "Sai: confidence tự báo cáo không phải bằng chứng về tính đúng hay mức độ rủi ro.",
+    },
+    {
+      id: "remove-audit",
+      text: "Remove the audit log to protect employee privacy.",
+      explanation:
+        "Sai: xóa audit log làm mất khả năng truy vết và kiểm soát, không giải quyết privacy một cách đúng đắn.",
+    },
+  ],
+  correctChoiceIds: ["recommend-human-decides"],
+  correctExplanation:
+    "Với quyết định tài chính và tuân thủ, Claude nên đóng vai trò hỗ trợ: chuẩn bị khuyến nghị và bằng chứng, còn con người phê duyệt và chịu trách nhiệm. Claude's Constitution nhấn mạnh không được làm suy yếu human oversight; audit log giúp kiểm tra lại quyết định.",
+  sourceIds: ["anthropic-claude-constitution", "anthropic-reduce-hallucinations-doc"],
+});
+
+const customerAssistantSafeguards: Question = questionSchema.parse({
+  id: "governance-customer-assistant-safeguards",
+  type: "multiple-response",
+  stem: "Which three safeguards are appropriate for a customer-facing Claude assistant?",
+  choices: [
+    {
+      id: "prohibited-uses",
+      text: "Define prohibited uses and escalate sensitive requests to a human.",
+      explanation:
+        "Đúng: ranh giới sử dụng rõ ràng và escalation giúp xử lý yêu cầu nhạy cảm đúng cách.",
+    },
+    {
+      id: "disclose-ai",
+      text: "Tell users they are interacting with AI and state the assistant's limitations.",
+      explanation:
+        "Đúng: minh bạch về AI và giới hạn giúp người dùng hiểu và đánh giá thông tin đúng mức.",
+    },
+    {
+      id: "check-fairness",
+      text: "Check outputs for illegal discrimination and biased treatment.",
+      explanation:
+        "Đúng: kiểm tra phân biệt đối xử và đối xử thiên lệch là một phần của responsible use.",
+    },
+    {
+      id: "binding-legal",
+      text: "Let the assistant give binding legal advice without review.",
+      explanation:
+        "Sai: lời khuyên pháp lý ràng buộc cần chuyên gia có thẩm quyền, không nên giao cho assistant không được review.",
+    },
+    {
+      id: "hide-disclosure",
+      text: "Hide the AI disclosure to improve engagement.",
+      explanation:
+        "Sai: che giấu việc dùng AI làm giảm minh bạch và có thể gây hiểu nhầm.",
+    },
+    {
+      id: "override-oversight",
+      text: "Allow the assistant to override human oversight.",
+      explanation:
+        "Sai: cho assistant vượt qua human oversight đi ngược nguyên tắc giám sát của con người.",
+    },
+  ],
+  correctChoiceIds: ["prohibited-uses", "disclose-ai", "check-fairness"],
+  correctExplanation:
+    "Ba biện pháp phù hợp là định nghĩa ranh giới sử dụng và escalation, minh bạch về AI cùng giới hạn, và kiểm tra phân biệt đối xử/thiên lệch. Lời khuyên pháp lý ràng buộc không nên giao cho assistant, còn che giấu AI hoặc cho assistant vượt human oversight đều làm giảm trách nhiệm giải trình.",
+  sourceIds: ["anthropic-claude-constitution"],
+});
+
+/* ── Domain 7: Troubleshooting and Optimization ───────────────────────── */
+
+const diagnoseVagueReport: Question = questionSchema.parse({
+  id: "troubleshoot-diagnose-prompt",
+  type: "single-choice",
+  stem: "Claude's output for a recurring report is vague and misses required fields. What is the best first diagnostic step?",
+  choices: [
+    {
+      id: "inspect-prompt",
+      text: "Inspect the prompt and supplied context for a missing goal, output schema, examples, and constraints before changing models.",
+      explanation:
+        "Đúng: xác định thiếu sót trong prompt/context trước giúp sửa đúng nguyên nhân thay vì đổi model mù quáng.",
+    },
+    {
+      id: "largest-model",
+      text: "Switch to the largest available model immediately.",
+      explanation:
+        "Sai: model lớn hơn không tự bổ sung schema, ví dụ hay ràng buộc còn thiếu.",
+    },
+    {
+      id: "raise-temperature",
+      text: "Raise the temperature to get a different answer.",
+      explanation:
+        "Sai: tăng temperature làm output khó đoán hơn, không đảm bảo có đủ field.",
+    },
+    {
+      id: "ask-longer",
+      text: "Ask for a longer answer and hope the missing fields appear.",
+      explanation:
+        "Sai: độ dài không thay thế yêu cầu rõ ràng về cấu trúc và nội dung bắt buộc.",
+    },
+  ],
+  correctChoiceIds: ["inspect-prompt"],
+  correctExplanation:
+    "Khi output thiếu field hoặc mơ hồ, bước đầu là kiểm tra prompt và context: mục tiêu, schema đầu ra, ví dụ và ràng buộc đã được nêu rõ chưa. Đổi model hay tăng temperature không sửa được yêu cầu còn thiếu; đánh giá có tiêu chí giúp xác nhận sau khi sửa.",
+  sourceIds: ["anthropic-prompting-best-practices", "anthropic-evaluation-docs"],
+});
+
+const feedbackImprovementLoop: Question = questionSchema.parse({
+  id: "troubleshoot-feedback-loop",
+  type: "multiple-response",
+  stem: "Which three practices turn feedback into a reliable prompt-improvement loop?",
+  choices: [
+    {
+      id: "success-criteria",
+      text: "Define measurable success criteria and representative test cases.",
+      explanation:
+        "Đúng: tiêu chí đo được và test case đại diện giúp biết thay đổi có thực sự cải thiện.",
+    },
+    {
+      id: "compare-baseline",
+      text: "Compare the revised prompt against the baseline on the same cases.",
+      explanation:
+        "Đúng: so sánh trên cùng bộ case giúp tách tác động của thay đổi khỏi biến thiên ngẫu nhiên.",
+    },
+    {
+      id: "inspect-causes",
+      text: "Inspect failures to decide whether the cause is instructions, context, or task decomposition.",
+      explanation:
+        "Đúng: phân loại nguyên nhân giúp sửa đúng chỗ thay vì thay đổi lung tung.",
+    },
+    {
+      id: "change-many",
+      text: "Change several variables at once so the fix is faster.",
+      explanation:
+        "Sai: đổi nhiều biến cùng lúc khiến không biết thay đổi nào tạo ra kết quả.",
+    },
+    {
+      id: "first-fluent",
+      text: "Accept the first fluent answer as the new baseline.",
+      explanation:
+        "Sai: câu trả lời trôi chảy không chứng minh đáp ứng tiêu chí.",
+    },
+    {
+      id: "remove-failures",
+      text: "Remove failing test cases to improve the score.",
+      explanation:
+        "Sai: xóa case khó làm sai lệch đánh giá và che giấu lỗi thật.",
+    },
+  ],
+  correctChoiceIds: ["success-criteria", "compare-baseline", "inspect-causes"],
+  correctExplanation:
+    "Vòng cải thiện đáng tin cậy cần tiêu chí thành công và test case đại diện, so sánh với baseline trên cùng bộ case, và phân loại nguyên nhân thất bại. Đổi nhiều biến, chấp nhận câu trả lời trôi chảy đầu tiên hoặc xóa case khó đều làm mất khả năng đánh giá trung thực.",
+  sourceIds: ["anthropic-evaluation-docs", "anthropic-prompting-best-practices"],
+});
+
+export const promptingQuestionBank: QuestionBankEntry[] = [
+  reviewedEntry(specificPromptBrief, "prompting-create-effective-prompts", [
+    "anthropic-prompting-best-practices",
+  ]),
+  reviewedEntry(decomposeComplexRequest, "prompting-task-decomposition", [
+    "anthropic-prompting-best-practices",
+    "anthropic-evaluation-docs",
+  ]),
+];
+
+export const contextQuestionBank: QuestionBankEntry[] = [
+  reviewedEntry(summarizeAndRestartContext, "context-memory-management", [
+    "anthropic-context-windows-doc",
+    "anthropic-compaction-doc",
+    "anthropic-context-engineering-blog",
+  ]),
+  reviewedEntry(highSignalContext, "context-memory-management", [
+    "anthropic-context-windows-doc",
+    "anthropic-context-engineering-blog",
+  ]),
+];
+
+export const workflowQuestionBank: QuestionBankEntry[] = [
+  reviewedEntry(requirementsExtraction, "workflow-requirements-analysis", [
+    "anthropic-evaluation-docs",
+    "anthropic-prompting-best-practices",
+  ]),
+  reviewedEntry(workflowCheckpoints, "workflow-integrate", [
+    "anthropic-evaluation-docs",
+    "anthropic-claude-constitution",
+  ]),
+];
+
+export const governanceQuestionBank: QuestionBankEntry[] = [
+  reviewedEntry(humanOversightExpense, "governance-ethics", [
+    "anthropic-claude-constitution",
+    "anthropic-reduce-hallucinations-doc",
+  ]),
+  reviewedEntry(customerAssistantSafeguards, "governance-use-case-fit", [
+    "anthropic-claude-constitution",
+  ]),
+];
+
+export const troubleshootingQuestionBank: QuestionBankEntry[] = [
+  reviewedEntry(diagnoseVagueReport, "troubleshoot-diagnose", [
+    "anthropic-prompting-best-practices",
+    "anthropic-evaluation-docs",
+  ]),
+  reviewedEntry(feedbackImprovementLoop, "troubleshoot-adjust", [
+    "anthropic-evaluation-docs",
+    "anthropic-prompting-best-practices",
+  ]),
+];
+
+/** Every reviewed, exam-mapped bank entry. */
+export const reviewedQuestionBank: QuestionBankEntry[] = [
+  ...domainTwoQuestionBank,
+  ...promptingQuestionBank,
+  ...contextQuestionBank,
+  ...workflowQuestionBank,
+  ...governanceQuestionBank,
+  ...troubleshootingQuestionBank,
+];

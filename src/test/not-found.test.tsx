@@ -28,20 +28,24 @@ describe("unknown routes", () => {
     renderApp("/this-route-does-not-exist");
 
     expect(
-      screen.getByRole("heading", { level: 1, name: "This page does not exist" }),
+      await screen.findByRole("heading", { level: 1, name: "This page does not exist" }),
     ).toBeInTheDocument();
     expect(screen.getByText(/this-route-does-not-exist/)).toBeInTheDocument();
     expect(screen.getByText("Page not found", { selector: ".breadcrumb-current" })).toBeInTheDocument();
 
     await user.click(screen.getByRole("link", { name: "Back to dashboard" }));
 
-    expect(screen.getByRole("heading", { level: 1, name: "Your study desk" })).toBeInTheDocument();
+    expect(
+      await screen.findByRole("heading", { level: 1, name: "Your study desk" }),
+    ).toBeInTheDocument();
   });
 
-  it("keeps an unknown lesson inside the lesson route with its own state", () => {
+  it("keeps an unknown lesson inside the lesson route with its own state", async () => {
     renderApp("/learn/not-a-real-lesson");
 
-    expect(screen.getByRole("heading", { level: 1, name: "Lesson not found" })).toBeInTheDocument();
+    expect(
+      await screen.findByRole("heading", { level: 1, name: "Lesson not found" }),
+    ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Back to modules" })).toBeInTheDocument();
   });
 });

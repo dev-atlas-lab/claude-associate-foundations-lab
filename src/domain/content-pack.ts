@@ -6,9 +6,21 @@ import {
 import { blueprintSchema, certificationSchema, providerSchema } from "./certification";
 import { glossaryEntrySchema, lessonSchema, plannedLessonSchema } from "./lesson";
 import { questionBankEntrySchema } from "./question-bank";
-import { sourceSchema } from "./common";
+import { identifierSchema, sourceSchema } from "./common";
 
 type Path = Array<string | number>;
+
+/**
+ * A practice set is a named entry point over an assessment definition. Its
+ * question ids must all resolve to reviewed bank entries, and the declared
+ * domains must exactly match the domains those questions are mapped to.
+ */
+export const practiceSetSchema = z.object({
+  assessmentId: identifierSchema,
+  domainIds: z.array(identifierSchema).min(1),
+});
+
+export type PracticeSet = z.infer<typeof practiceSetSchema>;
 
 function addDuplicateIssues(
   values: string[],
@@ -62,6 +74,7 @@ export const contentPackSchema = z
     questionBank: z.array(questionBankEntrySchema),
     plannedLessons: z.array(plannedLessonSchema),
     assessments: z.array(assessmentDefinitionSchema),
+    practiceSets: z.array(practiceSetSchema),
     glossary: z.array(glossaryEntrySchema),
   })
   .superRefine((pack, ctx) => {
@@ -408,6 +421,101 @@ export const contentPackSchema = z
           message: issue.message,
           path: ["assessments", index, "questionIds"],
         });
+      }
+    });
+
+    const assessmentById = new Map(
+      pack.assessments.map((assessment) => [assessment.id, assessment]),
+    );
+    const bankEntryByQuestionId = new Map(
+      pack.questionBank.map((entry) => [entry.question.id, entry]),
+    );
+    const domainIdByObjectiveId = new Map<string, string>();
+    const allDomainIds = new Set<string>();
+
+    for (const blueprint of pack.blueprints) {
+      for (const domain of blueprint.domains) {
+        allDomainIds.add(domain.id);
+
+        for (const objective of domain.objectives) {
+          domainIdByObjectiveId.set(objective.id, domain.id);
+        }
+      }
+    }
+
+    addDuplicateIssues(
+      pack.practiceSets.map((practiceSet) => practiceSet.assessmentId),
+      ["practiceSets"],
+      "practice set assessment id",
+      ctx,
+    );
+
+    pack.practiceSets.forEach((practiceSet, index) => {
+      const assessment = assessmentById.get(practiceSet.assessmentId);
+
+      if (!assessment) {
+        ctx.addIssue({
+          code: "custom",
+          message: `unknown assessment id "${practiceSet.assessmentId}"`,
+          path: ["practiceSets", index, "assessmentId"],
+        });
+        return;
+      }
+
+      addDuplicateIssues(
+        practiceSet.domainIds,
+        ["practiceSets", index, "domainIds"],
+        "practice set domain id",
+        ctx,
+      );
+
+      const coveredDomainIds = new Set<string>();
+
+      assessment.questionIds.forEach((questionId, questionIndex) => {
+        const entry = bankEntryByQuestionId.get(questionId);
+
+        if (!entry) {
+          ctx.addIssue({
+            code: "custom",
+            message: `practice set question "${questionId}" is not a reviewed bank item`,
+            path: ["practiceSets", index, "assessmentId", questionIndex],
+          });
+          return;
+        }
+
+        for (const objectiveId of entry.examMapping.objectiveIds) {
+          const domainId = domainIdByObjectiveId.get(objectiveId);
+
+          if (domainId) {
+            coveredDomainIds.add(domainId);
+          }
+        }
+      });
+
+      for (const domainId of practiceSet.domainIds) {
+        if (!allDomainIds.has(domainId)) {
+          ctx.addIssue({
+            code: "custom",
+            message: `unknown domain id "${domainId}"`,
+            path: ["practiceSets", index, "domainIds"],
+          });
+        } else if (!coveredDomainIds.has(domainId)) {
+          ctx.addIssue({
+            code: "custom",
+            message: `practice set declares domain "${domainId}" but none of its questions map to it`,
+            path: ["practiceSets", index, "domainIds"],
+          });
+        }
+      }
+
+      for (const domainId of coveredDomainIds) {
+        if (!practiceSet.domainIds.includes(domainId)) {
+          ctx.addIssue({
+            code: "custom",
+            message: `practice set question maps to undeclared domain "${domainId}"`,
+            path: ["practiceSets", index, "domainIds"],
+          });
+        }
       }
     });
 
