@@ -1,9 +1,19 @@
 import {
-  questionBankEntrySchema,
   questionSchema,
   type Question,
   type QuestionBankEntry,
 } from "../../../domain";
+import { reviewedEntry } from "./bank-helpers";
+import { domainFiveQuestionBank } from "./question-bank-domain5";
+import {
+  productSelectionExpansionQuestionBank,
+  promptingExpansionQuestionBank,
+} from "./question-bank-expansion-a";
+import {
+  governanceExpansionQuestionBank,
+  optimizationExpansionQuestionBank,
+  workflowExpansionQuestionBank,
+} from "./question-bank-expansion-b";
 
 /**
  * Reviewed Domain 2 bank: Output Evaluation and Validation.
@@ -18,34 +28,6 @@ import {
  * These are original practice items. They are not copied from the official
  * exam guide, an exam dump, or any third-party question bank.
  */
-
-const guideSourceId = "ccao-f-exam-guide-v1";
-
-function reviewedEntry(
-  question: Question,
-  objectiveId: string,
-  technicalSourceIds: readonly string[],
-): QuestionBankEntry {
-  const sourceIds = [...new Set([guideSourceId, ...technicalSourceIds])];
-
-  return questionBankEntrySchema.parse({
-    question,
-    certificationId: "claude-associate-foundations",
-    blueprintId: "ccao-f-v1",
-    examMapping: {
-      status: "verified",
-      objectiveIds: [objectiveId],
-      note: `Original practice item mapped to the verified CCAO-F v1.0 Domain 2 objective "${objectiveId}". It is not official exam content.`,
-    },
-    contentStatus: "published",
-    verification: {
-      status: "verified",
-      checkedAt: "2026-10-26",
-      note: "Reviewed against Exam Guide v1.0 for objective scope and against the cited Anthropic documentation for the technical claims. The item is original; no official question or third-party exam content was copied.",
-      sourceIds,
-    },
-  });
-}
 
 const accuracyReviewPlan: Question = questionSchema.parse({
   id: "output-accuracy-review-plan",
@@ -1201,8 +1183,14 @@ export const troubleshootingQuestionBank: QuestionBankEntry[] = [
 export const reviewedQuestionBank: QuestionBankEntry[] = [
   ...domainTwoQuestionBank,
   ...promptingQuestionBank,
+  ...promptingExpansionQuestionBank,
   ...contextQuestionBank,
+  ...productSelectionExpansionQuestionBank,
   ...workflowQuestionBank,
+  ...workflowExpansionQuestionBank,
+  ...domainFiveQuestionBank,
   ...governanceQuestionBank,
+  ...governanceExpansionQuestionBank,
   ...troubleshootingQuestionBank,
+  ...optimizationExpansionQuestionBank,
 ];

@@ -75,6 +75,16 @@ export function LessonPage() {
   const blueprint = getBlueprint(lesson.blueprintId);
   const certificationCode = certification?.code ?? "Certification";
   const blueprintVersion = blueprint?.version ?? "—";
+  const practiceDomainCodes = [
+    ...new Set(
+      lesson.examMapping.objectiveIds.flatMap((objectiveId) => {
+        const code = getObjective(objectiveId)?.domain.code;
+        return code ? [code] : [];
+      }),
+    ),
+  ];
+  const practiceDomainLabel =
+    practiceDomainCodes.length > 0 ? `Domain ${practiceDomainCodes.join(", ")}` : "reviewed";
   const isMapped = lesson.examMapping.status !== "unmapped";
   const mappingTitle =
     lesson.examMapping.status === "verified"
@@ -123,7 +133,12 @@ export function LessonPage() {
               {lesson.examMapping.note} {lesson.verification.note}
             </Callout>
 
-            <LessonContent lesson={lesson} sources={sources} relatedPractice={relatedPractice} />
+            <LessonContent
+              lesson={lesson}
+              sources={sources}
+              relatedPractice={relatedPractice}
+              practiceDomainLabel={practiceDomainLabel}
+            />
 
             <LessonPager
               previous={neighbours.previous}

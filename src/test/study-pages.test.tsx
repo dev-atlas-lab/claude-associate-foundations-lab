@@ -21,8 +21,8 @@ describe("mock exam preview page", () => {
     renderPage(<MockExamPage />);
 
     expect(screen.getByRole("heading", { level: 1, name: "Mock exam" })).toBeInTheDocument();
-    expect(screen.getByText("24/60 items")).toBeInTheDocument();
-    expect(screen.getByText(/shortfall of 36/i)).toBeInTheDocument();
+    expect(screen.getByText("54/60 items")).toBeInTheDocument();
+    expect(screen.getByText(/shortfall of 6/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Start assessment" })).toBeInTheDocument();
 
     const table = screen.getByRole("table");
@@ -32,8 +32,8 @@ describe("mock exam preview page", () => {
 
     expect(within(domainFiveRow).getAllByRole("cell").map((cell) => cell.textContent)).toEqual([
       "12%",
-      "0",
-      "0",
+      "8",
+      "8",
     ]);
   });
 });
@@ -43,8 +43,8 @@ describe("progress page", () => {
     renderPage(<ProgressPage />);
 
     expect(screen.getByRole("heading", { level: 1, name: "Learning progress" })).toBeInTheDocument();
-    expect(screen.getByText("24 reviewed items")).toBeInTheDocument();
-    expect(screen.getByText("15/30")).toBeInTheDocument();
+    expect(screen.getByText("54 reviewed items")).toBeInTheDocument();
+    expect(screen.getByText("30/30")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "No submitted attempts yet" })).toBeInTheDocument();
   });
 });

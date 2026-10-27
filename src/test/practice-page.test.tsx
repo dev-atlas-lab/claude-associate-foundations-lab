@@ -34,8 +34,9 @@ describe("practice page", () => {
     const cases = [
       [/Domain 1: Prompting and Task Execution/i, "1"],
       [/Domain 2: Output Evaluation and Validation/i, "2"],
-      [/Domain 3: Context and Memory Management/i, "3"],
+      [/Domain 3: Product and Model Selection/i, "3"],
       [/Domain 4: Workflow Integration and Solution Design/i, "4"],
+      [/Domain 5: Configuration and Knowledge Management/i, "5"],
       [/Domain 6: Governance, Risk, and Responsible Use/i, "6"],
       [/Domain 7: Troubleshooting and Optimization/i, "7"],
     ] as const;
@@ -73,6 +74,19 @@ describe("practice page", () => {
       "href",
       "/practice",
     );
+  });
+
+  it("opens the reviewed Domain 5 set from its deep link", () => {
+    renderPractice("/practice?set=domain-5-configuration-set");
+
+    expect(
+      screen.getAllByRole("heading", {
+        level: 2,
+        name: "Domain 5: Configuration and Knowledge Management",
+      }),
+    ).toHaveLength(2);
+    expect(screen.getByText("8 questions")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Start assessment" })).toBeInTheDocument();
   });
 
   it("handles an unknown set without inventing content", () => {

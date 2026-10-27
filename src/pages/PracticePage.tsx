@@ -197,10 +197,11 @@ export function PracticePage() {
       </section>
 
       <section className="section">
-        <Callout tone="caution" title="Coverage is partial, and that is stated">
-          The bank currently covers six of the seven official domains. Domain 5, Configuration and
-          Knowledge Management, has no reviewed items yet, so no practice set pretends to cover it.
-          The mixed set is practice across available domains, not a mock exam.
+        <Callout tone="note" title="Objective coverage is complete; depth still varies">
+          The reviewed bank now has items for all seven official domains and every official
+          objective. Depth differs by domain, and every item is original practice material rather
+          than official exam content. The mixed set spans all domains, but it is practice, not a
+          mock exam.
         </Callout>
       </section>
     </div>

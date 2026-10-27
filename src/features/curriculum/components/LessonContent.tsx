@@ -15,10 +15,12 @@ export function LessonContent({
   lesson,
   sources,
   relatedPractice,
+  practiceDomainLabel,
 }: {
   lesson: Lesson;
   sources: Source[];
   relatedPractice: RelatedPracticeItem[];
+  practiceDomainLabel: string;
 }) {
   const relatedObjectives = [
     ...new Set(
@@ -170,8 +172,8 @@ export function LessonContent({
             </h2>
           </div>
           <p className="lesson-prose">
-            Bộ Domain 2 practice có {relatedPractice.length} câu liên kết trực tiếp với bài
-            học này. Các câu hỏi dùng đúng format của kỳ thi: stem và lựa chọn bằng tiếng Anh,
+            Bộ {practiceDomainLabel} practice có {relatedPractice.length} câu liên kết trực tiếp với
+            bài học này. Các câu hỏi dùng đúng format của kỳ thi: stem và lựa chọn bằng tiếng Anh,
             giải thích bằng tiếng Việt sau khi nộp.
           </p>
           {relatedObjectives.length > 0 ? (
@@ -183,7 +185,7 @@ export function LessonContent({
           ) : null}
           <p className="lesson-prose">
             <Link className="inline-link" to="/practice">
-              Mở bộ Domain 2 practice
+              Mở bộ {practiceDomainLabel} practice
             </Link>
           </p>
         </section>

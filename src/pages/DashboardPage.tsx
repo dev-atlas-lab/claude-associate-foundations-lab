@@ -13,6 +13,7 @@ import {
   publishedLessons,
   questionBankEntries,
 } from "../content";
+import { mockExamSummary } from "../content/mock-exam";
 import { deriveReviewItems } from "../domain";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { useStudyState } from "../persistence/study-store";
@@ -214,7 +215,8 @@ export function DashboardPage() {
             <span className="row-body">
               <span className="row-title">Mock exam</span>
               <span className="row-meta">
-                Blueprint-weighted preview — 24 of 60 items, no timer, no scaled score
+                Blueprint-weighted preview — {mockExamSummary.selectedItemCount} of{" "}
+                {mockExamSummary.requestedItemCount} items, no timer, no scaled score
               </span>
             </span>
             <span className="row-tail">Preview</span>

@@ -72,7 +72,7 @@ describe("mock exam preview definition", () => {
     ));
     expect(mockExamSummary.shortfall).toBe(requested - mockExamSummary.selectedItemCount);
     expect(mockExamSummary.selectedItemCount).toBe(questionBankEntries.length);
-    expect(mockExamSummary.domainsWithItems).toBe(6);
+    expect(mockExamSummary.domainsWithItems).toBe(7);
 
     const reviewedIds = new Set(questionBankEntries.map((entry) => entry.question.id));
 
@@ -87,13 +87,21 @@ describe("mock exam preview definition", () => {
     );
   });
 
-  it("keeps a zero-availability domain visible in the allocation", () => {
-    const emptyDomain = mockExamSummary.allocations.find(
-      (allocation) => allocation.available === 0,
-    );
+  it("keeps every blueprint domain visible in the allocation", () => {
+    const blueprintDomainIds = primaryBlueprint.domains.map((domain) => domain.id).sort();
+    const allocatedDomainIds = mockExamSummary.allocations
+      .map((allocation) => allocation.domainId)
+      .sort();
 
-    expect(emptyDomain).toBeDefined();
-    expect(emptyDomain?.allocated).toBe(0);
-    expect(mockExamPools.some((pool) => pool.questionIds.length === 0)).toBe(true);
+    expect(allocatedDomainIds).toEqual(blueprintDomainIds);
+    expect(
+      mockExamSummary.allocations.every((allocation) => allocation.available > 0),
+    ).toBe(true);
+    expect(
+      mockExamSummary.allocations.every(
+        (allocation) => allocation.allocated === allocation.available,
+      ),
+    ).toBe(true);
+    expect(mockExamPools.every((pool) => pool.questionIds.length > 0)).toBe(true);
   });
 });

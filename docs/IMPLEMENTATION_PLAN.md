@@ -25,7 +25,8 @@ Status: implemented (2026-10-26). See `docs/DESIGN_SYSTEM.md` and `docs/PROGRESS
 Status: C0 and C1 implemented (2026-10-26). C2.1 assessment core implemented (2026-10-26).
 C2.2a added the first reviewed Domain 2 bank. C2.2b added the Domain 2 lesson and completed the
 reviewed Domain 2 bank. C2.3 expanded the bank to 24 items and added persistence, practice/review/
-progress, and the mock preview (2026-10-27).
+progress, and the mock preview (2026-10-27). C2.4 added Domain 5 and closed objective coverage at
+30 / 30 with 54 reviewed items, two more lessons, and a Domain 5 practice set (2026-10-27).
 
 ### C0 — Official blueprint verification
 
@@ -98,11 +99,26 @@ Status: implemented (2026-10-27).
 - Route-level `React.lazy`/`Suspense` code splitting; the >500 kB chunk warning is resolved without
   suppression.
 
+### C2.4 — Domain 5 and full objective coverage
+
+Status: implemented (2026-10-27).
+
+- Added 30 reviewed items: 8 for Domain 5 and 22 closing the previously uncovered objectives in
+  Domains 1, 3, 4, 6, and 7. The bank is now 54 items across all 30 objectives.
+- Added `configuration-basics` (Domain 5) and `prompt-structure` (Domain 1) as mapped lessons, each
+  linking its reviewed practice items.
+- Added the `domain-5-configuration-set` practice set and expanded the Domain 1, 3, 4, 6, and 7 sets.
+  The mixed set derives its question list from the reviewed registry.
+- Extracted `reviewedEntry` into a shared `bank-helpers.ts` factory so every bank file uses one
+  validated review path.
+- Fixed lesson practice labels to derive the domain from the objective mapping, and replaced
+  hardcoded bank totals in the dashboard and progress pages with registry-derived values.
+
 ### Remaining Phase D work
 
-- Expand the reviewed bank to cover Domain 5 and the 15 remaining objectives, then grow it toward a
-  full 60-item mock form.
-- Add mapped lessons for the domains that currently have only bank items.
+- Deepen objectives that still have a single reviewed item, especially in Domains 1, 4, 6, and 7.
+- Add mapped lessons for Domains 3, 4, 6, and 7; `workflow-design` remains the only planned lesson.
+- Grow the bank by six more reviewed items to close the mock-preview shortfall without filler.
 - Mock exam timer, auto-submit, and expiry as a separate versioned layer.
 - A per-domain report and a defensible (non-invented) scaled-score policy only if an official source
   supports it.
@@ -124,12 +140,12 @@ remain outstanding.
 
 - Typecheck, lint, unit/integration tests, production build.
 - End-to-end tests for critical journeys (not started).
-- Accessibility and responsive checks (manual axe run in Phase B only; not re-run for C2.3).
+- Accessibility and responsive checks (manual axe run in Phase B only; not re-run for C2.4).
 - Content coverage audit (`docs/CONTENT_COVERAGE_MATRIX.md`, 2026-10-27).
 
 ## Phase G — GitHub and Vercel
 
-Status: not started for Phase C2.3. All changes are uncommitted in the working tree; no push or
+Status: not started for Phase C2.4. All changes are uncommitted in the working tree; no push or
 deployment has been performed.
 
 - Verify target repository and secure Git credentials.

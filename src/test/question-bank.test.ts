@@ -11,6 +11,7 @@ import {
   getDomain,
   getObjective,
   getQuestionBankEntry,
+  primaryBlueprint,
   questionBank,
   questionBankEntries,
 } from "../content";
@@ -26,9 +27,9 @@ const vietnameseDiacriticPattern =
   /[ăâđêôơưàáảãạằắẳẵặầấẩẫậèéẻẽẹềếểễệìíỉĩịòóỏõọồốổỗộờớởỡợùúủũụừứửữựỳýỷỹỵ]/i;
 
 describe("reviewed question bank", () => {
-  it("publishes twenty-four valid bank entries and runnable assessments", () => {
-    expect(questionBankEntries).toHaveLength(24);
-    expect(questionBank).toHaveLength(24);
+  it("publishes reviewed bank entries and runnable assessments", () => {
+    expect(questionBankEntries).toHaveLength(54);
+    expect(questionBank).toHaveLength(54);
     expect(assessment).toBeDefined();
     expect(assessment?.questionIds).toHaveLength(14);
     expect(assessment?.policy).toEqual({
@@ -69,23 +70,59 @@ describe("reviewed question bank", () => {
     ]);
   });
 
-  it("covers six of the seven domains and leaves Domain 5 visibly uncovered", () => {
+  it("covers all seven domains and every official objective", () => {
     const domainIds = new Set(
       questionBankEntries.map((entry) => {
         const objectiveId = entry.examMapping.objectiveIds[0]!;
         return getObjective(objectiveId)?.domain.id;
       }),
     );
+    const coveredObjectiveIds = new Set(
+      questionBankEntries.flatMap((entry) => entry.examMapping.objectiveIds),
+    );
+    const allObjectiveIds = primaryBlueprint.domains.flatMap((domain) =>
+      domain.objectives.map((objective) => objective.id),
+    );
 
-    expect(domainIds.size).toBe(6);
-    expect(domainIds.has("configuration-knowledge-management")).toBe(false);
+    expect(domainIds.size).toBe(7);
+    expect(domainIds.has("configuration-knowledge-management")).toBe(true);
+    expect(allObjectiveIds).toHaveLength(30);
+    expect(coveredObjectiveIds.size).toBe(30);
+    expect(allObjectiveIds.filter((objectiveId) => !coveredObjectiveIds.has(objectiveId))).toEqual(
+      [],
+    );
+  });
+
+  it("gives every Domain 5 objective two reviewed items", () => {
+    const domainFiveObjectiveIds = new Set(
+      getDomain("configuration-knowledge-management")?.objectives.map(
+        (objective) => objective.id,
+      ) ?? [],
+    );
+    const counts = new Map<string, number>();
+
+    for (const entry of questionBankEntries) {
+      const objectiveId = entry.examMapping.objectiveIds[0]!;
+
+      if (domainFiveObjectiveIds.has(objectiveId)) {
+        counts.set(objectiveId, (counts.get(objectiveId) ?? 0) + 1);
+      }
+    }
+
+    expect(domainFiveObjectiveIds.size).toBe(4);
+    expect([...counts.entries()].sort()).toEqual([
+      ["config-knowledge-connectors", 2],
+      ["config-maintain", 2],
+      ["config-project-instructions", 2],
+      ["config-system-instructions", 2],
+    ]);
   });
 
   it("includes both single-choice and multiple-response items", () => {
     const types = questionBank.map((question) => question.type);
 
-    expect(types.filter((type) => type === "single-choice")).toHaveLength(13);
-    expect(types.filter((type) => type === "multiple-response")).toHaveLength(11);
+    expect(types.filter((type) => type === "single-choice")).toHaveLength(28);
+    expect(types.filter((type) => type === "multiple-response")).toHaveLength(26);
     expect(new Set(questionBank.map((question) => question.id)).size).toBe(questionBank.length);
   });
 
@@ -98,6 +135,21 @@ describe("reviewed question bank", () => {
       true,
     );
     expect(getQuestionBankEntry("context-window-root-cause")).toBeUndefined();
+  });
+
+  it("ships a Domain 5 set and a registry-derived mixed set", () => {
+    const domainFive = getAssessment("domain-5-configuration-set");
+    const mixed = getAssessment("mixed-foundations-set");
+    const fiveResolved = domainFive ? getAssessmentQuestions(domainFive) : [];
+
+    expect(domainFive?.policy.scoring).toBe("all-or-nothing");
+    expect(fiveResolved).toHaveLength(8);
+    expect(
+      fiveResolved.every(
+        (question) => getQuestionBankEntry(question.id)?.examMapping.status === "verified",
+      ),
+    ).toBe(true);
+    expect(mixed?.questionIds).toEqual(questionBankEntries.map((entry) => entry.question.id));
   });
 
   it("keeps learner-facing English text free of Vietnamese diacritics", () => {
@@ -132,7 +184,7 @@ describe("reviewed question bank", () => {
     for (const entry of questionBankEntries) {
       expect(entry.contentStatus).toBe("published");
       expect(entry.verification.status).toBe("verified");
-      expect(entry.verification.checkedAt).toBe("2026-10-26");
+      expect(["2026-10-26", "2026-10-27"]).toContain(entry.verification.checkedAt);
 
       for (const sourceId of entry.question.sourceIds) {
         expect(knownSourceIds.has(sourceId)).toBe(true);
@@ -158,6 +210,11 @@ describe("reviewed question bank", () => {
       "anthropic-structured-outputs-doc",
       "anthropic-artifacts-doc",
       "anthropic-claude-constitution",
+      "anthropic-projects-overview",
+      "anthropic-projects-manage",
+      "anthropic-projects-rag",
+      "anthropic-connectors-help",
+      "anthropic-google-workspace-connectors",
     ]) {
       expect(contentPack.sources.some((source) => source.id === sourceId)).toBe(true);
     }

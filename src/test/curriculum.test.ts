@@ -4,6 +4,8 @@ import {
   getDomain,
   getLesson,
   getLessonNeighbours,
+  getObjective,
+  getQuestionBankEntry,
   getSources,
   plannedLessons,
   primaryBlueprint,
@@ -86,7 +88,36 @@ describe("curriculum registry", () => {
     });
     expect(getLessonNeighbours("evaluation-basics")).toMatchObject({
       previous: getLesson("context-window"),
+      next: getLesson("configuration-basics"),
+    });
+    expect(getLessonNeighbours("prompt-structure")).toMatchObject({
+      previous: getLesson("configuration-basics"),
       plannedNext: contentPack.plannedLessons[0],
     });
+  });
+
+  it("publishes one reviewed lesson for the Context Window sample and three domain lessons", () => {
+    const ids = publishedLessons.map((lesson) => lesson.id);
+
+    expect(ids).toEqual([
+      "context-window",
+      "evaluation-basics",
+      "configuration-basics",
+      "prompt-structure",
+    ]);
+    expect(getLesson("configuration-basics")?.examMapping.status).toBe("verified");
+    expect(getLesson("prompt-structure")?.examMapping.status).toBe("verified");
+  });
+
+  it("keeps every published lesson mapping and related practice resolvable", () => {
+    for (const lesson of publishedLessons) {
+      for (const objectiveId of lesson.examMapping.objectiveIds) {
+        expect(getObjective(objectiveId)).toBeDefined();
+      }
+
+      for (const questionId of lesson.relatedQuestionIds) {
+        expect(getQuestionBankEntry(questionId)?.examMapping.status).toBe("verified");
+      }
+    }
   });
 });

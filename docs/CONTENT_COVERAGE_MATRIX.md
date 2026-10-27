@@ -1,7 +1,8 @@
 # Content Coverage Matrix
 
 **Matrix updated:** 2026-10-27
-**Source access date:** 2026-10-26
+**Source access dates:** 2026-10-26 for the original sources, 2026-10-27 for the Domain 5 and
+coverage-expansion sources listed in the source key
 **Blueprint:** CCAO-F Exam Guide v1.0, effective July 2026  
 **Applicable attempt:** before 2026-11-14 (do not apply the 2026-11-17 / 2026-12-07 revision)  
 **Source of exam scope:** `docs/EXAM_BLUEPRINT.md`
@@ -13,10 +14,10 @@ This matrix separates three different things:
 3. **General-knowledge safety** — can the topic be taught from official Claude documentation
    without overstating what the exam will ask?
 
-A verified objective is **not** coverage. Today the product has one technical sample lesson, one
-exam-mapped Domain 2 curriculum lesson, and a **24-item reviewed bank** spanning six of the seven
-domains and **15 of the 30 objectives**. That is reviewed content, not a claim that any domain is
-exhausted or that the bank is a full exam simulation.
+A verified objective is **not** coverage. Today the product has one technical sample lesson, three
+exam-mapped curriculum lessons, and a **54-item reviewed bank** spanning all seven domains and
+**all 30 objectives**. That is reviewed content, not a claim that any domain is exhausted or that the
+bank is a full exam simulation.
 
 ## Legend
 
@@ -47,6 +48,17 @@ exhausted or that the bank is a full exam simulation.
 | **SO** | [Structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs) (official Anthropic documentation, read 2026-10-26) |
 | **AR** | [What are artifacts and how do I use them?](https://support.claude.com/en/articles/9487310-what-are-artifacts-and-how-do-i-use-them) (official Anthropic Help Center, read 2026-10-26) |
 | **CC** | [Claude's Constitution](https://www.anthropic.com/constitution) (official Anthropic publication, read 2026-10-26) |
+| **PJ** | [What are projects?](https://support.claude.com/en/articles/9517075-what-are-projects) and [How can I create and manage projects?](https://support.claude.com/en/articles/9519177-how-can-i-create-and-manage-projects) (official Anthropic Help Center, read 2026-10-27) |
+| **RG** | [Retrieval augmented generation (RAG) for projects](https://support.claude.com/en/articles/11473015-retrieval-augmented-generation-rag-for-projects) (official Anthropic Help Center, read 2026-10-27) |
+| **CN** | [Use connectors to extend Claude's capabilities](https://support.claude.com/en/articles/11176164-use-connectors-to-extend-claude-s-capabilities) and [Use Google Workspace connectors](https://support.claude.com/en/articles/10166901-use-google-workspace-connectors) (official Anthropic Help Center, read 2026-10-27) |
+| **RS** | [Use research on Claude](https://support.claude.com/en/articles/11088861-use-research-on-claude) (official Anthropic Help Center, read 2026-10-27) |
+| **MD** | [Models overview](https://platform.claude.com/docs/en/about-claude/models/overview) and [Choosing the right model](https://platform.claude.com/docs/en/about-claude/models/choosing-a-model) (official Anthropic documentation, read 2026-10-27) |
+| **PP** | [Privacy Policy](https://www.anthropic.com/legal/privacy) and [Usage Policy](https://www.anthropic.com/aup) (official Anthropic legal pages, read 2026-10-27) |
+
+The Help Center pages under **PJ**, **RG**, **CN**, and **RS** are JavaScript-rendered: a direct fetch
+returned only navigation chrome, so their body text was read through search-result extracts on
+2026-10-27. Treat product UI steps from those pages as time-sensitive and re-check them before
+repeating exact menu paths.
 
 ## Coverage summary
 
@@ -54,18 +66,18 @@ exhausted or that the bank is a full exam simulation.
 |---|---|
 | Official domains identified | **7 / 7 verified** |
 | Official objectives identified | **30 / 30 verified** for exam scope |
-| Objectives with a reviewed, exam-mapped lesson | **6 / 30** (all six Domain 2 objectives) |
-| Objectives with reviewed original practice items | **15 / 30** |
-| Domains with at least one reviewed bank item | **6 / 7** (Domain 5 has none) |
-| Published lessons | **2** (1 exam-mapped curriculum lesson + 1 explicitly unmapped design sample) |
-| Authored questions | **26** (1 sample lesson question + 1 Domain 2 lesson question + 24 reviewed bank items) |
-| Reviewed bank items | **24** (13 single-choice, 11 multiple-response) |
-| Assessment definitions | **8 registry assessments** (1 sample, 6 domain sets, 1 mixed) **+ 1 derived mock-exam preview** |
-| Practice sets | **7** (6 domain sets with items + 1 mixed set) |
-| Mock-exam preview | **24 of 60** verified-format slots, shortfall **36**; blueprint-weighted, no filler |
+| Objectives with a reviewed, exam-mapped lesson | **14 / 30** (all six Domain 2, all four Domain 1, all four Domain 5) |
+| Objectives with reviewed original practice items | **30 / 30** |
+| Domains with at least one reviewed bank item | **7 / 7** |
+| Published lessons | **4** (3 exam-mapped curriculum lessons + 1 explicitly unmapped design sample) |
+| Authored questions | **58** (4 lesson questions + 54 reviewed bank items) |
+| Reviewed bank items | **54** (28 single-choice, 26 multiple-response) |
+| Assessment definitions | **9 registry assessments** (1 sample, 7 domain sets, 1 mixed) **+ 1 derived mock-exam preview** |
+| Practice sets | **8** (7 domain sets + 1 mixed set) |
+| Mock-exam preview | **54 of 60** verified-format slots, shortfall **6**; blueprint-weighted, no filler |
 | Assessment core | **Implemented** (Phase C2.1); persistence, review queue, progress, and mock preview in Phase C2.3 |
-| Planned lessons | **2**, none routable |
-| Question bank status | **24 reviewed, exam-mapped items** across 15 objectives; no official questions copied |
+| Planned lessons | **1** (`workflow-design`), not routable |
+| Question bank status | **54 reviewed, exam-mapped items** across all 30 objectives; no official questions copied |
 | Future guide revision | **Not applicable** to the pre-2026-11-14 attempt |
 
 ## Current content
@@ -74,14 +86,16 @@ exhausted or that the bank is a full exam simulation.
 |---|---|---|---|---|---|---|---|
 | `context-window` | Sample lesson | **Unmapped**. It has a plausible relationship to Domain 3's context/memory objective, but that mapping has **not** been reviewed and is not claimed | Related objective is **Verified** in G; the lesson itself is **not** exam coverage | Technical claims **Verified** against D on 2026-10-26 | **Published as a sample** | 1 lesson, 1 single-choice question, 1 sample assessment definition; no multiple-response item | D |
 | `evaluation-basics` | Curriculum lesson | Domain 2 — **verified mapping** to all six objectives | Six objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against R, E, PB, SO, AR and CC on 2026-10-26; bias remains policy-level | **Published** | 1 lesson, 1 single-choice knowledge check, 7 linked reviewed bank questions; route `/learn/evaluation-basics` | G, R, E, PB, SO, AR, CC |
+| `configuration-basics` | Curriculum lesson | Domain 5 — **verified mapping** to all four objectives | Four objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against PJ, RG, CN and PB on 2026-10-27; project limits and connector UI marked time-sensitive | **Published** | 1 lesson, 1 single-choice knowledge check, 8 linked reviewed bank questions; route `/learn/configuration-basics` | G, PJ, RG, CN, PB |
+| `prompt-structure` | Curriculum lesson | Domain 1 — **verified mapping** to all four objectives | Four objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against PB and E on 2026-10-27; model names kept generic | **Published** | 1 lesson, 1 single-choice knowledge check, 6 linked reviewed bank questions; route `/learn/prompt-structure` | G, PB, E |
 | `domain-2-output-validation-set` | Reviewed question bank + assessment | Domain 2 — **verified mapping** to all six objectives | Six objectives are **Verified** in G; bank covers all six, with bias treated as framing/equal treatment only | Technical claims **Verified** against R, E, PB, SO, AR and CC on 2026-10-26 | **Published** | 14 original items (8 single-choice, 6 multiple-response); all six objectives have at least two items | G, R, E, PB, SO, AR, CC |
-| `domain-1-prompting-set` | Reviewed question bank + assessment | Domain 1 — **verified mapping** to `prompting-create-effective-prompts` and `prompting-task-decomposition` | Both objectives are **Verified** in G | Technical claims **Verified** against PB and E on 2026-10-26 | **Published** | 2 original items (1 single-choice, 1 multiple-response) | G, PB, E |
-| `domain-3-context-set` | Reviewed question bank + assessment | Domain 3 — **verified mapping** to `context-memory-management` only | Objective is **Verified** in G; the lesson sample remains unmapped | Technical claims **Verified** against D on 2026-10-26 | **Published** | 2 original items (1 single-choice, 1 multiple-response) | G, D |
-| `domain-4-workflow-set` | Reviewed question bank + assessment | Domain 4 — **verified mapping** to `workflow-requirements-analysis` and `workflow-integrate` | Both objectives are **Verified** in G | Technical claims **Verified** against E, PB and CC on 2026-10-26 | **Published** | 2 original items (1 single-choice, 1 multiple-response) | G, E, PB, CC |
-| `domain-6-governance-set` | Reviewed question bank + assessment | Domain 6 — **verified mapping** to `governance-use-case-fit` and `governance-ethics` | Both objectives are **Verified** in G | Technical claims **Verified** against CC and R on 2026-10-26; review principles only, not legal advice | **Published** | 2 original items (1 single-choice, 1 multiple-response) | G, CC, R |
-| `domain-7-troubleshooting-set` | Reviewed question bank + assessment | Domain 7 — **verified mapping** to `troubleshoot-diagnose` and `troubleshoot-adjust` | Both objectives are **Verified** in G | Technical claims **Verified** against PB and E on 2026-10-26 | **Published** | 2 original items (1 single-choice, 1 multiple-response) | G, PB, E |
-| `mixed-foundations-set` | Reviewed question bank + assessment | Domains 1, 2, 3, 4, 6, 7 — **verified mappings** of all 24 bank items | Six domains **Verified**; Domain 5 absent | Same per-item verification as the domain sets | **Published** | 24 original items across six domains; explicitly not a mock exam | G plus per-item sources |
-| `prompt-structure` | Planned lesson | Domain 1 — **planned**, not reviewed | Domain **Verified** | None yet | **Planned** | Roadmap only | G |
+| `domain-1-prompting-set` | Reviewed question bank + assessment | Domain 1 — **verified mapping** to all four objectives | Four objectives are **Verified** in G | Technical claims **Verified** against PB and E on 2026-10-27 | **Published** | 6 original items (3 single-choice, 3 multiple-response); `iterate` and `adapt-strategies` have two items each | G, PB, E |
+| `domain-3-context-set` | Reviewed question bank + assessment | Domain 3 — **verified mapping** to all four objectives | Four objectives are **Verified** in G; the `context-window` sample remains unmapped | Technical claims **Verified** against D, MD and PB on 2026-10-27 | **Published** | 8 original items (4 single-choice, 4 multiple-response); model questions describe capability tiers instead of frozen model names | G, D, MD, PB |
+| `domain-4-workflow-set` | Reviewed question bank + assessment | Domain 4 — **verified mapping** to all five objectives | Five objectives are **Verified** in G | Technical claims **Verified** against E, PB, RS and CC on 2026-10-27 | **Published** | 8 original items (4 single-choice, 4 multiple-response); `research-planning`, `solution-design` and `stakeholder-communication` have two items each | G, E, PB, RS, CC |
+| `domain-5-configuration-set` | Reviewed question bank + assessment | Domain 5 — **verified mapping** to all four objectives | Four objectives are **Verified** in G | Technical claims **Verified** against PJ, RG, CN and PB on 2026-10-27 | **Published** | 8 original items (4 single-choice, 4 multiple-response); every Domain 5 objective has two items | G, PJ, RG, CN, PB |
+| `domain-6-governance-set` | Reviewed question bank + assessment | Domain 6 — **verified mapping** to all four objectives | Four objectives are **Verified** in G | Technical claims **Verified** against CC, R, PP and PB on 2026-10-27; review principles only, not legal advice | **Published** | 6 original items (3 single-choice, 3 multiple-response); `data-privacy` and `policies` have two items each | G, CC, R, PP, PB |
+| `domain-7-troubleshooting-set` | Reviewed question bank + assessment | Domain 7 — **verified mapping** to all three objectives | Three objectives are **Verified** in G | Technical claims **Verified** against PB, E and MD on 2026-10-27 | **Published** | 4 original items (2 single-choice, 2 multiple-response); `optimize-workflows` has two items | G, PB, E, MD |
+| `mixed-foundations-set` | Reviewed question bank + assessment | Domains 1–7 — **verified mappings** of all 54 bank items | Seven domains **Verified** | Same per-item verification as the domain sets | **Published** | Question ids derived from the reviewed bank so the set cannot drift; explicitly not a mock exam | G plus per-item sources |
 | `workflow-design` | Planned lesson | Domain 4 — **planned**, not reviewed | Domain **Verified** | None yet | **Planned** | Roadmap only | G |
 
 ## Objective coverage
@@ -94,10 +108,10 @@ official product documentation without pretending to know the live item bank.
 
 | Topic ID | Official objective | Exam scope | Content status | Coverage / next step | General-knowledge safety | Version |
 |---|---|---|---|---|---|---|
-| `prompting-create-effective-prompts` | Create effective prompts for business and technical tasks | **Verified** | **1 reviewed bank item** | `prompting-specific-brief`; no mapped lesson yet | Safe: official prompting guidance and worked examples | v1.0 + PB |
-| `prompting-task-decomposition` | Apply task decomposition techniques to structure complex requests | **Verified** | **1 reviewed bank item** | `prompting-decompose-steps`; no mapped lesson yet | Safe: general decomposition patterns; examples must be original | v1.0 + PB, E |
-| `prompting-iterate` | Iterate prompts to improve output quality | **Verified** | **Not started** | `prompt-structure` may cover part of this | Safe: iterative prompting is general practice | v1.0 |
-| `prompting-adapt-strategies` | Adapt prompting strategies based on task type (analysis, research, drafting, brainstorming) | **Verified** | **Not started** | None | Safe: teach task-type trade-offs with original scenarios | v1.0 |
+| `prompting-create-effective-prompts` | Create effective prompts for business and technical tasks | **Verified** | **Reviewed lesson + 1 bank item** | `prompt-structure` plus `prompting-specific-brief` | Safe: official prompting guidance and worked examples | v1.0 + PB |
+| `prompting-task-decomposition` | Apply task decomposition techniques to structure complex requests | **Verified** | **Reviewed lesson + 1 bank item** | `prompt-structure` plus `prompting-decompose-steps` | Safe: general decomposition patterns; examples must be original | v1.0 + PB, E |
+| `prompting-iterate` | Iterate prompts to improve output quality | **Verified** | **Reviewed lesson + 2 bank items** | `prompt-structure`; `prompting-iterate-evidence`, `prompting-iterate-systematic` | Safe: iterative prompting is general practice | v1.0 + PB, E |
+| `prompting-adapt-strategies` | Adapt prompting strategies based on task type (analysis, research, drafting, brainstorming) | **Verified** | **Reviewed lesson + 2 bank items** | `prompt-structure`; `prompting-analysis-task-strategy`, `prompting-adapt-task-types` | Safe: teach task-type trade-offs with original scenarios | v1.0 + PB |
 
 ### Domain 2 — Output Evaluation and Validation (21%)
 
@@ -114,9 +128,9 @@ official product documentation without pretending to know the live item bank.
 
 | Topic ID | Official objective | Exam scope | Content status | Coverage / next step | General-knowledge safety | Version |
 |---|---|---|---|---|---|---|
-| `product-feature-selection` | Select appropriate Claude product features (Projects, research mode, chat, artifacts) | **Verified** | **Not started** | None | Safe with current-doc check: product surface changes faster than the guide | v1.0 + current docs |
-| `model-family-selection` | Differentiate between Claude model types (Haiku, Sonnet, Opus) | **Verified** | **Not started** | None | Principles safe; v1.0 names these three families. Current documentation may list additional models, so do not claim the public lineup is frozen | v1.0 + current docs |
-| `model-task-fit` | Align model selection with task requirements (cost, speed, quality) | **Verified** | **Not started** | None | Safe: teach the trade-off, not a fixed “best model” rule | v1.0 + current docs |
+| `product-feature-selection` | Select appropriate Claude product features (Projects, research mode, chat, artifacts) | **Verified** | **2 reviewed bank items** | `product-feature-recurring-report`, `product-feature-fit-choices`; no mapped lesson yet | Safe with current-doc check: product surface changes faster than the guide | v1.0 + PJ, RS, current docs |
+| `model-family-selection` | Differentiate between Claude model types (Haiku, Sonnet, Opus) | **Verified** | **2 reviewed bank items** | `model-family-speed-cost`, `model-family-tradeoffs`; no mapped lesson yet | Principles safe; v1.0 names these three families. The items describe capability tiers rather than freezing current model names | v1.0 + MD |
+| `model-task-fit` | Align model selection with task requirements (cost, speed, quality) | **Verified** | **2 reviewed bank items** | `model-task-fit-complex`, `model-task-fit-practices`; no mapped lesson yet | Safe: teach the trade-off, not a fixed “best model” rule | v1.0 + MD |
 | `context-memory-management` | Understand and manage context limitations and memory considerations (when to restart, summarize, or persist) | **Verified** | **2 reviewed bank items**; the `context-window` lesson remains **unmapped** | `context-summarize-and-restart`, `context-high-signal-practices`; rewrite the lesson for the Associate audience before claiming a mapped lesson | Technical background is safe from D; the current API-heavy sample is not yet Associate-level curriculum | v1.0 + D |
 
 ### Domain 4 — Workflow Integration and Solution Design (16%)
@@ -124,27 +138,27 @@ official product documentation without pretending to know the live item bank.
 | Topic ID | Official objective | Exam scope | Content status | Coverage / next step | General-knowledge safety | Version |
 |---|---|---|---|---|---|---|
 | `workflow-requirements-analysis` | Apply Claude to analyze requirements and use cases | **Verified** | **1 reviewed bank item** | `workflow-requirements-extraction`; no mapped lesson yet | Safe: original business scenarios | v1.0 + E, PB |
-| `workflow-research-planning` | Leverage Claude for research, planning, and process optimization | **Verified** | **Not started** | `workflow-design` may cover part of this | Safe: general workflow patterns; validate facts with sources | v1.0 |
-| `workflow-solution-design` | Use Claude to support solution design, development, and iteration | **Verified** | **Not started** | `workflow-design` may cover part of this | Safe: keep examples non-technical and role-appropriate | v1.0 |
+| `workflow-research-planning` | Leverage Claude for research, planning, and process optimization | **Verified** | **2 reviewed bank items** | `workflow-research-current-scan`, `workflow-research-planning-practices`; `workflow-design` may still cover this | Safe: general workflow patterns; validate facts with sources | v1.0 + RS, E |
+| `workflow-solution-design` | Use Claude to support solution design, development, and iteration | **Verified** | **2 reviewed bank items** | `workflow-solution-options`, `workflow-solution-iteration`; `workflow-design` may still cover this | Safe: keep examples non-technical and role-appropriate | v1.0 + PB, E |
 | `workflow-integrate` | Integrate Claude into existing workflows to augment or redesign them | **Verified** | **1 reviewed bank item** | `workflow-integration-checkpoints`; no mapped lesson yet | Safe: process mapping and human checkpoints | v1.0 + E, CC |
-| `workflow-stakeholder-communication` | Communicate Claude's value and limitations to stakeholders | **Verified** | **Not started** | None | Safe: communication exercise, not a promise of business results | v1.0 |
+| `workflow-stakeholder-communication` | Communicate Claude's value and limitations to stakeholders | **Verified** | **2 reviewed bank items** | `workflow-stakeholder-brief`, `workflow-stakeholder-evidence`; no mapped lesson yet | Safe: communication exercise, not a promise of business results | v1.0 + E, CC |
 
 ### Domain 5 — Configuration and Knowledge Management (12%)
 
 | Topic ID | Official objective | Exam scope | Content status | Coverage / next step | General-knowledge safety | Version |
 |---|---|---|---|---|---|---|
-| `config-project-instructions` | Configure Claude Projects with instructions and knowledge sources | **Verified** | **Not started** | None | Safe with current-doc check: Projects UI and limits can change | v1.0 + current docs |
-| `config-knowledge-connectors` | Manage uploaded knowledge and connectors (e.g., Google Drive, Gmail) | **Verified** | **Not started** | None | Safe with current-doc check: connector availability is plan- and region-dependent | v1.0 + current docs |
-| `config-system-instructions` | Create effective system-level instructions | **Verified** | **Not started** | None | Safe: general instruction design; distinguish product settings from API system prompts | v1.0 |
-| `config-maintain` | Inform, maintain, and update Claude configurations, knowledge sources, and instructions | **Verified** | **Not started** | None | Safe: maintenance checklist and review cadence | v1.0 |
+| `config-project-instructions` | Configure Claude Projects with instructions and knowledge sources | **Verified** | **Reviewed lesson + 2 bank items** | `configuration-basics`; `config-project-brief-setup`, `config-project-context-scope` | Safe with current-doc check: Projects UI and limits can change | v1.0 + PJ |
+| `config-knowledge-connectors` | Manage uploaded knowledge and connectors (e.g., Google Drive, Gmail) | **Verified** | **Reviewed lesson + 2 bank items** | `configuration-basics`; `config-connector-rollout`, `config-connector-permission-model` | Safe with current-doc check: connector availability is plan- and region-dependent | v1.0 + CN, RG |
+| `config-system-instructions` | Create effective system-level instructions | **Verified** | **Reviewed lesson + 2 bank items** | `configuration-basics`; `config-system-instruction-quality`, `config-system-instruction-components` | Safe: general instruction design; distinguish product settings from API system prompts | v1.0 + PB, PJ |
+| `config-maintain` | Inform, maintain, and update Claude configurations, knowledge sources, and instructions | **Verified** | **Reviewed lesson + 2 bank items** | `configuration-basics`; `config-knowledge-refresh`, `config-maintenance-cadence` | Safe: maintenance checklist and review cadence | v1.0 + PJ, RG |
 
 ### Domain 6 — Governance, Risk, and Responsible Use (15%)
 
 | Topic ID | Official objective | Exam scope | Content status | Coverage / next step | General-knowledge safety | Version |
 |---|---|---|---|---|---|---|
 | `governance-use-case-fit` | Identify appropriate and inappropriate use cases | **Verified** | **1 reviewed bank item** | `governance-customer-assistant-safeguards`; no mapped lesson yet | Safe: general use-case triage | v1.0 + CC |
-| `governance-data-privacy` | Apply data sensitivity, regulatory, and privacy considerations | **Verified** | **Not started** | None | **Principles only:** do not give legal advice; cite organizational policy and official privacy material | v1.0 + organizational policy |
-| `governance-policies` | Follow organizational AI policies and governance standards | **Verified** | **Not started** | None | **Principles only:** policy specifics vary by organization | v1.0 + organizational policy |
+| `governance-data-privacy` | Apply data sensitivity, regulatory, and privacy considerations | **Verified** | **2 reviewed bank items** | `governance-privacy-confidential-upload`, `governance-privacy-controls`; no mapped lesson yet | **Principles only:** do not give legal advice; cite organizational policy and official privacy material | v1.0 + PP |
+| `governance-policies` | Follow organizational AI policies and governance standards | **Verified** | **2 reviewed bank items** | `governance-policy-hiring-screening`, `governance-policy-operations`; no mapped lesson yet | **Principles only:** policy specifics vary by organization | v1.0 + PP, CC |
 | `governance-ethics` | Understand the ethical implications of AI usage | **Verified** | **1 reviewed bank item** | `governance-human-oversight`; no mapped lesson yet | Safe: general responsible-use reasoning, clearly framed as judgment | v1.0 + CC, R |
 
 ### Domain 7 — Troubleshooting and Optimization (10%)
@@ -153,7 +167,7 @@ official product documentation without pretending to know the live item bank.
 |---|---|---|---|---|---|---|
 | `troubleshoot-diagnose` | Identify, diagnose, and resolve issues with underperforming prompts or poor outputs | **Verified** | **1 reviewed bank item** | `troubleshoot-diagnose-prompt`; no mapped lesson yet | Safe: diagnostic checklist based on general prompting and review practice | v1.0 + PB, E |
 | `troubleshoot-adjust` | Adjust approach based on feedback and results | **Verified** | **1 reviewed bank item** | `troubleshoot-feedback-loop`; no mapped lesson yet | Safe: iteration loop with original examples | v1.0 + E, PB |
-| `optimize-workflows` | Optimize workflows for efficiency and effectiveness | **Verified** | **Not started** | None | Safe: measure before/after; avoid invented metrics | v1.0 |
+| `optimize-workflows` | Optimize workflows for efficiency and effectiveness | **Verified** | **2 reviewed bank items** | `optimize-workflow-baseline`, `optimize-workflow-practices`; no mapped lesson yet | Safe: measure before/after; avoid invented metrics | v1.0 + E, PB |
 
 ## Question-bank coverage
 
@@ -183,6 +197,36 @@ official product documentation without pretending to know the live item bank.
 | `governance-customer-assistant-safeguards` | Multiple-response | Domain 6 · `governance-use-case-fit` | **Reviewed / published** | Exact-set item on prohibited uses, AI disclosure, and fairness checks for a customer-facing assistant. |
 | `troubleshoot-diagnose-prompt` | Single-choice | Domain 7 · `troubleshoot-diagnose` | **Reviewed / published** | Original item on inspecting the prompt and inputs before changing models or sampling settings. |
 | `troubleshoot-feedback-loop` | Multiple-response | Domain 7 · `troubleshoot-adjust` | **Reviewed / published** | Exact-set item on success criteria, baseline comparison, and failure-cause analysis. |
+| `prompting-iterate-evidence` | Single-choice | Domain 1 · `prompting-iterate` | **Reviewed / published** | Original item on diagnosing a vague draft against success criteria, then iterating on the same input. |
+| `prompting-iterate-systematic` | Multiple-response | Domain 1 · `prompting-iterate` | Exact-set item on keeping a baseline, changing one variable, and classifying failure types. |
+| `prompting-analysis-task-strategy` | Single-choice | Domain 1 · `prompting-adapt-strategies` | Original item on traceable theme extraction from interview transcripts. |
+| `prompting-adapt-task-types` | Multiple-response | Domain 1 · `prompting-adapt-strategies` | Exact-set item on matching prompt structure to drafting, brainstorming, and analysis tasks. |
+| `product-feature-recurring-report` | Single-choice | Domain 3 · `product-feature-selection` | Original item on using a project for a recurring report with stable PDFs and a fixed template. |
+| `product-feature-fit-choices` | Multiple-response | Domain 3 · `product-feature-selection` | Exact-set item on research for current multi-source briefings, artifacts for reusable deliverables, and projects for recurring work. |
+| `model-family-speed-cost` | Single-choice | Domain 3 · `model-family-selection` | Original item on an efficiency-first start for high-volume, latency-sensitive ticket classification. |
+| `model-family-tradeoffs` | Multiple-response | Domain 3 · `model-family-selection` | Exact-set item on capability/latency/cost trade-offs, re-checking current documentation, and benchmarking before standardizing. |
+| `model-task-fit-complex` | Single-choice | Domain 3 · `model-task-fit` | Original item on a capability-first start for costly, multi-step contract analysis. |
+| `model-task-fit-practices` | Multiple-response | Domain 3 · `model-task-fit` | Exact-set item on explicit criteria, real-prompt benchmarks, and quality-versus-cost comparison. |
+| `workflow-research-current-scan` | Single-choice | Domain 4 · `workflow-research-planning` | Original item on research with citations plus verification before a planning workshop. |
+| `workflow-research-planning-practices` | Multiple-response | Domain 4 · `workflow-research-planning` | Exact-set item on defined research questions, citations with stated gaps, and separating facts from recommendations. |
+| `workflow-solution-options` | Single-choice | Domain 4 · `workflow-solution-design` | Original item on drafting workflow options with assumptions and risks, then letting the accountable team decide and pilot. |
+| `workflow-solution-iteration` | Multiple-response | Domain 4 · `workflow-solution-design` | Exact-set item on prototyping options, stakeholder review, and testing against requirements and edge cases. |
+| `workflow-stakeholder-brief` | Single-choice | Domain 4 · `workflow-stakeholder-communication` | Original item on describing tested scope, measured results, failure modes, and human review instead of promising replacement. |
+| `workflow-stakeholder-evidence` | Multiple-response | Domain 4 · `workflow-stakeholder-communication` | Exact-set item on measured outcomes, disclosed accountability, and stated scope and failure modes. |
+| `governance-privacy-confidential-upload` | Single-choice | Domain 6 · `governance-data-privacy` | Original item on policy, approved workspace, and data minimization before uploading a confidential contract. |
+| `governance-privacy-controls` | Multiple-response | Domain 6 · `governance-data-privacy` | Exact-set item on classification, least-privilege access, and minimizing retention exposure. |
+| `governance-policy-hiring-screening` | Single-choice | Domain 6 · `governance-policies` | Original item on checking policy and high-risk requirements, including human review and disclosure, before screening candidates. |
+| `governance-policy-operations` | Multiple-response | Domain 6 · `governance-policies` | Exact-set item on mapping use cases to policy, documenting review and escalation, and reviewing updates on a schedule. |
+| `optimize-workflow-baseline` | Single-choice | Domain 7 · `optimize-workflows` | Original item on measuring quality, latency, and cost before changing a slow reporting workflow. |
+| `optimize-workflow-practices` | Multiple-response | Domain 7 · `optimize-workflows` | Exact-set item on baseline metrics, removing repeated context with caching or batch where it fits, and right-sizing model and effort. |
+| `config-project-brief-setup` | Single-choice | Domain 5 · `config-project-instructions` | Original item on placing a shared brief in project knowledge and voice rules in project instructions. |
+| `config-project-context-scope` | Multiple-response | Domain 5 · `config-project-instructions` | Exact-set item on shared knowledge and instructions versus chat-isolated context and non-instruction metadata. |
+| `config-connector-rollout` | Single-choice | Domain 5 · `config-knowledge-connectors` | Original item on an Owner enabling organization connectors before each employee authenticates. |
+| `config-connector-permission-model` | Multiple-response | Domain 5 · `config-knowledge-connectors` | Exact-set item on inherited source permissions, Owner action restrictions, and default approval for sensitive actions. |
+| `config-system-instruction-quality` | Single-choice | Domain 5 · `config-system-instructions` | Original item comparing a specific role/source/escalation instruction with vague or contradictory ones. |
+| `config-system-instruction-components` | Multiple-response | Domain 5 · `config-system-instructions` | Exact-set item on role and audience, source and uncertainty rules, and escalation plus format. |
+| `config-knowledge-refresh` | Single-choice | Domain 5 · `config-maintain` | Original item on replacing an obsolete PDF, updating the citing instruction, and re-testing representative questions. |
+| `config-maintenance-cadence` | Multiple-response | Domain 5 · `config-maintain` | Exact-set item on a named owner, versioned source hygiene, and regression testing after material changes. |
 | `context-window-root-cause` | Single-choice | **Unmapped** | **Sample, runnable in its lesson** | Tests a general context-budgeting decision; not official exam content. Its `context-window-sample` definition remains in the pack but `/practice` does not surface it. |
 | Multiple-response example | Multiple-response | Test fixture only | **Tested, not authored as curriculum** | Proves schema validation, exact-set scoring, and UI set-scoring; not part of a lesson |
 
@@ -190,10 +234,10 @@ No official sample questions from the guide were copied. The three published sam
 used only for format calibration; product questions must be original.
 
 The assessment core is not coverage. It makes authored questions runnable. The matrix records
-**15 / 30** objectives with reviewed practice items and **6 / 30** objectives with a reviewed,
-exam-mapped lesson. Domain 2 is the only domain with a mapped lesson; the other nine covered objectives
-have bank items but no mapped lesson. Domain 5 has no items at all. No objective is claimed to be
-exhaustively covered.
+**30 / 30** objectives with reviewed practice items and **14 / 30** objectives with a reviewed,
+exam-mapped lesson. Domains 1, 2, and 5 have mapped lessons; the other sixteen covered objectives
+have bank items but no mapped lesson. No objective is claimed to be exhaustively covered, and depth
+per objective ranges from one to four items.
 
 ## What the product may and may not claim
 
@@ -208,24 +252,29 @@ exhaustively covered.
   exact-set matching, no partial credit, and a practice-only raw percentage.
 - The Domain 2 lesson `evaluation-basics` is published, mapped to all six verified Domain 2
   objectives, and links to reviewed bank questions.
-- The bank contains **24 original, reviewed items** across six domains, split into 13 single-choice
-  and 11 multiple-response items, each with Vietnamese explanations for every option.
+- The Domain 5 lesson `configuration-basics` is published, mapped to all four verified Domain 5
+  objectives, and links to reviewed bank questions.
+- The Domain 1 lesson `prompt-structure` is published, mapped to all four verified Domain 1
+  objectives, and links to reviewed bank questions.
+- The bank contains **54 original, reviewed items**, split into 28 single-choice and 26
+  multiple-response items, each with Vietnamese explanations for every option, and covers every
+  official objective with at least one item.
 - Bias is taught and assessed only at the framing/evidence-selection/equal-treatment level supported
   by Claude's Constitution. The bank does not claim a comprehensive fairness evaluation.
-- Practice Mode is registry-driven: seven sets (six domain sets plus one mixed set) are validated
+- Practice Mode is registry-driven: eight sets (seven domain sets plus one mixed set) are validated
   against the reviewed bank, support deep links, and persist attempts locally.
 - The Review queue is derived from submitted attempts and includes incorrect, unanswered, and
   flagged questions; an item is resolved only by an explicit action.
 - Progress separates reviewed-bank coverage from personal performance and shows a real zero-activity
   state instead of a fabricated score.
-- The mock-exam preview selects **24 of the verified 60-item format** by blueprint weight, reports
-  the 36-item shortfall, and adds no filler or duplicates. It has no timer and no scaled score.
+- The mock-exam preview selects **54 of the verified 60-item format** by blueprint weight, reports
+  the 6-item shortfall, and adds no filler or duplicates. It has no timer and no scaled score.
 
 **May not claim**
 
 - That any domain or objective is fully “covered” by a reviewed lesson or question bank.
-- That the 24-item bank is an exhaustive or official exam simulation. It is small, Domain 5 is
-  absent, 15 objectives have no items, and nine covered objectives have no mapped lesson.
+- That the 54-item bank is an exhaustive or official exam simulation. Depth varies by objective, no
+  objective has more than four items, and sixteen objectives have no mapped lesson.
 - That the sample lesson is mapped to Domain 3.
 - That the 60 items are all scored, or that any per-domain item count is official.
 - That the product contains an official practice exam or official questions.
@@ -235,16 +284,18 @@ exhaustively covered.
 
 ## Next coverage work
 
-1. Cover Domain 5 (`config-*`, 12% of the exam) — currently **zero** reviewed items and zero lessons.
-2. Expand the remaining uncovered objectives: Domain 1 (`iterate`, `adapt-strategies`), Domain 3
-   (`product-feature-selection`, `model-family-selection`, `model-task-fit`), Domain 4
-   (`research-planning`, `solution-design`, `stakeholder-communication`), Domain 6 (`data-privacy`,
-   `policies`), and Domain 7 (`optimize-workflows`).
+1. Deepen thin objectives: `prompting-create-effective-prompts`, `prompting-task-decomposition`,
+   `workflow-requirements-analysis`, `workflow-integrate`, `governance-use-case-fit`,
+   `governance-ethics`, `troubleshoot-diagnose`, and `troubleshoot-adjust` have one reviewed item
+   each. Add a second reviewed item only where official sources support the claim.
+2. Add mapped lessons for Domains 3, 4, 6, and 7. Domain 4's `workflow-design` is the only remaining
+   planned entry; it should cover all five Domain 4 objectives when written.
 3. Rewrite the Context Window sample for the Associate audience, then decide whether it can be
    verified against Domain 3's `context-memory-management` objective.
-4. Add mapped lessons for the domains that currently have only bank items, starting with Domain 1
-   and Domain 4.
-5. Grow the bank toward a full 60-item mock form without duplicating items or inventing filler.
-6. Keep `src/test/question-bank.test.ts` and `src/test/domain-2-content.test.tsx` as the gate: every
-   bank entry must map to a verified blueprint objective and cite registered sources, and every
-   lesson-linked question must resolve.
+4. Grow the bank toward a full 60-item mock form without duplicating items or inventing filler. Six
+   more reviewed items would close the current preview shortfall.
+5. Re-check the Help Center connector and project pages before repeating any exact UI step, because
+   those pages are JavaScript-rendered and their product details change.
+6. Keep `src/test/question-bank.test.ts`, `src/test/domain-5-content.test.tsx`, and
+   `src/test/domain-2-content.test.tsx` as the gate: every bank entry must map to a verified blueprint
+   objective and cite registered sources, and every lesson-linked question must resolve.

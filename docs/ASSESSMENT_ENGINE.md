@@ -1,9 +1,10 @@
 # Assessment Engine
 
 **Status:** assessment core, local persistence, registry-driven practice sets, review queue, progress
-report, and a mock-exam preview implemented (Phase C2.3, 2026-10-27)
-**Scope:** deterministic single-choice and multiple-response scoring, 24 reviewed items across six of
-seven domains, versioned localStorage attempts, derived review queue and progress, and a 24-of-60
+report, and a mock-exam preview implemented (Phase C2.3, 2026-10-27); content coverage completed in
+Phase C2.4 (2026-10-27)
+**Scope:** deterministic single-choice and multiple-response scoring, 54 reviewed items across all
+seven domains, versioned localStorage attempts, derived review queue and progress, and a 54-of-60
 blueprint-weighted mock-exam preview. This is **not** a complete 60-item bank, a timed simulation, or
 an official score predictor.
 
@@ -306,16 +307,16 @@ previous/next navigation.
 A zero-activity learner sees real bank coverage and an explicit empty personal state, not a fake zero
 score. The report never claims readiness or an official scaled score.
 
-The mock-exam preview uses the verified 60-item format but selects only the 24 available reviewed
+The mock-exam preview uses the verified 60-item format but selects only the 54 available reviewed
 items. `selectMockExamQuestions` allocates slots by published domain weight, caps each domain at its
-available pool, deduplicates shared questions, and interleaves the result. The shortfall (36) is
+available pool, deduplicates shared questions, and interleaves the result. The shortfall (6) is
 reported; no filler or duplicate is added. There is no timer and no scaled-score conversion.
 
 ## 8. Deliberate non-goals for C2
 
 - No timer, auto-submit, or expiry.
-- No 60-question mock exam and no complete bank for all 30 objectives. The current bank is 24
-  reviewed items across six domains.
+- No 60-question mock exam. The current bank is 54 reviewed items across all seven domains, and depth
+  per objective still varies from one to four items.
 - No per-domain official score report or scaled-score conversion.
 - No partial credit.
 - No official exam questions or third-party exam dumps. Every bank item is original.
@@ -348,7 +349,7 @@ versioned envelope, restore the submitted result, start a new attempt, derive th
 resolve an item only on request.
 
 `src/test/mock-exam.test.ts` covers weighted allocation, availability caps, shortfall, deduplication,
-determinism, invalid counts, the 24-of-60 preview, and the zero-availability domain.
+determinism, invalid counts, the 54-of-60 preview, and the unit-level zero-availability handling.
 
 `src/test/progress-selectors.test.ts` covers bank coverage independent of activity, personal
 performance from a submitted attempt, domain attribution, and review counts.
@@ -356,22 +357,26 @@ performance from a submitted attempt, domain attribution, and review counts.
 `src/test/study-pages.test.tsx` covers the mock-exam preview, progress separation, and Settings local
 data controls.
 
-`src/test/question-bank.test.ts` covers the 24-entry bank, verified objective mapping, six covered
-domains, both question formats, English-only learner-facing text, Vietnamese explanations for every
-option, source and verification references, unmapped-entry rejection, question-id uniqueness across
-lessons and bank, lesson-to-bank reference validation, and blueprint/certification/objective source
-validation.
+`src/test/question-bank.test.ts` covers the 54-entry bank, verified objective mapping, all seven
+covered domains and all 30 objectives, both question formats, English-only learner-facing text,
+Vietnamese explanations for every option, source and verification references, the Domain 5 set and
+registry-derived mixed set, unmapped-entry rejection, question-id uniqueness across lessons and bank,
+lesson-to-bank reference validation, and blueprint/certification/objective source validation.
 
 `src/test/domain-2-content.test.tsx` covers the published Domain 2 lesson, six-objective mapping,
 reviewed-question links, source/verification references, English/Vietnamese language checks, the
 unmapped Context Window boundary, lesson route rendering, and the lesson knowledge-check journey.
 
-`src/test/practice-page.test.tsx` covers the practice-set index, the Domain 2 deep link, and the
-unknown-set state.
+`src/test/domain-5-content.test.tsx` covers the Domain 5 lesson and objective mapping, two items per
+Domain 5 objective, practice-set wiring, registered sources, language separation, stated selection
+counts in multiple-response stems, and exact-set scoring where partial and extra selections both fail.
+
+`src/test/practice-page.test.tsx` covers the practice-set index, the Domain 2 and Domain 5 deep links,
+single-domain badges, the compact mixed-set badge, and the unknown-set state.
 
 ## 10. Next step
 
-Expand reviewed content for the remaining 15 objectives, especially Domain 5, before presenting a
-full mock exam. A timed simulation should be a separate, versioned layer with explicit expiry and
-should not be embedded in scoring. The current store already separates attempts from derived results,
-so a timer can add a session status without rewriting saved answers.
+Deepen the objectives that still have a single reviewed item and add mapped lessons for Domains 3, 4,
+6, and 7 before presenting a full mock exam. A timed simulation should be a separate, versioned layer
+with explicit expiry and should not be embedded in scoring. The current store already separates
+attempts from derived results, so a timer can add a session status without rewriting saved answers.

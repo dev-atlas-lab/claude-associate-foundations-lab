@@ -72,3 +72,25 @@ A question-bank item is not reviewed merely because its schema parses. It must h
   treatment, not a full fairness audit.
 
 Avoid ambiguous wording, trick questions with multiple defensible answers, and unsupported claims.
+
+## Authoring for new domains
+
+The Domain 5 and coverage-expansion work established patterns that later banks should follow:
+
+- Use the shared `reviewedEntry(question, objectiveId, sourceIds, checkedAt)` factory from
+  `bank-helpers.ts`. It is the single validated place that attaches review metadata, so a new bank
+  cannot silently skip the verification contract.
+- Keep one bank file per domain or per small authoring batch, and spread the arrays into
+  `reviewedQuestionBank` in `question-bank.ts`. The registry stays the only question list.
+- Write one single-choice and one multiple-response item per objective where the sources support it,
+  so exact-set scoring is exercised on real content rather than only in test fixtures.
+- State the required selection count in multiple-response stems, for example `Select three.` The
+  schema enforces the key size; the stem must tell the learner the same thing.
+- Describe model choice as capability tiers and selection approaches (efficiency-first vs
+  capability-first) instead of freezing current model names, prices, or limits. Cite the official
+  models documentation for the trade-off itself.
+- Treat the Help Center pages for projects, connectors, and research as JavaScript-rendered. Direct
+  fetches may return only navigation chrome, so record the access note and avoid quoting exact menu
+  labels that were not actually read.
+- Keep dates honest: new review records use the date the sources were actually opened, and a bank
+  may legitimately contain more than one `checkedAt` value.

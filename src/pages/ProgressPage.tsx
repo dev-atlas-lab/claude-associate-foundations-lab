@@ -76,8 +76,9 @@ export function ProgressPage() {
               {summary.bank.objectivesCovered}/{summary.bank.objectivesTotal}
             </span>
             <span className="stat-hint">
-              {summary.bank.objectivesTotal - summary.bank.objectivesCovered} objectives still have
-              no reviewed item
+              {summary.bank.objectivesTotal - summary.bank.objectivesCovered === 0
+                ? "Every official objective has at least one reviewed item"
+                : `${summary.bank.objectivesTotal - summary.bank.objectivesCovered} objectives still have no reviewed item`}
             </span>
           </article>
           <article className="stat">
@@ -85,7 +86,11 @@ export function ProgressPage() {
             <span className="stat-value">
               {summary.bank.domainsWithItems}/{summary.bank.domains.length}
             </span>
-            <span className="stat-hint">A domain with zero items is shown, not hidden</span>
+            <span className="stat-hint">
+              {summary.bank.domainsWithItems === summary.bank.domains.length
+                ? "All official domains have reviewed items"
+                : "A domain with zero items is shown, not hidden"}
+            </span>
           </article>
         </div>
 

@@ -68,10 +68,10 @@ describe("Domain 2 curriculum coverage", () => {
       blueprintDomain.objectives.map((objective) => objective.id),
     );
 
-    expect(coveredObjectiveIds.size).toBe(15);
+    expect(coveredObjectiveIds.size).toBe(30);
     expect(
       allObjectiveIds.filter((objectiveId) => !coveredObjectiveIds.has(objectiveId)),
-    ).toHaveLength(15);
+    ).toHaveLength(0);
   });
 
   it("keeps the unmapped Context Window sample out of the reviewed Domain 2 bank", () => {
@@ -81,7 +81,7 @@ describe("Domain 2 curriculum coverage", () => {
     expect(questionBankEntries.some((entry) => entry.question.id === "context-window-root-cause")).toBe(
       false,
     );
-    expect(publishedLessons).toHaveLength(2);
+    expect(publishedLessons).toHaveLength(4);
   });
 
   it("resolves lesson sources, related questions, and question review records", () => {

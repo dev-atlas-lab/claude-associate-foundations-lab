@@ -10,8 +10,10 @@ import {
   anthropicProvider,
   associateFoundationsBlueprint,
   associateFoundationsCertification,
+  configurationBasicsLesson,
   contextWindowLesson,
   contextWindowSampleAssessment,
+  domainFiveConfigurationAssessment,
   domainFourWorkflowAssessment,
   domainOnePromptingAssessment,
   domainSevenTroubleshootingAssessment,
@@ -23,6 +25,7 @@ import {
   mixedFoundationsAssessment,
   plannedLessons as plannedLessonData,
   practiceSets as practiceSetData,
+  promptStructureLesson,
   reviewedQuestionBank,
 } from "./certifications/claude-associate-foundations";
 import { sources } from "./sources";
@@ -36,7 +39,12 @@ export const contentPack = contentPackSchema.parse({
   certifications: [associateFoundationsCertification],
   blueprints: [associateFoundationsBlueprint],
   sources,
-  lessons: [contextWindowLesson, evaluationBasicsLesson],
+  lessons: [
+    contextWindowLesson,
+    evaluationBasicsLesson,
+    configurationBasicsLesson,
+    promptStructureLesson,
+  ],
   questionBank: reviewedQuestionBank,
   plannedLessons: plannedLessonData,
   assessments: [
@@ -45,6 +53,7 @@ export const contentPack = contentPackSchema.parse({
     domainTwoOutputValidationAssessment,
     domainThreeContextAssessment,
     domainFourWorkflowAssessment,
+    domainFiveConfigurationAssessment,
     domainSixGovernanceAssessment,
     domainSevenTroubleshootingAssessment,
     mixedFoundationsAssessment,

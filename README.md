@@ -26,15 +26,18 @@ Phases B, C0, C1, C2.1, C2.2a, C2.2b and C2.3 are implemented on top of the vali
   objectives: accuracy/completeness, hallucination/inconsistency and bias detection, fact-checking,
   human-review escalation, audience editing, and output-format selection. It links to reviewed bank
   questions and is explicit about the limits of its bias evidence.
+- Two more mapped lessons cover whole domains: `/learn/configuration-basics` teaches all four Domain 5
+  objectives (projects, knowledge, connectors, system-level instructions, and maintenance), and
+  `/learn/prompt-structure` teaches all four Domain 1 objectives.
 - A deterministic, certification-neutral assessment core in `src/domain/assessment.ts` supports
   single-choice and exact-set multiple-response scoring, answer changes, navigation, flags, explicit
   submission confirmation, review navigation, and idempotent submission. Scores are derived from
   submitted answers rather than stored in mutable state.
-- A reviewed, source-grounded bank of **24 original items** across Domains 1, 2, 3, 4, 6 and 7
-  (13 single-choice, 11 multiple-response). Bank metadata is validated against the blueprint,
-  certification, sources, and review status; no official questions are copied. See
-  `src/domain/question-bank.ts`.
-- Practice (`/practice`) is registry-driven: seven sets (six domain sets plus one mixed set) support
+- A reviewed, source-grounded bank of **54 original items** across all seven domains (28
+  single-choice, 26 multiple-response), covering all 30 official objectives. Bank metadata is
+  validated against the blueprint, certification, sources, and review status; no official questions
+  are copied. See `src/domain/question-bank.ts`.
+- Practice (`/practice`) is registry-driven: eight sets (seven domain sets plus one mixed set) support
   `?set=` deep links, resume an in-progress attempt, and save progress locally. English questions and
   Vietnamese explanations appear after submission. There is no timer and no official form.
 - Versioned local persistence (`cfl.study.v1`) with a content fingerprint, corrupt/incompatible/
@@ -43,18 +46,18 @@ Phases B, C0, C1, C2.1, C2.2a, C2.2b and C2.3 are implemented on top of the vali
   resolves them only through an explicit "Mark reviewed" action.
 - Progress separates reviewed-bank coverage from personal performance and shows a real zero-activity
   state instead of a fabricated score.
-- The Mock exam page runs a blueprint-weighted **24-of-60 preview**, reports the 36-item shortfall,
+- The Mock exam page runs a blueprint-weighted **54-of-60 preview**, reports the 6-item shortfall,
   and adds no filler, duplicates, timer, or scaled score.
-- Overall reviewed coverage is **15 / 30** objectives; Domain 2 is the only domain with an
-  exam-mapped lesson, and Domain 5 has no reviewed items yet.
+- Overall reviewed coverage is **30 / 30** objectives across all seven domains; Domains 1, 2, and 5
+  have exam-mapped lessons, and depth per objective still ranges from one to four items.
 - The Context Window sample lesson and its unmapped knowledge check remain available; the sample
   assessment definition is still in the pack but is no longer the `/practice` surface.
 - GitHub repository exists at <https://github.com/dev-atlas-lab/claude-associate-foundations-lab> on `main`.
 - No Vercel project has been connected yet.
 
-Quality gates currently pass: typecheck, lint, 123 tests across 18 files, and production build. Routes
-are code-split with `React.lazy`; the largest JS chunks are 339.94 kB (107.78 kB gzip) and 227.81 kB
-(64.11 kB gzip), with no Vite chunk-size warning. An axe-core run on the dashboard, lesson, mock-exam,
+Quality gates currently pass: typecheck, lint, 141 tests across 19 files, and production build. Routes
+are code-split with `React.lazy`; the largest JS chunks are 339.97 kB (107.81 kB gzip) and 335.96 kB
+(93.82 kB gzip), with no Vite chunk-size warning. An axe-core run on the dashboard, lesson, mock-exam,
 and glossary routes in both themes reports 0 violations; the new study surfaces still need a
 dedicated browser audit. See `docs/PROGRESS.md` for the detailed log, `docs/ASSESSMENT_ENGINE.md` for
 assessment decisions, and `docs/DESIGN_SYSTEM.md` for the design decisions.

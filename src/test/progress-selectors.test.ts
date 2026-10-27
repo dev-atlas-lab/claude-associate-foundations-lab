@@ -54,19 +54,25 @@ describe("progress summary", () => {
       questionById,
     );
 
-    expect(summary.bank.totalItems).toBe(24);
-    expect(summary.bank.singleChoiceItems).toBe(13);
-    expect(summary.bank.multipleResponseItems).toBe(11);
-    expect(summary.bank.objectivesCovered).toBe(15);
+    expect(summary.bank.totalItems).toBe(54);
+    expect(summary.bank.singleChoiceItems).toBe(28);
+    expect(summary.bank.multipleResponseItems).toBe(26);
+    expect(summary.bank.objectivesCovered).toBe(30);
     expect(summary.bank.objectivesTotal).toBe(30);
-    expect(summary.bank.domainsWithItems).toBe(6);
+    expect(summary.bank.domainsWithItems).toBe(7);
 
     const domainFive = summary.bank.domains.find(
       (domain) => domain.domainId === "configuration-knowledge-management",
     );
 
-    expect(domainFive?.itemCount).toBe(0);
-    expect(domainFive?.objectivesCovered).toBe(0);
+    expect(domainFive?.itemCount).toBe(8);
+    expect(domainFive?.objectivesCovered).toBe(4);
+    expect(summary.bank.domains.every((domain) => domain.itemCount > 0)).toBe(true);
+    expect(
+      summary.bank.domains.every(
+        (domain) => domain.objectivesCovered === domain.objectivesTotal,
+      ),
+    ).toBe(true);
 
     expect(summary.personal.submittedAttempts).toBe(0);
     expect(summary.personal.accuracyOnAnswered).toBeUndefined();
@@ -83,7 +89,7 @@ describe("progress summary", () => {
       questionById,
     );
 
-    expect(summary.bank.totalItems).toBe(24);
+    expect(summary.bank.totalItems).toBe(54);
     expect(summary.personal.submittedAttempts).toBe(1);
     expect(summary.personal.answeredQuestions).toBe(1);
     expect(summary.personal.correctAnswers).toBe(0);

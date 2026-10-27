@@ -518,3 +518,70 @@
 - No Playwright end-to-end suite yet.
 - Repository visibility, the `DevAtlasLab` organization rename, and Vercel deployment remain pending
   manual action.
+
+## Phase C2.4 - Domain 5 and full objective coverage (2026-10-27)
+
+### Scope
+
+- Give Domain 5 (Configuration and Knowledge Management) its first reviewed questions, practice set,
+  and lesson.
+- Extend coverage to the fifteen objectives that previously had no reviewed item: Domain 1
+  (`iterate`, `adapt-strategies`), Domain 3 (`product-feature-selection`, `model-family-selection`,
+  `model-task-fit`), Domain 4 (`research-planning`, `solution-design`,
+  `stakeholder-communication`), Domain 6 (`data-privacy`, `policies`), and Domain 7
+  (`optimize-workflows`).
+- Audit Domain 2 for quality without inflating counts. Its fourteen items were left unchanged.
+
+### Content
+
+- Added ten official Anthropic sources to `src/content/sources.ts`: project overview/management,
+  project RAG, connectors, Google Workspace connectors, research mode, models overview, choosing a
+  model, the Privacy Policy, and the Usage Policy. Each records what it supports and the
+  `accessedAt` date of 2026-10-27.
+- Extracted the duplicated `reviewedEntry` factory into
+  `certifications/claude-associate-foundations/bank-helpers.ts`. Every bank file now imports one
+  validated review wrapper instead of copying schema logic.
+- Added `question-bank-domain5.ts` (8 items, 2 per Domain 5 objective),
+  `question-bank-expansion-a.ts` (10 items across Domains 1 and 3), and
+  `question-bank-expansion-b.ts` (12 items across Domains 4, 6, and 7). All three are spread into
+  `reviewedQuestionBank`, so there is still one registry and one schema.
+- Every new objective got one single-choice and one multiple-response item, and every
+  multiple-response stem states the required selection count.
+- Model-selection items describe efficiency-first and capability-first approaches instead of freezing
+  current model names, prices, or limits.
+- Added `configuration-basics` (Domain 5, all four objectives) and `prompt-structure` (Domain 1, all
+  four objectives) as reviewed curriculum lessons. `workflow-design` is now the only planned lesson.
+- Added the `domain-5-configuration-set` assessment and practice entry; expanded the Domain 1, 3, 4,
+  6, and 7 sets; the mixed set now derives its question ids from the reviewed bank.
+
+### UI and integrity fixes
+
+- Lesson practice callouts and link labels now derive their domain label from the lesson's objective
+  mapping instead of hardcoding "Domain 2 practice".
+- Dashboard and Progress copy derive totals from the registry; no hardcoded bank size remains.
+- Progress hints switch to accurate wording when every objective and domain is covered.
+
+### Verification
+
+- `npm run typecheck`: pass (`tsc -b`, strict).
+- `npm run lint`: pass (`eslint .`, 0 problems).
+- `npm test`: pass — **19 files / 141 tests**. New coverage in
+  `src/test/domain-5-content.test.tsx` checks lesson mapping, per-objective item counts, practice-set
+  wiring, English/Vietnamese language separation, stated selection counts, and exact-set scoring
+  (partial and extra selections both fail). Existing suites were updated for the new totals and the
+  registry-derived mixed set.
+- `npm run build`: pass. CSS **44.99 kB** (gzip **7.43 kB**), no chunk-size warning.
+- `git diff --check`: clean (no whitespace errors).
+
+### Coverage and limitations
+
+- Coverage is now **30 / 30** objectives with reviewed items and **14 / 30** with a mapped lesson,
+  across **7 / 7** domains. The bank holds **54 items** (28 single-choice, 26 multiple-response).
+- Depth is uneven: eight objectives still have a single reviewed item, and Domains 3, 4, 6, and 7
+  have no mapped lesson.
+- The mock exam is still a **preview**: 54 of 60 slots, shortfall 6, no timer, no auto-submit, no
+  scaled score, and no readiness prediction.
+- Help Center pages for projects, connectors, and research are JavaScript-rendered; their body text
+  was read through search extracts, so exact UI steps may drift and are not quoted as fixed.
+- No new persistence, scoring rules, backend, or dependencies were introduced. Changes remain
+  uncommitted for human review.

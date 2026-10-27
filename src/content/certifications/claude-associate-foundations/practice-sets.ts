@@ -23,6 +23,10 @@ export const practiceSets: PracticeSet[] = [
     domainIds: ["workflow-integration-solution-design"],
   },
   {
+    assessmentId: "domain-5-configuration-set",
+    domainIds: ["configuration-knowledge-management"],
+  },
+  {
     assessmentId: "domain-6-governance-set",
     domainIds: ["governance-risk-responsible-use"],
   },
@@ -37,6 +41,7 @@ export const practiceSets: PracticeSet[] = [
       "output-evaluation-validation",
       "product-model-selection",
       "workflow-integration-solution-design",
+      "configuration-knowledge-management",
       "governance-risk-responsible-use",
       "troubleshooting-optimization",
     ],
