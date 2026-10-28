@@ -16,11 +16,13 @@ export function LessonContent({
   sources,
   relatedPractice,
   practiceDomainLabel,
+  practiceSetId,
 }: {
   lesson: Lesson;
   sources: Source[];
   relatedPractice: RelatedPracticeItem[];
   practiceDomainLabel: string;
+  practiceSetId?: string;
 }) {
   const relatedObjectives = [
     ...new Set(
@@ -29,6 +31,9 @@ export function LessonContent({
       ),
     ),
   ];
+  const practiceHref = practiceSetId
+    ? `/practice?set=${encodeURIComponent(practiceSetId)}`
+    : "/practice";
   return (
     <>
       <section
@@ -184,7 +189,7 @@ export function LessonContent({
             </ul>
           ) : null}
           <p className="lesson-prose">
-            <Link className="inline-link" to="/practice">
+            <Link className="inline-link" to={practiceHref}>
               Mở bộ {practiceDomainLabel} practice
             </Link>
           </p>

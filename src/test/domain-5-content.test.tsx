@@ -202,7 +202,7 @@ describe("Domain 5 lesson route", () => {
     ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Mở bộ Domain 5 practice" })).toHaveAttribute(
       "href",
-      "/practice",
+      "/practice?set=domain-5-configuration-set",
     );
 
     await user.click(

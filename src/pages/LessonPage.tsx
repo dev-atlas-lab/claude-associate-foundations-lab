@@ -10,6 +10,7 @@ import {
   getLesson,
   getLessonNeighbours,
   getObjective,
+  getPracticeSetForDomain,
   getQuestion,
   getQuestionBankEntry,
   getSources,
@@ -75,6 +76,14 @@ export function LessonPage() {
   const blueprint = getBlueprint(lesson.blueprintId);
   const certificationCode = certification?.code ?? "Certification";
   const blueprintVersion = blueprint?.version ?? "—";
+  const practiceDomainIds = [
+    ...new Set(
+      lesson.examMapping.objectiveIds.flatMap((objectiveId) => {
+        const domainId = getObjective(objectiveId)?.domain.id;
+        return domainId ? [domainId] : [];
+      }),
+    ),
+  ];
   const practiceDomainCodes = [
     ...new Set(
       lesson.examMapping.objectiveIds.flatMap((objectiveId) => {
@@ -85,6 +94,10 @@ export function LessonPage() {
   ];
   const practiceDomainLabel =
     practiceDomainCodes.length > 0 ? `Domain ${practiceDomainCodes.join(", ")}` : "reviewed";
+  const practiceSetId =
+    practiceDomainIds.length === 1
+      ? getPracticeSetForDomain(practiceDomainIds[0]!)?.assessment.id
+      : undefined;
   const isMapped = lesson.examMapping.status !== "unmapped";
   const mappingTitle =
     lesson.examMapping.status === "verified"
@@ -138,6 +151,7 @@ export function LessonPage() {
               sources={sources}
               relatedPractice={relatedPractice}
               practiceDomainLabel={practiceDomainLabel}
+              practiceSetId={practiceSetId}
             />
 
             <LessonPager

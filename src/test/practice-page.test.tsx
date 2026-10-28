@@ -1,7 +1,19 @@
 import { render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
+import { getAssessment, getAssessmentQuestions } from "../content";
+import {
+  chooseAnswer,
+  createAssessmentContext,
+  startAssessment,
+  submitAssessment,
+} from "../domain";
 import { PracticePage } from "../pages/PracticePage";
+import {
+  resetStudyData,
+  saveStudySession,
+  startStudyAttempt,
+} from "../persistence/study-store";
 
 function renderPractice(path = "/practice") {
   render(
@@ -12,6 +24,10 @@ function renderPractice(path = "/practice") {
 }
 
 describe("practice page", () => {
+  beforeEach(() => {
+    resetStudyData();
+  });
+
   it("lists the registry-driven practice sets", () => {
     renderPractice();
 
@@ -99,5 +115,95 @@ describe("practice page", () => {
       "href",
       "/practice",
     );
+  });
+
+  it("displays Not started, In progress, and Completed status badges derived from local study state", () => {
+    const d5Definition = getAssessment("domain-5-configuration-set")!;
+    const d5Questions = getAssessmentQuestions(d5Definition);
+    const d5Context = createAssessmentContext(d5Definition, d5Questions);
+    const d5First = d5Questions[0]!;
+
+    // 1. Initially all sets are Not started
+    const initialView = render(
+      <MemoryRouter initialEntries={["/practice"]}>
+        <PracticePage />
+      </MemoryRouter>,
+    );
+    const initialD5Card = screen.getByRole("link", {
+      name: /Domain 5: Configuration and Knowledge Management/i,
+    });
+    expect(within(initialD5Card).getByText("Not started")).toBeInTheDocument();
+    initialView.unmount();
+
+    // 2. Start an active attempt on Domain 5 and answer 1 of 8 questions -> In progress (1/8 answered)
+    let session1 = startAssessment(d5Context, {
+      sessionId: "d5-active-1",
+      startedAt: "2026-10-28T09:00:00.000Z",
+    });
+    startStudyAttempt(d5Definition, session1, {
+      kind: "practice",
+      practiceSetId: d5Definition.id,
+    });
+    session1 = chooseAnswer(
+      d5Context,
+      session1,
+      d5First.id,
+      d5First.correctChoiceIds,
+    );
+    saveStudySession(session1);
+
+    const inProgressView = render(
+      <MemoryRouter initialEntries={["/practice"]}>
+        <PracticePage />
+      </MemoryRouter>,
+    );
+    const inProgressD5Card = screen.getByRole("link", {
+      name: /Domain 5: Configuration and Knowledge Management/i,
+    });
+    expect(
+      within(inProgressD5Card).getByText("In progress (1/8 answered)"),
+    ).toBeInTheDocument();
+    inProgressView.unmount();
+
+    // 3. Submit that attempt (1/8 = 12.5%) -> Completed (Last: 12.5% · 1 attempt)
+    const submitted1 = submitAssessment(
+      d5Context,
+      session1,
+      "2026-10-28T09:05:00.000Z",
+    );
+    saveStudySession(submitted1.session);
+
+    const completedView = render(
+      <MemoryRouter initialEntries={["/practice"]}>
+        <PracticePage />
+      </MemoryRouter>,
+    );
+    const completedD5Card = screen.getByRole("link", {
+      name: /Domain 5: Configuration and Knowledge Management/i,
+    });
+    expect(
+      within(completedD5Card).getByText("Completed (Last: 12.5% · 1 attempt)"),
+    ).toBeInTheDocument();
+    completedView.unmount();
+
+    // 4. Start a second attempt while keeping the prior completed attempt -> combined status
+    const session2 = startAssessment(d5Context, {
+      sessionId: "d5-active-2",
+      startedAt: "2026-10-28T10:00:00.000Z",
+    });
+    startStudyAttempt(d5Definition, session2, {
+      kind: "practice",
+      practiceSetId: d5Definition.id,
+    });
+
+    renderPractice();
+    const combinedD5Card = screen.getByRole("link", {
+      name: /Domain 5: Configuration and Knowledge Management/i,
+    });
+    expect(
+      within(combinedD5Card).getByText(
+        "In progress (0/8 answered) · Last: 12.5% · 1 attempt",
+      ),
+    ).toBeInTheDocument();
   });
 });

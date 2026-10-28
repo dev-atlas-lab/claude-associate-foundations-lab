@@ -151,7 +151,7 @@ describe("Domain 2 lesson route", () => {
     ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Mở bộ Domain 2 practice" })).toHaveAttribute(
       "href",
-      "/practice",
+      "/practice?set=domain-2-output-validation-set",
     );
 
     await user.click(

@@ -5,15 +5,25 @@ import { Callout } from "../components/ui/Callout";
 import { EmptyState } from "../components/ui/EmptyState";
 import { PageHeader } from "../components/ui/PageHeader";
 import {
+  allQuestions,
   getAssessmentQuestions,
   practiceSets,
   questionBankEntries,
   type PracticeSetSummary,
 } from "../content";
-import { findActiveAttempt, findLatestSubmittedAttempt } from "../domain";
+import {
+  calculateAttemptResult,
+  findActiveAttempt,
+  findLatestSubmittedAttempt,
+  type StudyState,
+} from "../domain";
 import { PersistedAssessment } from "../features/study/components/PersistedAssessment";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { useStudyState } from "../persistence/study-store";
+
+const practiceQuestionById = new Map(
+  allQuestions.map((question) => [question.id, question]),
+);
 
 function domainLabel(codes: string[]): string {
   return codes.map((code) => `Domain ${code}`).join(" · ");
@@ -28,6 +38,62 @@ function practiceSetBadge(practiceSet: PracticeSetSummary): string {
   const [onlyDomain] = practiceSet.domains;
 
   return onlyDomain && practiceSet.domains.length === 1 ? onlyDomain.code : "M";
+}
+
+interface PracticeSetActivityStatus {
+  tone: "neutral" | "accent" | "ok";
+  label: string;
+}
+
+function derivePracticeSetStatus(
+  state: StudyState,
+  practiceSet: PracticeSetSummary,
+): PracticeSetActivityStatus {
+  const assessmentId = practiceSet.assessment.id;
+  const activeAttempt = findActiveAttempt(state, assessmentId);
+  const submittedAttempts = state.attempts.filter(
+    (attempt) =>
+      attempt.session.assessmentId === assessmentId &&
+      attempt.session.status === "submitted" &&
+      attempt.session.submittedAt !== undefined &&
+      attempt.questionIds.every((questionId) => practiceQuestionById.has(questionId)),
+  );
+  const latestSubmitted = submittedAttempts[submittedAttempts.length - 1];
+  const submittedCount = submittedAttempts.length;
+  const attemptsLabel = submittedCount === 1 ? "1 attempt" : `${submittedCount} attempts`;
+
+  if (activeAttempt) {
+    const answeredCount = activeAttempt.questionIds.filter(
+      (questionId) => (activeAttempt.session.answers[questionId]?.length ?? 0) > 0,
+    ).length;
+    const totalCount = activeAttempt.questionIds.length;
+
+    if (latestSubmitted) {
+      const latestResult = calculateAttemptResult(latestSubmitted, practiceQuestionById);
+      return {
+        tone: "accent",
+        label: `In progress (${answeredCount}/${totalCount} answered) · Last: ${latestResult.rawPercentage}% · ${attemptsLabel}`,
+      };
+    }
+
+    return {
+      tone: "accent",
+      label: `In progress (${answeredCount}/${totalCount} answered)`,
+    };
+  }
+
+  if (latestSubmitted) {
+    const latestResult = calculateAttemptResult(latestSubmitted, practiceQuestionById);
+    return {
+      tone: "ok",
+      label: `Completed (Last: ${latestResult.rawPercentage}% · ${attemptsLabel})`,
+    };
+  }
+
+  return {
+    tone: "neutral",
+    label: "Not started",
+  };
 }
 
 export function PracticePage() {
@@ -175,27 +241,34 @@ export function PracticePage() {
           </span>
         </div>
         <div className="row-list">
-          {practiceSets.map((practiceSet) => (
-            <Link
-              className="row"
-              key={practiceSet.assessment.id}
-              to={`/practice?set=${encodeURIComponent(practiceSet.assessment.id)}`}
-            >
-              <span className="row-start" aria-hidden="true">
-                {practiceSetBadge(practiceSet)}
-              </span>
-              <span className="row-body">
-                <span className="row-title">{practiceSet.assessment.title}</span>
-                <span className="row-meta">
-                  {domainLabel(practiceSet.domains.map((domain) => domain.code))} ·{" "}
-                  {practiceSet.objectiveIds.length} objectives · {practiceSet.questionCount} items ·{" "}
-                  {practiceSet.singleChoiceCount} single-choice / {practiceSet.multipleResponseCount}{" "}
-                  multiple-response
+          {practiceSets.map((practiceSet) => {
+            const status = derivePracticeSetStatus(snapshot.state, practiceSet);
+
+            return (
+              <Link
+                className="row"
+                key={practiceSet.assessment.id}
+                to={`/practice?set=${encodeURIComponent(practiceSet.assessment.id)}`}
+              >
+                <span className="row-start" aria-hidden="true">
+                  {practiceSetBadge(practiceSet)}
                 </span>
-              </span>
-              <span className="row-tail">Open</span>
-            </Link>
-          ))}
+                <span className="row-body">
+                  <span className="row-title">{practiceSet.assessment.title}</span>
+                  <span className="row-meta">
+                    {domainLabel(practiceSet.domains.map((domain) => domain.code))} ·{" "}
+                    {practiceSet.objectiveIds.length} objectives · {practiceSet.questionCount} items ·{" "}
+                    {practiceSet.singleChoiceCount} single-choice / {practiceSet.multipleResponseCount}{" "}
+                    multiple-response
+                  </span>
+                  <span className="row-meta">
+                    <Badge tone={status.tone}>{status.label}</Badge>
+                  </span>
+                </span>
+                <span className="row-tail">Open</span>
+              </Link>
+            );
+          })}
         </div>
       </section>
 

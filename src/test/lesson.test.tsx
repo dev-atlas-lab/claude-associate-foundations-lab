@@ -2,6 +2,11 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it } from "vitest";
+import {
+  getLessonForDomain,
+  getPracticeSetForDomain,
+  primaryBlueprint,
+} from "../content";
 import { questionSchema } from "../domain";
 import { KnowledgeCheck } from "../features/curriculum/components/KnowledgeCheck";
 import { ThemeProvider } from "../hooks/ThemeProvider";
@@ -99,6 +104,32 @@ describe("sample lesson", () => {
     expect(
       screen.getByRole("link", { name: /Đánh giá output: accuracy, evidence/i }),
     ).toHaveAttribute("href", "/learn/evaluation-basics");
+  });
+
+  it("deep-links every exam-mapped lesson directly to its single-domain practice set", async () => {
+    for (const domain of primaryBlueprint.domains) {
+      const lesson = getLessonForDomain(domain.id)!;
+      const practiceSet = getPracticeSetForDomain(domain.id)!;
+      const view = render(
+        <ThemeProvider>
+          <RouterProvider
+            router={createMemoryRouter(routes, {
+              initialEntries: [`/learn/${lesson.id}`],
+            })}
+          />
+        </ThemeProvider>,
+      );
+
+      await screen.findByRole("heading", { level: 1, name: lesson.title });
+      const cta = screen.getByRole("link", {
+        name: `Mở bộ Domain ${domain.code} practice`,
+      });
+      expect(cta).toHaveAttribute(
+        "href",
+        `/practice?set=${encodeURIComponent(practiceSet.assessment.id)}`,
+      );
+      view.unmount();
+    }
   });
 });
 
