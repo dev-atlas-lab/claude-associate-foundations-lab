@@ -391,5 +391,5 @@ answers.
 
 Phase C2.6 adds the browser regression gate (`npm run test:e2e`) and 65 axe scans over both themes.
 Phase C2.7 adds a GitHub Actions workflow that runs the same gates on pull requests and pushes to
-`main`; it has not yet been executed by GitHub. Firefox/WebKit, cross-browser compatibility, and a
+`main`; its first `main` run passed on 2026-10-28. Firefox/WebKit, cross-browser compatibility, and a
 manual screen-reader pass remain outstanding.

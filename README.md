@@ -61,8 +61,8 @@ validated scaffold.
 - GitHub repository exists at <https://github.com/dev-atlas-lab/claude-associate-foundations-lab> on `main`.
 - A GitHub Actions CI workflow (`.github/workflows/ci.yml`) validates pull requests and pushes to
   `main` with typecheck, lint, unit/integration tests, the production build, and the Chromium
-  Playwright/axe suite. It has not run on GitHub yet; only the equivalent local commands have been
-  executed.
+  Playwright/axe suite. The first `main` run passed on 2026-10-28
+  ([run 40611368468](https://github.com/dev-atlas-lab/claude-associate-foundations-lab/actions/runs/40611368468)).
 - No Vercel project has been connected yet.
 
 Local quality gates currently pass: typecheck, lint, **145 unit/integration tests across 19 files**,
@@ -136,10 +136,9 @@ artifact when a job fails.
 4. Runs `npm run test:e2e` against the production preview, including all 65 axe scans.
 5. On failure, uploads `test-results/` and `playwright-report/` for seven days.
 
-The workflow requests only `contents: read`, uses no secrets, and does not deploy. It has been
-validated locally, but it has not yet been executed by GitHub Actions; the first push or pull request
-will provide that verification. CI does not cover Firefox/WebKit, manual screen-reader testing, or a
-Vercel deployment.
+The workflow requests only `contents: read`, uses no secrets, and does not deploy. Its first `main`
+run completed successfully on 2026-10-28. CI does not cover Firefox/WebKit, manual screen-reader
+testing, or a Vercel deployment.
 
 ## Tech stack
 

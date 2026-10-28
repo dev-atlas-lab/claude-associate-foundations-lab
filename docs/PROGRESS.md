@@ -18,7 +18,7 @@
 - [x] Accessibility, end-to-end, and regression audit implemented with Playwright, axe-core, and targeted focus/landmark/contrast fixes (Phase C2.6, 2026-10-28).
 - [x] GitHub Actions quality-gate workflow added for pull requests and pushes to `main` (Phase C2.7, 2026-10-28); local equivalents pass.
 - [x] Tests and production build pass for implemented features.
-- [ ] CI workflow not yet executed by GitHub Actions; first run remains pending.
+- [x] First GitHub Actions run passed on `main` (run 40611368468, 2026-10-28).
 - [ ] Timed mock exam (timer, auto-submit, expiry, scaled score) not implemented; explicitly deferred.
 - [ ] Vercel deployment verified.
 
@@ -588,8 +588,8 @@
   scaled score, and no readiness prediction.
 - Help Center pages for projects, connectors, and research are JavaScript-rendered; their body text
   was read through search extracts, so exact UI steps may drift and are not quoted as fixed.
-- No new persistence, scoring rules, backend, or dependencies were introduced. Changes remain
-  uncommitted for human review.
+- No new persistence, scoring rules, backend, or dependencies were introduced. Changes were left
+  uncommitted at the end of this phase and were later included in commit `50efba5`.
 
 ## Phase C2.5 - Whole-domain lessons and question depth (2026-10-27)
 
@@ -664,8 +664,8 @@
   learner is exam-ready, and no domain is claimed to be exhausted.
 - Help Center pages for projects, connectors, and research remain JavaScript-rendered; their body
   text was read through search extracts, so exact UI steps may drift and are not quoted as fixed.
-- No new persistence, scoring rules, backend, or dependencies were introduced. Changes remain
-  uncommitted for human review.
+- No new persistence, scoring rules, backend, or dependencies were introduced. Changes were left
+  uncommitted at the end of this phase and were later included in commit `50efba5`.
 
 ## Phase C2.6 - Accessibility, end-to-end, and regression audit (2026-10-28)
 
@@ -752,7 +752,7 @@ use isolated browser contexts; no network calls or shared storage are involved.
 ### Limitations
 
 - Playwright is Chromium-only. Firefox and WebKit are not installed or tested. (C2.7 later added a CI
-  workflow for the Chromium gates; it had not been executed by GitHub at the end of this phase.)
+  workflow for the Chromium gates, which passed on GitHub on 2026-10-28.)
 - axe is automated and cannot prove screen-reader usability. Manual NVDA/VoiceOver passes remain a
   human follow-up, especially for the question navigator, review detail, and storage recovery notice.
 - The scans finish CSS transitions before analysis; a real 120 ms colour-transition flash on newly
@@ -763,15 +763,15 @@ use isolated browser contexts; no network calls or shared storage are involved.
   the SPA build and deep-link fallback locally, not on Vercel.
 - Phase naming: the source-of-truth docs use C2.5 for content completion and contain no C3.1 phase;
   this audit is therefore recorded as C2.6, not as a new content phase.
-- All C2.5 and C2.6 changes remain uncommitted for human review; nothing was staged, committed, pushed,
-  or deployed in this phase.
+- All C2.5 and C2.6 changes were left uncommitted at the end of this phase; they were later included
+  in commit `50efba5` and pushed to `origin/main`.
 
 ## Phase C2.7 - CI quality gates and release readiness (2026-10-28)
 
 ### Scope
 
 - Inspected the checkout rather than relying on prior reports: branch `main` at `2ed3408`, with C2.5
-  and C2.6 work uncommitted. Re-derived **8 published lessons**, **62 reviewed items**, **30 / 30**
+  and C2.6 work still uncommitted at inspection time. Re-derived **8 published lessons**, **62 reviewed items**, **30 / 30**
   objectives covered, **19 files / 145 unit/integration tests**, **7 files / 104 Playwright tests**,
   and **65 axe scans** from the repository.
 - Added `.github/workflows/ci.yml` for every pull request and every push to `main`. No workflow
@@ -804,7 +804,7 @@ use isolated browser contexts; no network calls or shared storage are involved.
   unchanged.
 - No test was skipped, weakened, or excluded to satisfy CI.
 
-### Verification (local)
+### Verification
 
 - `npm ci`: pass after stopping two stale project-local Vite dev servers that held a Windows file
   lock on `node_modules/@esbuild/win32-x64/esbuild.exe`. The lockfile installed cleanly with
@@ -820,12 +820,16 @@ use isolated browser contexts; no network calls or shared storage are involved.
 - `CI=true npm run test:e2e`: pass - **104 tests with 2 workers, one retry, `forbidOnly`, and the
   HTML reporter**, matching the workflow branch. No retries were needed.
 - `git diff --check`: pass. Git only reports CRLF normalization warnings.
+- GitHub Actions run
+  [40611368468](https://github.com/dev-atlas-lab/claude-associate-foundations-lab/actions/runs/40611368468)
+  on `main`: **success** in 3 minutes. Checkout, Node setup, `npm ci`, typecheck, lint, unit tests,
+  production build, Chromium installation, and E2E/accessibility all succeeded. The failure-artifact
+  upload step was skipped because the job passed.
 
 ### Status and limitations
 
-- The workflow is authored and locally validated but **has not been executed by GitHub Actions**.
-  No workflow run, check mark, or artifact exists on GitHub until a push or pull request triggers
-  it. GitHub Actions success is not claimed.
+- The workflow is committed and was executed successfully by GitHub Actions on `main`. Later runs
+  must still pass on their own; this log records the first verified run, not a permanent guarantee.
 - E2E and axe coverage in CI is Chromium-only. Firefox/WebKit, manual NVDA/VoiceOver testing,
   cross-browser compatibility, and Vercel deployment remain unverified.
 - CI uses a single Ubuntu runner and two Playwright workers; the suite takes about two minutes
@@ -835,4 +839,6 @@ use isolated browser contexts; no network calls or shared storage are involved.
   CI-only build-skip switch.
 - Local Node 22.11 is below the engine range of two dev dependencies. CI avoids this by using the
   latest Node 22; upgrading the local runtime or the `engines` field remains a follow-up.
-- All C2.5, C2.6, and C2.7 changes remain uncommitted for human review.
+- The C2.5-C2.7 implementation was committed as `50efba5` and pushed to `origin/main` on 2026-10-28;
+  the verified CI status was recorded in a follow-up documentation commit. No deployment was
+  performed.

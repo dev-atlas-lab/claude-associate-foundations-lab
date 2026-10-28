@@ -152,7 +152,7 @@ Status: implemented (2026-10-28).
 
 ### C2.7 - CI quality gates and release readiness
 
-Status: implemented locally (2026-10-28); the first GitHub Actions run is pending.
+Status: implemented and verified (2026-10-28); the first GitHub Actions run passed.
 
 - Added `.github/workflows/ci.yml` for pull requests and pushes to `main`: Node 22 from `.nvmrc`,
   npm caching, `npm ci`, typecheck, lint, unit/integration tests, production build, Chromium
@@ -163,8 +163,9 @@ Status: implemented locally (2026-10-28); the first GitHub Actions run is pendin
   browser matrix, or extra third-party actions.
 - Locally verified: `npm ci`, typecheck, lint, **145** unit/integration tests, the production build,
   **104** Playwright tests in both normal and `CI=true` modes, and `git diff --check`.
-- Not verified: execution by GitHub Actions, Firefox/WebKit, manual screen-reader testing, and
-  Vercel deployment.
+- GitHub Actions run `40611368468` on `main` passed every step, including E2E/accessibility; the
+  failure-artifact upload was skipped as expected on a green run.
+- Not verified: Firefox/WebKit, manual screen-reader testing, and Vercel deployment.
 
 ### Remaining Phase D work
 
@@ -188,10 +189,10 @@ Status: implemented for local study progress (2026-10-27); glossary and settings
 
 ## Phase F — Quality
 
-Status: complete for Phase C2.7 locally (2026-10-28). Typecheck, lint, 145 unit/integration tests,
-104 Playwright tests, the production build, and 65 axe scans pass. A GitHub Actions workflow now runs
-the same gates on pull requests and pushes to `main`, but it has not been executed by GitHub yet.
-Firefox/WebKit, manual screen-reader testing, and deployment verification remain outstanding.
+Status: complete for Phase C2.7 (2026-10-28). Typecheck, lint, 145 unit/integration tests, 104
+Playwright tests, the production build, and 65 axe scans pass. A GitHub Actions workflow runs the same
+gates on pull requests and pushes to `main`, and its first `main` run passed. Firefox/WebKit, manual
+screen-reader testing, and deployment verification remain outstanding.
 
 - Typecheck, lint, unit/integration tests, production build.
 - End-to-end tests for critical journeys (`tests/e2e/`, run with `npm run test:e2e`).
@@ -202,10 +203,11 @@ Firefox/WebKit, manual screen-reader testing, and deployment verification remain
 
 ## Phase G — GitHub and Vercel
 
-Status: not started for Phase C2.6. The previous phase is committed and pushed, but all C2.5 and C2.6
-changes are uncommitted in the working tree; no push or deployment has been performed.
+Status: in progress. Tested work through C2.7 was committed as `50efba5` and pushed to `origin/main`
+on 2026-10-28, and the first GitHub Actions run passed. Vercel is not connected and no deployment has
+been performed.
 
-- Verify target repository and secure Git credentials.
-- Commit and push tested work; no GitHub CLI.
-- Verify Vercel integration or securely authenticated CLI deployment.
-- Verify live URL and direct-route refreshes.
+- [x] Verify target repository and secure Git credentials.
+- [x] Commit and push tested work; no GitHub CLI.
+- [ ] Verify Vercel integration or securely authenticated CLI deployment.
+- [ ] Verify live URL and direct-route refreshes.

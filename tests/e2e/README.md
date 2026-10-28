@@ -47,7 +47,10 @@ $env:CI="true"; npm run test:e2e   # PowerShell
 CI=true npm run test:e2e           # bash
 ```
 
-The workflow has not yet run on GitHub Actions; only the equivalent local gates have been verified.
+The first `main` run passed on 2026-10-28
+([run 40611368468](https://github.com/dev-atlas-lab/claude-associate-foundations-lab/actions/runs/40611368468));
+the Chromium install and E2E/accessibility steps both succeeded. The failure-artifact upload step was
+skipped, as expected on a green run.
 
 ## Coverage
 
@@ -80,6 +83,6 @@ The workflow has not yet run on GitHub Actions; only the equivalent local gates 
 - axe cannot replace a manual NVDA/VoiceOver pass.
 - The Timed Mock Exam is not implemented, so no timer, auto-submit, expiry, or scaled-score flow is
   tested.
-- The GitHub Actions workflow is present in the working tree but has not been committed or executed
-  by GitHub yet, so its first green run is still unverified.
+- GitHub Actions runs this suite on pull requests and `main`; its first run passed, but it is still
+  Chromium-only.
 - No cross-browser or manual screen-reader testing is included in CI.
