@@ -20,7 +20,7 @@
 - [x] Tests and production build pass for implemented features.
 - [x] First GitHub Actions run passed on `main` (run 40611368468, 2026-10-28).
 - [x] Timed 60-question / 120-minute mock exam with persisted deadline, reload recovery, auto-submit, expiry labeling, and an immutable raw result implemented (Phase C2.8, 2026-10-28).
-- [x] Full content and assessment audit completed for 62 bank items, 8 lessons, 15 glossary entries, 27 sources, domain practice sets, and timed-exam integrity (Phase C2.9, 2026-10-28); corrections are unstaged pending human review.
+- [x] Full content and assessment audit completed for 62 bank items, 8 lessons, 15 glossary entries, 27 sources, domain practice sets, and timed-exam integrity (Phase C2.9, 2026-10-28); E2E expectations for the expanded Domain 7 practice set aligned with registry counts.
 - [ ] Official scaled score and pass prediction remain unimplemented by design; no official source supports inventing them.
 - [ ] Vercel deployment verified.
 
@@ -979,6 +979,10 @@ destructive cleanup was performed.
 - Added the missing items to the Domain 1, 4, 6, and 7 practice sets and updated their descriptions.
 - Tightened the `context-rot` and `hallucination` glossary definitions to match official wording.
 - Added targeted tests for domain-set alignment, exact domain weights, and the timed allocation.
+- Updated `tests/e2e/practice.spec.ts` and `tests/e2e/review-progress.spec.ts` so expectations for the
+  `domain-7-troubleshooting-set` fixture (`openReviewCount`, `unansweredCount`, and
+  `expectedRawPercentage`) derive from `questions.length` instead of hardcoding the previous 4-item
+  counts.
 
 ### Timed allocation decision
 
@@ -992,19 +996,9 @@ not done in this audit.
 
 ### Verification
 
-- `git diff --check`: pass with only Git's LF-to-CRLF normalization warnings; no whitespace errors
-  (re-run after final edits).
-- Targeted tests: **9 files / 71 tests passed** (`question-bank`, `curriculum`, `timed-exam-content`,
-  `domain-2-content`, `domain-5-content`, `glossary`, `lesson`, `practice-page`, `mock-exam`) during the
-  audit; the final-review rerun after the callout-title correction passed **3 files / 12 tests**
-  (`lesson`, `glossary`, `timed-exam-content`).
-- `npm run typecheck`: pass (re-run after final edits).
-- `npm run lint`: pass with 0 problems (re-run after final edits).
-- Not run locally: full `npm test`, full Playwright E2E, and `npm run build`. These remain delegated
-  to CI after the user reviews and pushes the changes.
-- GitHub Actions and Vercel: pending/not performed. No live deployment was claimed.
-
-### Git state
-
-- Branch `main`, baseline `8631d55`; all audit corrections and the new audit document are unstaged.
-- The working tree was not committed, pushed, stashed, reset, or cleaned.
+- `git diff --check`: pass with only Git's LF-to-CRLF normalization warnings; no whitespace errors.
+- `npm run typecheck`: pass.
+- `npm run lint`: pass with 0 problems.
+- `npm test`: pass (**23 files / 178 tests**).
+- `npm run build`: pass.
+- `npm run test:e2e`: pass (**116 Playwright tests across 8 files**).

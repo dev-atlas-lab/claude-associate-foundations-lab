@@ -18,6 +18,7 @@ const practiceSet = practiceSets.find(
   (candidate) => candidate.assessment.id === "domain-7-troubleshooting-set",
 )!;
 const questions = getAssessmentQuestions(practiceSet.assessment);
+const expectedRawPercentage = Math.round((1 / questions.length) * 10000) / 100;
 const multipleIndex = questions.findIndex(
   (question) => question.type === "multiple-response",
 );
@@ -182,7 +183,7 @@ test.describe("question interaction", () => {
     await expectAssessmentStat(page, "Đúng", 1);
     await expectAssessmentStat(page, "Sai", 1);
     await expectAssessmentStat(page, "Chưa trả lời", questions.length - 2);
-    await expectAssessmentStat(page, "Raw percentage", 25);
+    await expectAssessmentStat(page, "Raw percentage", expectedRawPercentage);
 
     await goToQuestion(page, 1);
     await expectFeedback(page, "Chính xác");

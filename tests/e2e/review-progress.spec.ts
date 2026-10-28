@@ -25,6 +25,9 @@ const practiceSet = practiceSets.find(
   (candidate) => candidate.assessment.id === "domain-7-troubleshooting-set",
 )!;
 const questions = getAssessmentQuestions(practiceSet.assessment);
+const unansweredCount = questions.length - 2;
+const openReviewCount = questions.length;
+const expectedRawPercentage = Math.round((1 / questions.length) * 10000) / 100;
 const objectiveTotal = primaryBlueprint.domains.reduce(
   (total, domain) => total + domain.objectives.length,
   0,
@@ -56,14 +59,16 @@ test.describe("review queue", () => {
     await seedSubmittedAttempt(page);
     await openRoute(page, "/review");
 
-    await expect(page.getByText("4 open items", { exact: true })).toBeVisible();
+    await expect(page.getByText(`${openReviewCount} open items`, { exact: true })).toBeVisible();
     await expect(page.getByText("0 resolved", { exact: true })).toBeVisible();
-    await expect(page.getByText("4 shown", { exact: true })).toBeVisible();
+    await expect(page.getByText(`${openReviewCount} shown`, { exact: true })).toBeVisible();
 
     const filters = page.getByRole("navigation", { name: "Review reason filters" });
-    await expect(filters.getByRole("link", { name: /^All/ })).toContainText("4");
+    await expect(filters.getByRole("link", { name: /^All/ })).toContainText(String(openReviewCount));
     await expect(filters.getByRole("link", { name: /^Incorrect/ })).toContainText("1");
-    await expect(filters.getByRole("link", { name: /^Unanswered/ })).toContainText("2");
+    await expect(filters.getByRole("link", { name: /^Unanswered/ })).toContainText(
+      String(unansweredCount),
+    );
     await expect(filters.getByRole("link", { name: /^Flagged/ })).toContainText("1");
 
     const queue = page.getByRole("list", { name: "Open review items" });
@@ -90,7 +95,7 @@ test.describe("review queue", () => {
     await expect(page.getByRole("button", { name: "Mark reviewed" })).toHaveCount(0);
 
     await page.getByRole("link", { name: "Back to review queue" }).click();
-    await expect(page.getByText("3 shown", { exact: true })).toBeVisible();
+    await expect(page.getByText(`${openReviewCount - 1} shown`, { exact: true })).toBeVisible();
     await expect(
       page.getByRole("navigation", { name: "Review reason filters" }).getByRole("link", {
         name: /^Flagged/,
@@ -104,18 +109,18 @@ test.describe("review queue", () => {
     await expect(page.getByRole("heading", { name: "No items match this filter" })).toBeVisible();
 
     await page.getByRole("link", { name: "Show all open items" }).click();
-    await expect(page.getByText("3 open items", { exact: true })).toBeVisible();
+    await expect(page.getByText(`${openReviewCount - 1} open items`, { exact: true })).toBeVisible();
     await expect(page.getByText("1 resolved", { exact: true })).toBeVisible();
     await expect(
       page.getByRole("list", { name: "Open review items" }).getByRole("listitem"),
-    ).toHaveCount(3);
+    ).toHaveCount(openReviewCount - 1);
 
     await page.reload();
-    await expect(page.getByText("3 open items", { exact: true })).toBeVisible();
+    await expect(page.getByText(`${openReviewCount - 1} open items`, { exact: true })).toBeVisible();
     await expect(page.getByText("1 resolved", { exact: true })).toBeVisible();
     await expect(
       page.getByRole("list", { name: "Open review items" }).getByRole("listitem"),
-    ).toHaveCount(3);
+    ).toHaveCount(openReviewCount - 1);
   });
 
   test("filtering by a reason keeps the queue derived from the same submitted attempt", async ({
@@ -133,8 +138,8 @@ test.describe("review queue", () => {
     await page.getByRole("navigation", { name: "Review reason filters" }).getByRole("link", {
       name: /^Unanswered/,
     }).click();
-    await expect(page.getByText("2 shown", { exact: true })).toBeVisible();
-    await expect(queue.getByRole("listitem")).toHaveCount(2);
+    await expect(page.getByText(`${unansweredCount} shown`, { exact: true })).toBeVisible();
+    await expect(queue.getByRole("listitem")).toHaveCount(unansweredCount);
   });
 
   test("zero activity shows an honest empty review queue", async ({ page }) => {
@@ -197,12 +202,16 @@ test.describe("progress report", () => {
 
     await expect(page.getByText("1 submitted", { exact: true })).toBeVisible();
     await expect(elementStatCard(page, "Submitted attempts")).toContainText("1");
-    await expect(elementStatCard(page, "Submitted attempts")).toContainText("2 answered · 2 unanswered");
+    await expect(elementStatCard(page, "Submitted attempts")).toContainText(
+      `2 answered · ${unansweredCount} unanswered`,
+    );
     await expect(elementStatCard(page, "Correct answers")).toContainText("1");
     await expect(elementStatCard(page, "Correct answers")).toContainText("1 incorrect");
     await expect(elementStatCard(page, "Accuracy on answered")).toContainText("50%");
-    await expect(elementStatCard(page, "Accuracy on answered")).toContainText("25%");
-    await expect(elementStatCard(page, "Open review items")).toContainText("4");
+    await expect(elementStatCard(page, "Accuracy on answered")).toContainText(
+      `${expectedRawPercentage}%`,
+    );
+    await expect(elementStatCard(page, "Open review items")).toContainText(String(openReviewCount));
     await expect(elementStatCard(page, "Resolved")).toContainText("0");
 
     const performanceTable = page.getByRole("table", {
@@ -298,7 +307,9 @@ test.describe("mock exam preview", () => {
       String(questionBankEntries.length),
     );
     await expect(elementStatCard(page, "Saved attempts")).toContainText("1");
-    await expect(page.getByText("4 open review items", { exact: false })).toBeVisible();
+    await expect(
+      page.getByText(`${openReviewCount} open review items`, { exact: false }),
+    ).toBeVisible();
 
     const mock = page.getByRole("region", { name: "Assessment" }).getByRole("link", {
       name: /Mock exam/,
