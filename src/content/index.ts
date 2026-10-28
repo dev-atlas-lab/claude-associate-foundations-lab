@@ -272,3 +272,100 @@ export function getObjective(objectiveId: string) {
 export function getDomainForObjective(objectiveId: string): Domain | undefined {
   return getObjective(objectiveId)?.domain;
 }
+
+/**
+ * Find the published exam-mapped curriculum lesson that teaches an objective, if
+ * one exists. Sample lessons (`examMapping.status === "unmapped"`) are never
+ * returned as official objective coverage.
+ */
+export function getLessonForObjective(objectiveId: string): Lesson | undefined {
+  return publishedLessons.find(
+    (lesson) =>
+      lesson.examMapping.status !== "unmapped" &&
+      lesson.examMapping.objectiveIds.includes(objectiveId),
+  );
+}
+
+/**
+ * Find the published exam-mapped curriculum lesson for a domain by matching
+ * any of the domain's verified objectives.
+ */
+export function getLessonForDomain(domainId: string): Lesson | undefined {
+  const domain = getDomain(domainId);
+
+  if (!domain) {
+    return undefined;
+  }
+
+  const domainObjectiveIds = new Set(domain.objectives.map((objective) => objective.id));
+
+  return publishedLessons.find(
+    (lesson) =>
+      lesson.examMapping.status !== "unmapped" &&
+      lesson.examMapping.objectiveIds.some((objectiveId) => domainObjectiveIds.has(objectiveId)),
+  );
+}
+
+/**
+ * Find the single-domain practice set dedicated to a specific official domain.
+ * Multi-domain sets (such as `mixed-foundations-set`) are excluded so domain
+ * remediation links open the focused domain set.
+ */
+export function getPracticeSetForDomain(domainId: string): PracticeSetSummary | undefined {
+  return practiceSets.find(
+    (practiceSet) =>
+      practiceSet.domains.length === 1 && practiceSet.domains[0]?.id === domainId,
+  );
+}
+
+export interface QuestionCurriculumContext {
+  question: Question;
+  bankEntry?: (typeof questionBankEntries)[number];
+  domain?: Domain;
+  objective?: Domain["objectives"][number];
+  lesson?: Lesson;
+  practiceSet?: PracticeSetSummary;
+  sources: Source[];
+}
+
+/**
+ * Resolve a question's full curriculum and remediation context from the
+ * content registry: its primary objective, official domain, mapped curriculum
+ * lesson, single-domain practice set, and combined question + verification
+ * sources.
+ */
+export function getQuestionCurriculumContext(
+  questionId: string | undefined,
+): QuestionCurriculumContext | undefined {
+  const question = getQuestion(questionId);
+
+  if (!question) {
+    return undefined;
+  }
+
+  const bankEntry = getQuestionBankEntry(question.id);
+  const primaryObjectiveId = bankEntry?.examMapping.objectiveIds[0];
+  const resolvedObjective = primaryObjectiveId ? getObjective(primaryObjectiveId) : undefined;
+  const domain = resolvedObjective?.domain;
+  const objective = resolvedObjective?.objective;
+  const lesson = primaryObjectiveId
+    ? getLessonForObjective(primaryObjectiveId) ?? (domain ? getLessonForDomain(domain.id) : undefined)
+    : undefined;
+  const practiceSet = domain ? getPracticeSetForDomain(domain.id) : undefined;
+  const sourceIds = [
+    ...new Set([
+      ...question.sourceIds,
+      ...(bankEntry?.verification.sourceIds ?? []),
+    ]),
+  ];
+
+  return {
+    question,
+    bankEntry,
+    domain,
+    objective,
+    lesson,
+    practiceSet,
+    sources: getSources(sourceIds),
+  };
+}
