@@ -2,8 +2,9 @@
 
 **Status:** assessment core, local persistence, registry-driven practice sets, review queue, progress
 report, untimed mock-exam preview, and a deadline-enforced timed simulation implemented (Phase C2.8,
-2026-10-28). Content coverage was completed in Phase C2.4, extended in Phase C2.5, and browser-tested
-in Phases C2.6-C2.8.
+2026-10-28); full content and assessment audit completed (Phase C2.9, 2026-10-28), with one accepted
+timed-allocation deviation. Content coverage was completed in Phase C2.4, extended in Phase C2.5, and
+browser-tested in Phases C2.6-C2.8.
 **Scope:** deterministic single-choice and multiple-response scoring, 62 reviewed items across all
 seven domains, versioned localStorage attempts, derived review queue and progress, a 60-of-60
 blueprint-weighted preview, and a 60-question / 120-minute timed attempt with a persisted deadline.
@@ -321,9 +322,10 @@ The untimed mock-exam preview at `/mock-exam` uses the verified 60-item format a
 62 available reviewed items. `selectMockExamQuestions` allocates slots by published domain weight,
 caps each domain at its available pool, deduplicates shared questions, and interleaves the result.
 Because the bank is larger than the format, two items are not selected in a given preview; the
-allocation is deterministic and adds no filler or duplicate. The preview has no timer and no
-scaled-score conversion. The separate `/mock-exam/timed` route adds the deadline layer described
-below.
+allocation is deterministic and adds no filler or duplicate. With the current bank it is
+**8 / 13 / 8 / 10 / 7 / 8 / 6**; the Domain 6 availability cap is explained in §7d. The preview has
+no timer and no scaled-score conversion. The separate `/mock-exam/timed` route adds the deadline
+layer described below.
 
 ## 7d. Timed mock exam
 
@@ -367,6 +369,13 @@ instead of duplicating constants. It reuses the reviewed bank and the allocation
 selection, so reloading a persisted attempt reproduces the same 60 questions and order, while a new
 attempt gets another deterministic selection. Current availability is 60 selected from 62 reviewed
 items with a shortfall of zero.
+
+The current bank produces the allocation **8 / 13 / 8 / 10 / 7 / 8 / 6**. Domain 6's ideal weighted
+share is 9, but the reviewed bank has only 8 Domain 6 items; the allocator caps it at 8 and gives the
+spare slot to Domain 3, the next-largest deficit. The alternative `8 / 13 / 7 / 10 / 7 / 9 / 6`
+cannot be filled without a ninth reviewed Domain 6 item, a duplicate, or invented filler. The project
+owner accepted the actual allocation on 2026-10-28 as a documented deviation; the audit records this as
+an accepted expectation discrepancy, not a code defect or a claim that the original target was met.
 
 If availability ever falls below the requested count, the intro disables **Start timed exam** and
 states the exact shortfall. The runner also refuses to start if the selected list is short. No
@@ -487,8 +496,9 @@ expiry idempotency, late manual submission classification, answer/flag/navigatio
 expiry, immutable retained results, and raw/count derivation.
 
 `src/test/timed-exam-content.test.ts` covers the 60/120 blueprint configuration, zero shortfall,
-seeded deterministic selection and order, reload stability, fingerprint separation from study data,
-and resolution failures for missing questions.
+exact weights and availability, the actual 8/13/8/10/7/8/6 allocation, seeded deterministic selection
+and order, reload stability, fingerprint separation from study data, and resolution failures for
+missing questions.
 
 `src/test/timed-exam-storage.test.ts` covers envelope round-trips, version and fingerprint
 incompatibility, corrupt JSON/schema rejection, unavailable storage, quota/security write failures,
@@ -511,14 +521,15 @@ performance from a submitted attempt, domain attribution, and review counts.
 data controls.
 
 `src/test/curriculum.test.ts` covers append-only lesson order, all 30 objectives mapped to published
-lessons, resolvable lesson and source references, and the unmapped sample boundary.
+lessons, exact official domain weights, resolvable lesson and source references, and the unmapped
+sample boundary.
 
 `src/test/question-bank.test.ts` covers the 62-entry bank, verified objective mapping, all seven
 covered domains and all 30 objectives, at least two items per objective, both question formats,
 English-only learner-facing text, Vietnamese explanations for every option, source and verification
-references, the Domain 5 set and registry-derived mixed set, unmapped-entry rejection, question-id
-uniqueness across lessons and bank, lesson-to-bank reference validation, and
-blueprint/certification/objective source validation.
+references, alignment of every domain practice set with the reviewed bank, the registry-derived mixed
+set, unmapped-entry rejection, question-id uniqueness across lessons and bank, lesson-to-bank
+reference validation, and blueprint/certification/objective source validation.
 
 `src/test/domain-2-content.test.tsx` covers the published Domain 2 lesson, six-objective mapping,
 reviewed-question links, source/verification references, English/Vietnamese language checks, the
@@ -541,5 +552,7 @@ source-grounded decisions in high-weight domains, then re-check eligibility and 
 Phase C2.6 added the browser regression gate (`npm run test:e2e`) and axe scans over both themes.
 Phase C2.7 added a GitHub Actions workflow that runs the same gates on pull requests and pushes to
 `main`; its first `main` run passed on 2026-10-28. Phase C2.8 added the timed layer and its
-clock-controlled, storage-failure, keyboard, axe, and responsive coverage. Firefox/WebKit, a manual
-screen-reader pass, device-clock tampering, and Vercel deployment remain outstanding.
+clock-controlled, storage-failure, keyboard, axe, and responsive coverage. Phase C2.9 audited every
+bank item, lesson, glossary entry, source, domain practice set, and timed-exam invariant; see
+`docs/CONTENT_AUDIT_2026-10-28.md`. Firefox/WebKit, a manual screen-reader pass, device-clock
+tampering, and Vercel deployment remain outstanding.

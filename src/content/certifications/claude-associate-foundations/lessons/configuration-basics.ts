@@ -55,7 +55,7 @@ export const configurationBasicsLesson: Lesson = lessonSchema.parse({
       heading: "Cấu hình là một phần của chất lượng câu trả lời",
       paragraphs: [
         "Khi cùng một câu hỏi nhận được câu trả lời khác nhau giữa các chat, nguyên nhân thường không nằm ở model mà ở cấu hình: tài liệu nguồn không được đưa vào knowledge, instruction bị dán riêng trong một chat, hoặc connector đang dùng sai quyền. Domain 5 kiểm tra khả năng thiết lập và bảo trì những yếu tố đó một cách có chủ đích.",
-        "Anthropic mô tả project là một workspace tự chứa, có lịch sử chat và knowledge base riêng. Tài liệu trong project knowledge được dùng làm context cho các chat trong project, còn project instructions được lưu một lần và áp dụng cho mọi chat. Điểm quan trọng: context của một chat không tự động được chia sẻ sang chat khác trừ khi nội dung đó được đưa vào knowledge base (Anthropic, “What are projects?”; “How can I create and manage projects?”).",
+        "Anthropic mô tả project là một workspace tự chứa, có lịch sử chat và knowledge base riêng. Tài liệu trong project knowledge được dùng làm context cho các chat trong project, còn project instructions được lưu một lần và áp dụng cho mọi chat. Điểm quan trọng: một chat mới không tự nhận toàn bộ transcript của chat khác; project memory có thể giữ lại một số thông tin, nhưng knowledge và instructions mới là cấu hình dùng chung đáng tin cậy (Anthropic, “What are projects?”; “How can I create and manage projects?”).",
       ],
     },
     {
@@ -78,7 +78,7 @@ export const configurationBasicsLesson: Lesson = lessonSchema.parse({
       kind: "paragraphs",
       heading: "Project knowledge: đặt nguồn ở nơi mọi chat nhìn thấy",
       paragraphs: [
-        "Knowledge base phù hợp với tài liệu ổn định và được tái sử dụng: brand guide, product brief, chính sách đã được phê duyệt, hoặc bộ câu hỏi thường gặp. Khi tài liệu nằm trong knowledge, chat mới trong project có thể dùng lại mà không cần dán lại. Ngược lại, một quyết định chỉ xuất hiện trong chat cũ sẽ không tự động có mặt ở chat mới.",
+        "Knowledge base phù hợp với tài liệu ổn định và được tái sử dụng: brand guide, product brief, chính sách đã được phê duyệt, hoặc bộ câu hỏi thường gặp. Khi tài liệu nằm trong knowledge, chat mới trong project có thể dùng lại mà không cần dán lại. Ngược lại, một quyết định chỉ xuất hiện trong chat cũ có thể được project memory ghi nhớ, nhưng không bảo đảm; muốn chắc chắn chat mới dùng được, hãy đưa vào knowledge hoặc instructions.",
         "Với các gói trả phí, khi knowledge tiến gần giới hạn context, Claude có thể tự động chuyển sang RAG để mở rộng dung lượng và chỉ truy xuất phần liên quan. Đây là cơ chế tự động, không phải lý do để bỏ qua việc quản lý nguồn: file trùng lặp, tên file mơ hồ và tài liệu lỗi thời vẫn làm giảm chất lượng retrieval (Anthropic, “Retrieval augmented generation (RAG) for projects”).",
       ],
     },
@@ -171,7 +171,7 @@ export const configurationBasicsLesson: Lesson = lessonSchema.parse({
       kind: "callout",
       tone: "caution",
       title: "Đừng dùng chat để sửa cấu hình dùng chung",
-      body: "Một câu “hãy bỏ qua tài liệu cũ” trong chat chỉ có hiệu lực trong chat đó. Chat khác vẫn đọc knowledge cũ. Muốn sửa cấu hình dùng chung, phải sửa knowledge hoặc instruction ở cấp project, rồi kiểm thử lại.",
+      body: "Một câu “hãy bỏ qua tài liệu cũ” trong chat không phải cách sửa cấu hình dùng chung. Project memory có thể giữ lại câu đó, nhưng không bảo đảm và không thay thế knowledge/instructions; chat khác vẫn có thể đọc knowledge cũ. Muốn sửa cấu hình dùng chung, phải sửa knowledge hoặc instruction ở cấp project, rồi kiểm thử lại.",
     },
   ],
   keyTerms: [
@@ -254,7 +254,7 @@ export const configurationBasicsLesson: Lesson = lessonSchema.parse({
           id: "both-one-chat",
           text: "Paste both into the first chat and tell the team to continue in that chat.",
           explanation:
-            "Sai: context của một chat không tự chia sẻ sang chat khác; chat mới sẽ không thấy nội dung đã dán.",
+            "Sai: dán vào một chat không tạo cấu hình dùng chung. Project memory có thể giữ một số thông tin nhưng không bảo đảm; chat mới có thể không thấy đủ nội dung đã dán.",
         },
         {
           id: "pdf-description",
@@ -285,7 +285,7 @@ export const configurationBasicsLesson: Lesson = lessonSchema.parse({
   ],
   takeaways: [
     "Project knowledge giữ nguồn dùng chung; project instructions giữ quy tắc hành vi cho mọi chat.",
-    "Context của một chat không tự lan sang chat khác; muốn dùng lại phải đưa vào knowledge.",
+    "Một chat mới không tự nhận toàn bộ transcript; project memory không thay thế knowledge và instructions dùng chung.",
     "Connector thừa hưởng quyền nguồn; bật ở cấp tổ chức không cấp quyền file và không thay thế đăng nhập cá nhân.",
     "System instruction tốt nêu role, audience, nguồn, uncertainty, giới hạn, format và escalation.",
     "Bảo trì định kỳ gồm owner, review nguồn, cập nhật instruction và kiểm thử hồi quy.",

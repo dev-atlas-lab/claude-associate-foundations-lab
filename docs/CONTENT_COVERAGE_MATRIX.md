@@ -1,8 +1,11 @@
 # Content Coverage Matrix
 
-**Matrix updated:** 2026-10-27
+**Matrix updated:** 2026-10-28
 **Source access dates:** 2026-10-26 for the original sources; 2026-10-27 for the Domain 5,
-workflow-design, Domain 3/4/6/7 lesson, and coverage-depth sources listed in the source key
+workflow-design, Domain 3/4/6/7 lesson, and coverage-depth sources listed in the source key; all 27
+links rechecked 2026-10-28
+**Content audit:** `docs/CONTENT_AUDIT_2026-10-28.md` covers all 62 bank items, 8 lessons, 15
+glossary entries, 27 sources, the domain practice sets, and timed-exam integrity
 **Blueprint:** CCAO-F Exam Guide v1.0, effective July 2026  
 **Applicable attempt:** before 2026-11-14 (do not apply the 2026-11-17 / 2026-12-07 revision)  
 **Source of exam scope:** `docs/EXAM_BLUEPRINT.md`
@@ -88,9 +91,9 @@ repeating exact menu paths.
 |---|---|---|---|---|---|---|---|
 | `context-window` | Sample lesson | **Unmapped**. It has a plausible relationship to Domain 3's context/memory objective, but that mapping has **not** been reviewed and is not claimed | Related objective is **Verified** in G; the lesson itself is **not** exam coverage | Technical claims **Verified** against D on 2026-10-26 | **Published as a sample** | 1 lesson, 1 single-choice question, 1 sample assessment definition; no multiple-response item | D |
 | `evaluation-basics` | Curriculum lesson | Domain 2 — **verified mapping** to all six objectives | Six objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against R, E, PB, SO, AR and CC on 2026-10-26; bias remains policy-level | **Published** | 1 lesson, 1 single-choice knowledge check, 7 linked reviewed bank questions; route `/learn/evaluation-basics` | G, R, E, PB, SO, AR, CC |
-| `configuration-basics` | Curriculum lesson | Domain 5 — **verified mapping** to all four objectives | Four objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against PJ, RG, CN and PB on 2026-10-27; project limits and connector UI marked time-sensitive | **Published** | 1 lesson, 1 single-choice knowledge check, 8 linked reviewed bank questions; route `/learn/configuration-basics` | G, PJ, RG, CN, PB |
+| `configuration-basics` | Curriculum lesson | Domain 5 — **verified mapping** to all four objectives | Four objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against PJ, RG, CN and PB on 2026-10-27; project limits and connector UI marked time-sensitive; project-memory nuance corrected 2026-10-28 | **Published** | 1 lesson, 1 single-choice knowledge check, 8 linked reviewed bank questions; route `/learn/configuration-basics` | G, PJ, RG, CN, PB |
 | `prompt-structure` | Curriculum lesson | Domain 1 — **verified mapping** to all four objectives | Four objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against PB and E on 2026-10-27; model names kept generic | **Published** | 1 lesson, 1 single-choice knowledge check, 8 linked reviewed bank questions; route `/learn/prompt-structure` | G, PB, E |
-| `product-selection` | Curriculum lesson | Domain 3 — **verified mapping** to all four objectives | Four objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against PJ, RG, RS, AR, MD and D on 2026-10-27; product UI and model details marked time-sensitive | **Published** | 1 lesson, 1 single-choice knowledge check, 8 linked reviewed bank questions; route `/learn/product-selection` | G, PJ, RG, RS, AR, MD, D |
+| `product-selection` | Curriculum lesson | Domain 3 — **verified mapping** to all four objectives | Four objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against PJ, RG, RS, AR, MD and D on 2026-10-27; product UI and model details marked time-sensitive; project-memory nuance corrected 2026-10-28 | **Published** | 1 lesson, 1 single-choice knowledge check, 8 linked reviewed bank questions; route `/learn/product-selection` | G, PJ, RG, RS, AR, MD, D |
 | `workflow-design` | Curriculum lesson | Domain 4 — **verified mapping** to all five objectives | Five objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against BA, E, PB, RS, CC and PP on 2026-10-27; tooling details from BA are not used | **Published** | 1 lesson, 1 single-choice knowledge check, 10 linked reviewed bank questions; route `/learn/workflow-design` | G, BA, E, PB, RS, CC, PP |
 | `governance-responsible-use` | Curriculum lesson | Domain 6 — **verified mapping** to all four objectives | Four objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against CC, PP, R, E and CN on 2026-10-27; review principles only, not legal advice | **Published** | 1 lesson, 1 single-choice knowledge check, 8 linked reviewed bank questions; route `/learn/governance-responsible-use` | G, CC, PP, R, E, CN |
 | `troubleshooting-optimization` | Curriculum lesson | Domain 7 — **verified mapping** to all three objectives | Three objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against E, PB, R, D, MD and BA on 2026-10-27; optimization trade-offs taught as measurement, not fixed limits | **Published** | 1 lesson, 1 single-choice knowledge check, 6 linked reviewed bank questions; route `/learn/troubleshooting-optimization` | G, E, PB, R, D, MD, BA |
@@ -315,8 +318,8 @@ two to four items, and the 62-item bank still leaves two items outside the 60-it
    (Domain 2 at 21%, Domain 4 at 16%, Domain 6 at 15%). Do not inflate counts to look complete.
 3. Rewrite the Context Window sample for the Associate audience, then decide whether it can be
    verified against Domain 3's `context-memory-management` objective. Keep it unmapped until then.
-4. Implement a timed 60-item simulation and any scaled-score logic only after the scoring rules are
-   reviewed; never present a preview percentage as an official readiness estimate.
+4. Keep the timed 60-item simulation raw-only. Add scaled-score logic only after the scoring rules
+   are reviewed; never present a preview percentage as an official readiness estimate.
 5. Continue source tracing for ethical and privacy claims, especially where provider policy is a floor
    and organizational policy or local law may be stricter.
 6. Keep `src/test/question-bank.test.ts`, `src/test/curriculum.test.ts`,

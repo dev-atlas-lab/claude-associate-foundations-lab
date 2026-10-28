@@ -171,6 +171,33 @@ describe("reviewed question bank", () => {
     expect(mixed?.questionIds).toEqual(questionBankEntries.map((entry) => entry.question.id));
   });
 
+  it("keeps every domain practice set aligned with the reviewed bank", () => {
+    const domainSets = [
+      ["domain-1-prompting-set", "prompting-task-execution"],
+      ["domain-2-output-validation-set", "output-evaluation-validation"],
+      ["domain-3-context-set", "product-model-selection"],
+      ["domain-4-workflow-set", "workflow-integration-solution-design"],
+      ["domain-5-configuration-set", "configuration-knowledge-management"],
+      ["domain-6-governance-set", "governance-risk-responsible-use"],
+      ["domain-7-troubleshooting-set", "troubleshooting-optimization"],
+    ] as const;
+
+    for (const [assessmentId, domainId] of domainSets) {
+      const objectiveIds = new Set(
+        getDomain(domainId)?.objectives.map((objective) => objective.id) ?? [],
+      );
+      const expectedIds = questionBankEntries
+        .filter((entry) =>
+          entry.examMapping.objectiveIds.some((objectiveId) => objectiveIds.has(objectiveId)),
+        )
+        .map((entry) => entry.question.id)
+        .sort();
+      const actualIds = [...(getAssessment(assessmentId)?.questionIds ?? [])].sort();
+
+      expect(actualIds).toEqual(expectedIds);
+    }
+  });
+
   it("keeps learner-facing English text free of Vietnamese diacritics", () => {
     for (const question of questionBank) {
       expect(question.stem).not.toMatch(vietnameseDiacriticPattern);

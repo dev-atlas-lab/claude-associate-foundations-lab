@@ -170,7 +170,8 @@ Status: implemented and verified (2026-10-28); the first GitHub Actions run pass
 
 ### C2.8 - Timed mock exam
 
-Status: implemented and verified locally (2026-10-28); uncommitted in the working tree.
+Status: implemented, verified locally, committed as `8631d55`, and pushed to `origin/main`
+(2026-10-28).
 
 - Added `/mock-exam/timed` as a distinct 60-question / 120-minute simulation while preserving the
   untimed `/mock-exam` preview unchanged.
@@ -187,6 +188,27 @@ Status: implemented and verified locally (2026-10-28); uncommitted in the workin
   announcement checks, axe scans for the intro/question/result, and 390/768/1440 responsive checks.
 - Verified locally: typecheck, lint, **177** unit/integration tests across **23** files,
   **116** Playwright tests across **8** files, the production build, and **git diff --check**.
+
+### C2.9 - Content and assessment audit
+
+Status: completed locally (2026-10-28); corrections are unstaged for human review. One timed-allocation
+expectation is accepted as a documented deviation. No commit, push, branch change, deployment, or
+destructive cleanup was performed.
+
+- Audited all 62 bank items, 8 lessons, 15 glossary entries, 27 sources, all lesson
+  `relatedQuestionIds`, the seven domain practice sets, the mixed set, and timed-exam integrity.
+- Results: 60 question passes + 2 minor fixes; 6 lesson passes + 2 major fixes; 13 glossary passes +
+  2 minor fixes; 26 source passes + 1 minor fix; 3 domain-set passes + 4 minor fixes.
+- Corrected project-memory wording, stale domain practice sets, and the `context-rot` and
+  `hallucination` glossary definitions. Added regression tests for domain-set alignment, exact
+  weights, and the timed allocation.
+- Full matrix and evidence: `docs/CONTENT_AUDIT_2026-10-28.md`.
+- Timed allocation decision: the brief's `8 / 13 / 7 / 10 / 7 / 9 / 6` is impossible because Domain 6
+  has only 8 items. The selector fills `8 / 13 / 8 / 10 / 7 / 8 / 6` with no duplicate or filler. The
+  project owner accepted this actual allocation on 2026-10-28 as a documented deviation; no code change
+  was made and the original target is not claimed.
+- Verified locally: targeted **9 files / 71 tests**, typecheck, lint, and `git diff --check`. Full
+  `npm test`, Playwright E2E, and the production build remain delegated to CI after a push.
 
 ### Remaining Phase D work
 
@@ -211,23 +233,27 @@ Status: implemented for local study progress (2026-10-27); glossary and settings
 
 ## Phase F — Quality
 
-Status: complete for Phase C2.8 (2026-10-28). Typecheck, lint, 177 unit/integration tests, 116
-Playwright tests, the production build, and 71 axe scans pass. A GitHub Actions workflow runs the same
-gates on pull requests and pushes to `main`, and its first `main` run passed. Firefox/WebKit, manual
-screen-reader testing, device-clock tampering, and deployment verification remain outstanding.
+Status: complete for Phase C2.9 (2026-10-28). C2.8's typecheck, lint, 177 unit/integration tests, 116
+Playwright tests, production build, and 71 axe scans passed. C2.9 added targeted content tests,
+typecheck, lint, and diff checks; full CI for the audit changes is pending a push. A GitHub Actions
+workflow runs the same gates on pull requests and pushes to `main`, and its first `main` run passed.
+Firefox/WebKit, manual screen-reader testing, device-clock tampering, and deployment verification
+remain outstanding.
 
 - Typecheck, lint, unit/integration tests, production build.
 - End-to-end tests for critical journeys (`tests/e2e/`, run with `npm run test:e2e`).
 - Accessibility and responsive automation via axe-core and Playwright at 390 / 768 / 1440 px.
 - CI workflow (`.github/workflows/ci.yml`) with locked dependency install, production preview E2E,
   least-privilege permissions, and failure artifacts.
-- Content coverage audit (`docs/CONTENT_COVERAGE_MATRIX.md`, 2026-10-27).
+- Content coverage audit (`docs/CONTENT_COVERAGE_MATRIX.md`) and full content/assessment audit
+  (`docs/CONTENT_AUDIT_2026-10-28.md`, 2026-10-28).
 
 ## Phase G — GitHub and Vercel
 
 Status: in progress. Tested work through C2.7 was committed as `50efba5` and pushed to `origin/main`
-on 2026-10-28, and the first GitHub Actions run passed. Phase C2.8 is implemented and verified
-locally but remains uncommitted. Vercel is not connected and no deployment has been performed.
+on 2026-10-28, and the first GitHub Actions run passed. Phase C2.8 was committed as `8631d55` and
+pushed. Phase C2.9 is implemented and verified locally but remains uncommitted for review. Vercel is
+not connected and no deployment has been performed.
 
 - [x] Verify target repository and secure Git credentials.
 - [x] Commit and push tested work; no GitHub CLI.

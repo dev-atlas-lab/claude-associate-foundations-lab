@@ -183,6 +183,7 @@ No Vercel project ID or deployment URL is committed to this repository.
 - `docs/PRODUCT_SPEC.md` — product definition and non-goals
 - `docs/EXAM_BLUEPRINT.md` — verified exam facts, sources, limitations, and version warning
 - `docs/CONTENT_COVERAGE_MATRIX.md` — all 30 objectives, current/planned content, coverage gaps
+- `docs/CONTENT_AUDIT_2026-10-28.md` — full audit of the 62 bank items, lessons, glossary, sources, and timed exam
 - `docs/CONTENT_GUIDELINES.md` — language, sourcing, and question-quality rules
 - `docs/UX_SPEC.md` — visual direction, navigation, accessibility
 - `docs/DESIGN_SYSTEM.md` — implemented tokens, components, theme model, accessibility decisions

@@ -78,6 +78,9 @@ describe("curriculum registry", () => {
     );
 
     expect(total).toBe(100);
+    expect(primaryBlueprint.domains.map((domain) => domain.weightPercent)).toEqual([
+      14, 21, 12, 16, 12, 15, 10,
+    ]);
     expect(primaryBlueprint.format.itemCount).toBe(60);
     expect(primaryBlueprint.format.timeLimitMinutes).toBe(120);
     expect(primaryBlueprint.format.passingScore?.cutScore).toBe(720);

@@ -21,6 +21,19 @@ describe("timed exam content selection", () => {
     expect(timedExamAvailability.selectedQuestionIds).toHaveLength(60);
     expect(new Set(timedExamAvailability.selectedQuestionIds).size).toBe(60);
     expect(timedExamEligibility.allocations).toHaveLength(7);
+    expect(timedExamEligibility.allocations.map((allocation) => allocation.weightPercent)).toEqual([
+      14, 21, 12, 16, 12, 15, 10,
+    ]);
+    expect(timedExamEligibility.allocations.map((allocation) => allocation.available)).toEqual([
+      8, 14, 8, 10, 8, 8, 6,
+    ]);
+    // Domain 6's ideal weighted share is 9, but the reviewed bank has only 8
+    // Domain 6 items. The allocator caps it at 8 and gives the spare slot to
+    // Domain 3, the next-largest deficit, rather than duplicating or inventing
+    // an item. The 8/13/7/10/7/9/6 figure cannot be filled from this bank.
+    expect(timedExamEligibility.allocations.map((allocation) => allocation.allocated)).toEqual([
+      8, 13, 8, 10, 7, 8, 6,
+    ]);
     expect(
       timedExamEligibility.allocations.every(
         (allocation) =>

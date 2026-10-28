@@ -20,6 +20,7 @@
 - [x] Tests and production build pass for implemented features.
 - [x] First GitHub Actions run passed on `main` (run 40611368468, 2026-10-28).
 - [x] Timed 60-question / 120-minute mock exam with persisted deadline, reload recovery, auto-submit, expiry labeling, and an immutable raw result implemented (Phase C2.8, 2026-10-28).
+- [x] Full content and assessment audit completed for 62 bank items, 8 lessons, 15 glossary entries, 27 sources, domain practice sets, and timed-exam integrity (Phase C2.9, 2026-10-28); corrections are unstaged pending human review.
 - [ ] Official scaled score and pass prediction remain unimplemented by design; no official source supports inventing them.
 - [ ] Vercel deployment verified.
 
@@ -848,7 +849,7 @@ use isolated browser contexts; no network calls or shared storage are involved.
 
 ## Phase C2.8 - Timed mock exam
 
-Status: implemented and verified locally (2026-10-28). The work is uncommitted in this working tree.
+Status: implemented, verified locally, committed as `8631d55`, and pushed to `origin/main` (2026-10-28).
 
 ### Scope
 
@@ -934,5 +935,76 @@ Status: implemented and verified locally (2026-10-28). The work is uncommitted i
   claim. The bank still has two to four items per objective, so depth remains limited.
 - E2E coverage is Chromium-only. Firefox/WebKit, manual screen-reader testing, device-clock
   tampering, and Vercel deployment remain unverified.
-- This phase added no runtime dependency. The work was not committed, pushed, stashed, reset, or
-  deployed as part of the implementation.
+- This phase added no runtime dependency. At implementation time the work was uncommitted; it was
+  later committed as `8631d55` and pushed to `origin/main`. No stash, reset, or deployment was part
+  of the implementation.
+
+## Phase C2.9 - Content and assessment audit
+
+Status: completed locally (2026-10-28); corrections are unstaged for human review. One timed-allocation
+expectation is accepted as a documented deviation. No commit, push, branch change, deployment, or
+destructive cleanup was performed.
+
+### Scope
+
+- Audited all **62** reviewed bank items, including the two items that are not selected in a given
+  60-item attempt. Every item received an explicit `pass`, `minor-fix`, `major-fix`, or
+  `needs-review` status in `docs/CONTENT_AUDIT_2026-10-28.md`.
+- Audited all **8** published lessons, including the intentionally unmapped `context-window` sample;
+  all **15** glossary entries; all **27** registered sources; all lesson `relatedQuestionIds`; and
+  the seven domain practice sets plus the mixed set.
+- Rechecked the timed mock's 60-item / 120-minute format, domain weights, deterministic seeded
+  selection, distinctness, no-filler rule, and shortfall behavior.
+
+### Results
+
+- Questions: **60 pass, 2 minor-fix, 0 major-fix, 0 needs-review**.
+- Lessons: **6 pass, 0 minor-fix, 2 major-fix, 0 needs-review**.
+- Glossary: **13 pass, 2 minor-fix**.
+- Sources: **26 pass, 1 minor-fix**; all 27 URLs returned HTTP 200 on 2026-10-28.
+- Domain practice sets: **3 pass, 4 minor-fix**. Domains 1, 4, 6, and 7 were missing reviewed bank
+  items; the definitions and descriptions now include all mapped items.
+- Timed integrity: **pass** for 60 distinct items, 120 minutes, exact weights, no duplicates/filler,
+  and zero shortfall. The allocation expectation is accepted as a documented deviation below; no code
+  change was made and the original target is not claimed.
+
+### Corrections
+
+- Corrected project-memory wording in `config-project-brief-setup`, `config-project-context-scope`,
+  `configuration-basics`, `product-selection`, and the `anthropic-projects-manage` source entry. A new
+  chat does not receive the full transcript of another chat, but project memory can retain some
+  information; project knowledge and instructions remain the reliable shared configuration. Also
+  corrected a `product-selection` callout title that conflated project memory with project
+  knowledge/RAG retrieval.
+- Added the missing items to the Domain 1, 4, 6, and 7 practice sets and updated their descriptions.
+- Tightened the `context-rot` and `hallucination` glossary definitions to match official wording.
+- Added targeted tests for domain-set alignment, exact domain weights, and the timed allocation.
+
+### Timed allocation decision
+
+The task brief listed `8 / 13 / 7 / 10 / 7 / 9 / 6`. That allocation is impossible with the current
+bank because Domain 6 has only **8** reviewed items. The selector correctly caps Domain 6 at 8 and
+gives the spare slot to Domain 3, producing **`8 / 13 / 8 / 10 / 7 / 8 / 6`** while filling 60
+distinct items with no filler. The project owner accepted this actual allocation on 2026-10-28 as a
+documented deviation. No code change was made, and the original target is not claimed. Adding a ninth
+Domain 6 item would be a separate content-authoring decision and would increase the bank to 63; it was
+not done in this audit.
+
+### Verification
+
+- `git diff --check`: pass with only Git's LF-to-CRLF normalization warnings; no whitespace errors
+  (re-run after final edits).
+- Targeted tests: **9 files / 71 tests passed** (`question-bank`, `curriculum`, `timed-exam-content`,
+  `domain-2-content`, `domain-5-content`, `glossary`, `lesson`, `practice-page`, `mock-exam`) during the
+  audit; the final-review rerun after the callout-title correction passed **3 files / 12 tests**
+  (`lesson`, `glossary`, `timed-exam-content`).
+- `npm run typecheck`: pass (re-run after final edits).
+- `npm run lint`: pass with 0 problems (re-run after final edits).
+- Not run locally: full `npm test`, full Playwright E2E, and `npm run build`. These remain delegated
+  to CI after the user reviews and pushes the changes.
+- GitHub Actions and Vercel: pending/not performed. No live deployment was claimed.
+
+### Git state
+
+- Branch `main`, baseline `8631d55`; all audit corrections and the new audit document are unstaged.
+- The working tree was not committed, pushed, stashed, reset, or cleaned.

@@ -77,7 +77,7 @@ export const productSelectionLesson: Lesson = lessonSchema.parse({
       kind: "callout",
       tone: "note",
       title: "Project không phải chat dài hơn",
-      body: "Anthropic nêu rõ rằng context không được chia sẻ giữa các chat trong một project trừ khi thông tin được đưa vào project knowledge. Tên và mô tả project cũng không được cung cấp cho Claude như instruction. Muốn Claude dùng một quy tắc, hãy đặt quy tắc đó trong project instructions hoặc knowledge, không chỉ đặt tên project thật hay.",
+      body: "Anthropic nêu rõ rằng một chat mới không tự nhận toàn bộ context của chat khác; project knowledge và instructions là cơ chế dùng chung, còn project memory có thể giữ lại một số thông tin nhưng không thay thế cấu hình. Tên và mô tả project cũng không được cung cấp cho Claude như instruction. Muốn Claude dùng một quy tắc, hãy đặt quy tắc đó trong project instructions hoặc knowledge, không chỉ đặt tên project thật hay.",
     },
     {
       kind: "paragraphs",
@@ -133,7 +133,7 @@ export const productSelectionLesson: Lesson = lessonSchema.parse({
     {
       kind: "callout",
       tone: "caution",
-      title: "Project memory không phải bộ nhớ vô hạn",
+      title: "Project knowledge không phải lúc nào cũng được truy xuất toàn bộ",
       body: "Project knowledge có thể được mở rộng bằng RAG trên một số gói trả phí, và Anthropic mô tả RAG tự bật khi knowledge tiến gần giới hạn context. Nhưng điều đó không có nghĩa là mọi tài liệu sẽ luôn được đưa vào mọi câu trả lời. Hãy kiểm tra gói, giới hạn hiện tại và chất lượng retrieval; đặt tên file rõ ràng và chỉ giữ nguồn còn hiệu lực.",
     },
   ],
@@ -258,7 +258,7 @@ export const productSelectionLesson: Lesson = lessonSchema.parse({
   ],
   takeaways: [
     "Chọn bề mặt sản phẩm theo cách công việc được lặp lại, tìm kiếm hoặc tái sử dụng; đừng bắt đầu bằng tên model.",
-    "Project giữ knowledge và instruction dùng chung, nhưng context không tự chia sẻ giữa các chat và tên project không phải instruction.",
+    "Project giữ knowledge và instructions dùng chung; một chat mới không tự nhận toàn bộ transcript, project memory không thay thế cấu hình, và tên project không phải instruction.",
     "Model family là các mức năng lực và trade-off; tên, giá, context và giới hạn cần được kiểm tra lại.",
     "Efficiency-first và capability-first là hai hướng hợp lý cho hai loại rủi ro khác nhau; benchmark trên dữ liệu thật là bước quyết định.",
     "Quản lý context là chọn giữ, tóm tắt, khởi động lại hoặc lưu bền đúng thông tin, không chỉ cắt bớt token.",

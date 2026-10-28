@@ -26,7 +26,7 @@ const projectConfigBrief: Question = questionSchema.parse({
       id: "paste-in-one-chat",
       text: "Paste the brief and the voice rules into the first chat and rely on later chats to remember them.",
       explanation:
-        "Sai: context không tự chia sẻ giữa các chat trong một project. Chat mới sẽ không thấy nội dung đã dán ở chat cũ trừ khi nội dung đó nằm trong knowledge base.",
+        "Sai: dán vào một chat không tạo cấu hình dùng chung. Project memory có thể giữ lại một số thông tin, nhưng không bảo đảm và không thay thế knowledge/instructions; chat mới có thể không có đủ brief hoặc voice rules.",
     },
     {
       id: "project-description",
@@ -69,9 +69,9 @@ const projectContextScope: Question = questionSchema.parse({
     },
     {
       id: "chat-context-isolated",
-      text: "A conversation inside the project is not automatically visible to a different chat unless its content is added to project knowledge.",
+      text: "A new chat does not receive the full transcript of another chat; shared configuration belongs in project knowledge or project instructions.",
       explanation:
-        "Đúng: context của một chat không tự động được chia sẻ sang chat khác; muốn dùng lại phải đưa vào knowledge base hoặc dán lại.",
+        "Đúng: transcript đầy đủ không tự lan sang chat khác. Project memory có thể giữ một số thông tin, nhưng knowledge và instructions mới là cấu hình dùng chung đáng tin cậy.",
     },
     {
       id: "description-visible",
@@ -94,7 +94,7 @@ const projectContextScope: Question = questionSchema.parse({
   ],
   correctChoiceIds: ["knowledge-shared", "instructions-shared", "chat-context-isolated"],
   correctExplanation:
-    "Ba cơ chế cần phân biệt là knowledge base, project instructions và context của từng chat. Knowledge và instructions dùng chung ở cấp project; nội dung trao đổi trong một chat thì không tự lan sang chat khác. Hiểu đúng ranh giới này giúp tránh giả định rằng Claude sẽ nhớ một quyết định chỉ vì nó đã xuất hiện ở một cuộc trò chuyện trước đó.",
+    "Ba cơ chế cần phân biệt là knowledge base, project instructions và context của từng chat. Knowledge và instructions dùng chung ở cấp project; một chat mới không tự nhận toàn bộ transcript của chat khác, dù project memory có thể giữ lại một số thông tin. Vì vậy, đừng giả định Claude sẽ luôn nhớ một quyết định chỉ vì nó đã xuất hiện trong một cuộc trò chuyện trước đó; hãy đưa thông tin cần dùng chung vào knowledge hoặc instructions.",
   sourceIds: [
     "anthropic-projects-overview",
     "anthropic-projects-manage",

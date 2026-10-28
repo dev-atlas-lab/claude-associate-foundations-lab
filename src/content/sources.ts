@@ -265,7 +265,7 @@ export const sources: Source[] = [
     supports: [
       "Files uploaded to project knowledge are used across all chats within that project",
       "Project instructions are saved once and used for all chats within the project",
-      "Context is not shared across chats within a project unless the information is added to the project knowledge base",
+      "Full conversation context is not shared across chats unless it is added to project knowledge; project memory can still retain some information across chats",
       "A project name and description are not made available to Claude",
       "Each project has its own memory, and account memory can be excluded from a project",
       "Archiving a project preserves its members, permissions, and project knowledge",

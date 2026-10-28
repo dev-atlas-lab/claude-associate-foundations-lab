@@ -29,7 +29,7 @@ export const glossaryEntries: GlossaryEntry[] = z
       term: "Context rot",
       vi: "Suy giảm do ngữ cảnh dài",
       definition:
-        "Hiện tượng độ chính xác và khả năng hồi tưởng giảm khi ngữ cảnh dài ra và chứa nhiều thông tin không liên quan.",
+        "Hiện tượng độ chính xác và khả năng hồi tưởng giảm khi số token trong ngữ cảnh tăng; thông tin dài hoặc không liên quan có thể làm vấn đề nặng hơn.",
       category: "Core concepts",
     },
     {
@@ -69,7 +69,7 @@ export const glossaryEntries: GlossaryEntry[] = z
       term: "Hallucination",
       vi: "Ảo giác",
       definition:
-        "Output nghe hợp lý nhưng sai hoặc không có căn cứ. Cần kiểm chứng bằng nguồn, công cụ hoặc bước review trước khi dùng.",
+        "Output sai về sự thật hoặc không nhất quán với nguồn/ngữ cảnh được cung cấp, dù có thể trông hợp lý. Cần kiểm chứng bằng nguồn, công cụ hoặc bước review trước khi dùng.",
       category: "Safety",
     },
     {
