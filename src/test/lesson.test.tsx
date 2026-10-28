@@ -70,12 +70,16 @@ describe("sample lesson", () => {
 
     const feedback = screen.getByRole("status");
     expect(feedback).toHaveTextContent("Chính xác");
+    expect(feedback).toHaveFocus();
     expect(screen.getByText(/Đáp án đúng/)).toBeInTheDocument();
     expect(screen.getAllByText(/Vì sao không chọn/)).toHaveLength(3);
 
     await user.click(screen.getByRole("button", { name: /Try again/i }));
 
     expect(screen.queryByRole("status")).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("radio", { name: /Retrieve only the relevant policy sections/i }),
+    ).toHaveFocus();
     expect(screen.getByRole("button", { name: "Check answer" })).toBeDisabled();
   });
 

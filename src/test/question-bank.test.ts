@@ -28,8 +28,8 @@ const vietnameseDiacriticPattern =
 
 describe("reviewed question bank", () => {
   it("publishes reviewed bank entries and runnable assessments", () => {
-    expect(questionBankEntries).toHaveLength(54);
-    expect(questionBank).toHaveLength(54);
+    expect(questionBankEntries).toHaveLength(62);
+    expect(questionBank).toHaveLength(62);
     expect(assessment).toBeDefined();
     expect(assessment?.questionIds).toHaveLength(14);
     expect(assessment?.policy).toEqual({
@@ -118,11 +118,30 @@ describe("reviewed question bank", () => {
     ]);
   });
 
+  it("gives every official objective at least two reviewed items", () => {
+    const counts = new Map<string, number>();
+
+    for (const entry of questionBankEntries) {
+      const objectiveId = entry.examMapping.objectiveIds[0]!;
+      counts.set(objectiveId, (counts.get(objectiveId) ?? 0) + 1);
+    }
+
+    const allObjectiveIds = primaryBlueprint.domains.flatMap((domain) =>
+      domain.objectives.map((objective) => objective.id),
+    );
+    const singleItemObjectives = allObjectiveIds.filter((objectiveId) => counts.get(objectiveId) === 1);
+    const missingObjectives = allObjectiveIds.filter((objectiveId) => !counts.has(objectiveId));
+
+    expect(singleItemObjectives).toEqual([]);
+    expect(missingObjectives).toEqual([]);
+    expect(Math.min(...allObjectiveIds.map((objectiveId) => counts.get(objectiveId) ?? 0))).toBe(2);
+  });
+
   it("includes both single-choice and multiple-response items", () => {
     const types = questionBank.map((question) => question.type);
 
-    expect(types.filter((type) => type === "single-choice")).toHaveLength(28);
-    expect(types.filter((type) => type === "multiple-response")).toHaveLength(26);
+    expect(types.filter((type) => type === "single-choice")).toHaveLength(32);
+    expect(types.filter((type) => type === "multiple-response")).toHaveLength(30);
     expect(new Set(questionBank.map((question) => question.id)).size).toBe(questionBank.length);
   });
 
@@ -215,6 +234,7 @@ describe("reviewed question bank", () => {
       "anthropic-projects-rag",
       "anthropic-connectors-help",
       "anthropic-google-workspace-connectors",
+      "anthropic-building-effective-agents",
     ]) {
       expect(contentPack.sources.some((source) => source.id === sourceId)).toBe(true);
     }

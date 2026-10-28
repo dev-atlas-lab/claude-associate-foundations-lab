@@ -54,9 +54,9 @@ describe("progress summary", () => {
       questionById,
     );
 
-    expect(summary.bank.totalItems).toBe(54);
-    expect(summary.bank.singleChoiceItems).toBe(28);
-    expect(summary.bank.multipleResponseItems).toBe(26);
+    expect(summary.bank.totalItems).toBe(62);
+    expect(summary.bank.singleChoiceItems).toBe(32);
+    expect(summary.bank.multipleResponseItems).toBe(30);
     expect(summary.bank.objectivesCovered).toBe(30);
     expect(summary.bank.objectivesTotal).toBe(30);
     expect(summary.bank.domainsWithItems).toBe(7);
@@ -89,7 +89,7 @@ describe("progress summary", () => {
       questionById,
     );
 
-    expect(summary.bank.totalItems).toBe(54);
+    expect(summary.bank.totalItems).toBe(62);
     expect(summary.personal.submittedAttempts).toBe(1);
     expect(summary.personal.answeredQuestions).toBe(1);
     expect(summary.personal.correctAnswers).toBe(0);

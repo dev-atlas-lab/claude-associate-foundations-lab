@@ -26,7 +26,9 @@ Status: C0 and C1 implemented (2026-10-26). C2.1 assessment core implemented (20
 C2.2a added the first reviewed Domain 2 bank. C2.2b added the Domain 2 lesson and completed the
 reviewed Domain 2 bank. C2.3 expanded the bank to 24 items and added persistence, practice/review/
 progress, and the mock preview (2026-10-27). C2.4 added Domain 5 and closed objective coverage at
-30 / 30 with 54 reviewed items, two more lessons, and a Domain 5 practice set (2026-10-27).
+30 / 30 with 54 reviewed items, two more lessons, and a Domain 5 practice set (2026-10-27). C2.5
+published the four remaining whole-domain lessons, closed mapped-lesson coverage at 30 / 30, and
+added eight depth items for 62 reviewed items total (2026-10-27).
 
 ### C0 — Official blueprint verification
 
@@ -114,11 +116,62 @@ Status: implemented (2026-10-27).
 - Fixed lesson practice labels to derive the domain from the objective mapping, and replaced
   hardcoded bank totals in the dashboard and progress pages with registry-derived values.
 
+### C2.5 — Whole-domain lessons and question depth
+
+Status: implemented (2026-10-27).
+
+- Published `product-selection` (Domain 3), `workflow-design` (Domain 4),
+  `governance-responsible-use` (Domain 6), and `troubleshooting-optimization` (Domain 7). Every
+  official objective now has a mapped curriculum lesson.
+- Added the official Anthropic Engineering source `Building effective agents` with an access note
+  that separates its durable workflow guidance from its time-sensitive 2024 tooling details.
+- Added eight original depth items, one for each objective that previously had a single reviewed
+  item. The bank is now 62 items (32 single-choice, 30 multiple-response), and every objective has at
+  least two items.
+- Strengthened source traceability on existing decomposition, solution-design, checkpoint, and
+  customer-assistant safeguard items without changing their IDs or answer keys.
+- Emptied the planned-lessons registry and updated learner-facing counts and mock-preview copy to
+  reflect 60 of 62 selected items with no shortfall, still without a timer or scaled score.
+
+### C2.6 — Accessibility, end-to-end, and regression audit
+
+Status: implemented (2026-10-28).
+
+- Added a Chromium Playwright suite against the production preview: navigation and all 8 lessons,
+  practice and exact-set scoring, persistence and storage recovery, review/progress derivation, theme
+  persistence, responsive widths, and keyboard/focus behavior. **104 tests pass.**
+- Added axe-core scans for 32 states in both themes plus the open mobile drawer: **65 scans, 0
+  violations**, with no rules disabled. Manual checks cover landmarks, heading order, names, focus
+  movement, skip link, drawer trap, reduced motion, and no color-only answer state.
+- Fixed genuine defects: question-index focus, knowledge-check retry focus, reset-confirmation focus,
+  review-resolution focus, a duplicate Practice landmark name, an invalid `role` on `<aside>`, and
+  low-contrast review option keys.
+- Isolated the test gates so Vitest no longer collects Playwright files and added E2E typechecking and
+  lint configuration.
+- No timer, content, scoring, answer-key, fingerprint, or persistence-format change was made.
+
+### C2.7 - CI quality gates and release readiness
+
+Status: implemented locally (2026-10-28); the first GitHub Actions run is pending.
+
+- Added `.github/workflows/ci.yml` for pull requests and pushes to `main`: Node 22 from `.nvmrc`,
+  npm caching, `npm ci`, typecheck, lint, unit/integration tests, production build, Chromium
+  installation with `--with-deps`, and the existing Playwright suite against the production preview.
+- Playwright uploads `test-results/` and `playwright-report/` on failure; CI adds the HTML reporter
+  while local runs keep the list reporter.
+- Workflow permissions are limited to `contents: read`; there are no secrets, deployment steps,
+  browser matrix, or extra third-party actions.
+- Locally verified: `npm ci`, typecheck, lint, **145** unit/integration tests, the production build,
+  **104** Playwright tests in both normal and `CI=true` modes, and `git diff --check`.
+- Not verified: execution by GitHub Actions, Firefox/WebKit, manual screen-reader testing, and
+  Vercel deployment.
+
 ### Remaining Phase D work
 
-- Deepen objectives that still have a single reviewed item, especially in Domains 1, 4, 6, and 7.
-- Add mapped lessons for Domains 3, 4, 6, and 7; `workflow-design` remains the only planned lesson.
-- Grow the bank by six more reviewed items to close the mock-preview shortfall without filler.
+- Treat 62 items as a starting depth, not a finished bank. Add items only for distinct decisions in
+  high-weight domains; do not inflate counts.
+- Rewrite the Context Window sample for the Associate audience, then decide whether it can be
+  verified against Domain 3's `context-memory-management` objective. Keep it unmapped until then.
 - Mock exam timer, auto-submit, and expiry as a separate versioned layer.
 - A per-domain report and a defensible (non-invented) scaled-score policy only if an official source
   supports it.
@@ -135,18 +188,22 @@ Status: implemented for local study progress (2026-10-27); glossary and settings
 
 ## Phase F — Quality
 
-Status: unit/integration and build checks pass (2026-10-27); end-to-end and accessibility automation
-remain outstanding.
+Status: complete for Phase C2.7 locally (2026-10-28). Typecheck, lint, 145 unit/integration tests,
+104 Playwright tests, the production build, and 65 axe scans pass. A GitHub Actions workflow now runs
+the same gates on pull requests and pushes to `main`, but it has not been executed by GitHub yet.
+Firefox/WebKit, manual screen-reader testing, and deployment verification remain outstanding.
 
 - Typecheck, lint, unit/integration tests, production build.
-- End-to-end tests for critical journeys (not started).
-- Accessibility and responsive checks (manual axe run in Phase B only; not re-run for C2.4).
+- End-to-end tests for critical journeys (`tests/e2e/`, run with `npm run test:e2e`).
+- Accessibility and responsive automation via axe-core and Playwright at 390 / 768 / 1440 px.
+- CI workflow (`.github/workflows/ci.yml`) with locked dependency install, production preview E2E,
+  least-privilege permissions, and failure artifacts.
 - Content coverage audit (`docs/CONTENT_COVERAGE_MATRIX.md`, 2026-10-27).
 
 ## Phase G — GitHub and Vercel
 
-Status: not started for Phase C2.4. All changes are uncommitted in the working tree; no push or
-deployment has been performed.
+Status: not started for Phase C2.6. The previous phase is committed and pushed, but all C2.5 and C2.6
+changes are uncommitted in the working tree; no push or deployment has been performed.
 
 - Verify target repository and secure Git credentials.
 - Commit and push tested work; no GitHub CLI.

@@ -273,6 +273,14 @@
   font-size: var(--text-xs);
 }
 
+.review-choice[data-state="correct"] .review-choice-key {
+  color: var(--ok);
+}
+
+.review-choice[data-state="incorrect"] .review-choice-key {
+  color: var(--danger);
+}
+
 .review-choice-body {
   min-width: 0;
 }

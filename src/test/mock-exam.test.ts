@@ -71,7 +71,10 @@ describe("mock exam preview definition", () => {
       0,
     ));
     expect(mockExamSummary.shortfall).toBe(requested - mockExamSummary.selectedItemCount);
-    expect(mockExamSummary.selectedItemCount).toBe(questionBankEntries.length);
+    expect(mockExamSummary.selectedItemCount).toBe(
+      Math.min(requested, questionBankEntries.length),
+    );
+    expect(mockExamSummary.shortfall).toBe(0);
     expect(mockExamSummary.domainsWithItems).toBe(7);
 
     const reviewedIds = new Set(questionBankEntries.map((entry) => entry.question.id));
@@ -99,9 +102,15 @@ describe("mock exam preview definition", () => {
     ).toBe(true);
     expect(
       mockExamSummary.allocations.every(
-        (allocation) => allocation.allocated === allocation.available,
+        (allocation) => allocation.allocated > 0 && allocation.allocated <= allocation.available,
       ),
     ).toBe(true);
+    expect(
+      mockExamSummary.allocations.reduce(
+        (total, allocation) => total + allocation.allocated,
+        0,
+      ),
+    ).toBe(mockExamSummary.selectedItemCount);
     expect(mockExamPools.every((pool) => pool.questionIds.length > 0)).toBe(true);
   });
 });

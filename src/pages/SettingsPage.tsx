@@ -1,5 +1,5 @@
 import { Download, RotateCcw } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Callout } from "../components/ui/Callout";
 import { PageHeader } from "../components/ui/PageHeader";
 import { ThemePreferenceForm } from "../components/theme/ThemePreferenceForm";
@@ -25,6 +25,22 @@ export function SettingsPage() {
   const snapshot = useStudyState();
   const [statusMessage, setStatusMessage] = useState("");
   const [confirmingReset, setConfirmingReset] = useState(false);
+  const confirmResetRef = useRef<HTMLButtonElement>(null);
+  const resetTriggerRef = useRef<HTMLButtonElement>(null);
+  const wasConfirmingResetRef = useRef(false);
+
+  useEffect(() => {
+    if (confirmingReset) {
+      wasConfirmingResetRef.current = true;
+      confirmResetRef.current?.focus();
+      return;
+    }
+
+    if (wasConfirmingResetRef.current) {
+      wasConfirmingResetRef.current = false;
+      resetTriggerRef.current?.focus();
+    }
+  }, [confirmingReset]);
 
   const resetPreferences = () => {
     clearThemePreference();
@@ -151,6 +167,7 @@ export function SettingsPage() {
           {confirmingReset ? (
             <>
               <button
+                ref={confirmResetRef}
                 type="button"
                 className="button button--primary"
                 onClick={() => {
@@ -171,6 +188,7 @@ export function SettingsPage() {
             </>
           ) : (
             <button
+              ref={resetTriggerRef}
               type="button"
               className="button button--secondary"
               onClick={() => setConfirmingReset(true)}

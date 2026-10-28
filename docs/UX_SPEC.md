@@ -42,15 +42,16 @@ Design meaningful empty, completed, error, and reset-confirmation states. Do not
 ## Implementation notes
 
 - Every route renders inside `AppShell`, including `*` (404) and unknown lesson ids.
-- `/practice` is registry-driven: seven reviewed sets (six domain sets plus one mixed set) support
+- `/practice` is registry-driven: eight reviewed sets (seven domain sets plus one mixed set) support
   `?set=` deep links, resume an in-progress attempt, and persist attempts locally. It is practice,
   not an official exam form.
-- `/mock-exam` runs a blueprint-weighted 24-of-60 preview with the honest shortfall, no timer, and no
-  scaled score. `/review` derives incorrect, unanswered, and flagged items from submitted attempts
-  and resolves them only on explicit request. `/progress` separates reviewed-bank coverage from
-  personal performance.
-- `/learn/evaluation-basics` is the first exam-mapped curriculum lesson. It links to reviewed bank
-  questions through validated `relatedQuestionIds` and provides a direct route to `/practice`.
+- `/mock-exam` runs a blueprint-weighted 60-of-60 preview drawn from 62 reviewed items, with no
+  shortfall, no timer, and no scaled score. `/review` derives incorrect, unanswered, and flagged items
+  from submitted attempts and resolves them only on explicit request. `/progress` separates
+  reviewed-bank coverage from personal performance.
+- `/learn/evaluation-basics` is one of seven exam-mapped curriculum lessons. The lesson set covers all
+  seven domains, links to reviewed bank questions through validated `relatedQuestionIds`, and provides
+  a direct route to `/practice`.
 - The assessment shows English questions and Vietnamese feedback only after submission, confirms
   submission with the unanswered count, and keeps answer/flag controls locked afterwards.
 - The unmapped Context Window sample remains available through its lesson knowledge check.

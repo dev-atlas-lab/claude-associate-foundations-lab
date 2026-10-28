@@ -4,7 +4,7 @@ import { Badge } from "../components/ui/Badge";
 import { Callout } from "../components/ui/Callout";
 import { PageHeader } from "../components/ui/PageHeader";
 import { mockExamDefinition, mockExamQuestions, mockExamSummary } from "../content/mock-exam";
-import { primaryBlueprint } from "../content";
+import { primaryBlueprint, questionBankEntries } from "../content";
 import { findActiveAttempt, findLatestSubmittedAttempt } from "../domain";
 import { PersistedAssessment } from "../features/study/components/PersistedAssessment";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
@@ -24,7 +24,7 @@ export function MockExamPage() {
       <PageHeader
         eyebrow="Assessment"
         title="Mock exam"
-        lede="A blueprint-weighted preview over the reviewed bank. It follows the verified domain weights as closely as the available items allow, reports the shortfall instead of inventing filler, and produces no official scaled score."
+        lede="A blueprint-weighted preview over the reviewed bank. It follows the verified domain weights as closely as the available items allow, reports any shortfall instead of inventing filler, and produces no official scaled score."
         meta={
           <>
             <Badge tone="ok">Format verified</Badge>
@@ -36,12 +36,15 @@ export function MockExamPage() {
         }
       />
 
-      <Callout tone="caution" title="This is a preview, not a 60-item simulation">
+      <Callout tone="caution" title="This is a preview, not a timed simulation">
         Exam Guide v{primaryBlueprint.version} specifies {mockExamSummary.requestedItemCount} items in{" "}
-        {primaryBlueprint.format.timeLimitMinutes} minutes. The reviewed bank currently has{" "}
-        {mockExamSummary.selectedItemCount} usable items, so this run selects all of them and reports
-        a shortfall of {mockExamSummary.shortfall}. No item is duplicated to reach 60, no timer is
-        applied, and no scaled score or readiness claim is made.
+        {primaryBlueprint.format.timeLimitMinutes} minutes. The reviewed bank has{" "}
+        {questionBankEntries.length} items, so this run selects{" "}
+        {mockExamSummary.selectedItemCount} without duplicating an item.{" "}
+        {mockExamSummary.shortfall > 0
+          ? `A shortfall of ${mockExamSummary.shortfall} remains.`
+          : "No shortfall remains for the verified item count."}{" "}
+        No timer is applied, and no scaled score or readiness claim is made.
       </Callout>
 
       <section className="section" aria-labelledby="allocation">
@@ -113,9 +116,10 @@ export function MockExamPage() {
         />
 
         <p className="study-note">
-          <Timer size={13} strokeWidth={1.9} aria-hidden="true" /> A timed 60-item simulation is not
-          available until the reviewed bank can fill the format without duplication. Until then, use
-          this preview for weighted practice and inspect the per-domain report on{" "}
+          <Timer size={13} strokeWidth={1.9} aria-hidden="true" /> A timer and official scaled scoring
+          are not implemented. This preview fills the verified item count from the reviewed bank, but
+          it is not a timed exam simulation. Use it for weighted practice and inspect the per-domain
+          report on{" "}
           <Link className="inline-link" to="/progress">
             Progress
           </Link>

@@ -6,13 +6,30 @@ export function KnowledgeCheck({ question }: { question: Question }) {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const feedbackRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const wasSubmittedRef = useRef(false);
+  const lastSelectionRef = useRef<string | undefined>(undefined);
 
   const isMultipleResponse = question.type === "multiple-response";
   const isCorrect = submitted && isAnswerCorrect(question, selectedIds);
 
   useEffect(() => {
     if (submitted) {
+      wasSubmittedRef.current = true;
       feedbackRef.current?.focus();
+      return;
+    }
+
+    if (wasSubmittedRef.current) {
+      // "Try again" removes the focused button, so move focus back to the
+      // previously selected answer instead of dropping it on <body>.
+      wasSubmittedRef.current = false;
+      const inputs = formRef.current?.querySelectorAll<HTMLInputElement>("input");
+      const previous = Array.from(inputs ?? []).find(
+        (input) => input.value === lastSelectionRef.current,
+      );
+      (previous ?? inputs?.[0])?.focus();
+      lastSelectionRef.current = undefined;
     }
   }, [submitted]);
 
@@ -44,12 +61,13 @@ export function KnowledgeCheck({ question }: { question: Question }) {
   };
 
   const handleReset = () => {
+    lastSelectionRef.current = selectedIds[0];
     setSelectedIds([]);
     setSubmitted(false);
   };
 
   return (
-    <form className="quiz" onSubmit={handleSubmit}>
+    <form ref={formRef} className="quiz" onSubmit={handleSubmit}>
       <fieldset className="fieldset">
         <legend className="quiz-legend" id={`question-${question.id}-stem`} lang="en">
           {question.stem}

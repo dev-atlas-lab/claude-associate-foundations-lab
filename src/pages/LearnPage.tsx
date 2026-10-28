@@ -8,17 +8,20 @@ import { useDocumentTitle } from "../hooks/useDocumentTitle";
 
 export function LearnPage() {
   useDocumentTitle("Learn");
+  const mappedLessonCount = publishedLessons.filter(
+    (lesson) => lesson.examMapping.status === "verified",
+  ).length;
 
   return (
     <div className="page">
       <PageHeader
         eyebrow="Learn"
         title="Learning modules"
-        lede="Vietnamese explanations with English terminology kept intact. Only reviewed technical content appears here; one published lesson is mapped to all six Domain 2 objectives, and one remains an explicitly unmapped design sample."
+        lede="Vietnamese explanations with English terminology kept intact. Only reviewed technical content appears here; every published curriculum lesson maps to verified objectives, and one Context Window lesson remains an explicitly unmapped design sample."
         meta={
           <>
             <Badge tone="ok">Blueprint v1.0 verified</Badge>
-            <Badge tone="ok">Domain 2 lesson</Badge>
+            <Badge tone="ok">{mappedLessonCount} mapped lessons</Badge>
             <Badge tone="warn">1 sample</Badge>
           </>
         }
@@ -66,20 +69,27 @@ export function LearnPage() {
           </h2>
           <span className="section-note">Not routable until written and reviewed</span>
         </div>
-        <div className="row-list">
-          {plannedLessons.map((lesson) => (
-            <div className="row" key={lesson.id}>
-              <span className="row-start" aria-hidden="true">
-                ·
-              </span>
-              <span className="row-body">
-                <span className="row-title">{lesson.title}</span>
-                <span className="row-meta">{lesson.note}</span>
-              </span>
-              <span className="row-tail">Planned</span>
-            </div>
-          ))}
-        </div>
+        {plannedLessons.length > 0 ? (
+          <div className="row-list">
+            {plannedLessons.map((lesson) => (
+              <div className="row" key={lesson.id}>
+                <span className="row-start" aria-hidden="true">
+                  ·
+                </span>
+                <span className="row-body">
+                  <span className="row-title">{lesson.title}</span>
+                  <span className="row-meta">{lesson.note}</span>
+                </span>
+                <span className="row-tail">Planned</span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <Callout tone="note" title="No lessons queued">
+            All seven exam domains have a published, exam-mapped curriculum lesson. The Context
+            Window sample remains deliberately unmapped.
+          </Callout>
+        )}
       </section>
     </div>
   );

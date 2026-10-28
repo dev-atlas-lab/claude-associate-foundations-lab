@@ -14,7 +14,12 @@
 - [x] Learning UI shell and design system implemented (Phase B).
 - [x] First lesson vertical slice implemented (sample lesson, not mapped to an official objective).
 - [x] Practice mode, local persistence, review queue, progress report, and a blueprint-weighted mock-exam preview implemented (Phase C2.3, 2026-10-27); the full 60-item timed mock exam is still outstanding.
+- [x] Whole-domain lessons for all seven domains and at least two reviewed items per objective implemented (Phase C2.5, 2026-10-27); the Context Window sample remains deliberately unmapped.
+- [x] Accessibility, end-to-end, and regression audit implemented with Playwright, axe-core, and targeted focus/landmark/contrast fixes (Phase C2.6, 2026-10-28).
+- [x] GitHub Actions quality-gate workflow added for pull requests and pushes to `main` (Phase C2.7, 2026-10-28); local equivalents pass.
 - [x] Tests and production build pass for implemented features.
+- [ ] CI workflow not yet executed by GitHub Actions; first run remains pending.
+- [ ] Timed mock exam (timer, auto-submit, expiry, scaled score) not implemented; explicitly deferred.
 - [ ] Vercel deployment verified.
 
 ## Scan of 2026-10-26 — repository preparation
@@ -585,3 +590,249 @@
   was read through search extracts, so exact UI steps may drift and are not quoted as fixed.
 - No new persistence, scoring rules, backend, or dependencies were introduced. Changes remain
   uncommitted for human review.
+
+## Phase C2.5 - Whole-domain lessons and question depth (2026-10-27)
+
+### Scope
+
+- Publish `workflow-design` and add one mapped curriculum lesson for each remaining domain: Domain 3,
+  Domain 4, Domain 6, and Domain 7.
+- Audit the eight objectives that had only one reviewed item and add a second item only where it
+  assessed a distinct decision and the sources supported it.
+- Review the existing bank for substantive defects, source overreach, duplicate assessment, and
+  language-policy violations without restyling every item.
+- Keep scoring, persistence, review-queue behavior, Practice Mode, Progress, and the mock-exam preview
+  intact.
+
+### Content
+
+- Added the official Anthropic Engineering source **Building effective agents** (`accessedAt`
+  2026-10-27). The source record notes that its December 2024 tooling details have changed, so only
+  the workflow patterns, simplicity, measurement, and human-checkpoint guidance are used.
+- Added four reviewed curriculum lessons:
+  - `product-selection` (Domain 3, all four objectives, order 5);
+  - `workflow-design` (Domain 4, all five objectives, order 6);
+  - `governance-responsible-use` (Domain 6, all four objectives, order 7);
+  - `troubleshooting-optimization` (Domain 7, all three objectives, order 8).
+- Every new lesson has a Vietnamese explanation, preserved English terminology, a worked scenario,
+  key terms, takeaways, one English knowledge check with Vietnamese per-option rationales, and a
+  `relatedQuestionIds` list that resolves to reviewed bank items. Lesson order remains append-only.
+- Added `question-bank-depth.ts` with eight original items, one for each previously single-item
+  objective. Four are single-choice and four are multiple-response; every multi-response item has
+  exactly three correct choices and states the selection count.
+- Strengthened source traceability on the existing decomposition, solution-design, workflow-checkpoint,
+  and customer-assistant safeguard items by adding the workflow-pattern or Usage Policy source where
+  it directly supports the claim. Existing question IDs were preserved.
+- Emptied `plannedLessons`: all seven domains now have a published mapped lesson, so no roadmap entry
+  is advertised as pending work.
+- Updated Learn, Dashboard, and Mock Exam copy to derive lesson counts and practice labels from the
+  registry. The mock preview now explains that 60 of 62 items are selected with no shortfall, and that
+  it still has no timer or scaled score.
+
+### Audit result
+
+- All eight previously single-item objectives now have two items:
+  `prompting-create-effective-prompts`, `prompting-task-decomposition`,
+  `workflow-requirements-analysis`, `workflow-integrate`, `governance-use-case-fit`,
+  `governance-ethics`, `troubleshoot-diagnose`, and `troubleshoot-adjust`.
+- No objective has fewer than two reviewed items. Domain 2's hallucination/bias objective remains the
+  deepest at four items because two distinct sub-skills (hallucination/inconsistency and bias) are
+  intentionally assessed.
+- The audit did not find a scoring, persistence, or fingerprint defect. No question IDs, answer keys,
+  scoring rules, storage format, or review-queue semantics were changed.
+- The Context Window lesson remains explicitly unmapped. It was not relabelled as Domain 3 coverage.
+
+### Verification
+
+- `npm run typecheck`: pass (`tsc -b`, strict).
+- `npm run lint`: pass (`eslint .`, 0 problems).
+- `npm test`: pass — **19 files / 143 tests**. New assertions require every official objective to
+  have at least two reviewed items, all 30 objectives to have a mapped lesson, and the mock preview to
+  select 60 of the 62 items with zero shortfall and no duplication.
+- `npm run build`: pass (production build; no chunk-size warning).
+- `git diff --check`: clean (no whitespace errors).
+
+### Coverage and limitations
+
+- Coverage is now **30 / 30** objectives with reviewed items and **30 / 30** objectives with a mapped
+  lesson, across **7 / 7** domains. The bank holds **62 items** (32 single-choice, 30
+  multiple-response), and every objective has at least two items.
+- Published lessons: **8** (7 mapped curriculum lessons plus the unmapped Context Window sample).
+- The mock exam is still a **preview**: 60 of 60 slots, shortfall 0, two bank items unselected by the
+  deterministic allocation, no timer, no auto-submit, no scaled score, and no readiness prediction.
+- Lesson coverage means reviewed content exists for each objective. It is not a guarantee that a
+  learner is exam-ready, and no domain is claimed to be exhausted.
+- Help Center pages for projects, connectors, and research remain JavaScript-rendered; their body
+  text was read through search extracts, so exact UI steps may drift and are not quoted as fixed.
+- No new persistence, scoring rules, backend, or dependencies were introduced. Changes remain
+  uncommitted for human review.
+
+## Phase C2.6 - Accessibility, end-to-end, and regression audit (2026-10-28)
+
+### Scope
+
+- Re-derived the content and route state from the repository rather than prior reports: **8 published
+  lessons** (7 mapped + the unmapped Context Window sample), **62 reviewed items** (32 single-choice,
+  30 multiple-response), **30 / 30** objectives mapped, **8 practice sets**, and a **60 / 60** mock
+  preview with no shortfall.
+- Added a Chromium Playwright suite covering navigation, all lessons, practice and exact-set scoring,
+  persistence and recovery, review/progress derivation, theme persistence, responsive widths, and
+  accessibility. The suite runs against the **production build** served by `vite preview`, so deep-link
+  and refresh behavior matches the deployed SPA rather than the dev-only StrictMode lifecycle.
+- Added axe-core scans and manual keyboard/focus checks for the shell, both themes, all lessons,
+  Practice (empty, start, question, submitted, unknown-set), Review (empty, populated, detail), Progress
+  (empty and populated), Mock exam, Glossary, Settings, not-found states, and the corrupt-storage
+  notice.
+- Did not add a timer, auto-submit, scaled score, readiness prediction, new mock engine, new content,
+  a new persistence format, or a scoring change. Question IDs, answer keys, scoring, fingerprinting,
+  and assessment semantics are unchanged.
+
+### Genuine fixes found by the audit
+
+- **Question focus:** `AssessmentRunner` moved focus to the question legend only when the session
+  changed, not when the active question index changed. It now moves focus on both, so Previous/Next
+  and the navigator announce the new stem.
+- **Knowledge-check retry:** "Try again" removed the focused button and dropped focus to `<body>`. Focus
+  now returns to the previously selected answer (or the first input), and the regression test asserts
+  the exact target.
+- **Reset confirmations:** Settings and `StudyStorageNotice` left focus on `<body>` when the confirmation
+  replaced the trigger, and the notice left it on `<body>` after a successful reset. Focus now moves to
+  the confirm action, returns to the trigger on cancel, and moves to `main` when the blocking notice
+  disappears.
+- **Review resolution:** marking an item reviewed replaced the focused button and dropped focus. The
+  resolved state's heading is now focusable through a narrow `EmptyState` extension and receives focus.
+- **Duplicate landmark name:** the Practice set overview and the assessment start screen both exposed
+  the same region name. The overview now has a distinct accessible name.
+- **Invalid ARIA role:** the storage notice used `role="alert"`/`status` on `<aside>`, which axe rejects
+  as an unsupported role. It is now a neutral `<div>` with the same live-region role and label.
+- **Contrast:** review option keys used the tertiary text token on tinted correct/incorrect rows
+  (3.66:1). They now use the matching `--ok` / `--danger` token on those states.
+- **Test-runner isolation:** Vitest was collecting the Playwright `*.spec.ts` files. `vite.config.ts`
+  now excludes `tests/e2e/**` so `npm test` and `npm run test:e2e` remain separate gates.
+
+### Automated browser coverage
+
+| Flow | Spec | Tests | Result |
+|---|---|---:|---|
+| A. Shell, lesson list, all 8 lessons, mappings, pager, deep links, invalid IDs, 404, Context Window unmapped | `navigation.spec.ts` | 18 | PASS |
+| B. Practice selection, `?set=`, answer change, flags, persistence across questions, exact-set multiple response, unanswered vs incorrect, submitted review, correct-but-flagged, unknown set | `practice.spec.ts` | 7 | PASS |
+| C. In-progress reload, valid restore, corrupt JSON, stale fingerprint, incompatible schema, blocked/unreadable storage, no silent resume, two-step reset, backup downloads | `persistence.spec.ts` | 9 | PASS |
+| D. Review derivation, mark-reviewed persistence, filters, zero activity, coverage vs performance, dashboard/mock registry counts, 60-slot allocation | `review-progress.spec.ts` | 7 | PASS |
+| E. Dark default, topbar and Settings switching, System live matchMedia, reload persistence | `theme.spec.ts` | 5 | PASS |
+| Accessibility, heading order, landmarks, skip link, drawer focus trap, question labels, focus management, reduced motion | `accessibility.spec.ts` | 48 | PASS |
+| Responsive 390 / 768 / 1440 widths, overflow, control clipping, mobile runner and drawer | `responsive.spec.ts` | 10 | PASS |
+
+**Total: 104 Playwright tests, 104 passed.** All tests import the real content registry as fixtures and
+use isolated browser contexts; no network calls or shared storage are involved.
+
+### Accessibility result
+
+- **65 axe scans, 0 violations:** 32 states in dark theme, the same 32 in light theme, plus the open
+  mobile drawer. No axe rules were disabled or excluded globally. CSS transitions are finished before
+  each scan so axe samples the resting state rather than a 120 ms reveal transition.
+- Manual checks passed for one `<main>`/`<banner>`/`Sections` navigation per route, exactly one `h1`,
+  no skipped heading levels across 20 routes, skip link as the first keyboard stop, drawer focus trap
+  and focus return, single/multiple-response labels, Space activation, textual correct/your-answer/
+  unanswered state, disabled controls after submission, route-change focus to `main`, and reduced
+  motion (`scroll-behavior: auto`, transitions and animations reduced to near-zero).
+- Responsive scans at 390, 768, and 1440 px found no horizontal page overflow and no controls outside
+  the viewport. The lesson table of contents is hidden below 1200 px as designed.
+
+### Verification
+
+- `npm run typecheck`: pass (`tsc -b`, strict, including the E2E TypeScript project).
+- `npm run lint`: pass (`eslint .`, 0 problems).
+- `npm test`: pass - **19 files / 145 tests**.
+- `npm run test:e2e`: pass - **7 files / 104 tests** against the production preview.
+- `npm run build`: pass. CSS **45.14 kB** (gzip **7.44 kB**); largest JS chunks **426.00 kB**
+  (gzip **116.64 kB**) and **339.97 kB** (gzip **107.80 kB**); no chunk-size warning.
+- `git diff --check`: no whitespace errors; Git only reports CRLF normalization warnings for edited
+  files.
+
+### Limitations
+
+- Playwright is Chromium-only. Firefox and WebKit are not installed or tested. (C2.7 later added a CI
+  workflow for the Chromium gates; it had not been executed by GitHub at the end of this phase.)
+- axe is automated and cannot prove screen-reader usability. Manual NVDA/VoiceOver passes remain a
+  human follow-up, especially for the question navigator, review detail, and storage recovery notice.
+- The scans finish CSS transitions before analysis; a real 120 ms colour-transition flash on newly
+  inserted buttons is not treated as a contrast failure but is not animated away either.
+- The Timed Mock Exam remains deliberately unimplemented: no timer, auto-submit, expiry, scaled score,
+  or readiness prediction. The preview is still a 60-of-60 browsing exercise, not a simulation.
+- Vercel deployment remains unverified because no project is connected. The production preview proves
+  the SPA build and deep-link fallback locally, not on Vercel.
+- Phase naming: the source-of-truth docs use C2.5 for content completion and contain no C3.1 phase;
+  this audit is therefore recorded as C2.6, not as a new content phase.
+- All C2.5 and C2.6 changes remain uncommitted for human review; nothing was staged, committed, pushed,
+  or deployed in this phase.
+
+## Phase C2.7 - CI quality gates and release readiness (2026-10-28)
+
+### Scope
+
+- Inspected the checkout rather than relying on prior reports: branch `main` at `2ed3408`, with C2.5
+  and C2.6 work uncommitted. Re-derived **8 published lessons**, **62 reviewed items**, **30 / 30**
+  objectives covered, **19 files / 145 unit/integration tests**, **7 files / 104 Playwright tests**,
+  and **65 axe scans** from the repository.
+- Added `.github/workflows/ci.yml` for every pull request and every push to `main`. No workflow
+  existed before this phase.
+- Did not implement the Timed Mock Exam, change application behavior, alter content, or change test
+  assertions.
+- Did not commit, push, deploy, stash, reset, amend, or rewrite history.
+
+### Workflow
+
+- Node.js is read from `.nvmrc` (major 22, the project LTS baseline) with npm dependency caching.
+- `npm ci` installs from the lockfile; `typecheck`, `lint`, `test`, and `build` run as separate
+  steps so a failure is attributable to one gate.
+- `npx playwright install --with-deps chromium` installs the Chromium build selected by the locked
+  Playwright 1.64.1 version, plus the Ubuntu system libraries.
+- `npm run test:e2e` runs the existing Playwright configuration unchanged. Its `webServer` rebuilds
+  and serves the production bundle through `vite preview` on `127.0.0.1:4173`, so deep links,
+  refreshes, and the SPA fallback are part of CI.
+- The job sets `CI=true`, which enables `forbidOnly`, one retry, two workers, and (via the Playwright
+  config change below) the HTML reporter.
+- On failure, `test-results/` and `playwright-report/` upload as `playwright-failure-artifacts` with
+  seven-day retention. Traces are already captured with `trace: "retain-on-failure"`.
+- Permissions are limited to `contents: read`; the workflow uses no secrets, no deployment step, no
+  browser matrix, and no third-party actions beyond checkout, setup-node, and upload-artifact.
+
+### Test configuration
+
+- `playwright.config.ts` now adds the built-in HTML reporter only when `CI` is set. Local runs keep
+  the existing list reporter. Test selection, assertions, retries, and accessibility scans are
+  unchanged.
+- No test was skipped, weakened, or excluded to satisfy CI.
+
+### Verification (local)
+
+- `npm ci`: pass after stopping two stale project-local Vite dev servers that held a Windows file
+  lock on `node_modules/@esbuild/win32-x64/esbuild.exe`. The lockfile installed cleanly with
+  `npm audit` reporting 0 vulnerabilities. Local Node 22.11 printed `EBADENGINE` warnings for
+  `@vitejs/plugin-react@5.2.0` and `eslint-visitor-keys@5.0.1`, whose ranges require Node 22.12+;
+  CI resolves the latest Node 22 from `.nvmrc`, which satisfies those ranges.
+- `npm run typecheck`: pass (`tsc -b`, strict, including `tsconfig.e2e.json`).
+- `npm run lint`: pass (`eslint .`, 0 problems).
+- `npm test`: pass - **19 files / 145 tests**.
+- `npm run build`: pass. CSS **45.14 kB** (gzip **7.44 kB**); JS chunks up to **426.00 kB**
+  (gzip **116.64 kB**); no chunk-size warning.
+- `npm run test:e2e`: pass - **104 tests**, including all **65 axe scans** with 0 violations.
+- `CI=true npm run test:e2e`: pass - **104 tests with 2 workers, one retry, `forbidOnly`, and the
+  HTML reporter**, matching the workflow branch. No retries were needed.
+- `git diff --check`: pass. Git only reports CRLF normalization warnings.
+
+### Status and limitations
+
+- The workflow is authored and locally validated but **has not been executed by GitHub Actions**.
+  No workflow run, check mark, or artifact exists on GitHub until a push or pull request triggers
+  it. GitHub Actions success is not claimed.
+- E2E and axe coverage in CI is Chromium-only. Firefox/WebKit, manual NVDA/VoiceOver testing,
+  cross-browser compatibility, and Vercel deployment remain unverified.
+- CI uses a single Ubuntu runner and two Playwright workers; the suite takes about two minutes
+  locally and has a 30-minute job timeout for slower hosted runners.
+- The Playwright `webServer` rebuilds the bundle even though the workflow already ran `npm run
+  build`. This keeps the existing local/CI command identical and was preferred over adding a
+  CI-only build-skip switch.
+- Local Node 22.11 is below the engine range of two dev dependencies. CI avoids this by using the
+  latest Node 22; upgrading the local runtime or the `engines` field remains a follow-up.
+- All C2.5, C2.6, and C2.7 changes remain uncommitted for human review.

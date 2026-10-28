@@ -40,6 +40,16 @@ function hasMappedLessonForDomain(domainId: string): boolean {
   );
 }
 
+function domainForObjective(objectiveId: string) {
+  return primaryBlueprint.domains.find((domain) =>
+    domain.objectives.some((objective) => objective.id === objectiveId),
+  );
+}
+
+const featuredDomain = featuredLesson.examMapping.objectiveIds
+  .map((objectiveId) => domainForObjective(objectiveId))
+  .find((domain) => domain !== undefined);
+
 export function DashboardPage() {
   useDocumentTitle();
   const snapshot = useStudyState();
@@ -73,7 +83,11 @@ export function DashboardPage() {
           <p className="feature-text">{featuredLesson.summary}</p>
           <div className="feature-meta">
             <Badge tone="accent">
-              {featuredLesson.kind === "sample" ? "Sample lesson" : "Domain 2 lesson"}
+              {featuredLesson.kind === "sample"
+                ? "Sample lesson"
+                : featuredDomain
+                  ? `Domain ${featuredDomain.code} lesson`
+                  : "Curriculum lesson"}
             </Badge>
             <Badge>{featuredLesson.estimatedMinutes} min read</Badge>
             <Badge tone={featuredLesson.examMapping.status === "unmapped" ? "warn" : "ok"}>
@@ -163,26 +177,33 @@ export function DashboardPage() {
             Open learning modules
           </Link>
         </div>
-        <div className="row-list">
-          {plannedLessons.map((lesson) => {
-            const domain = lesson.domainId ? getDomain(lesson.domainId) : undefined;
+        {plannedLessons.length > 0 ? (
+          <div className="row-list">
+            {plannedLessons.map((lesson) => {
+              const domain = lesson.domainId ? getDomain(lesson.domainId) : undefined;
 
-            return (
-              <div className="row" key={lesson.id}>
-                <span className="row-start" aria-hidden="true">
-                  <BookOpen size={14} strokeWidth={1.9} />
-                </span>
-                <span className="row-body">
-                  <span className="row-title">{lesson.title}</span>
-                  <span className="row-meta">
-                    {domain ? `Domain ${domain.code} · ${domain.title}` : lesson.note}
+              return (
+                <div className="row" key={lesson.id}>
+                  <span className="row-start" aria-hidden="true">
+                    <BookOpen size={14} strokeWidth={1.9} />
                   </span>
-                </span>
-                <span className="row-tail">Planned</span>
-              </div>
-            );
-          })}
-        </div>
+                  <span className="row-body">
+                    <span className="row-title">{lesson.title}</span>
+                    <span className="row-meta">
+                      {domain ? `Domain ${domain.code} · ${domain.title}` : lesson.note}
+                    </span>
+                  </span>
+                  <span className="row-tail">Planned</span>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <Callout tone="note" title="No lessons queued">
+            All seven exam domains now have a published, exam-mapped lesson. No additional lesson is
+            queued; the Context Window sample remains intentionally unmapped.
+          </Callout>
+        )}
       </section>
 
       <section className="section" aria-labelledby="assessment-shortcuts">

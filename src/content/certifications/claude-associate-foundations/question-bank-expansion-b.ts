@@ -575,11 +575,13 @@ export const workflowExpansionQuestionBank: QuestionBankEntry[] = [
     "anthropic-prompting-best-practices",
     "anthropic-evaluation-docs",
     "anthropic-claude-constitution",
+    "anthropic-building-effective-agents",
   ]),
   reviewedEntry(solutionDesignIteration, "workflow-solution-design", [
     "anthropic-prompting-best-practices",
     "anthropic-evaluation-docs",
     "anthropic-claude-constitution",
+    "anthropic-building-effective-agents",
   ]),
   reviewedEntry(stakeholderBrief, "workflow-stakeholder-communication", [
     "anthropic-evaluation-docs",

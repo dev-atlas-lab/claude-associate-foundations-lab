@@ -81,7 +81,8 @@ describe("Domain 2 curriculum coverage", () => {
     expect(questionBankEntries.some((entry) => entry.question.id === "context-window-root-cause")).toBe(
       false,
     );
-    expect(publishedLessons).toHaveLength(4);
+    expect(publishedLessons).toHaveLength(8);
+    expect(publishedLessons.filter((published) => published.kind === "sample")).toHaveLength(1);
   });
 
   it("resolves lesson sources, related questions, and question review records", () => {

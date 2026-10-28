@@ -22,4 +22,11 @@ export default tseslint.config(
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
     },
   },
+  {
+    // Playwright tests run in Node, not in the browser bundle.
+    files: ["tests/e2e/**/*.ts", "playwright.config.ts"],
+    languageOptions: {
+      globals: { ...globals.browser, ...globals.node },
+    },
+  },
 );

@@ -252,7 +252,9 @@ export const promptStructureLesson: Lesson = lessonSchema.parse({
   ],
   relatedQuestionIds: [
     "prompting-specific-brief",
+    "prompting-effective-prompt-additions",
     "prompting-decompose-steps",
+    "prompting-decomposition-decision",
     "prompting-iterate-evidence",
     "prompting-iterate-systematic",
     "prompting-analysis-task-strategy",

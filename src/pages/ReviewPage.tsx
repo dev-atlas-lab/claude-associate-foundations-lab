@@ -1,5 +1,5 @@
 import { ArrowLeft, ArrowRight, BookmarkCheck, Check } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Badge } from "../components/ui/Badge";
 import { Callout } from "../components/ui/Callout";
@@ -97,6 +97,12 @@ export function ReviewPage() {
     flagged: items.filter((item) => item.reasons.includes("flagged")).length,
   };
 
+  useEffect(() => {
+    if (resolvedMessage) {
+      document.getElementById("review-resolved-title")?.focus();
+    }
+  }, [resolvedMessage]);
+
   if (itemKey && !detail) {
     return (
       <div className="page">
@@ -109,6 +115,8 @@ export function ReviewPage() {
         <EmptyState
           icon={Check}
           title={resolvedMessage ?? "This item is no longer in the review queue"}
+          titleId="review-resolved-title"
+          titleFocusable={Boolean(resolvedMessage)}
           actions={
             <Link className="button button--secondary" to={filterHref(reason)}>
               Back to review queue

@@ -4,6 +4,7 @@ import {
   type QuestionBankEntry,
 } from "../../../domain";
 import { reviewedEntry } from "./bank-helpers";
+import { coverageDepthQuestionBank } from "./question-bank-depth";
 import { domainFiveQuestionBank } from "./question-bank-domain5";
 import {
   productSelectionExpansionQuestionBank,
@@ -1036,7 +1037,7 @@ const customerAssistantSafeguards: Question = questionSchema.parse({
   correctChoiceIds: ["prohibited-uses", "disclose-ai", "check-fairness"],
   correctExplanation:
     "Ba biện pháp phù hợp là định nghĩa ranh giới sử dụng và escalation, minh bạch về AI cùng giới hạn, và kiểm tra phân biệt đối xử/thiên lệch. Lời khuyên pháp lý ràng buộc không nên giao cho assistant, còn che giấu AI hoặc cho assistant vượt human oversight đều làm giảm trách nhiệm giải trình.",
-  sourceIds: ["anthropic-claude-constitution"],
+  sourceIds: ["anthropic-claude-constitution", "anthropic-usage-policy"],
 });
 
 /* ── Domain 7: Troubleshooting and Optimization ───────────────────────── */
@@ -1132,6 +1133,7 @@ export const promptingQuestionBank: QuestionBankEntry[] = [
   reviewedEntry(decomposeComplexRequest, "prompting-task-decomposition", [
     "anthropic-prompting-best-practices",
     "anthropic-evaluation-docs",
+    "anthropic-building-effective-agents",
   ]),
 ];
 
@@ -1155,6 +1157,7 @@ export const workflowQuestionBank: QuestionBankEntry[] = [
   reviewedEntry(workflowCheckpoints, "workflow-integrate", [
     "anthropic-evaluation-docs",
     "anthropic-claude-constitution",
+    "anthropic-building-effective-agents",
   ]),
 ];
 
@@ -1165,6 +1168,7 @@ export const governanceQuestionBank: QuestionBankEntry[] = [
   ]),
   reviewedEntry(customerAssistantSafeguards, "governance-use-case-fit", [
     "anthropic-claude-constitution",
+    "anthropic-usage-policy",
   ]),
 ];
 
@@ -1193,4 +1197,5 @@ export const reviewedQuestionBank: QuestionBankEntry[] = [
   ...governanceExpansionQuestionBank,
   ...troubleshootingQuestionBank,
   ...optimizationExpansionQuestionBank,
+  ...coverageDepthQuestionBank,
 ];

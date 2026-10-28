@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import {
-  contentPack,
   getDomain,
   getLesson,
   getLessonNeighbours,
@@ -43,6 +42,10 @@ describe("curriculum registry", () => {
       expect(sources).toHaveLength(lesson.sourceIds.length);
       for (const source of sources) {
         expect(source.url.startsWith("https://")).toBe(true);
+      }
+
+      for (const sourceId of lesson.sourceIds) {
+        expect(lesson.verification.sourceIds).toContain(sourceId);
       }
 
       for (const question of lesson.questions) {
@@ -92,11 +95,15 @@ describe("curriculum registry", () => {
     });
     expect(getLessonNeighbours("prompt-structure")).toMatchObject({
       previous: getLesson("configuration-basics"),
-      plannedNext: contentPack.plannedLessons[0],
+      next: getLesson("product-selection"),
+    });
+    expect(getLessonNeighbours("troubleshooting-optimization")).toMatchObject({
+      previous: getLesson("governance-responsible-use"),
+      plannedNext: undefined,
     });
   });
 
-  it("publishes one reviewed lesson for the Context Window sample and three domain lessons", () => {
+  it("publishes one reviewed sample and seven domain lessons in append-only order", () => {
     const ids = publishedLessons.map((lesson) => lesson.id);
 
     expect(ids).toEqual([
@@ -104,9 +111,30 @@ describe("curriculum registry", () => {
       "evaluation-basics",
       "configuration-basics",
       "prompt-structure",
+      "product-selection",
+      "workflow-design",
+      "governance-responsible-use",
+      "troubleshooting-optimization",
     ]);
     expect(getLesson("configuration-basics")?.examMapping.status).toBe("verified");
     expect(getLesson("prompt-structure")?.examMapping.status).toBe("verified");
+    expect(getLesson("product-selection")?.examMapping.status).toBe("verified");
+    expect(getLesson("workflow-design")?.examMapping.status).toBe("verified");
+    expect(getLesson("governance-responsible-use")?.examMapping.status).toBe("verified");
+    expect(getLesson("troubleshooting-optimization")?.examMapping.status).toBe("verified");
+  });
+
+  it("maps all 30 verified objectives across all seven domains", () => {
+    const mappedObjectiveIds = new Set(
+      publishedLessons.flatMap((lesson) => lesson.examMapping.objectiveIds),
+    );
+
+    for (const domain of primaryBlueprint.domains) {
+      for (const objective of domain.objectives) {
+        expect(mappedObjectiveIds.has(objective.id)).toBe(true);
+      }
+    }
+    expect(mappedObjectiveIds.size).toBe(30);
   });
 
   it("keeps every published lesson mapping and related practice resolvable", () => {

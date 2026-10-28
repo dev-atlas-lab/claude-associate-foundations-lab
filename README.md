@@ -6,7 +6,8 @@ The product pairs Vietnamese explanations with English assessments: lessons, int
 
 ## Current status
 
-Phases B, C0, C1, C2.1, C2.2a, C2.2b and C2.3 are implemented on top of the validated scaffold.
+Phases B, C0, C1, C2.1, C2.2a, C2.2b, C2.3, C2.4, C2.5, C2.6 and C2.7 are implemented on top of the
+validated scaffold.
 
 - Design tokens, Dark / Light / System themes with localStorage persistence, responsive sidebar and
   mobile drawer, skip link, focus management, and reduced-motion support.
@@ -26,17 +27,20 @@ Phases B, C0, C1, C2.1, C2.2a, C2.2b and C2.3 are implemented on top of the vali
   objectives: accuracy/completeness, hallucination/inconsistency and bias detection, fact-checking,
   human-review escalation, audience editing, and output-format selection. It links to reviewed bank
   questions and is explicit about the limits of its bias evidence.
-- Two more mapped lessons cover whole domains: `/learn/configuration-basics` teaches all four Domain 5
-  objectives (projects, knowledge, connectors, system-level instructions, and maintenance), and
-  `/learn/prompt-structure` teaches all four Domain 1 objectives.
+- Seven mapped curriculum lessons now cover every exam domain: `/learn/evaluation-basics` (Domain 2),
+  `/learn/prompt-structure` (Domain 1), `/learn/configuration-basics` (Domain 5),
+  `/learn/product-selection` (Domain 3), `/learn/workflow-design` (Domain 4),
+  `/learn/governance-responsible-use` (Domain 6), and `/learn/troubleshooting-optimization` (Domain 7).
+  Each teaches all objectives in its domain, links to reviewed bank items, and includes an English
+  knowledge check with Vietnamese explanations.
 - A deterministic, certification-neutral assessment core in `src/domain/assessment.ts` supports
   single-choice and exact-set multiple-response scoring, answer changes, navigation, flags, explicit
   submission confirmation, review navigation, and idempotent submission. Scores are derived from
   submitted answers rather than stored in mutable state.
-- A reviewed, source-grounded bank of **54 original items** across all seven domains (28
-  single-choice, 26 multiple-response), covering all 30 official objectives. Bank metadata is
-  validated against the blueprint, certification, sources, and review status; no official questions
-  are copied. See `src/domain/question-bank.ts`.
+- A reviewed, source-grounded bank of **62 original items** across all seven domains (32
+  single-choice, 30 multiple-response), covering all 30 official objectives with at least two items
+  each. Bank metadata is validated against the blueprint, certification, sources, and review status;
+  no official questions are copied. See `src/domain/question-bank.ts`.
 - Practice (`/practice`) is registry-driven: eight sets (seven domain sets plus one mixed set) support
   `?set=` deep links, resume an in-progress attempt, and save progress locally. English questions and
   Vietnamese explanations appear after submission. There is no timer and no official form.
@@ -46,21 +50,29 @@ Phases B, C0, C1, C2.1, C2.2a, C2.2b and C2.3 are implemented on top of the vali
   resolves them only through an explicit "Mark reviewed" action.
 - Progress separates reviewed-bank coverage from personal performance and shows a real zero-activity
   state instead of a fabricated score.
-- The Mock exam page runs a blueprint-weighted **54-of-60 preview**, reports the 6-item shortfall,
-  and adds no filler, duplicates, timer, or scaled score.
-- Overall reviewed coverage is **30 / 30** objectives across all seven domains; Domains 1, 2, and 5
-  have exam-mapped lessons, and depth per objective still ranges from one to four items.
+- The Mock exam page runs a blueprint-weighted **60-of-60 preview** drawn from the 62 reviewed items,
+  with no shortfall, no filler, no duplicates, no timer, and no scaled score. Two items are not
+  selected in a given deterministic preview.
+- Overall reviewed coverage is **30 / 30** objectives across all seven domains, with a mapped lesson
+  and at least two practice items for every objective. Depth remains limited (two to four items per
+  objective), so this is not a claim of exam readiness.
 - The Context Window sample lesson and its unmapped knowledge check remain available; the sample
   assessment definition is still in the pack but is no longer the `/practice` surface.
 - GitHub repository exists at <https://github.com/dev-atlas-lab/claude-associate-foundations-lab> on `main`.
+- A GitHub Actions CI workflow (`.github/workflows/ci.yml`) validates pull requests and pushes to
+  `main` with typecheck, lint, unit/integration tests, the production build, and the Chromium
+  Playwright/axe suite. It has not run on GitHub yet; only the equivalent local commands have been
+  executed.
 - No Vercel project has been connected yet.
 
-Quality gates currently pass: typecheck, lint, 141 tests across 19 files, and production build. Routes
-are code-split with `React.lazy`; the largest JS chunks are 339.97 kB (107.81 kB gzip) and 335.96 kB
-(93.82 kB gzip), with no Vite chunk-size warning. An axe-core run on the dashboard, lesson, mock-exam,
-and glossary routes in both themes reports 0 violations; the new study surfaces still need a
-dedicated browser audit. See `docs/PROGRESS.md` for the detailed log, `docs/ASSESSMENT_ENGINE.md` for
-assessment decisions, and `docs/DESIGN_SYSTEM.md` for the design decisions.
+Local quality gates currently pass: typecheck, lint, **145 unit/integration tests across 19 files**,
+**104 Playwright tests across 7 files**, and the production build. Routes are code-split with
+`React.lazy`; the largest JS chunks are 426.00 kB (116.64 kB gzip) and 339.97 kB (107.80 kB gzip),
+with no Vite chunk-size warning. **65 axe-core scans** cover 32 states in both themes plus the open
+mobile drawer and report **0 violations**; manual browser checks cover landmarks, heading order,
+keyboard focus, skip link, drawer focus trapping, reduced motion, and responsive widths. See
+`docs/PROGRESS.md` for the detailed log, `docs/ASSESSMENT_ENGINE.md` for assessment decisions, and
+`docs/DESIGN_SYSTEM.md` for the design decisions.
 
 Brand source files live in `brand/`; the runtime favicon and app-icon copies are in `public/brand/`.
 
@@ -79,14 +91,55 @@ npm run dev
 
 ## Quality checks
 
+Run the same gates locally that CI runs:
+
 ```bash
+npm ci
 npm run typecheck
 npm run lint
-npm run test
+npm test
 npm run build
+npx playwright install chromium   # one-time browser download
+npm run test:e2e
 ```
 
-End-to-end tests are scaffolded but not written yet: `npm run test:e2e`.
+`npm run test:e2e` rebuilds the production bundle and serves it with `vite preview`, so it also
+verifies direct URLs and refreshes through the SPA fallback.
+
+### Browser and accessibility checks
+
+Playwright runs Chromium only. The suite imports the real content registry as fixtures and uses
+isolated browser contexts, so it needs no network, credentials, or pre-seeded storage.
+
+```bash
+npm run test:e2e                                      # 104 tests; builds, serves, and scans
+npx playwright test tests/e2e/accessibility.spec.ts   # axe + keyboard subset
+npx playwright show-trace test-results/**/trace.zip   # inspect a recorded failure
+```
+
+On a fresh Linux machine, `npx playwright install --with-deps chromium` also installs the required
+system libraries. CI uses that command; desktop installs usually only need `npx playwright install
+chromium`.
+
+Traces and screenshots for failures are written to `test-results/` (ignored by Git). CI additionally
+writes `playwright-report/` and uploads both directories as the `playwright-failure-artifacts`
+artifact when a job fails.
+
+## Continuous integration
+
+`.github/workflows/ci.yml` runs on every pull request and on pushes to `main`. It:
+
+1. Checks out the repository and installs Node.js from `.nvmrc` (Node 22 LTS) with npm caching.
+2. Runs `npm ci`, `npm run typecheck`, `npm run lint`, `npm test`, and `npm run build`.
+3. Installs the Chromium build that matches the lockfile (`npx playwright install --with-deps
+   chromium`).
+4. Runs `npm run test:e2e` against the production preview, including all 65 axe scans.
+5. On failure, uploads `test-results/` and `playwright-report/` for seven days.
+
+The workflow requests only `contents: read`, uses no secrets, and does not deploy. It has been
+validated locally, but it has not yet been executed by GitHub Actions; the first push or pull request
+will provide that verification. CI does not cover Firefox/WebKit, manual screen-reader testing, or a
+Vercel deployment.
 
 ## Tech stack
 
@@ -94,7 +147,7 @@ End-to-end tests are scaffolded but not written yet: `npm run test:e2e`.
 - React Router 7 (`createBrowserRouter`; SPA rewrites in `vercel.json`)
 - Zod 4 for runtime validation of the platform domain model and content pack
 - Vitest 4 + React Testing Library
-- Playwright for end-to-end tests (config not added yet)
+- Playwright 1.64 (Chromium) + axe-core 4.14 for browser and accessibility checks
 - Vercel for static frontend hosting
 
 ### Dependency policy

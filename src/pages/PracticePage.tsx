@@ -77,7 +77,10 @@ export function PracticePage() {
           practice, not an official CCAO-F form.
         </Callout>
 
-        <section className="section" aria-labelledby="selected-set-heading">
+        <section
+          className="section"
+          aria-label={`${selectedSet.assessment.title} practice set`}
+        >
           <div className="section-heading-row">
             <h2 className="section-title" id="selected-set-heading">
               {selectedSet.assessment.title}

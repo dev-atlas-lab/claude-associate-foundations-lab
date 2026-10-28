@@ -65,6 +65,7 @@ export function AssessmentRunner({
 
   const sessionId = session?.id;
   const sessionStatus = session?.status;
+  const currentQuestionIndex = session?.currentQuestionIndex;
   const result =
     session !== null && session.status === "submitted"
       ? calculateAssessmentResult(context, session)
@@ -98,7 +99,7 @@ export function AssessmentRunner({
     if (sessionId !== undefined) {
       questionHeadingRef.current?.focus();
     }
-  }, [sessionId]);
+  }, [sessionId, currentQuestionIndex]);
 
   useEffect(() => {
     if (confirming) {

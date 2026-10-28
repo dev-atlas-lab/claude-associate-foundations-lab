@@ -1,5 +1,5 @@
 import { Download, RotateCcw, ShieldAlert } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { downloadTextFile } from "../../../lib/download";
 import { resetStudyData, useStudyState } from "../../../persistence/study-store";
 
@@ -16,6 +16,22 @@ function backupFilename(): string {
 export function StudyStorageNotice() {
   const snapshot = useStudyState();
   const [confirmingReset, setConfirmingReset] = useState(false);
+  const confirmButtonRef = useRef<HTMLButtonElement>(null);
+  const resetButtonRef = useRef<HTMLButtonElement>(null);
+  const wasConfirmingRef = useRef(false);
+
+  useEffect(() => {
+    if (confirmingReset) {
+      wasConfirmingRef.current = true;
+      confirmButtonRef.current?.focus();
+      return;
+    }
+
+    if (wasConfirmingRef.current) {
+      wasConfirmingRef.current = false;
+      resetButtonRef.current?.focus();
+    }
+  }, [confirmingReset]);
 
   const blocking = snapshot.status === "corrupt" || snapshot.status === "incompatible";
   const hasIssue =
@@ -39,7 +55,7 @@ export function StudyStorageNotice() {
       : snapshot.writeError;
 
   return (
-    <aside
+    <div
       className="storage-notice"
       data-tone={blocking ? "blocking" : "warning"}
       aria-labelledby="storage-notice-title"
@@ -77,11 +93,17 @@ export function StudyStorageNotice() {
             confirmingReset ? (
               <>
                 <button
+                  ref={confirmButtonRef}
                   type="button"
                   className="button button--primary button--sm"
                   onClick={() => {
                     resetStudyData();
                     setConfirmingReset(false);
+                    // The notice disappears after a successful reset, so keep
+                    // focus inside the content region rather than on <body>.
+                    document
+                      .getElementById("main-content")
+                      ?.focus({ preventScroll: true });
                   }}
                 >
                   Confirm reset
@@ -96,6 +118,7 @@ export function StudyStorageNotice() {
               </>
             ) : (
               <button
+                ref={resetButtonRef}
                 type="button"
                 className="button button--secondary button--sm"
                 onClick={() => setConfirmingReset(true)}
@@ -107,6 +130,6 @@ export function StudyStorageNotice() {
           ) : null}
         </div>
       </div>
-    </aside>
+    </div>
   );
 }

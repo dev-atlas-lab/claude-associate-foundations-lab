@@ -399,4 +399,24 @@ export const sources: Source[] = [
       "High-risk areas include legal, medical, finance, credit, insurance, housing, employment, education, healthcare access, public benefits, and legal status decisions",
     ],
   },
+  {
+    id: "anthropic-building-effective-agents",
+    title: "Building effective agents",
+    publisher: "Anthropic Engineering",
+    url: "https://www.anthropic.com/engineering/building-effective-agents",
+    kind: "official-engineering-blog",
+    accessedAt: "2026-10-27",
+    accessNote:
+      "The page is readable but notes that much of the tooling landscape described has changed since December 2024 and points to current Managed Agents documentation. This pack uses the durable workflow patterns and the simplicity, measurement, and human-checkpoint guidance, not the page's specific tooling recommendations.",
+    supports: [
+      "Agentic systems include workflows, where LLMs and tools follow predefined code paths, and agents, where the model directs its own process and tool use",
+      "The recommended starting point is the simplest solution that works, adding complexity only when it demonstrably improves outcomes",
+      "Prompt chaining decomposes a task into a fixed sequence of steps and can add programmatic checks between steps",
+      "Routing classifies an input and sends it to a specialized follow-up task",
+      "Parallelization can split independent subtasks or run multiple attempts for higher confidence",
+      "Orchestrator-workers and evaluator-optimizer patterns combine delegation, generation, evaluation, and iteration",
+      "Agents can pause for human feedback at checkpoints or when blocked, and often use stopping conditions",
+      "Success depends on measuring performance and iterating, with simplicity, transparency, and well-documented tools",
+    ],
+  },
 ];

@@ -120,6 +120,20 @@ describe("assessment runner", () => {
     expect(screen.getByRole("radio", { name: /Wrong choice/i })).not.toBeChecked();
   });
 
+  it("moves focus to the question stem when the active question changes", async () => {
+    const user = userEvent.setup();
+    renderRunner();
+
+    await user.click(screen.getByRole("button", { name: "Start assessment" }));
+    expect(screen.getByText(singleQuestion.stem)).toHaveFocus();
+
+    await user.click(screen.getByRole("button", { name: "Next" }));
+    expect(screen.getByText(multipleQuestion.stem)).toHaveFocus();
+
+    await user.click(screen.getByRole("button", { name: "Previous" }));
+    expect(screen.getByText(singleQuestion.stem)).toHaveFocus();
+  });
+
   it("cancels confirmation, then handles unanswered questions and restart", async () => {
     const user = userEvent.setup();
     renderRunner();

@@ -73,24 +73,39 @@ A question-bank item is not reviewed merely because its schema parses. It must h
 
 Avoid ambiguous wording, trick questions with multiple defensible answers, and unsupported claims.
 
-## Authoring for new domains
+## Authoring lessons and depth passes
 
-The Domain 5 and coverage-expansion work established patterns that later banks should follow:
+The Domain 5, Domain 3/4/6/7 lesson, and coverage-depth work established patterns that later content
+should follow:
 
 - Use the shared `reviewedEntry(question, objectiveId, sourceIds, checkedAt)` factory from
   `bank-helpers.ts`. It is the single validated place that attaches review metadata, so a new bank
   cannot silently skip the verification contract.
 - Keep one bank file per domain or per small authoring batch, and spread the arrays into
   `reviewedQuestionBank` in `question-bank.ts`. The registry stays the only question list.
+- Prefer one well-structured lesson per domain that teaches all of that domain's objectives, rather
+  than one thin lesson per objective. Map a lesson only to objectives it actually teaches.
+- Keep lesson order append-only. New lessons take the next order number; do not renumber published
+  lessons or change their routes.
+- Give every curriculum lesson a useful knowledge check, a worked scenario, key terms, and a
+  `relatedQuestionIds` list that resolves to reviewed bank items. Use the existing lesson schema; do
+  not introduce a parallel content model.
 - Write one single-choice and one multiple-response item per objective where the sources support it,
   so exact-set scoring is exercised on real content rather than only in test fixtures.
+- Add a second item to an objective only when it assesses a meaningfully different decision. Do not
+  add near-duplicates or inflate counts to make coverage look complete.
 - State the required selection count in multiple-response stems, for example `Select three.` The
   schema enforces the key size; the stem must tell the learner the same thing.
 - Describe model choice as capability tiers and selection approaches (efficiency-first vs
   capability-first) instead of freezing current model names, prices, or limits. Cite the official
   models documentation for the trade-off itself.
+- Use Anthropic's `Building effective agents` for durable workflow concepts (predefined workflows vs
+  agents, prompt chaining, routing, evaluator-optimizer, human checkpoints, measurement). Do not
+  repeat its December 2024 tooling recommendations as if they were current; record that limitation.
 - Treat the Help Center pages for projects, connectors, and research as JavaScript-rendered. Direct
   fetches may return only navigation chrome, so record the access note and avoid quoting exact menu
   labels that were not actually read.
 - Keep dates honest: new review records use the date the sources were actually opened, and a bank
   may legitimately contain more than one `checkedAt` value.
+- Do not count a planned lesson as published, and do not present lesson coverage as proof of exam
+  readiness. Coverage means reviewed content exists, not that a domain is exhausted.

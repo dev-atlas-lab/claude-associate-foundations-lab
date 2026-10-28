@@ -22,11 +22,15 @@ import {
   domainTwoOutputValidationAssessment,
   evaluationBasicsLesson,
   glossaryEntries,
+  governanceResponsibleUseLesson,
   mixedFoundationsAssessment,
   plannedLessons as plannedLessonData,
   practiceSets as practiceSetData,
+  productSelectionLesson,
   promptStructureLesson,
   reviewedQuestionBank,
+  troubleshootingOptimizationLesson,
+  workflowDesignLesson,
 } from "./certifications/claude-associate-foundations";
 import { sources } from "./sources";
 
@@ -44,6 +48,10 @@ export const contentPack = contentPackSchema.parse({
     evaluationBasicsLesson,
     configurationBasicsLesson,
     promptStructureLesson,
+    productSelectionLesson,
+    workflowDesignLesson,
+    governanceResponsibleUseLesson,
+    troubleshootingOptimizationLesson,
   ],
   questionBank: reviewedQuestionBank,
   plannedLessons: plannedLessonData,
