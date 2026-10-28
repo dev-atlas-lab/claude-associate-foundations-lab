@@ -1,12 +1,14 @@
 # Assessment Engine
 
 **Status:** assessment core, local persistence, registry-driven practice sets, review queue, progress
-report, and a mock-exam preview implemented (Phase C2.3, 2026-10-27); content coverage completed in
-Phase C2.4 and extended in Phase C2.5; browser/accessibility regression audit in Phase C2.6 (2026-10-28).
+report, untimed mock-exam preview, and a deadline-enforced timed simulation implemented (Phase C2.8,
+2026-10-28). Content coverage was completed in Phase C2.4, extended in Phase C2.5, and browser-tested
+in Phases C2.6-C2.8.
 **Scope:** deterministic single-choice and multiple-response scoring, 62 reviewed items across all
-seven domains, versioned localStorage attempts, derived review queue and progress, and a 60-of-60
-blueprint-weighted mock-exam preview drawn from 62 items. This is **not** a timed simulation or an
-official score predictor.
+seven domains, versioned localStorage attempts, derived review queue and progress, a 60-of-60
+blueprint-weighted preview, and a 60-question / 120-minute timed attempt with a persisted deadline.
+The `/mock-exam` preview has no timer; `/mock-exam/timed` is a timed practice simulation, but neither
+surface is an official exam form, an official scaled score, or a pass predictor.
 
 ## 1. Where the code lives
 
@@ -16,6 +18,7 @@ official score predictor.
 | Question-bank schema and review metadata | `src/domain/question-bank.ts` |
 | Persisted attempt, origin, resolution, and derived review queue | `src/domain/study.ts` |
 | Deterministic blueprint-weighted mock selection | `src/domain/mock-exam.ts` |
+| Timed-attempt schema, deadline, expiry, and immutable submission | `src/domain/timed-exam.ts` |
 | Cross-reference validation at content-pack load | `src/domain/content-pack.ts` |
 | CCAO-F assessment definitions | `src/content/certifications/claude-associate-foundations/assessments.ts` |
 | Reviewed question bank | `src/content/certifications/claude-associate-foundations/question-bank.ts` |
@@ -23,12 +26,16 @@ official score predictor.
 | Question resolution and registry lookups | `src/content/index.ts` |
 | Content compatibility fingerprint | `src/content/fingerprint.ts` |
 | Mock-exam preview definition and allocation | `src/content/mock-exam.ts` |
+| Timed-exam configuration, eligibility, and seeded selection | `src/content/timed-exam.ts` |
 | Versioned localStorage envelope and failure handling | `src/persistence/storage.ts` |
+| Timed-exam envelope (`cfl.timed-exam.v1`) | `src/persistence/timed-exam-storage.ts` |
+| Single-slot timed-exam store and write blocking | `src/persistence/timed-exam-store.ts` |
 | External study store and write-blocking rules | `src/persistence/study-store.ts` |
 | Bank coverage and personal-performance selectors | `src/features/progress/selectors.ts` |
 | Persisted runner wrapper | `src/features/study/components/PersistedAssessment.tsx` |
 | Storage recovery notice | `src/features/study/components/StudyStorageNotice.tsx` |
-| Practice, review, progress, and mock-exam pages | `src/pages/*.tsx` |
+| Timed intro, session, timer, navigator, recovery, and result UI | `src/features/timed-exam/` |
+| Practice, review, progress, mock-exam, and timed-exam pages | `src/pages/*.tsx` |
 | Reusable runner UI | `src/features/assessment/components/AssessmentRunner.tsx` |
 | Immediate lesson knowledge-check UI | `src/features/curriculum/components/KnowledgeCheck.tsx` |
 | Runner styles | `src/styles/assessment.css` |
@@ -76,9 +83,12 @@ interface AssessmentSession {
 Scores are **not** stored in the session. They are derived from the submitted answers on demand, so
 there is no mutable score state that can drift from the answers.
 
-Only `in-progress` and `submitted` are modelled. `expired` is deliberately absent because this phase
-has no timer or expiry transition; adding an unreachable state would be misleading. A timer phase
-must add expiry explicitly rather than overloading submission.
+Only `in-progress` and `submitted` are modelled in the shared assessment core. `expired` is still
+deliberately absent from this core: the timed layer does not add an unreachable session state.
+Instead, `src/domain/timed-exam.ts` wraps the session, adds an authoritative `deadlineAt`, and records
+`submissionReason: "user" | "time-expired"` when it submits. An expired attempt is therefore a normal
+submitted session with an explicit reason, and the result remains the same derived object used by
+Practice.
 
 ### Result
 
@@ -307,22 +317,141 @@ previous/next navigation.
 A zero-activity learner sees real bank coverage and an explicit empty personal state, not a fake zero
 score. The report never claims readiness or an official scaled score.
 
-The mock-exam preview uses the verified 60-item format and selects 60 of the 62 available reviewed
-items. `selectMockExamQuestions` allocates slots by published domain weight, caps each domain at its
-available pool, deduplicates shared questions, and interleaves the result. Because the bank is larger
-than the format, two items are not selected in a given preview; the allocation is deterministic and
-adds no filler or duplicate. There is no timer and no scaled-score conversion.
+The untimed mock-exam preview at `/mock-exam` uses the verified 60-item format and selects 60 of the
+62 available reviewed items. `selectMockExamQuestions` allocates slots by published domain weight,
+caps each domain at its available pool, deduplicates shared questions, and interleaves the result.
+Because the bank is larger than the format, two items are not selected in a given preview; the
+allocation is deterministic and adds no filler or duplicate. The preview has no timer and no
+scaled-score conversion. The separate `/mock-exam/timed` route adds the deadline layer described
+below.
+
+## 7d. Timed mock exam
+
+### Composition, not a second scoring engine
+
+`src/domain/timed-exam.ts` wraps an `AssessmentSession` with the attempt snapshot and deadline. It
+composes `chooseAnswer`, `toggleAnswerChoice`, `goToQuestion`, `toggleQuestionFlag`,
+`submitAssessment`, and `calculateAssessmentResult` from the shared core. Exact-set multiple-response
+scoring, all-or-nothing credit, unanswered versus incorrect reporting, and raw percentage therefore
+come from the same functions as Practice and the preview.
+
+The persisted attempt adds:
+
+```ts
+interface TimedExamSession {
+  schemaVersion: 1;
+  id: string;
+  assessmentId: string;
+  blueprintId: string;
+  questionIds: string[];          // immutable attempt order, snapshotted at start
+  policy: AssessmentPolicy;
+  durationMinutes: number;
+  deadlineAt: string;             // authoritative, ISO-8601 UTC
+  session: AssessmentSession;
+  submissionReason?: "user" | "time-expired";
+  finalResult?: AssessmentResult; // written once at submission
+}
+```
+
+Runtime validation enforces the important invariants: IDs match, the question list has no
+duplicates, answers and flags reference only attempt questions, `currentQuestionIndex` is in range,
+`deadlineAt` equals `startedAt + durationMinutes`, submitted attempts have a reason and a retained
+result, and the retained result matches the submitted answers and question order. An in-progress
+attempt cannot carry a result or a reason.
+
+### Selection and eligibility
+
+`src/content/timed-exam.ts` reads the 60-item count and 120-minute limit from the verified blueprint
+instead of duplicating constants. It reuses the reviewed bank and the allocation logic in
+`src/domain/mock-exam.ts`, capping each domain at its available pool. The attempt id seeds the
+selection, so reloading a persisted attempt reproduces the same 60 questions and order, while a new
+attempt gets another deterministic selection. Current availability is 60 selected from 62 reviewed
+items with a shortfall of zero.
+
+If availability ever falls below the requested count, the intro disables **Start timed exam** and
+states the exact shortfall. The runner also refuses to start if the selected list is short. No
+question is duplicated, padded, or invented to fill the form.
+
+The eligibility check is computed independently of the attempt seed. The seed only chooses which
+eligible items fill the weighted slots.
+
+### Deadline and submission guarantees
+
+- `deadlineAt` is the only source of truth. The UI renders once per second from the wall clock and
+  recomputes `deadlineAt - now`; there is no decrementing counter that background-tab throttling can
+  stretch or reset.
+- The timer also re-reads the clock on `visibilitychange`, `focus`, and `pageshow`. The interval is
+  a display refresh, not the authority.
+- Reloading restores the same attempt and its original deadline. Leaving the page does not pause the
+  countdown. The UI effect on mount submits immediately if the stored deadline has passed.
+- At expiry, `expireTimedExam` submits with `submittedAt = deadlineAt`, so repeated expiry events,
+  re-renders, or a late tab wake-up produce the same immutable timestamp and result.
+- A manual submission at or after the deadline is classified as `time-expired`; the deadline wins
+  over a late click. Any answer, flag, or navigation mutation that arrives after expiry is discarded
+  and triggers the expiry submission instead.
+- Submission is idempotent. A submitted attempt is never re-scored, re-ordered, or edited by review
+  navigation; the result view keeps its own UI index.
+- The UI distinguishes **Manual submission** from **Automatic expiry** in text, and the result view
+  shows the raw percentage only. There is no scaled 100-1,000 score, pass threshold, or readiness
+  claim.
+
+### Persistence and recovery
+
+The timed feature uses a separate single-slot store at `cfl.timed-exam.v1`, with its own versioned
+envelope and fingerprint. It deliberately does not share `cfl.study.v1`:
+
+- timed-exam schema or fingerprint changes cannot invalidate Practice attempts and review state;
+- the timed lifecycle is one active attempt, not an attempt history;
+- no migration of existing study data is required.
+
+`timedExamContentFingerprint` starts from the shared content fingerprint and adds the timed
+configuration (`timed-exam-v1`, item count, duration, assessment id).
+
+The store handles these states without deleting anything automatically:
+
+| State | Behavior |
+|---|---|
+| `empty` | Show the intro and start controls. |
+| `ready` | Resume the exact in-progress attempt, or show the retained submitted result. |
+| `corrupt` | Quarantine the payload, offer the raw JSON backup, and require an explicit two-step discard. New attempts are blocked. |
+| `incompatible` | Show the stored schema/fingerprint, offer backup, and require explicit discard. New attempts are blocked. Missing questions or changed answer keys after load also produce this state. |
+| `unavailable` | Continue in memory in the current tab, with a visible warning that reload will lose the attempt. |
+| write failure | Keep the change in memory, show the quota/security message, and do not claim it was saved. |
+
+Discarding removes only `cfl.timed-exam.v1`. `cfl.study.v1` and its practice attempts, review items,
+and settings are untouched. Recovery controls use visible text, a two-step confirmation, and focus
+management; status is never conveyed by color alone.
+
+### Accessibility and responsive behavior
+
+- Semantics: a labelled timer (`role="timer"`, `aria-live="off"`), a separate polite status region,
+  fieldset/legend question groups, labelled answer controls, and a captioned navigator.
+- Warnings are announced only when crossing the 10-minute, 5-minute, and 1-minute buckets. The clock
+  itself updates silently; the timer warning text is not repeated every second.
+- Keyboard operation covers answers, flags, previous/next, the question navigator, submit
+  confirmation, recovery, and result review. Focus moves to the question heading on navigation and
+  to confirmation headings when they open.
+- The timer state uses text (`Time is running low`, `Time is up`) as well as color. Critical and
+  expired states meet contrast requirements in both themes.
+- Layouts are verified at 390, 768, and 1440 px. The navigator moves below the question on narrower
+  screens; the timer and question text remain usable without horizontal overflow.
+- Reduced-motion users get no smooth scrolling or long transitions.
+
+Known limitations: the deadline uses the device clock because there is no backend; changing the
+system clock can affect the remaining time. A long-suspended or closed browser submits when it next
+runs the app, not while it is closed. Local storage is per browser/profile and can be cleared by the
+user or browser policy. The raw percentage is not comparable to the official scaled score.
 
 ## 8. Deliberate non-goals for C2
 
-- No timer, auto-submit, or expiry.
-- No timed 60-question simulation. The bank has 62 reviewed items across all seven domains, and every
-  objective has two to four items, but a preview is not a simulation.
-- No per-domain official score report or scaled-score conversion.
-- No partial credit.
-- No official exam questions or third-party exam dumps. Every bank item is original.
-- No automatic deletion or migration of unreadable saved data.
-- No server, account, analytics, or sync.
+- No scaled-score conversion, pass/fail prediction, or claim that raw performance maps to the
+  official 720 passing score.
+- No per-domain official score report.
+- No partial credit; multiple-response questions require the exact set.
+- No official exam questions, third-party exam dumps, or claims that practice items are official.
+  Every bank item is original.
+- No automatic deletion, migration, or rewriting of unreadable saved data.
+- No server, account, analytics, cloud clock, or sync in the frontend-only MVP.
 - No changes to the content model's language policy: questions and instructions are English;
   explanations and result copy are Vietnamese.
 
@@ -353,6 +482,28 @@ resolve an item only on request.
 deduplication, determinism, invalid counts, the 60-of-60 preview drawn from 62 items, and the
 unit-level zero-availability handling.
 
+`src/test/timed-exam.test.ts` covers timed-session creation and invariants, deadline arithmetic,
+expiry idempotency, late manual submission classification, answer/flag/navigation rejection after
+expiry, immutable retained results, and raw/count derivation.
+
+`src/test/timed-exam-content.test.ts` covers the 60/120 blueprint configuration, zero shortfall,
+seeded deterministic selection and order, reload stability, fingerprint separation from study data,
+and resolution failures for missing questions.
+
+`src/test/timed-exam-storage.test.ts` covers envelope round-trips, version and fingerprint
+incompatibility, corrupt JSON/schema rejection, unavailable storage, quota/security write failures,
+and clearing only the timed key.
+
+`src/test/timed-exam-page.test.tsx` covers the start screen and shortfall gate, start/save/resume,
+deadline expiry, manual and automatic result labels, review navigation without mutating the saved
+attempt, and corrupt/incompatible/unavailable recovery states.
+
+`tests/e2e/timed-exam.spec.ts` covers the preview-to-timed route distinction, reload with the original
+deadline, clock-controlled auto-submit, immutable result/review, corrupt and unsupported data,
+backup/download and explicit discard, blocked storage, quota write failure, keyboard operation, and
+warning announcement throttling. The accessibility suite scans the timed intro, question, and result
+states in both themes, and the responsive suite exercises 390/768/1440 px.
+
 `src/test/progress-selectors.test.ts` covers bank coverage independent of activity, personal
 performance from a submitted attempt, domain attribution, and review counts.
 
@@ -382,14 +533,13 @@ single-domain badges, the compact mixed-set badge, and the unknown-set state.
 
 ## 10. Next step
 
-The content depth and mapped-lesson work is complete at the registry level: all 30 objectives have
-reviewed items and a mapped lesson, with two to four items per objective. The remaining work is a
-separate versioned **timed** layer (timer, expiry, auto-submit) with a defensible scoring policy, not
-another preview. It should not be embedded in the existing scoring core. The current store already
-separates attempts from derived results, so a timer can add a session status without rewriting saved
-answers.
+The shared core, the untimed preview, and the timed simulation are complete for the current bank.
+Timed selection is versioned and deterministic, the deadline is persisted and enforced, and results
+are immutable. The next content step is depth, not another assessment surface: add only distinct,
+source-grounded decisions in high-weight domains, then re-check eligibility and allocation.
 
-Phase C2.6 adds the browser regression gate (`npm run test:e2e`) and 65 axe scans over both themes.
-Phase C2.7 adds a GitHub Actions workflow that runs the same gates on pull requests and pushes to
-`main`; its first `main` run passed on 2026-10-28. Firefox/WebKit, cross-browser compatibility, and a
-manual screen-reader pass remain outstanding.
+Phase C2.6 added the browser regression gate (`npm run test:e2e`) and axe scans over both themes.
+Phase C2.7 added a GitHub Actions workflow that runs the same gates on pull requests and pushes to
+`main`; its first `main` run passed on 2026-10-28. Phase C2.8 added the timed layer and its
+clock-controlled, storage-failure, keyboard, axe, and responsive coverage. Firefox/WebKit, a manual
+screen-reader pass, device-clock tampering, and Vercel deployment remain outstanding.

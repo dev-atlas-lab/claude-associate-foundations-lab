@@ -47,6 +47,24 @@ export function MockExamPage() {
         No timer is applied, and no scaled score or readiness claim is made.
       </Callout>
 
+      <section className="timed-entry" aria-labelledby="timed-entry-title">
+        <div className="timed-entry-copy">
+          <h2 className="timed-entry-title" id="timed-entry-title">
+            <Timer size={15} strokeWidth={2} aria-hidden="true" />
+            Timed simulation
+          </h2>
+          <p className="timed-entry-text">
+            The preview above is untimed and is not a completed exam simulation. The timed version
+            runs {mockExamSummary.requestedItemCount} questions in{" "}
+            {primaryBlueprint.format.timeLimitMinutes} minutes, saves the authoritative deadline,
+            resumes the same attempt after a refresh, and submits automatically at expiry.
+          </p>
+        </div>
+        <Link className="button button--primary" to="/mock-exam/timed">
+          Open timed exam
+        </Link>
+      </section>
+
       <section className="section" aria-labelledby="allocation">
         <div className="section-heading-row">
           <h2 className="section-title" id="allocation">

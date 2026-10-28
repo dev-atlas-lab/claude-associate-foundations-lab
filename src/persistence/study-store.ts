@@ -17,9 +17,9 @@ import {
 } from "../domain";
 import {
   clearStudyStateFromStorage,
+  getBrowserStorage,
   loadStudyStateFromStorage,
   saveStudyStateToStorage,
-  type StorageLike,
 } from "./storage";
 
 export type StudyStoreStatus =
@@ -50,18 +50,6 @@ export class StudyStoreError extends Error {
     super(message);
     this.name = "StudyStoreError";
     this.code = code;
-  }
-}
-
-function getBrowserStorage(): StorageLike | undefined {
-  try {
-    if (typeof window === "undefined") {
-      return undefined;
-    }
-
-    return window.localStorage;
-  } catch {
-    return undefined;
   }
 }
 

@@ -2,11 +2,11 @@
 
 A frontend-only interactive learning platform for the **Claude Certified Associate – Foundations (CCAO-F)** certification.
 
-The product pairs Vietnamese explanations with English assessments: lessons, interactive visualizations, practice questions, a blueprint-weighted mock-exam preview, and a derived review queue. No backend and no API key are required; theme, attempts, and review state are stored locally in the browser.
+The product pairs Vietnamese explanations with English assessments: lessons, interactive visualizations, practice questions, a blueprint-weighted mock-exam preview, a deadline-enforced timed simulation, and a derived review queue. No backend and no API key are required; theme, attempts, and review state are stored locally in the browser.
 
 ## Current status
 
-Phases B, C0, C1, C2.1, C2.2a, C2.2b, C2.3, C2.4, C2.5, C2.6 and C2.7 are implemented on top of the
+Phases B, C0, C1, C2.1, C2.2a, C2.2b, C2.3, C2.4, C2.5, C2.6, C2.7 and C2.8 are implemented on top of the
 validated scaffold.
 
 - Design tokens, Dark / Light / System themes with localStorage persistence, responsive sidebar and
@@ -53,6 +53,11 @@ validated scaffold.
 - The Mock exam page runs a blueprint-weighted **60-of-60 preview** drawn from the 62 reviewed items,
   with no shortfall, no filler, no duplicates, no timer, and no scaled score. Two items are not
   selected in a given deterministic preview.
+- The separate timed simulation (`/mock-exam/timed`) runs the verified **60-question / 120-minute**
+  format with a persisted deadline, reload resume, auto-submit at expiry, manual/expiry submission
+  labels, and an immutable raw result with post-submission review. It stores one attempt at
+  `cfl.timed-exam.v1`, independently of Practice data at `cfl.study.v1`. It is original practice
+  content, not an official exam form, scaled score, or pass prediction.
 - Overall reviewed coverage is **30 / 30** objectives across all seven domains, with a mapped lesson
   and at least two practice items for every objective. Depth remains limited (two to four items per
   objective), so this is not a claim of exam readiness.
@@ -65,12 +70,14 @@ validated scaffold.
   ([run 40611368468](https://github.com/dev-atlas-lab/claude-associate-foundations-lab/actions/runs/40611368468)).
 - No Vercel project has been connected yet.
 
-Local quality gates currently pass: typecheck, lint, **145 unit/integration tests across 19 files**,
-**104 Playwright tests across 7 files**, and the production build. Routes are code-split with
-`React.lazy`; the largest JS chunks are 426.00 kB (116.64 kB gzip) and 339.97 kB (107.80 kB gzip),
-with no Vite chunk-size warning. **65 axe-core scans** cover 32 states in both themes plus the open
-mobile drawer and report **0 violations**; manual browser checks cover landmarks, heading order,
-keyboard focus, skip link, drawer focus trapping, reduced motion, and responsive widths. See
+Local quality gates currently pass: typecheck, lint, **177 unit/integration tests across 23 files**,
+**116 Playwright tests across 8 files**, and the production build. Routes are code-split with
+`React.lazy`; the timed page is its own 41.25 kB chunk (11.69 kB gzip), the largest JS chunks are
+434.92 kB (118.38 kB gzip) and 340.29 kB (107.90 kB gzip), and there is no Vite chunk-size warning.
+**71 axe-core scans** cover 35 states in both themes plus the open mobile drawer and report
+**0 violations**; manual browser checks cover landmarks, heading order, keyboard focus, skip link,
+drawer focus trapping, reduced motion, and responsive widths. The timed suite adds clock-controlled
+expiry, reload recovery, corrupt/unavailable storage, and 390/768/1440 px checks. See
 `docs/PROGRESS.md` for the detailed log, `docs/ASSESSMENT_ENGINE.md` for assessment decisions, and
 `docs/DESIGN_SYSTEM.md` for the design decisions.
 
@@ -112,7 +119,7 @@ Playwright runs Chromium only. The suite imports the real content registry as fi
 isolated browser contexts, so it needs no network, credentials, or pre-seeded storage.
 
 ```bash
-npm run test:e2e                                      # 104 tests; builds, serves, and scans
+npm run test:e2e                                      # 116 tests; builds, serves, and scans
 npx playwright test tests/e2e/accessibility.spec.ts   # axe + keyboard subset
 npx playwright show-trace test-results/**/trace.zip   # inspect a recorded failure
 ```
@@ -133,7 +140,7 @@ artifact when a job fails.
 2. Runs `npm ci`, `npm run typecheck`, `npm run lint`, `npm test`, and `npm run build`.
 3. Installs the Chromium build that matches the lockfile (`npx playwright install --with-deps
    chromium`).
-4. Runs `npm run test:e2e` against the production preview, including all 65 axe scans.
+4. Runs `npm run test:e2e` against the production preview, including all 71 axe scans.
 5. On failure, uploads `test-results/` and `playwright-report/` for seven days.
 
 The workflow requests only `contents: read`, uses no secrets, and does not deploy. Its first `main`

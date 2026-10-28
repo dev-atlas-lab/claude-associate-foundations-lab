@@ -242,6 +242,20 @@ export function DashboardPage() {
             </span>
             <span className="row-tail">Preview</span>
           </Link>
+          <Link className="row" to="/mock-exam/timed">
+            <span className="row-start" aria-hidden="true">
+              <Timer size={14} strokeWidth={1.9} />
+            </span>
+            <span className="row-body">
+              <span className="row-title">Timed simulation</span>
+              <span className="row-meta">
+                {mockExamSummary.requestedItemCount} questions in{" "}
+                {primaryBlueprint.format.timeLimitMinutes} minutes — saved deadline, auto-submit,
+                raw score only
+              </span>
+            </span>
+            <span className="row-tail">Timed</span>
+          </Link>
         </div>
       </section>
     </div>

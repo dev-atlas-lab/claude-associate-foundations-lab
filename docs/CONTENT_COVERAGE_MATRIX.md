@@ -288,9 +288,10 @@ two to four items, and the 62-item bank still leaves two items outside the 60-it
   flagged questions; an item is resolved only by an explicit action.
 - Progress separates reviewed-bank coverage from personal performance and shows a real zero-activity
   state instead of a fabricated score.
-- The mock-exam preview selects **60 of the verified 60-item format** by blueprint weight with no
-  shortfall, using 60 of the 62 reviewed items and adding no filler or duplicates. It has no timer
-  and no scaled score.
+- The untimed mock-exam preview selects **60 of the verified 60-item format** by blueprint weight
+  with no shortfall, using 60 of the 62 reviewed items and adding no filler or duplicates. It has no
+  timer and no scaled score. A separate `/mock-exam/timed` attempt runs the 60-question /
+  120-minute format with a persisted deadline and auto-submit; it is still practice content.
 
 **May not claim**
 
@@ -300,8 +301,9 @@ two to four items, and the 62-item bank still leaves two items outside the 60-it
 - That the sample lesson is mapped to Domain 3.
 - That the 60 items are all scored, or that any per-domain item count is official.
 - That the product contains an official practice exam or official questions.
-- That the mock-exam preview is a timed simulation or a readiness predictor, even though it now fills
-  the 60-item format without duplication.
+- That the untimed preview or the timed simulation is an official exam form, a scaled score, or a
+  readiness predictor. The timed attempt enforces its own deadline but still reports raw performance
+  only.
 - That the 2026-11-17 / 2026-12-07 revised blueprint has been applied.
 - That the Haiku/Sonnet/Opus list is the complete current public model lineup.
 

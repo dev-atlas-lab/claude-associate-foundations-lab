@@ -22,6 +22,11 @@ import {
   practiceSets,
   publishedLessons,
 } from "./helpers/fixtures";
+import {
+  openTimedExam,
+  startTimedExam,
+  submitTimedExamEarly,
+} from "./helpers/timed";
 
 const themes = ["dark", "light"] as const;
 const practiceSet = practiceSets.find(
@@ -109,6 +114,17 @@ for (const theme of themes) {
         page.getByRole("heading", { name: "Kết quả luyện tập" }),
       ).toBeVisible();
       await scan(page, `${theme} mock exam result`);
+    });
+
+    test("timed exam intro, question, and result", async ({ page }) => {
+      await openTimedExam(page);
+      await scan(page, `${theme} timed exam intro`);
+
+      await startTimedExam(page);
+      await scan(page, `${theme} timed exam question`);
+
+      await submitTimedExamEarly(page);
+      await scan(page, `${theme} timed exam result`);
     });
 
     test("empty review and progress states", async ({ page }) => {
@@ -205,6 +221,7 @@ test.describe("document structure and keyboard access", () => {
       practicePath,
       "/practice?set=not-a-real-set",
       "/mock-exam",
+      "/mock-exam/timed",
       "/review",
       "/progress",
       "/glossary",

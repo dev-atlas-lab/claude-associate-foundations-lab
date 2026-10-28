@@ -34,3 +34,6 @@ export const ReviewPage = lazy(() =>
 export const SettingsPage = lazy(() =>
   import("../pages/SettingsPage").then((module) => ({ default: module.SettingsPage })),
 );
+export const TimedExamPage = lazy(() =>
+  import("../pages/TimedExamPage").then((module) => ({ default: module.TimedExamPage })),
+);

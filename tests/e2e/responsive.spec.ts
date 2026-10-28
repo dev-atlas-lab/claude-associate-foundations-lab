@@ -6,6 +6,7 @@ import {
   startAssessment,
 } from "./helpers/assessment";
 import { getAssessmentQuestions, practiceSets } from "./helpers/fixtures";
+import { TIMED_EXAM_STORAGE_KEY, startTimedExam } from "./helpers/timed";
 
 const viewports = [
   { name: "mobile", width: 390, height: 844 },
@@ -25,6 +26,7 @@ const routes = [
   "/learn/workflow-design",
   practicePath,
   "/mock-exam",
+  "/mock-exam/timed",
   "/review",
   "/progress",
   "/glossary",
@@ -117,6 +119,60 @@ test.describe("responsive layout", () => {
     await page.getByRole("button", { name: "Submit assessment" }).click();
     await expect(page.getByRole("button", { name: "Confirm submission" })).toBeVisible();
     await expectNoHorizontalOverflow(page);
+  });
+
+  test("timed exam runner stays usable at every target width", async ({ page }) => {
+    for (const viewport of viewports) {
+      await page.setViewportSize({ width: viewport.width, height: viewport.height });
+      await page.goto("/mock-exam/timed");
+      await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+      await page.evaluate((key) => localStorage.removeItem(key), TIMED_EXAM_STORAGE_KEY);
+      await page.reload();
+      await expect(page.getByRole("button", { name: "Start timed exam" })).toBeVisible();
+
+      await startTimedExam(page);
+      await expectNoHorizontalOverflow(page);
+      await expect(page.getByRole("timer")).toBeVisible();
+      await expect(
+        page.getByRole("navigation", { name: "Timed exam question navigator" }),
+      ).toBeVisible();
+      await expect(page.getByRole("button", { name: "Submit exam" })).toBeVisible();
+
+      const clipped = await page.evaluate(() => {
+        const main = document.querySelector("main");
+
+        if (!main) {
+          return [];
+        }
+
+        return Array.from(main.querySelectorAll<HTMLElement>("button, a, input"))
+          .filter((element) => element.offsetParent !== null)
+          .map((element) => {
+            const rect = element.getBoundingClientRect();
+
+            return {
+              label:
+                element.getAttribute("aria-label") ??
+                element.textContent?.trim().slice(0, 40) ??
+                element.tagName,
+              left: rect.left,
+              right: rect.right,
+              width: rect.width,
+              height: rect.height,
+            };
+          })
+          .filter(
+            (control) =>
+              control.width > 0 &&
+              control.height > 0 &&
+              (control.left < -1 || control.right > window.innerWidth + 1),
+          );
+      });
+
+      expect(clipped, `timed exam at ${viewport.name} has clipped controls`).toEqual([]);
+
+      await page.evaluate((key) => localStorage.removeItem(key), TIMED_EXAM_STORAGE_KEY);
+    }
   });
 
   test("mobile navigation opens a usable drawer without page overflow", async ({ page }) => {

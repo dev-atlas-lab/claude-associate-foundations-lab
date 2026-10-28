@@ -11,6 +11,7 @@ import {
   ProgressPage,
   ReviewPage,
   SettingsPage,
+  TimedExamPage,
 } from "./routes/lazy-pages";
 
 /**
@@ -27,6 +28,7 @@ export const routes: RouteObject[] = [
       { path: "learn/:lessonId", element: <LessonPage /> },
       { path: "practice", element: <PracticePage /> },
       { path: "mock-exam", element: <MockExamPage /> },
+      { path: "mock-exam/timed", element: <TimedExamPage /> },
       { path: "review", element: <ReviewPage /> },
       { path: "progress", element: <ProgressPage /> },
       { path: "glossary", element: <GlossaryPage /> },

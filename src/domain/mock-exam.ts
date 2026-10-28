@@ -114,15 +114,71 @@ function interleave(pools: NormalizedPool[], allocated: number[]): string[] {
   return selected;
 }
 
-export function selectMockExamQuestions(
+function fnv1a(value: string, seed: number): number {
+  let hash = seed >>> 0;
+
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index);
+    hash = Math.imul(hash, 0x01000193) >>> 0;
+  }
+
+  return hash >>> 0;
+}
+
+/**
+ * Stable pseudo-random ordering derived from the attempt seed. This is not a
+ * security primitive; it only prevents every attempt from seeing the same
+ * presentation order while keeping a reload byte-for-byte reproducible from the
+ * persisted question snapshot.
+ */
+function orderBySeed(questionIds: readonly string[], seed: string): string[] {
+  return [...questionIds].sort((left, right) => {
+    const rank =
+      fnv1a(`${seed}:${left}`, 0x811c9dc5) - fnv1a(`${seed}:${right}`, 0x811c9dc5);
+
+    return rank === 0 ? left.localeCompare(right) : rank;
+  });
+}
+
+/**
+ * Seeded variant used by the timed simulation. Allocation still follows the
+ * published domain weights and availability caps; the seed only chooses which
+ * reviewed items fill the slots and the final presentation order.
+ */
+export function selectTimedExamQuestions(
   pools: readonly MockExamDomainPool[],
+  requested: number,
+  seed: string,
+): MockExamSelection {
+  const trimmedSeed = seed.trim();
+
+  if (trimmedSeed === "") {
+    throw new Error("a timed-exam seed is required");
+  }
+
+  const normalized = normalizePools(pools).map((pool) => ({
+    ...pool,
+    questionIds: orderBySeed(pool.questionIds, `${trimmedSeed}:pool:${pool.domainId}`),
+  }));
+  const selection = selectFromNormalized(normalized, requested);
+
+  return {
+    ...selection,
+    selectedQuestionIds: orderBySeed(
+      selection.selectedQuestionIds,
+      `${trimmedSeed}:attempt`,
+    ),
+  };
+}
+
+function selectFromNormalized(
+  normalized: NormalizedPool[],
   requested: number,
 ): MockExamSelection {
   if (!Number.isInteger(requested) || requested < 1) {
     throw new RangeError("requested item count must be a positive integer");
   }
 
-  const normalized = normalizePools(pools);
   const totalAvailable = normalized.reduce(
     (total, pool) => total + pool.questionIds.length,
     0,
@@ -142,4 +198,11 @@ export function selectMockExamQuestions(
     })),
     shortfall: requested - selectedQuestionIds.length,
   };
+}
+
+export function selectMockExamQuestions(
+  pools: readonly MockExamDomainPool[],
+  requested: number,
+): MockExamSelection {
+  return selectFromNormalized(normalizePools(pools), requested);
 }

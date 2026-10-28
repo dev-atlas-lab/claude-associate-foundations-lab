@@ -5,4 +5,5 @@ export * from "./question-bank";
 export * from "./assessment";
 export * from "./study";
 export * from "./mock-exam";
+export * from "./timed-exam";
 export * from "./content-pack";

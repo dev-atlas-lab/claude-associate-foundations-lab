@@ -48,7 +48,7 @@ export type SaveStudyResult =
   | { ok: true; savedAt: string }
   | { ok: false; reason: SaveFailureReason; message: string };
 
-function describeError(error: unknown): string {
+export function describeError(error: unknown): string {
   if (error instanceof Error) {
     return error.message || error.name;
   }
@@ -56,7 +56,7 @@ function describeError(error: unknown): string {
   return "unknown storage error";
 }
 
-function classifyStorageError(error: unknown): SaveFailureReason {
+export function classifyStorageError(error: unknown): SaveFailureReason {
   if (typeof error === "object" && error !== null) {
     const candidate = error as { name?: unknown; code?: unknown };
 
@@ -250,5 +250,21 @@ export function clearStudyStateFromStorage(
       reason: classifyStorageError(error),
       message: `Clearing local data failed: ${describeError(error)}`,
     };
+  }
+}
+
+/**
+ * Resolve `window.localStorage` without letting a blocked or missing storage
+ * object escape as an exception. Shared by the study and timed-exam stores.
+ */
+export function getBrowserStorage(): StorageLike | undefined {
+  try {
+    if (typeof window === "undefined") {
+      return undefined;
+    }
+
+    return window.localStorage;
+  } catch {
+    return undefined;
   }
 }

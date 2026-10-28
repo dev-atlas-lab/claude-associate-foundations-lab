@@ -13,13 +13,14 @@
 - [x] Official exam guide researched and verified (2026-10-26).
 - [x] Learning UI shell and design system implemented (Phase B).
 - [x] First lesson vertical slice implemented (sample lesson, not mapped to an official objective).
-- [x] Practice mode, local persistence, review queue, progress report, and a blueprint-weighted mock-exam preview implemented (Phase C2.3, 2026-10-27); the full 60-item timed mock exam is still outstanding.
+- [x] Practice mode, local persistence, review queue, progress report, and a blueprint-weighted mock-exam preview implemented (Phase C2.3, 2026-10-27); the preview remains intentionally untimed.
 - [x] Whole-domain lessons for all seven domains and at least two reviewed items per objective implemented (Phase C2.5, 2026-10-27); the Context Window sample remains deliberately unmapped.
 - [x] Accessibility, end-to-end, and regression audit implemented with Playwright, axe-core, and targeted focus/landmark/contrast fixes (Phase C2.6, 2026-10-28).
 - [x] GitHub Actions quality-gate workflow added for pull requests and pushes to `main` (Phase C2.7, 2026-10-28); local equivalents pass.
 - [x] Tests and production build pass for implemented features.
 - [x] First GitHub Actions run passed on `main` (run 40611368468, 2026-10-28).
-- [ ] Timed mock exam (timer, auto-submit, expiry, scaled score) not implemented; explicitly deferred.
+- [x] Timed 60-question / 120-minute mock exam with persisted deadline, reload recovery, auto-submit, expiry labeling, and an immutable raw result implemented (Phase C2.8, 2026-10-28).
+- [ ] Official scaled score and pass prediction remain unimplemented by design; no official source supports inventing them.
 - [ ] Vercel deployment verified.
 
 ## Scan of 2026-10-26 — repository preparation
@@ -757,8 +758,10 @@ use isolated browser contexts; no network calls or shared storage are involved.
   human follow-up, especially for the question navigator, review detail, and storage recovery notice.
 - The scans finish CSS transitions before analysis; a real 120 ms colour-transition flash on newly
   inserted buttons is not treated as a contrast failure but is not animated away either.
-- The Timed Mock Exam remains deliberately unimplemented: no timer, auto-submit, expiry, scaled score,
-  or readiness prediction. The preview is still a 60-of-60 browsing exercise, not a simulation.
+- At the end of C2.6, the Timed Mock Exam was still deliberately unimplemented. Phase C2.8 later added
+  the timer, auto-submit, expiry, reload recovery, and raw result; it still has no scaled score or
+  readiness prediction. The `/mock-exam` preview remains a 60-of-60 browsing exercise, not a
+  simulation.
 - Vercel deployment remains unverified because no project is connected. The production preview proves
   the SPA build and deep-link fallback locally, not on Vercel.
 - Phase naming: the source-of-truth docs use C2.5 for content completion and contain no C3.1 phase;
@@ -842,3 +845,94 @@ use isolated browser contexts; no network calls or shared storage are involved.
 - The C2.5-C2.7 implementation was committed as `50efba5` and pushed to `origin/main` on 2026-10-28;
   the verified CI status was recorded in a follow-up documentation commit. No deployment was
   performed.
+
+## Phase C2.8 - Timed mock exam
+
+Status: implemented and verified locally (2026-10-28). The work is uncommitted in this working tree.
+
+### Scope
+
+- Preserved the untimed `/mock-exam` preview exactly: 60-of-60 items, no timer, no scaled score.
+- Added a separate `/mock-exam/timed` simulation using the verified blueprint's 60-item /
+  120-minute format. Current eligibility is 60 selected from 62 reviewed items with zero shortfall.
+- Timed selection uses the published domain weights, availability caps, and the attempt id as a
+  deterministic seed. A persisted attempt always reproduces its original order; a new attempt gets a
+  different deterministic selection. No duplicate, filler, or invented question is allowed.
+- Added a separate single-slot store at `cfl.timed-exam.v1` with its own versioned envelope and
+  content fingerprint. Practice data at `cfl.study.v1` is independent and is never migrated or
+  cleared by timed-exam recovery.
+- Added an authoritative persisted `deadlineAt`, wall-clock countdown, reload resume, auto-submit,
+  and immutable retained result. Manual and `time-expired` submissions are distinguished.
+- Added the timed intro, session, timer, question navigator, recovery, result, and review UI.
+- Added the preview-to-timed CTA and a separate "Timed simulation" dashboard row.
+
+### Architecture
+
+- `src/domain/timed-exam.ts` composes the shared assessment primitives rather than duplicating
+  scoring. It validates the attempt invariants, derives remaining time, and implements idempotent
+  expiry and submission transitions.
+- `src/content/timed-exam.ts` reads item count and duration from the verified blueprint, computes
+  eligibility, and builds the timed fingerprint from the shared content fingerprint.
+- `src/domain/mock-exam.ts` exposes seeded selection over the existing weighted allocation.
+- `src/persistence/timed-exam-storage.ts` handles envelope validation and corrupt/incompatible/
+  unavailable/security/quota states. `src/persistence/timed-exam-store.ts` owns the single slot,
+  blocks writes during unrecovered corruption, and exposes explicit discard.
+- `src/features/timed-exam/` contains the timer hook and UI; `src/pages/TimedExamPage.tsx` wires the
+  store to start/save/discard/recovery actions.
+
+### Deadline and recovery guarantees
+
+- Remaining time is always `max(0, deadlineAt - now)`. The one-second interval only refreshes the
+  display; it is not a decrementing state. Visibility, focus, and pageshow events re-read the clock.
+- Expiry submits with `submittedAt = deadlineAt`, so repeated notices produce the same result.
+  A late manual submission is classified as `time-expired`. Answer, flag, and navigation mutations
+  after the deadline are discarded and expire the attempt instead.
+- Submitted attempts are not re-scored. Review navigation is local UI state only.
+- On corrupt or incompatible data, nothing is resumed, scored, migrated, or deleted automatically.
+  The UI offers the raw payload as a download and requires a two-step discard. Starting a new attempt
+  is blocked until recovery.
+- If storage is unavailable or a write fails, the exam continues in memory with an explicit warning;
+  the app does not claim that the change was saved. Reload loss is possible in that state.
+- Discarding removes only `cfl.timed-exam.v1`. Practice attempts, review items, and settings remain.
+
+### Scoring and limits
+
+- Single-choice and exact-set multiple-response questions are all-or-nothing; there is no partial
+  credit. Unanswered questions are counted separately from incorrect answers.
+- The result shows the raw `correct / total` percentage only (for example, 1/60 is 1.67%). There is
+  no scaled 100-1,000 score, pass threshold, or readiness prediction.
+- Because the app is frontend-only, the deadline uses the device clock. A user changing the system
+  clock can affect remaining time, and a closed browser submits when the app next runs, not while it
+  is closed. Local data can be cleared by the user or browser policy.
+
+### Accessibility and responsive coverage
+
+- The countdown uses `role="timer"` with `aria-live="off"`. A separate polite status region announces
+  only the 10-, 5-, and 1-minute warnings, plus expiry. Warning and expired states use text as well
+  as color.
+- Keyboard coverage includes answering, flags, previous/next, the navigator, submit confirmation,
+  recovery, and result review. Focus moves to the question heading on navigation and to confirmation
+  headings when they open.
+- The timed intro, question, and result states are included in the both-theme axe suite. Responsive
+  checks cover 390, 768, and 1440 px, including the navigator reflow and no horizontal overflow.
+
+### Verification
+
+- `npm run typecheck`: pass.
+- `npm run lint`: pass with 0 problems.
+- `npm test`: pass - **23 files / 177 tests**.
+- `npm run build`: pass. The `TimedExamPage` chunk is 41.25 kB (11.69 kB gzip); no chunk-size warning.
+- `npm run test:e2e`: pass - **116 Playwright tests across 8 files**, including 9 timed-exam tests,
+  clock-controlled expiry, corrupt/unavailable storage, keyboard behavior, axe scans, and responsive
+  checks. The axe suite now reports **71 scans** (35 states in both themes plus the open mobile
+  drawer) with 0 violations.
+- `git diff --check`: exit 0 with only Git's LF-to-CRLF normalization warnings; no whitespace errors.
+
+### Status and limitations
+
+- The timed exam is a practice simulation, not an official exam form, official score, or readiness
+  claim. The bank still has two to four items per objective, so depth remains limited.
+- E2E coverage is Chromium-only. Firefox/WebKit, manual screen-reader testing, device-clock
+  tampering, and Vercel deployment remain unverified.
+- This phase added no runtime dependency. The work was not committed, pushed, stashed, reset, or
+  deployed as part of the implementation.

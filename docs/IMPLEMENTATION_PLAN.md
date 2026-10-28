@@ -28,7 +28,8 @@ reviewed Domain 2 bank. C2.3 expanded the bank to 24 items and added persistence
 progress, and the mock preview (2026-10-27). C2.4 added Domain 5 and closed objective coverage at
 30 / 30 with 54 reviewed items, two more lessons, and a Domain 5 practice set (2026-10-27). C2.5
 published the four remaining whole-domain lessons, closed mapped-lesson coverage at 30 / 30, and
-added eight depth items for 62 reviewed items total (2026-10-27).
+added eight depth items for 62 reviewed items total (2026-10-27). C2.6 added the browser/accessibility
+regression audit, C2.7 added CI gates, and C2.8 added the separate timed simulation (2026-10-28).
 
 ### C0 — Official blueprint verification
 
@@ -167,16 +168,37 @@ Status: implemented and verified (2026-10-28); the first GitHub Actions run pass
   failure-artifact upload was skipped as expected on a green run.
 - Not verified: Firefox/WebKit, manual screen-reader testing, and Vercel deployment.
 
+### C2.8 - Timed mock exam
+
+Status: implemented and verified locally (2026-10-28); uncommitted in the working tree.
+
+- Added `/mock-exam/timed` as a distinct 60-question / 120-minute simulation while preserving the
+  untimed `/mock-exam` preview unchanged.
+- Persisted an authoritative `deadlineAt` in a versioned single-slot envelope at
+  `cfl.timed-exam.v1`, separate from `cfl.study.v1`. Reloads resume the same attempt and deadline;
+  expiry auto-submits even after timer throttling, and the retained result is immutable.
+- Reused the shared assessment primitives for exact-set scoring, answer changes, flags, navigation,
+  and result derivation. Manual and `time-expired` submissions are distinguished; no partial credit
+  or scaled score was added.
+- Added deterministic attempt-id-seeded selection over the blueprint-weighted allocation, an exact
+  shortfall-disabled start state, corrupt/incompatible/content-mismatch recovery, and explicit discard
+  that never touches Practice data.
+- Added clock-controlled E2E coverage, corrupt/unavailable/quota states, keyboard and warning
+  announcement checks, axe scans for the intro/question/result, and 390/768/1440 responsive checks.
+- Verified locally: typecheck, lint, **177** unit/integration tests across **23** files,
+  **116** Playwright tests across **8** files, the production build, and **git diff --check**.
+
 ### Remaining Phase D work
 
 - Treat 62 items as a starting depth, not a finished bank. Add items only for distinct decisions in
   high-weight domains; do not inflate counts.
 - Rewrite the Context Window sample for the Associate audience, then decide whether it can be
   verified against Domain 3's `context-memory-management` objective. Keep it unmapped until then.
-- Mock exam timer, auto-submit, and expiry as a separate versioned layer.
 - A per-domain report and a defensible (non-invented) scaled-score policy only if an official source
   supports it.
 - Data migration for compatible schema changes; incompatible data still requires backup + reset.
+- Device-clock tampering and cross-browser timer behavior remain unverified; the frontend-only MVP
+  has no server clock.
 
 ## Phase E — Progress and glossary
 
@@ -189,10 +211,10 @@ Status: implemented for local study progress (2026-10-27); glossary and settings
 
 ## Phase F — Quality
 
-Status: complete for Phase C2.7 (2026-10-28). Typecheck, lint, 145 unit/integration tests, 104
-Playwright tests, the production build, and 65 axe scans pass. A GitHub Actions workflow runs the same
+Status: complete for Phase C2.8 (2026-10-28). Typecheck, lint, 177 unit/integration tests, 116
+Playwright tests, the production build, and 71 axe scans pass. A GitHub Actions workflow runs the same
 gates on pull requests and pushes to `main`, and its first `main` run passed. Firefox/WebKit, manual
-screen-reader testing, and deployment verification remain outstanding.
+screen-reader testing, device-clock tampering, and deployment verification remain outstanding.
 
 - Typecheck, lint, unit/integration tests, production build.
 - End-to-end tests for critical journeys (`tests/e2e/`, run with `npm run test:e2e`).
@@ -204,8 +226,8 @@ screen-reader testing, and deployment verification remain outstanding.
 ## Phase G — GitHub and Vercel
 
 Status: in progress. Tested work through C2.7 was committed as `50efba5` and pushed to `origin/main`
-on 2026-10-28, and the first GitHub Actions run passed. Vercel is not connected and no deployment has
-been performed.
+on 2026-10-28, and the first GitHub Actions run passed. Phase C2.8 is implemented and verified
+locally but remains uncommitted. Vercel is not connected and no deployment has been performed.
 
 - [x] Verify target repository and secure Git credentials.
 - [x] Commit and push tested work; no GitHub CLI.

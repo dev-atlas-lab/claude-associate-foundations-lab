@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { identifierSchema } from "./common";
-import type { Question, QuestionType } from "./lesson";
+import { questionTypeSchema, type Question } from "./lesson";
 
 /**
  * Reusable assessment primitives. Nothing in this module knows about a
@@ -461,30 +461,40 @@ export function isAnswerCorrect(
   return [...selected].every((choiceId) => correct.has(choiceId));
 }
 
-export type QuestionOutcome = "correct" | "incorrect" | "unanswered";
+export const questionOutcomeSchema = z.enum(["correct", "incorrect", "unanswered"]);
+export type QuestionOutcome = z.infer<typeof questionOutcomeSchema>;
 
-export interface QuestionScore {
-  questionId: string;
-  questionType: QuestionType;
-  selectedChoiceIds: string[];
-  correctChoiceIds: string[];
-  outcome: QuestionOutcome;
-  isCorrect: boolean;
-}
+export const questionScoreSchema = z.object({
+  questionId: identifierSchema,
+  questionType: questionTypeSchema,
+  selectedChoiceIds: z.array(identifierSchema),
+  correctChoiceIds: z.array(identifierSchema),
+  outcome: questionOutcomeSchema,
+  isCorrect: z.boolean(),
+});
 
-export interface AssessmentResult {
-  assessmentId: string;
-  sessionId: string;
-  submittedAt: string;
-  totalQuestions: number;
-  answeredQuestions: number;
-  correctAnswers: number;
-  incorrectAnswers: number;
-  unansweredQuestions: number;
+export type QuestionScore = z.infer<typeof questionScoreSchema>;
+
+/**
+ * A derived result snapshot. Timed exams persist this value at submission so a
+ * completed attempt cannot be re-scored against later state. Practice attempts
+ * continue to derive it on demand instead of storing it.
+ */
+export const assessmentResultSchema = z.object({
+  assessmentId: identifierSchema,
+  sessionId: z.string().trim().min(1),
+  submittedAt: isoTimestampSchema,
+  totalQuestions: z.number().int().nonnegative(),
+  answeredQuestions: z.number().int().nonnegative(),
+  correctAnswers: z.number().int().nonnegative(),
+  incorrectAnswers: z.number().int().nonnegative(),
+  unansweredQuestions: z.number().int().nonnegative(),
   /** Rounded to two decimals. A practice metric, never an official scaled score. */
-  rawPercentage: number;
-  questions: QuestionScore[];
-}
+  rawPercentage: z.number().min(0).max(100),
+  questions: z.array(questionScoreSchema),
+});
+
+export type AssessmentResult = z.infer<typeof assessmentResultSchema>;
 
 export function calculateAssessmentResult(
   context: AssessmentContext,
