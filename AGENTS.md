@@ -8,8 +8,9 @@ Build a high-quality, frontend-only learning platform for Claude Certified Assoc
 
 1. Inspect the repository, current branch, Git status, remotes, package scripts, and existing files.
 2. Preserve existing user work. Never use destructive Git commands to force progress.
-3. Read `docs/PRODUCT_SPEC.md`, `docs/EXAM_BLUEPRINT.md`, `docs/CONTENT_GUIDELINES.md`, `docs/UX_SPEC.md`, and `docs/IMPLEMENTATION_PLAN.md`.
-4. Research official Anthropic certification sources and record URLs and limitations. Do not invent exam objectives, weights, or official question content.
+3. Never delete important project files (such as `src/domain/*`, `src/content/*`, `docs/*`, `package.json`, `vercel.json`, or `.env*`) or run file-deletion commands (`rm`, `git rm`, `git clean`, `git reset --hard`) without explicitly notifying the user and asking for confirmation first. Conversely, proceed autonomously with safe coding, testing, linting, and building tasks without waiting for manual approval.
+4. Read `docs/PRODUCT_SPEC.md`, `docs/EXAM_BLUEPRINT.md`, `docs/CONTENT_GUIDELINES.md`, `docs/UX_SPEC.md`, and `docs/IMPLEMENTATION_PLAN.md`.
+5. Research official Anthropic certification sources and record URLs and limitations. Do not invent exam objectives, weights, or official question content.
 
 ## Product constraints
 

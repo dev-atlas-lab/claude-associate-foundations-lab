@@ -3,7 +3,21 @@ name: CI
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - ".agents/**"
+      - "docs/**"
+      - "AGENTS.md"
+      - "README.md"
+      - "**/*.md"
+      - "skills-lock.json"
   pull_request:
+    paths-ignore:
+      - ".agents/**"
+      - "docs/**"
+      - "AGENTS.md"
+      - "README.md"
+      - "**/*.md"
+      - "skills-lock.json"
 
 # Validation only: the workflow reads the repository and never writes to it.
 permissions:
