@@ -127,6 +127,12 @@ export const workflowDesignLesson: Lesson = lessonSchema.parse({
       body: "Nếu các bước có thể mô tả trước và cần kết quả nhất quán, workflow là lựa chọn mặc định. Agent phù hợp khi không thể biết trước số bước hoặc đường đi, và khi bạn có thể test trong môi trường an toàn với guardrail, stopping condition và human checkpoint. Đừng chọn agent chỉ vì nghe tiên tiến hơn.",
     },
     {
+      kind: "diagram",
+      heading: "Mô phỏng kiến trúc: Các mẫu thiết kế Workflow & Trạm kiểm soát Human Checkpoint",
+      diagramId: "workflow-patterns-simulator",
+      intro: "Trực quan hóa và tương tác với 4 mô hình thiết kế workflow phổ biến theo tài liệu Anthropic: Routing, Parallelization, Orchestrator-Workers và Evaluator-Optimizer loop.",
+    },
+    {
       kind: "paragraphs",
       heading: "Tích hợp: chọn điểm bắt đầu nhỏ, đo được",
       paragraphs: [

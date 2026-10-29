@@ -140,6 +140,12 @@ export const troubleshootingOptimizationLesson: Lesson = lessonSchema.parse({
       body: "Nếu một thay đổi giảm chi phí nhưng làm tăng lỗi ở case quan trọng, đó không phải tối ưu mà là đánh đổi chưa được chấp nhận. Hãy ghi rõ trade-off, ngưỡng chất lượng tối thiểu và người phê duyệt trước khi hạ model hoặc bỏ bước kiểm tra.",
     },
     {
+      kind: "diagram",
+      heading: "Công cụ trực quan: So sánh Chi phí Mô hình & Tiết kiệm từ Prompt Caching",
+      diagramId: "prompt-caching-cost-calculator",
+      intro: "Trực quan hóa sự đánh đổi giữa Model Right-Sizing (Haiku vs. Sonnet vs. Opus) và cơ chế giảm tới 90% chi phí đọc token của Prompt Caching theo độ dài tài liệu và số lượt truy vấn.",
+    },
+    {
       kind: "paragraphs",
       heading: "Khi nào dừng",
       paragraphs: [

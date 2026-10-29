@@ -81,6 +81,12 @@ export const promptStructureLesson: Lesson = lessonSchema.parse({
       body: "Anthropic xem ví dụ là một trong những cách đáng tin cậy nhất để định hướng format, tone và cấu trúc. Nhưng ví dụ phải relevant, diverse và có cấu trúc. Một ví dụ duy nhất có thể khiến model bắt chước cả những chi tiết không mong muốn; hãy dùng 3–5 ví dụ nếu cần và bao phủ edge case.",
     },
     {
+      kind: "diagram",
+      heading: "Bàn thử nghiệm trực quan: Phân tầng cấu trúc Prompt chuẩn Anthropic",
+      diagramId: "prompt-layering-workbench",
+      intro: "Trực quan hóa và thử nghiệm bật/tắt 5 lớp cấu trúc prompt cốt lõi (System Role, XML Tags, Rubric, Few-shot, Prefill) để theo dõi sự thay đổi về độ rõ ràng và khả năng chống ảo giác.",
+    },
+    {
       kind: "paragraphs",
       heading: "Chia nhỏ task phức tạp",
       paragraphs: [

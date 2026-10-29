@@ -7,7 +7,7 @@ The product pairs Vietnamese explanations with English assessments: lessons, int
 ## Current status
 
 Phases B, C0, C1, C2.1, C2.2a, C2.2b, C2.3, C2.4, C2.5, C2.6, C2.7, C2.8, C2.9, C2.10, C2.11, C2.12,
-C2.13, C2.14, C2.15, C2.16, C2.17, C2.18, and C2.19 are implemented on top of the validated scaffold.
+C2.13, C2.14, C2.15, C2.16, C2.17, C2.18, C2.19, and C2.20 are implemented on top of the validated scaffold.
 
 - Design tokens, Dark / Light / System themes with localStorage persistence, responsive sidebar and
   mobile drawer, skip link, focus management, and reduced-motion support.
@@ -32,8 +32,10 @@ C2.13, C2.14, C2.15, C2.16, C2.17, C2.18, and C2.19 are implemented on top of th
   `/learn/product-selection` (Domain 3), `/learn/workflow-design` (Domain 4),
   `/learn/governance-responsible-use` (Domain 6), and `/learn/troubleshooting-optimization` (Domain 7).
   Each teaches all objectives in its domain, links to reviewed bank items, and includes an English
-  knowledge check with Vietnamese explanations. The `/learn` index exposes domain codes, blueprint weights,
-  objective counts, and linked practice counts for each module.
+  knowledge check with Vietnamese explanations. Interactive visualizers enhance key conceptual lessons:
+  the Context Budget Calculator (`/learn/context-window`), Prompt Layering Workbench (`/learn/prompt-structure`),
+  Workflow Patterns Simulator (`/learn/workflow-design`), and Prompt Caching Cost Calculator (`/learn/troubleshooting-optimization`).
+  The `/learn` index exposes domain codes, blueprint weights, objective counts, and linked practice counts for each module.
 - A deterministic, certification-neutral assessment core in `src/domain/assessment.ts` supports
   single-choice and exact-set multiple-response scoring, answer changes, navigation, flags, explicit
   submission confirmation, review navigation, and idempotent submission. Scores are derived from
@@ -77,10 +79,10 @@ C2.13, C2.14, C2.15, C2.16, C2.17, C2.18, and C2.19 are implemented on top of th
   Playwright/axe suite.
 - Deployment runbook and SPA rewrite verification are documented in `docs/DEPLOYMENT.md`.
 
-Local quality gates currently pass: typecheck, lint, **205 unit/integration tests across 23 files**,
+Local quality gates currently pass: typecheck, lint, **209 unit/integration tests across 24 files**,
 **116 Playwright tests across 8 files**, and the production build. Routes are code-split with
-`React.lazy`; the timed page is its own 37.35 kB chunk (10.18 kB gzip), the largest JS chunks are
-476.13 kB (130.54 kB gzip) and 340.42 kB (107.96 kB gzip), and there is no Vite chunk-size warning.
+`React.lazy`; the timed page is its own 37.07 kB chunk (10.13 kB gzip), the largest JS chunks are
+477.27 kB (130.99 kB gzip) and 340.45 kB (107.97 kB gzip), and there is no Vite chunk-size warning.
 **71 axe-core scans** cover 35 states in both themes plus the open mobile drawer and report
 **0 violations**; manual browser checks cover landmarks, heading order, keyboard focus, skip link,
 drawer focus trapping, reduced motion, and responsive widths. The timed suite adds clock-controlled

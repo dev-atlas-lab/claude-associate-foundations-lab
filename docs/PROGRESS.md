@@ -1254,3 +1254,43 @@ not done in this audit.
 - Vitest suite: **205 tests across 23 files** pass.
 - `npm run build`: pass (`dist/` built cleanly in 5.48s).
 - `git diff --check`: clean.
+
+## Phase C2.20 - Interactive Visualizations: Workflow Patterns Simulator, Prompt Caching Cost Calculator & Prompt Layering Workbench (2026-10-29)
+
+### Scope
+
+- **Domain 4 Interactive Architecture Simulator (`src/features/visualizations/WorkflowPatternsSimulator.tsx`):**
+  - Added an interactive visualizer for `workflow-design` (`/learn/workflow-design`) covering 4 core Anthropic agentic workflow patterns from "Building effective agents":
+    1. *Routing (Intent Classification)*: Interactive test of 3 real queries (Billing Haiku vs. Tech Sonnet vs. High-Risk Legal Checkpoint).
+    2. *Evaluator-Optimizer Loop*: Interactive step-through with Generator draft, Evaluator rubric scoring (fail on missing citation $\to$ retry), and Human Checkpoint sign-off.
+    3. *Parallelization (Sectioning / Voting)*: Simultaneous analysis across legal, financial, and security branches showing 3.2s latency vs. 7.1s serial execution.
+    4. *Orchestrator-Workers*: Lead orchestrator dynamically generating tasks for Web Search, Financial Parser, and Patent Query workers.
+  - Includes key CCAO-F exam takeaway: why starting with the simplest workflow pattern is Anthropic's primary design recommendation.
+- **Domain 7 Interactive Token Economics Calculator (`src/features/visualizations/PromptCachingCostCalculator.tsx`):**
+  - Added an interactive visualizer for `troubleshooting-optimization` (`/learn/troubleshooting-optimization`) simulating Model Right-Sizing and Prompt Caching economics:
+    - Dynamic model profiles for Claude 3.5 Haiku, Claude 3.5 Sonnet, and Claude 3 Opus with real pricing and role guidance.
+    - Interactive sliders for static prefix/document context (1,000 to 100,000 tokens) and query turns in the 5-minute TTL window (1 to 50 turns).
+    - Real-time calculations of uncached vs. cached costs, dollar savings, percentage reduction (up to 85%+), and Time-to-First-Token (TTFT) latency drop.
+    - Automatic eligibility verification based on minimum cache thresholds (1,024 tokens for Sonnet/Opus, 2,048 tokens for Haiku).
+- **Domain 1 Interactive Prompt Structure Workbench (`src/features/visualizations/PromptLayeringWorkbench.tsx`):**
+  - Added an interactive workbench for `prompt-structure` (`/learn/prompt-structure`) letting learners toggle 5 canonical prompt layers:
+    1. *Role & System Persona*
+    2. *XML Structured Delimiters* (`<context>`, `<guidelines>`)
+    3. *Acceptance Criteria & Rubric* (with "I don't know / INSUFFICIENT_EVIDENCE" hallucination safeguards)
+    4. *Few-Shot Exemplars*
+    5. *Output Prefill / Assistant Prefill* (forcing JSON/XML syntax)
+  - Features real-time metric meters for Clarity & Specificity, Hallucination Resistance, and Format Parsability, alongside live assembled prompt code preview.
+- **Renderer Registration & Layout Styling (`src/features/curriculum/components/LessonContent.tsx`, `src/styles/lesson.css`):**
+  - Registered all 3 diagram renderers in `LessonContent.tsx` by their respective `diagramId`.
+  - Added responsive, dark/light theme-aware styles in `lesson.css` for interactive flow nodes, model selectors, sliders, metric meters, and preview blocks.
+- **Test Suite Expansion (`src/test/visualizations.test.tsx`):**
+  - Added 4 comprehensive unit and interaction tests verifying tab switching, query routing, evaluator step advancement, slider responsiveness, and layer toggle metrics.
+  - Vitest suite expanded from 205 to **209 tests across 24 test files** (all green).
+
+### Verification
+
+- `npm run typecheck`: pass (`tsc -b`, strict).
+- `npm run lint`: pass (`eslint .`, 0 problems).
+- Vitest suite: **209 tests across 24 files** pass.
+- `npm run build`: pass (`LessonPage` code-split chunk cleanly built at 52.97 kB).
+- `git diff --check`: clean.

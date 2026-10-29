@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import { Callout } from "../../../components/ui/Callout";
 import type { Lesson, QuestionType, Source } from "../../../domain";
 import { ContextWindowDiagram } from "../../visualizations/ContextWindowDiagram";
+import { PromptCachingCostCalculator } from "../../visualizations/PromptCachingCostCalculator";
+import { PromptLayeringWorkbench } from "../../visualizations/PromptLayeringWorkbench";
+import { WorkflowPatternsSimulator } from "../../visualizations/WorkflowPatternsSimulator";
 import { KnowledgeCheck } from "./KnowledgeCheck";
 
 interface RelatedPracticeItem {
@@ -110,6 +113,12 @@ export function LessonContent({
             {section.kind === "diagram" ? (
               section.diagramId === "context-budget" ? (
                 <ContextWindowDiagram intro={section.intro} />
+              ) : section.diagramId === "workflow-patterns-simulator" ? (
+                <WorkflowPatternsSimulator intro={section.intro} />
+              ) : section.diagramId === "prompt-caching-cost-calculator" ? (
+                <PromptCachingCostCalculator intro={section.intro} />
+              ) : section.diagramId === "prompt-layering-workbench" ? (
+                <PromptLayeringWorkbench intro={section.intro} />
               ) : (
                 <Callout tone="note" title="Visualisation not available">
                   This lesson references the diagram <span className="mono">{section.diagramId}</span>,

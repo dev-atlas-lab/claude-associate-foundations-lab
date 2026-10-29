@@ -699,3 +699,739 @@ a.pager-card:hover {
     height: 34px;
   }
 }
+
+/* ── Interactive Visualizations: Workflow, Cost, Prompt Workbench ─────────── */
+
+.workflow-simulator,
+.cost-calculator,
+.prompt-workbench {
+  margin-top: var(--space-4);
+  margin-bottom: var(--space-4);
+  padding: var(--space-5);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+}
+
+.workflow-header,
+.calc-header,
+.wb-header {
+  margin-bottom: var(--space-4);
+}
+
+.workflow-title-row,
+.calc-title-row,
+.wb-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-1);
+}
+
+.workflow-icon,
+.calc-icon,
+.wb-icon {
+  color: var(--accent);
+}
+
+.workflow-title,
+.calc-title,
+.wb-title {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.workflow-intro,
+.calc-intro,
+.wb-intro {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: var(--leading-normal);
+  margin: 0;
+}
+
+/* ── Workflow Patterns Simulator ── */
+
+.workflow-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: var(--space-3);
+}
+
+.workflow-tab {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.workflow-tab:hover {
+  background: var(--surface-3);
+  color: var(--text-primary);
+}
+
+.workflow-tab--active {
+  background: var(--accent-subtle);
+  border-color: var(--accent);
+  color: var(--accent-strong);
+  font-weight: 600;
+}
+
+.workflow-pattern-info {
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.workflow-pattern-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.workflow-best-for {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+}
+
+.workflow-summary {
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  line-height: var(--leading-normal);
+  margin: 0;
+}
+
+.workflow-canvas {
+  background: var(--surface-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.workflow-interactive-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px dashed var(--border-subtle);
+}
+
+.workflow-interactive-label {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.workflow-btn-group {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.workflow-flow-diagram,
+.workflow-loop-diagram {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  overflow-x: auto;
+  padding: var(--space-2) 0;
+}
+
+.flow-node {
+  flex: 1 1 200px;
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 170px;
+}
+
+.flow-node--input {
+  border-left: 3px solid var(--info);
+}
+
+.flow-node--decision {
+  border-left: 3px solid var(--accent);
+}
+
+.flow-node--target {
+  border-left: 3px solid var(--ok);
+}
+
+.flow-node--checkpoint {
+  border-left: 3px solid var(--warn);
+}
+
+.flow-node--generator {
+  border-left: 3px solid var(--info);
+}
+
+.flow-node--evaluator.flow-node--fail {
+  border-left: 3px solid var(--warn);
+  background: var(--warn-subtle);
+}
+
+.flow-node--evaluator.flow-node--pass {
+  border-left: 3px solid var(--ok);
+  background: var(--ok-subtle);
+}
+
+.flow-node--approved {
+  border-left: 3px solid var(--ok);
+  background: var(--ok-subtle);
+}
+
+.flow-node-badge {
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.flow-node-text {
+  font-size: var(--text-xs);
+  color: var(--text-primary);
+  font-style: italic;
+  margin: 0;
+}
+
+.flow-node-sub {
+  font-size: var(--text-2xs);
+  color: var(--text-secondary);
+}
+
+.flow-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--text-secondary);
+  flex: 0 0 auto;
+}
+
+.flow-arrow-text {
+  font-size: 0.65rem;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+.flow-parallel-container,
+.flow-orchestrator-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.flow-parallel-branches {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-3);
+}
+
+.flow-branch-node {
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: var(--text-xs);
+}
+
+.flow-workers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-3);
+}
+
+.flow-worker-card {
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: var(--text-xs);
+}
+
+.flow-worker-card p {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.workflow-takeaway {
+  background: var(--surface-2);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+}
+
+.workflow-takeaway-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--accent);
+  margin-bottom: var(--space-1);
+}
+
+.workflow-takeaway p {
+  font-size: var(--text-xs);
+  color: var(--text-primary);
+  line-height: var(--leading-normal);
+  margin: 0;
+}
+
+/* ── Prompt Caching & Cost Calculator ── */
+
+.calc-model-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.calc-model-btn {
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.calc-model-btn:hover {
+  background: var(--surface-3);
+  border-color: var(--border-strong);
+}
+
+.calc-model-btn--active {
+  background: var(--accent-subtle);
+  border-color: var(--accent);
+}
+
+.calc-model-name {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.calc-model-badge {
+  font-size: var(--text-2xs);
+  color: var(--text-secondary);
+}
+
+.calc-model-price {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  color: var(--accent);
+}
+
+.calc-role-note {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  background: var(--surface-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-4);
+}
+
+.calc-controls-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.calc-control-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.calc-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+}
+
+.calc-slider {
+  width: 100%;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.calc-slider-hints {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.65rem;
+  color: var(--text-tertiary);
+}
+
+.calc-eligibility {
+  margin-bottom: var(--space-4);
+}
+
+.calc-status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: var(--text-xs);
+}
+
+.calc-status--ok {
+  background: var(--ok-subtle);
+  border: 1px solid var(--ok);
+  color: var(--text-primary);
+}
+
+.calc-status--warn {
+  background: var(--warn-subtle);
+  border: 1px solid var(--warn);
+  color: var(--text-primary);
+}
+
+.calc-results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.calc-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.calc-card--cached {
+  border-color: var(--ok);
+  background: var(--ok-subtle);
+}
+
+.calc-card--savings {
+  border-color: var(--accent);
+  background: var(--accent-subtle);
+}
+
+.calc-card-eyebrow {
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.calc-card-amount {
+  font-family: var(--font-mono);
+  font-size: 1.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.calc-card-detail {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  line-height: var(--leading-normal);
+  margin: 0;
+  flex: 1 1 auto;
+}
+
+.calc-card-metric {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: var(--space-2);
+  border-top: 1px dashed var(--border-subtle);
+}
+
+.calc-card-badge-row {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.calc-takeaway {
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+
+.calc-takeaway-title {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.calc-takeaway-list {
+  margin: 0;
+  padding-left: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+}
+
+.calc-takeaway-list strong {
+  color: var(--text-primary);
+}
+
+/* ── Prompt Layering Workbench ── */
+
+.wb-controls {
+  margin-bottom: var(--space-4);
+}
+
+.wb-controls-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.wb-controls-title {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.wb-actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.wb-layers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-3);
+}
+
+.wb-layer-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.wb-layer-card:hover {
+  background: var(--surface-3);
+  border-color: var(--border-strong);
+}
+
+.wb-layer-card--active {
+  background: var(--surface-2);
+  border-color: var(--accent);
+}
+
+.wb-layer-card-top {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.wb-checkbox {
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bg);
+  background: transparent;
+  flex: 0 0 auto;
+}
+
+.wb-checkbox--checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.wb-layer-name {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-primary);
+  flex: 1 1 auto;
+}
+
+.wb-layer-desc {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  line-height: var(--leading-normal);
+  margin: 0;
+}
+
+.wb-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.wb-metric-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.wb-metric-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+}
+
+.wb-meter-wrap {
+  height: 8px;
+  background: var(--surface-3);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.wb-meter-bar {
+  height: 100%;
+  background: var(--info);
+  border-radius: 4px;
+  transition: width var(--duration-normal) var(--ease-out);
+}
+
+.wb-meter-bar--ok {
+  background: var(--ok);
+}
+
+.wb-meter-bar--accent {
+  background: var(--accent);
+}
+
+.wb-metric-score {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-align: right;
+  color: var(--text-primary);
+}
+
+.wb-preview {
+  background: var(--surface-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: var(--space-4);
+}
+
+.wb-preview-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.wb-preview-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.wb-code-block {
+  margin: 0;
+  padding: var(--space-4);
+  max-height: 240px;
+  overflow-y: auto;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-primary);
+  line-height: var(--leading-relaxed);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.wb-code-block--expanded {
+  max-height: 600px;
+}
+
+.wb-takeaway {
+  background: var(--surface-2);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+}
+
+.wb-takeaway strong {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--accent);
+  margin-bottom: 2px;
+}
+
+.wb-takeaway p {
+  font-size: var(--text-xs);
+  color: var(--text-primary);
+  line-height: var(--leading-normal);
+  margin: 0;
+}
