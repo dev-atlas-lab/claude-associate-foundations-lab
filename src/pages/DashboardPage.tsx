@@ -1,11 +1,14 @@
-import { ArrowRight, BookOpen, ListChecks, Timer } from "lucide-react";
+import { ArrowRight, BookOpen, ListChecks, RotateCcw, Timer } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Badge } from "../components/ui/Badge";
 import { Callout } from "../components/ui/Callout";
 import { PageHeader } from "../components/ui/PageHeader";
 import {
   allQuestions,
+  getAssessment,
   getDomain,
+  getLessonForDomain,
+  getPracticeSetForDomain,
   plannedLessons,
   practiceSets,
   primaryBlueprint,
@@ -13,10 +16,12 @@ import {
   publishedLessons,
   questionBankEntries,
 } from "../content";
-import { mockExamSummary } from "../content/mock-exam";
-import { deriveReviewItems } from "../domain";
+import { mockExamDefinition, mockExamSummary } from "../content/mock-exam";
+import { deriveReviewItems, type StudyAttempt } from "../domain";
+import { deriveProgressSummary } from "../features/progress/selectors";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { useStudyState } from "../persistence/study-store";
+import { useTimedExamState } from "../persistence/timed-exam-store";
 
 const questionById = new Map(allQuestions.map((question) => [question.id, question]));
 
@@ -46,6 +51,35 @@ function domainForObjective(objectiveId: string) {
   );
 }
 
+function describeActiveStudyAttempt(attempt: StudyAttempt): {
+  title: string;
+  to: string;
+  answeredCount: number;
+  totalCount: number;
+} {
+  const answeredCount = attempt.questionIds.filter(
+    (questionId) => (attempt.session.answers[questionId]?.length ?? 0) > 0,
+  ).length;
+  const totalCount = attempt.questionIds.length;
+
+  if (attempt.origin.kind === "mock-exam") {
+    return {
+      title: mockExamDefinition.title,
+      to: "/mock-exam",
+      answeredCount,
+      totalCount,
+    };
+  }
+
+  const assessment = getAssessment(attempt.origin.practiceSetId);
+  return {
+    title: assessment?.title ?? attempt.origin.practiceSetId,
+    to: `/practice?set=${encodeURIComponent(attempt.origin.practiceSetId)}`,
+    answeredCount,
+    totalCount,
+  };
+}
+
 const featuredDomain = featuredLesson.examMapping.objectiveIds
   .map((objectiveId) => domainForObjective(objectiveId))
   .find((domain) => domain !== undefined);
@@ -53,11 +87,39 @@ const featuredDomain = featuredLesson.examMapping.objectiveIds
 export function DashboardPage() {
   useDocumentTitle();
   const snapshot = useStudyState();
-  const submittedAttempts = snapshot.state.attempts.filter(
+  const timedExamSnapshot = useTimedExamState();
+  const timedSession =
+    timedExamSnapshot.status === "ready" ? timedExamSnapshot.session : undefined;
+
+  const submittedStudyAttempts = snapshot.state.attempts.filter(
     (attempt) => attempt.session.status === "submitted",
-  ).length;
-  const activeAttempts = snapshot.state.attempts.length - submittedAttempts;
+  );
+  const activeStudyAttempts = snapshot.state.attempts.filter(
+    (attempt) => attempt.session.status === "in-progress",
+  );
+  const submittedAttempts =
+    submittedStudyAttempts.length +
+    (timedSession?.session.status === "submitted" ? 1 : 0);
+  const activeAttempts =
+    activeStudyAttempts.length +
+    (timedSession?.session.status === "in-progress" ? 1 : 0);
   const reviewItems = deriveReviewItems(snapshot.state, questionById);
+  const progressSummary = deriveProgressSummary(
+    snapshot.state,
+    questionBankEntries,
+    primaryBlueprint,
+    questionById,
+    timedSession,
+  );
+  const domainStatsById = new Map(
+    progressSummary.personal.domains.map((domainStat) => [domainStat.domainId, domainStat]),
+  );
+  const timedAnsweredCount =
+    timedSession?.session.status === "in-progress"
+      ? timedSession.questionIds.filter(
+          (questionId) => (timedSession.session.answers[questionId]?.length ?? 0) > 0,
+        ).length
+      : 0;
 
   return (
     <div className="page">
@@ -134,6 +196,66 @@ export function DashboardPage() {
         </div>
       </section>
 
+      {activeAttempts > 0 || reviewItems.length > 0 ? (
+        <section className="section" aria-labelledby="active-study">
+          <div className="section-heading-row">
+            <h2 className="section-title" id="active-study">
+              Continue active study
+            </h2>
+            <span className="section-note">Saved in this browser</span>
+          </div>
+          <div className="row-list">
+            {activeStudyAttempts.map((attempt) => {
+              const info = describeActiveStudyAttempt(attempt);
+
+              return (
+                <Link className="row" key={attempt.session.id} to={info.to}>
+                  <span className="row-start" aria-hidden="true">
+                    <ListChecks size={14} strokeWidth={1.9} />
+                  </span>
+                  <span className="row-body">
+                    <span className="row-title">{info.title}</span>
+                    <span className="row-meta">
+                      In progress · {info.answeredCount}/{info.totalCount} answered
+                    </span>
+                  </span>
+                  <span className="row-tail">Resume</span>
+                </Link>
+              );
+            })}
+            {timedSession?.session.status === "in-progress" ? (
+              <Link className="row" to="/mock-exam/timed">
+                <span className="row-start" aria-hidden="true">
+                  <Timer size={14} strokeWidth={1.9} />
+                </span>
+                <span className="row-body">
+                  <span className="row-title">Timed mock exam</span>
+                  <span className="row-meta">
+                    In progress · {timedAnsweredCount}/{timedSession.questionIds.length} answered
+                  </span>
+                </span>
+                <span className="row-tail">Resume</span>
+              </Link>
+            ) : null}
+            {reviewItems.length > 0 ? (
+              <Link className="row" to="/review">
+                <span className="row-start" aria-hidden="true">
+                  <RotateCcw size={14} strokeWidth={1.9} />
+                </span>
+                <span className="row-body">
+                  <span className="row-title">Open review queue</span>
+                  <span className="row-meta">
+                    {reviewItems.length} open {reviewItems.length === 1 ? "item" : "items"} from
+                    submitted attempts — review explanations or practice open items
+                  </span>
+                </span>
+                <span className="row-tail">Review</span>
+              </Link>
+            ) : null}
+          </div>
+        </section>
+      ) : null}
+
       <section className="section">
         <Callout tone="note" title="Blueprint verified for your exam window">
           {primaryBlueprint.versionNotice}
@@ -148,23 +270,54 @@ export function DashboardPage() {
           <span className="section-note">Official domains and weights · v{primaryBlueprint.version}</span>
         </div>
         <div className="row-list">
-          {primaryBlueprint.domains.map((domain) => (
-            <div className="row" key={domain.id}>
-              <span className="row-start" aria-hidden="true">
-                {domain.code.padStart(2, "0")}
-              </span>
-              <span className="row-body">
-                <span className="row-title">{domain.title}</span>
-                <span className="row-meta">
-                  {domain.objectives.length} objectives ·{" "}
-                  {hasMappedLessonForDomain(domain.id)
-                    ? "reviewed lesson available"
-                    : "lesson mapping not started"}
+          {primaryBlueprint.domains.map((domain) => {
+            const mappedLesson = getLessonForDomain(domain.id);
+            const domainPracticeSet = getPracticeSetForDomain(domain.id);
+            const domainStat = domainStatsById.get(domain.id);
+
+            return (
+              <div className="row" key={domain.id}>
+                <span className="row-start" aria-hidden="true">
+                  {domain.code.padStart(2, "0")}
                 </span>
-              </span>
-              <span className="row-tail">{domain.weightPercent}%</span>
-            </div>
-          ))}
+                <span className="row-body">
+                  <span className="row-title">{domain.title}</span>
+                  <span className="row-meta">
+                    {domain.objectives.length} objectives ·{" "}
+                    {hasMappedLessonForDomain(domain.id)
+                      ? "reviewed lesson available"
+                      : "lesson mapping not started"}
+                    {domainStat ? ` · ${domainStat.bankItemCount} bank items` : ""}
+                    {domainStat && domainStat.uniqueAttemptedItems > 0
+                      ? ` · ${domainStat.uniqueAttemptedItems}/${domainStat.bankItemCount} seen`
+                      : ""}
+                    {domainStat && domainStat.latestAccuracy !== undefined
+                      ? ` · Latest: ${domainStat.latestAccuracy}%`
+                      : ""}
+                  </span>
+                  {mappedLesson || domainPracticeSet ? (
+                    <span className="row-meta">
+                      {mappedLesson ? (
+                        <Link className="inline-link" to={`/learn/${mappedLesson.id}`}>
+                          Lesson: {mappedLesson.title}
+                        </Link>
+                      ) : null}
+                      {mappedLesson && domainPracticeSet ? " · " : null}
+                      {domainPracticeSet ? (
+                        <Link
+                          className="inline-link"
+                          to={`/practice?set=${encodeURIComponent(domainPracticeSet.assessment.id)}`}
+                        >
+                          Practice ({domainPracticeSet.questionCount} items)
+                        </Link>
+                      ) : null}
+                    </span>
+                  ) : null}
+                </span>
+                <span className="row-tail">{domain.weightPercent}%</span>
+              </div>
+            );
+          })}
         </div>
       </section>
 

@@ -92,7 +92,7 @@ Design meaningful empty, completed, error, and reset-confirmation states. Do not
   `?set=` deep links, resume an in-progress attempt, support deterministic shuffled question
   ordering (`Start shuffled` and `Shuffle & retry`), and persist attempts locally. It is practice,
   not an official exam form.
-- `/mock-exam` runs a blueprint-weighted 60-of-60 preview drawn from 63 reviewed items, with no
+- `/mock-exam` runs a blueprint-weighted 60-of-60 preview drawn from 67 reviewed items, with no
   shortfall, no timer, and no scaled score. `/mock-exam/timed` is the distinct deadline-enforced
   simulation; it stores one attempt at `cfl.timed-exam.v1`, resumes the original question order and
   deadline after reload, auto-submits at expiry, and retains an immutable raw result.

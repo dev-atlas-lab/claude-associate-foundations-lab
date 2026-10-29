@@ -61,12 +61,13 @@ export const domainOnePromptingAssessment: AssessmentDefinition =
     id: "domain-1-prompting-set",
     title: "Domain 1: Prompting and Task Execution",
     description:
-      "Eight reviewed English practice items on writing specific prompts, decomposing complex requests, iterating with evidence, and adapting prompting strategies to analysis, research, drafting, and brainstorming tasks. Explanations for every option are in Vietnamese after submission. Original practice material, not official CCAO-F content.",
+      "Nine reviewed English practice items on writing specific prompts, decomposing complex requests, iterating with evidence and rubrics, and adapting prompting strategies to analysis, research, drafting, and brainstorming tasks. Explanations for every option are in Vietnamese after submission. Original practice material, not official CCAO-F content.",
     questionIds: [
       "prompting-specific-brief",
       "prompting-decompose-steps",
       "prompting-iterate-evidence",
       "prompting-iterate-systematic",
+      "prompting-iterate-rubric-calibration",
       "prompting-analysis-task-strategy",
       "prompting-adapt-task-types",
       "prompting-effective-prompt-additions",
@@ -99,13 +100,14 @@ export const domainFourWorkflowAssessment: AssessmentDefinition =
     id: "domain-4-workflow-set",
     title: "Domain 4: Workflow Integration and Solution Design",
     description:
-      "Ten reviewed English practice items on requirements analysis, research and planning, solution design and iteration, responsible workflow integration, and stakeholder communication. Explanations for every option are in Vietnamese after submission. Original practice material, not official CCAO-F content.",
+      "Eleven reviewed English practice items on requirements analysis, research and planning, solution design and iteration, responsible workflow integration, and stakeholder communication. Explanations for every option are in Vietnamese after submission. Original practice material, not official CCAO-F content.",
     questionIds: [
       "workflow-requirements-extraction",
       "workflow-research-current-scan",
       "workflow-research-planning-practices",
       "workflow-solution-options",
       "workflow-solution-iteration",
+      "workflow-solution-handoff-controls",
       "workflow-integration-checkpoints",
       "workflow-stakeholder-brief",
       "workflow-stakeholder-evidence",
@@ -139,7 +141,7 @@ export const domainSixGovernanceAssessment: AssessmentDefinition =
     id: "domain-6-governance-set",
     title: "Domain 6: Governance, Risk, and Responsible Use",
     description:
-      "Nine reviewed English practice items on appropriate use cases, data privacy, third-party connector governance, organizational policy, high-risk review, and human oversight. Explanations for every option are in Vietnamese after submission. These teach review principles, not legal advice. Original practice material, not official CCAO-F content.",
+      "Ten reviewed English practice items on appropriate use cases, data privacy, third-party connector governance, organizational policy, high-risk review, and human oversight. Explanations for every option are in Vietnamese after submission. These teach review principles, not legal advice. Original practice material, not official CCAO-F content.",
     questionIds: [
       "governance-human-oversight",
       "governance-customer-assistant-safeguards",
@@ -148,6 +150,7 @@ export const domainSixGovernanceAssessment: AssessmentDefinition =
       "governance-privacy-third-party-connector",
       "governance-policy-hiring-screening",
       "governance-policy-operations",
+      "governance-policy-exception-escalation",
       "governance-use-case-triage",
       "governance-ethics-considerations",
     ],
@@ -159,12 +162,13 @@ export const domainSevenTroubleshootingAssessment: AssessmentDefinition =
     id: "domain-7-troubleshooting-set",
     title: "Domain 7: Troubleshooting and Optimization",
     description:
-      "Six reviewed English practice items on diagnosing weak prompts, using feedback to improve them, establishing a baseline, and optimizing quality, latency, and cost. Explanations for every option are in Vietnamese after submission. Original practice material, not official CCAO-F content.",
+      "Seven reviewed English practice items on diagnosing weak prompts, using feedback to improve them, establishing a baseline, and optimizing quality, latency, and cost. Explanations for every option are in Vietnamese after submission. Original practice material, not official CCAO-F content.",
     questionIds: [
       "troubleshoot-diagnose-prompt",
       "troubleshoot-feedback-loop",
       "optimize-workflow-baseline",
       "optimize-workflow-practices",
+      "optimize-workflow-cost-latency-controls",
       "troubleshoot-diagnose-evidence",
       "troubleshoot-adjust-regression",
     ],

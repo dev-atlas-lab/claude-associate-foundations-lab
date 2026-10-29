@@ -253,6 +253,7 @@ export const troubleshootingOptimizationLesson: Lesson = lessonSchema.parse({
     "troubleshoot-feedback-loop",
     "optimize-workflow-baseline",
     "optimize-workflow-practices",
+    "optimize-workflow-cost-latency-controls",
     "troubleshoot-diagnose-evidence",
     "troubleshoot-adjust-regression",
   ],

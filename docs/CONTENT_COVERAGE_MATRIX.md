@@ -18,7 +18,7 @@ This matrix separates three different things:
    without overstating what the exam will ask?
 
 A verified objective is **not** coverage. Today the product has one technical sample lesson, seven
-exam-mapped curriculum lessons, and a **63-item reviewed bank** spanning all seven domains and
+exam-mapped curriculum lessons, and a **67-item reviewed bank** spanning all seven domains and
 **all 30 objectives**. Every official objective has a mapped lesson and at least two reviewed
 practice items. That is reviewed content, not a claim that any domain is exhausted or that the bank
 is a full exam simulation.
@@ -75,14 +75,14 @@ repeating exact menu paths.
 | Objectives with reviewed original practice items | **30 / 30**, at least two items each |
 | Domains with at least one reviewed bank item | **7 / 7** |
 | Published lessons | **8** (7 exam-mapped curriculum lessons + 1 explicitly unmapped design sample) |
-| Authored questions | **71** (8 lesson questions + 63 reviewed bank items) |
-| Reviewed bank items | **63** (33 single-choice, 30 multiple-response) |
+| Authored questions | **75** (8 lesson questions + 67 reviewed bank items) |
+| Reviewed bank items | **67** (35 single-choice, 32 multiple-response) |
 | Assessment definitions | **9 registry assessments** (1 sample, 7 domain sets, 1 mixed) **+ 1 derived mock-exam preview** |
 | Practice sets | **8** (7 domain sets + 1 mixed set) |
-| Mock-exam preview | **60 of 60** verified-format slots, shortfall **0**; 63 reviewed items available, 3 not selected, exact `8 / 13 / 7 / 10 / 7 / 9 / 6` blueprint-weighted allocation, no filler |
+| Mock-exam preview | **60 of 60** verified-format slots, shortfall **0**; 67 reviewed items available (`9 / 14 / 8 / 11 / 8 / 10 / 7`), 7 not selected, exact `8 / 13 / 7 / 10 / 7 / 9 / 6` blueprint-weighted allocation, no filler |
 | Assessment core | **Implemented** (Phase C2.1); persistence, review queue, progress, and mock preview in Phase C2.3 |
 | Planned lessons | **0**; all seven domains now have a published mapped lesson |
-| Question bank status | **63 reviewed, exam-mapped items** across all 30 objectives; no official questions copied |
+| Question bank status | **67 reviewed, exam-mapped items** across all 30 objectives; no official questions copied |
 | Future guide revision | **Not applicable** to the pre-2026-11-14 attempt |
 
 ## Current content
@@ -92,19 +92,19 @@ repeating exact menu paths.
 | `context-window` | Sample lesson | **Unmapped**. It has a plausible relationship to Domain 3's context/memory objective, but that mapping has **not** been reviewed and is not claimed | Related objective is **Verified** in G; the lesson itself is **not** exam coverage | Technical claims **Verified** against D and PJ on 2026-10-29; refined for the Associate audience | **Published as a sample** | 1 lesson, 1 single-choice question, 1 sample assessment definition; no multiple-response item | D, PJ |
 | `evaluation-basics` | Curriculum lesson | Domain 2 — **verified mapping** to all six objectives | Six objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against R, E, PB, SO, AR and CC on 2026-10-26; bias remains policy-level | **Published** | 1 lesson, 1 single-choice knowledge check, 7 linked reviewed bank questions; route `/learn/evaluation-basics` | G, R, E, PB, SO, AR, CC |
 | `configuration-basics` | Curriculum lesson | Domain 5 — **verified mapping** to all four objectives | Four objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against PJ, RG, CN and PB on 2026-10-27; project limits and connector UI marked time-sensitive; project-memory nuance corrected 2026-10-28 | **Published** | 1 lesson, 1 single-choice knowledge check, 8 linked reviewed bank questions; route `/learn/configuration-basics` | G, PJ, RG, CN, PB |
-| `prompt-structure` | Curriculum lesson | Domain 1 — **verified mapping** to all four objectives | Four objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against PB and E on 2026-10-27; model names kept generic | **Published** | 1 lesson, 1 single-choice knowledge check, 8 linked reviewed bank questions; route `/learn/prompt-structure` | G, PB, E |
+| `prompt-structure` | Curriculum lesson | Domain 1 — **verified mapping** to all four objectives | Four objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against PB and E on 2026-10-27; model names kept generic | **Published** | 1 lesson, 1 single-choice knowledge check, 9 linked reviewed bank questions; route `/learn/prompt-structure` | G, PB, E |
 | `product-selection` | Curriculum lesson | Domain 3 — **verified mapping** to all four objectives | Four objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against PJ, RG, RS, AR, MD and D on 2026-10-27; product UI and model details marked time-sensitive; project-memory nuance corrected 2026-10-28 | **Published** | 1 lesson, 1 single-choice knowledge check, 8 linked reviewed bank questions; route `/learn/product-selection` | G, PJ, RG, RS, AR, MD, D |
-| `workflow-design` | Curriculum lesson | Domain 4 — **verified mapping** to all five objectives | Five objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against BA, E, PB, RS, CC and PP on 2026-10-27; tooling details from BA are not used | **Published** | 1 lesson, 1 single-choice knowledge check, 10 linked reviewed bank questions; route `/learn/workflow-design` | G, BA, E, PB, RS, CC, PP |
-| `governance-responsible-use` | Curriculum lesson | Domain 6 — **verified mapping** to all four objectives | Four objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against CC, PP, R, E and CN on 2026-10-29; review principles only, not legal advice | **Published** | 1 lesson, 1 single-choice knowledge check, 9 linked reviewed bank questions; route `/learn/governance-responsible-use` | G, CC, PP, R, E, CN |
-| `troubleshooting-optimization` | Curriculum lesson | Domain 7 — **verified mapping** to all three objectives | Three objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against E, PB, R, D, MD and BA on 2026-10-27; optimization trade-offs taught as measurement, not fixed limits | **Published** | 1 lesson, 1 single-choice knowledge check, 6 linked reviewed bank questions; route `/learn/troubleshooting-optimization` | G, E, PB, R, D, MD, BA |
+| `workflow-design` | Curriculum lesson | Domain 4 — **verified mapping** to all five objectives | Five objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against BA, E, PB, RS, CC and PP on 2026-10-27; tooling details from BA are not used | **Published** | 1 lesson, 1 single-choice knowledge check, 11 linked reviewed bank questions; route `/learn/workflow-design` | G, BA, E, PB, RS, CC, PP |
+| `governance-responsible-use` | Curriculum lesson | Domain 6 — **verified mapping** to all four objectives | Four objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against CC, PP, R, E and CN on 2026-10-29; review principles only, not legal advice | **Published** | 1 lesson, 1 single-choice knowledge check, 10 linked reviewed bank questions; route `/learn/governance-responsible-use` | G, CC, PP, R, E, CN |
+| `troubleshooting-optimization` | Curriculum lesson | Domain 7 — **verified mapping** to all three objectives | Three objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against E, PB, R, D, MD and BA on 2026-10-27; optimization trade-offs taught as measurement, not fixed limits | **Published** | 1 lesson, 1 single-choice knowledge check, 7 linked reviewed bank questions; route `/learn/troubleshooting-optimization` | G, E, PB, R, D, MD, BA |
 | `domain-2-output-validation-set` | Reviewed question bank + assessment | Domain 2 — **verified mapping** to all six objectives | Six objectives are **Verified** in G; bank covers all six, with bias treated as framing/equal treatment only | Technical claims **Verified** against R, E, PB, SO, AR and CC on 2026-10-26 | **Published** | 14 original items (8 single-choice, 6 multiple-response); all six objectives have at least two items | G, R, E, PB, SO, AR, CC |
-| `domain-1-prompting-set` | Reviewed question bank + assessment | Domain 1 — **verified mapping** to all four objectives | Four objectives are **Verified** in G | Technical claims **Verified** against PB, E and BA on 2026-10-27 | **Published** | 8 original items (4 single-choice, 4 multiple-response); every Domain 1 objective has two items | G, PB, E, BA |
+| `domain-1-prompting-set` | Reviewed question bank + assessment | Domain 1 — **verified mapping** to all four objectives | Four objectives are **Verified** in G | Technical claims **Verified** against PB, E and BA on 2026-10-27 | **Published** | 9 original items (5 single-choice, 4 multiple-response); every Domain 1 objective has at least two items | G, PB, E, BA |
 | `domain-3-context-set` | Reviewed question bank + assessment | Domain 3 — **verified mapping** to all four objectives | Four objectives are **Verified** in G; the `context-window` sample remains unmapped | Technical claims **Verified** against D, MD, PJ, RS, AR and PB on 2026-10-27 | **Published** | 8 original items (4 single-choice, 4 multiple-response); model questions describe capability tiers instead of frozen model names | G, D, MD, PJ, RS, AR, PB |
-| `domain-4-workflow-set` | Reviewed question bank + assessment | Domain 4 — **verified mapping** to all five objectives | Five objectives are **Verified** in G | Technical claims **Verified** against E, PB, RS, CC, PP and BA on 2026-10-27 | **Published** | 10 original items (5 single-choice, 5 multiple-response); every Domain 4 objective has two items | G, E, PB, RS, CC, PP, BA |
+| `domain-4-workflow-set` | Reviewed question bank + assessment | Domain 4 — **verified mapping** to all five objectives | Five objectives are **Verified** in G | Technical claims **Verified** against E, PB, RS, CC, PP and BA on 2026-10-27 | **Published** | 11 original items (5 single-choice, 6 multiple-response); every Domain 4 objective has at least two items | G, E, PB, RS, CC, PP, BA |
 | `domain-5-configuration-set` | Reviewed question bank + assessment | Domain 5 — **verified mapping** to all four objectives | Four objectives are **Verified** in G | Technical claims **Verified** against PJ, RG, CN and PB on 2026-10-27 | **Published** | 8 original items (4 single-choice, 4 multiple-response); every Domain 5 objective has two items | G, PJ, RG, CN, PB |
-| `domain-6-governance-set` | Reviewed question bank + assessment | Domain 6 — **verified mapping** to all four objectives | Four objectives are **Verified** in G | Technical claims **Verified** against CC, R, PP, CN, PB and E on 2026-10-29; review principles only, not legal advice | **Published** | 9 original items (5 single-choice, 4 multiple-response); every Domain 6 objective has at least two items | G, CC, R, PP, CN, PB, E |
-| `domain-7-troubleshooting-set` | Reviewed question bank + assessment | Domain 7 — **verified mapping** to all three objectives | Three objectives are **Verified** in G | Technical claims **Verified** against PB, E, MD, R and BA on 2026-10-27 | **Published** | 6 original items (3 single-choice, 3 multiple-response); every Domain 7 objective has two items | G, PB, E, MD, R, BA |
-| `mixed-foundations-set` | Reviewed question bank + assessment | Domains 1–7 — **verified mappings** of all 63 bank items | Seven domains **Verified** | Same per-item verification as the domain sets | **Published** | Question ids derived from the reviewed bank so the set cannot drift; explicitly not a mock exam | G plus per-item sources |
+| `domain-6-governance-set` | Reviewed question bank + assessment | Domain 6 — **verified mapping** to all four objectives | Four objectives are **Verified** in G | Technical claims **Verified** against CC, R, PP, CN, PB and E on 2026-10-29; review principles only, not legal advice | **Published** | 10 original items (6 single-choice, 4 multiple-response); every Domain 6 objective has at least two items | G, CC, R, PP, CN, PB, E |
+| `domain-7-troubleshooting-set` | Reviewed question bank + assessment | Domain 7 — **verified mapping** to all three objectives | Three objectives are **Verified** in G | Technical claims **Verified** against PB, E, MD, R and BA on 2026-10-27 | **Published** | 7 original items (3 single-choice, 4 multiple-response); every Domain 7 objective has at least two items | G, PB, E, MD, R, BA |
+| `mixed-foundations-set` | Reviewed question bank + assessment | Domains 1–7 — **verified mappings** of all 67 bank items | Seven domains **Verified** | Same per-item verification as the domain sets | **Published** | Question ids derived from the reviewed bank so the set cannot drift; explicitly not a mock exam | G plus per-item sources |
 
 ## Objective coverage
 
@@ -118,7 +118,7 @@ official product documentation without pretending to know the live item bank.
 |---|---|---|---|---|---|---|
 | `prompting-create-effective-prompts` | Create effective prompts for business and technical tasks | **Verified** | **Reviewed lesson + 2 bank items** | `prompt-structure`; `prompting-specific-brief`, `prompting-effective-prompt-additions` | Safe: official prompting guidance and worked examples | v1.0 + PB |
 | `prompting-task-decomposition` | Apply task decomposition techniques to structure complex requests | **Verified** | **Reviewed lesson + 2 bank items** | `prompt-structure`; `prompting-decompose-steps`, `prompting-decomposition-decision` | Safe: decomposition and prompt-chaining patterns from PB, E and BA; examples are original | v1.0 + PB, E, BA |
-| `prompting-iterate` | Iterate prompts to improve output quality | **Verified** | **Reviewed lesson + 2 bank items** | `prompt-structure`; `prompting-iterate-evidence`, `prompting-iterate-systematic` | Safe: iterative prompting is general practice | v1.0 + PB, E |
+| `prompting-iterate` | Iterate prompts to improve output quality | **Verified** | **Reviewed lesson + 3 bank items** | `prompt-structure`; `prompting-iterate-evidence`, `prompting-iterate-systematic`, `prompting-iterate-rubric-calibration` | Safe: iterative prompting is general practice | v1.0 + PB, E |
 | `prompting-adapt-strategies` | Adapt prompting strategies based on task type (analysis, research, drafting, brainstorming) | **Verified** | **Reviewed lesson + 2 bank items** | `prompt-structure`; `prompting-analysis-task-strategy`, `prompting-adapt-task-types` | Safe: teach task-type trade-offs with original scenarios | v1.0 + PB |
 
 ### Domain 2 — Output Evaluation and Validation (21%)
@@ -147,7 +147,7 @@ official product documentation without pretending to know the live item bank.
 |---|---|---|---|---|---|---|
 | `workflow-requirements-analysis` | Apply Claude to analyze requirements and use cases | **Verified** | **Reviewed lesson + 2 bank items** | `workflow-design`; `workflow-requirements-extraction`, `workflow-requirements-artifacts` | Safe: requirements artifacts and traceability, using original business scenarios | v1.0 + E, PB |
 | `workflow-research-planning` | Leverage Claude for research, planning, and process optimization | **Verified** | **Reviewed lesson + 2 bank items** | `workflow-design`; `workflow-research-current-scan`, `workflow-research-planning-practices` | Safe: general workflow patterns; validate facts with sources | v1.0 + RS, E |
-| `workflow-solution-design` | Use Claude to support solution design, development, and iteration | **Verified** | **Reviewed lesson + 2 bank items** | `workflow-design`; `workflow-solution-options`, `workflow-solution-iteration` | Safe: solution options, evaluator-optimizer patterns, and human decision ownership | v1.0 + PB, E, BA |
+| `workflow-solution-design` | Use Claude to support solution design, development, and iteration | **Verified** | **Reviewed lesson + 3 bank items** | `workflow-design`; `workflow-solution-options`, `workflow-solution-iteration`, `workflow-solution-handoff-controls` | Safe: solution options, evaluator-optimizer patterns, and human decision ownership | v1.0 + PB, E, BA |
 | `workflow-integrate` | Integrate Claude into existing workflows to augment or redesign them | **Verified** | **Reviewed lesson + 2 bank items** | `workflow-design`; `workflow-integration-checkpoints`, `workflow-integration-first-pilot` | Safe: process mapping, bounded pilots, and human checkpoints | v1.0 + E, CC, BA |
 | `workflow-stakeholder-communication` | Communicate Claude's value and limitations to stakeholders | **Verified** | **Reviewed lesson + 2 bank items** | `workflow-design`; `workflow-stakeholder-brief`, `workflow-stakeholder-evidence` | Safe: communication exercise, not a promise of business results | v1.0 + E, CC, PP |
 
@@ -166,7 +166,7 @@ official product documentation without pretending to know the live item bank.
 |---|---|---|---|---|---|---|
 | `governance-use-case-fit` | Identify appropriate and inappropriate use cases | **Verified** | **Reviewed lesson + 2 bank items** | `governance-responsible-use`; `governance-customer-assistant-safeguards`, `governance-use-case-triage` | Safe: high-risk triage principles from PP and CC; not a legal determination | v1.0 + PP, CC |
 | `governance-data-privacy` | Apply data sensitivity, regulatory, and privacy considerations | **Verified** | **Reviewed lesson + 3 bank items** | `governance-responsible-use`; `governance-privacy-confidential-upload`, `governance-privacy-controls`, `governance-privacy-third-party-connector` | **Principles only:** do not give legal advice; cite organizational policy and official privacy material | v1.0 + PP, CN |
-| `governance-policies` | Follow organizational AI policies and governance standards | **Verified** | **Reviewed lesson + 2 bank items** | `governance-responsible-use`; `governance-policy-hiring-screening`, `governance-policy-operations` | **Principles only:** policy specifics vary by organization | v1.0 + PP, CC |
+| `governance-policies` | Follow organizational AI policies and governance standards | **Verified** | **Reviewed lesson + 3 bank items** | `governance-responsible-use`; `governance-policy-hiring-screening`, `governance-policy-operations`, `governance-policy-exception-escalation` | **Principles only:** policy specifics vary by organization | v1.0 + PP, CC |
 | `governance-ethics` | Understand the ethical implications of AI usage | **Verified** | **Reviewed lesson + 2 bank items** | `governance-responsible-use`; `governance-human-oversight`, `governance-ethics-considerations` | Safe: responsible-use reasoning from CC and PP, clearly framed as judgment | v1.0 + CC, PP, E |
 
 ### Domain 7 — Troubleshooting and Optimization (10%)
@@ -175,7 +175,7 @@ official product documentation without pretending to know the live item bank.
 |---|---|---|---|---|---|---|
 | `troubleshoot-diagnose` | Identify, diagnose, and resolve issues with underperforming prompts or poor outputs | **Verified** | **Reviewed lesson + 2 bank items** | `troubleshooting-optimization`; `troubleshoot-diagnose-prompt`, `troubleshoot-diagnose-evidence` | Safe: diagnostic checklist based on prompting, context, and review practice | v1.0 + PB, E |
 | `troubleshoot-adjust` | Adjust approach based on feedback and results | **Verified** | **Reviewed lesson + 2 bank items** | `troubleshooting-optimization`; `troubleshoot-feedback-loop`, `troubleshoot-adjust-regression` | Safe: measured iteration loop with original examples | v1.0 + E, PB |
-| `optimize-workflows` | Optimize workflows for efficiency and effectiveness | **Verified** | **Reviewed lesson + 2 bank items** | `troubleshooting-optimization`; `optimize-workflow-baseline`, `optimize-workflow-practices` | Safe: measure before/after; avoid invented metrics | v1.0 + E, PB, MD |
+| `optimize-workflows` | Optimize workflows for efficiency and effectiveness | **Verified** | **Reviewed lesson + 3 bank items** | `troubleshooting-optimization`; `optimize-workflow-baseline`, `optimize-workflow-practices`, `optimize-workflow-cost-latency-controls` | Safe: measure before/after; avoid invented metrics | v1.0 + E, PB, MD |
 
 ## Question-bank coverage
 
@@ -242,6 +242,10 @@ official product documentation without pretending to know the live item bank.
 | `governance-use-case-triage` | Single-choice | Domain 6 · `governance-use-case-fit` | **Reviewed / published** | Original item on pausing an automated insurance-denial use case for policy review and qualified human review. |
 | `governance-ethics-considerations` | Multiple-response | Domain 6 · `governance-ethics` | **Reviewed / published** | Exact-set item on disclosure/accountability, equal treatment, and traceable job-relevant evidence in a performance review. |
 | `governance-privacy-third-party-connector` | Single-choice | Domain 6 · `governance-data-privacy` | **Reviewed / published** | Original item on governance, data classification, and permission review before connecting a shared third-party drive containing sensitive records. |
+| `prompting-iterate-rubric-calibration` | Single-choice | Domain 1 · `prompting-iterate` | **Reviewed / published** | Original item on establishing an explicit grading rubric and representative test cases when reviewers disagree on prompt iteration quality. |
+| `workflow-solution-handoff-controls` | Multiple-response | Domain 4 · `workflow-solution-design` | **Reviewed / published** | Exact-set item on structured intermediate outputs, human review for ambiguous cases, and edge-case testing in a multi-step document triage workflow. |
+| `governance-policy-exception-escalation` | Single-choice | Domain 6 · `governance-policies` | **Reviewed / published** | Original item on pausing deployment and submitting an unapproved dataset through organizational AI governance review before processing. |
+| `optimize-workflow-cost-latency-controls` | Multiple-response | Domain 7 · `optimize-workflows` | **Reviewed / published** | Exact-set item on trimming redundant context, benchmarking a faster model tier on the evaluation set, and tracking per-case regressions alongside latency and cost. |
 | `troubleshoot-diagnose-evidence` | Multiple-response | Domain 7 · `troubleshoot-diagnose` | **Reviewed / published** | Exact-set item on systematic missing fields, undefined requirements, and outdated examples as prompt/context evidence. |
 | `troubleshoot-adjust-regression` | Single-choice | Domain 7 · `troubleshoot-adjust` | **Reviewed / published** | Original item on keeping the baseline and rerunning the full suite when a change causes an edge-case regression. |
 | `context-window-root-cause` | Single-choice | **Unmapped** | **Sample, runnable in its lesson** | Tests a general context-budgeting decision; not official exam content. Its `context-window-sample` definition remains in the pack but `/practice` does not surface it. |
@@ -254,7 +258,7 @@ The assessment core is not coverage. It makes authored questions runnable. The m
 **30 / 30** objectives with reviewed practice items and **30 / 30** objectives with a reviewed,
 exam-mapped lesson. Every domain has one published mapped lesson, and every objective has at least
 two bank items. No objective is claimed to be exhaustively covered; depth per objective ranges from
-two to four items, and the 63-item bank fills the exact `8 / 13 / 7 / 10 / 7 / 9 / 6` 60-item mock allocation while leaving three items outside a single 60-item preview.
+two to four items, and the 67-item bank (`9 / 14 / 8 / 11 / 8 / 10 / 7`) fills the exact `8 / 13 / 7 / 10 / 7 / 9 / 6` 60-item mock allocation while giving every domain at least one spare item for seeded timed-exam rotation.
 
 ## What the product may and may not claim
 
@@ -281,7 +285,7 @@ two to four items, and the 63-item bank fills the exact `8 / 13 / 7 / 10 / 7 / 9
   Domain 6 objectives, and links to reviewed bank questions.
 - The Domain 7 lesson `troubleshooting-optimization` is published, mapped to all three verified
   Domain 7 objectives, and links to reviewed bank questions.
-- The bank contains **63 original, reviewed items**, split into 33 single-choice and 30
+- The bank contains **67 original, reviewed items**, split into 35 single-choice and 32
   multiple-response items, each with Vietnamese explanations for every option, and covers every
   official objective with at least two items.
 - Bias is taught and assessed only at the framing/evidence-selection/equal-treatment level supported
@@ -293,14 +297,14 @@ two to four items, and the 63-item bank fills the exact `8 / 13 / 7 / 10 / 7 / 9
 - Progress separates reviewed-bank coverage from personal performance and shows a real zero-activity
   state instead of a fabricated score.
 - The untimed mock-exam preview selects **60 of the verified 60-item format** by blueprint weight
-  with no shortfall, using 60 of the 63 reviewed items (`8 / 13 / 7 / 10 / 7 / 9 / 6`) and adding no filler or duplicates. It has no
+  with no shortfall, using 60 of the 67 reviewed items (`8 / 13 / 7 / 10 / 7 / 9 / 6`) and adding no filler or duplicates. It has no
   timer and no scaled score. A separate `/mock-exam/timed` attempt runs the 60-question /
   120-minute format with a persisted deadline and auto-submit; it is still practice content.
 
 **May not claim**
 
 - That any domain or objective is fully “covered” by a reviewed lesson or question bank.
-- That the 63-item bank is an exhaustive or official exam simulation. Every objective has at least
+- That the 67-item bank is an exhaustive or official exam simulation. Every objective has at least
   two items, but depth is still limited and no objective has more than four.
 - That the sample lesson is mapped to Domain 3.
 - That the 60 items are all scored, or that any per-domain item count is official.

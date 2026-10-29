@@ -12,6 +12,7 @@ import {
 } from "../domain";
 import { StudyStorageNotice } from "../features/study/components/StudyStorageNotice";
 import { ThemeProvider } from "../hooks/ThemeProvider";
+import { DashboardPage } from "../pages/DashboardPage";
 import { MockExamPage } from "../pages/MockExamPage";
 import { ProgressPage } from "../pages/ProgressPage";
 import { SettingsPage } from "../pages/SettingsPage";
@@ -62,7 +63,7 @@ describe("progress page", () => {
     renderPage(<ProgressPage />);
 
     expect(screen.getByRole("heading", { level: 1, name: "Learning progress" })).toBeInTheDocument();
-    expect(screen.getByText("63 reviewed items")).toBeInTheDocument();
+    expect(screen.getByText("67 reviewed items")).toBeInTheDocument();
     expect(screen.getByText("30/30")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "No submitted attempts yet" })).toBeInTheDocument();
   });
@@ -91,7 +92,7 @@ describe("progress page", () => {
 
     renderPage(<ProgressPage />);
 
-    expect(screen.getByText("Unique bank exposure").closest(".stat")).toHaveTextContent("8/63");
+    expect(screen.getByText("Unique bank exposure").closest(".stat")).toHaveTextContent("8/67");
     expect(screen.getByText("First-seen accuracy").closest(".stat")).toHaveTextContent("100%");
     expect(screen.getByText("Latest accuracy").closest(".stat")).toHaveTextContent("100%");
 
@@ -201,6 +202,39 @@ describe("settings local data", () => {
     expect(
       screen.queryByRole("alert", { name: "Saved study data needs attention" }),
     ).not.toBeInTheDocument();
-    expect(screen.getByText("Unique bank exposure").closest(".stat")).toHaveTextContent("8/63");
+    expect(screen.getByText("Unique bank exposure").closest(".stat")).toHaveTextContent("8/67");
+  });
+});
+
+describe("dashboard actionable study desk", () => {
+  it("renders continue-active-study shortcuts and domain lesson/practice links", () => {
+    const d5Def = getAssessment("domain-5-configuration-set")!;
+    const d5Questions = getAssessmentQuestions(d5Def);
+    const d5Context = createAssessmentContext(d5Def, d5Questions);
+    let session = startAssessment(d5Context, {
+      sessionId: "d5-dash-active",
+      startedAt: "2026-10-29T01:00:00.000Z",
+    });
+    startStudyAttempt(d5Def, session, {
+      kind: "practice",
+      practiceSetId: d5Def.id,
+    });
+    session = chooseAnswer(
+      d5Context,
+      session,
+      d5Questions[0]!.id,
+      d5Questions[0]!.correctChoiceIds,
+    );
+    saveStudySession(session);
+
+    renderPage(<DashboardPage />);
+
+    expect(screen.getByRole("heading", { name: "Continue active study" })).toBeInTheDocument();
+    expect(screen.getByText(/In progress · 1\/8 answered/)).toBeInTheDocument();
+
+    const blueprintRegion = screen.getByRole("region", { name: "Exam blueprint" });
+    expect(
+      within(blueprintRegion).getByRole("link", { name: /Practice \(9 items\)/ }),
+    ).toHaveAttribute("href", "/practice?set=domain-1-prompting-set");
   });
 });

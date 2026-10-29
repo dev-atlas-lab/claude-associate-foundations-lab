@@ -28,8 +28,8 @@ const vietnameseDiacriticPattern =
 
 describe("reviewed question bank", () => {
   it("publishes reviewed bank entries and runnable assessments", () => {
-    expect(questionBankEntries).toHaveLength(63);
-    expect(questionBank).toHaveLength(63);
+    expect(questionBankEntries).toHaveLength(67);
+    expect(questionBank).toHaveLength(67);
     expect(assessment).toBeDefined();
     expect(assessment?.questionIds).toHaveLength(14);
     expect(assessment?.policy).toEqual({
@@ -140,8 +140,8 @@ describe("reviewed question bank", () => {
   it("includes both single-choice and multiple-response items", () => {
     const types = questionBank.map((question) => question.type);
 
-    expect(types.filter((type) => type === "single-choice")).toHaveLength(33);
-    expect(types.filter((type) => type === "multiple-response")).toHaveLength(30);
+    expect(types.filter((type) => type === "single-choice")).toHaveLength(35);
+    expect(types.filter((type) => type === "multiple-response")).toHaveLength(32);
     expect(new Set(questionBank.map((question) => question.id)).size).toBe(questionBank.length);
   });
 

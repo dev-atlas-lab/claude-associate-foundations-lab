@@ -258,13 +258,48 @@ Actions CI run `40802276918` (2026-10-29).
 
 ### C2.13 - Explicit compatible study data migration
 
-Status: implemented and verified locally (2026-10-29).
+Status: implemented, verified locally, committed as `b1fadea`, and verified in GitHub Actions CI run
+`40803406347` (2026-10-29).
 
 - Added `inspectCompatibleStudyMigration` in `src/persistence/storage.ts` and
   `migrateCompatibleStudyData` in `src/persistence/study-store.ts`.
 - Updated `StudyStorageNotice.tsx` so learners with a stale `contentFingerprint` (schema v1) can
   explicitly migrate compatible attempts and review resolutions to the current fingerprint while
   keeping corrupt or schema-incompatible payloads quarantined behind backup + reset.
+
+### C2.14 - Deterministic question order shuffling & coverage matrix sync
+
+Status: implemented, verified locally, committed as `00d1cce`, and verified in GitHub Actions CI run
+`40804900181` (2026-10-29).
+
+- Added `shuffleQuestionIds(questionIds, seed)` in `src/domain/mock-exam.ts` and wired `Start
+  shuffled` and `Shuffle & retry` into `AssessmentRunner` and `PersistedAssessment`, persisting the
+  shuffled `questionIds` snapshot on `StudyAttempt` across browser reloads while preserving canonical
+  ordering for `Start assessment` and `New attempt`.
+- Synchronized `docs/CONTENT_COVERAGE_MATRIX.md` and `docs/UX_SPEC.md` with C2.11–C2.14.
+
+### C2.15 - Actionable study desk on Dashboard (`/`)
+
+Status: implemented and verified locally (2026-10-29).
+
+- Upgraded `src/pages/DashboardPage.tsx` to read both `useStudyState()` and `useTimedExamState()`,
+  surface a `Continue active study` section when in-progress attempts or open review items exist, and
+  enrich the 7 blueprint domain rows on `/` with per-domain bank counts, personal exposure, and
+  direct links to each domain's mapped Lesson and Domain Practice Set.
+
+### C2.16 - High-weight domain question bank depth expansion
+
+Status: implemented and verified locally (2026-10-29).
+
+- Added four reviewed, source-backed items in
+  `src/content/certifications/claude-associate-foundations/question-bank-depth.ts`:
+  - `prompting-iterate-rubric-calibration` (Domain 1 · `prompting-iterate`, single-choice)
+  - `workflow-solution-handoff-controls` (Domain 4 · `workflow-solution-design`, multiple-response)
+  - `governance-policy-exception-escalation` (Domain 6 · `governance-policies`, single-choice)
+  - `optimize-workflow-cost-latency-controls` (Domain 7 · `optimize-workflows`, multiple-response)
+- The reviewed bank now totals **67** items (`35` single-choice, `32` multiple-response) with per-domain
+  availability **`9 / 14 / 8 / 11 / 8 / 10 / 7`**, so every official domain has at least one spare
+  item beyond its `8 / 13 / 7 / 10 / 7 / 9 / 6` 60-item timed simulation allocation.
 
 ### Remaining Phase D work
 

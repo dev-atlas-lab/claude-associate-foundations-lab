@@ -257,6 +257,7 @@ export const promptStructureLesson: Lesson = lessonSchema.parse({
     "prompting-decomposition-decision",
     "prompting-iterate-evidence",
     "prompting-iterate-systematic",
+    "prompting-iterate-rubric-calibration",
     "prompting-analysis-task-strategy",
     "prompting-adapt-task-types",
   ],

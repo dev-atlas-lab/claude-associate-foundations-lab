@@ -1149,3 +1149,39 @@ not done in this audit.
 - `npm run lint`: pass (`eslint .`, 0 problems).
 - Vitest suite (`src/test/study-journey.test.tsx` and `src/test/storage.test.ts`): pass.
 - `git diff --check`: clean.
+- Committed as `00d1cce` and pushed to `origin/main`; GitHub Actions CI run `40804900181` passed all
+  steps (typecheck, lint, unit/integration tests, production build, and Playwright E2E + axe
+  accessibility).
+
+## Phase C2.15 & C2.16 - Actionable Dashboard study desk & 67-item bank depth expansion (2026-10-29)
+
+### Scope
+
+- **Phase C2.15 (`src/pages/DashboardPage.tsx`):**
+  - Integrated `useTimedExamState()` and `deriveProgressSummary` on `/` so `Saved attempts` and
+    `in progress` counts include both `cfl.study.v1` and `cfl.timed-exam.v1`.
+  - Added a `Continue active study` section when in-progress study/timed attempts or open review
+    items exist, linking directly to resume the active attempt or open `/review`.
+  - Enriched the 7 `Exam blueprint` rows on `/` with per-domain bank item counts, personal exposure,
+    and direct links to each domain's mapped curriculum lesson (`/learn/:lessonId`) and domain
+    practice set (`/practice?set=:setId`).
+- **Phase C2.16 (`src/content/certifications/claude-associate-foundations/`):**
+  - Added four original, source-backed reviewed items in `question-bank-depth.ts`:
+    `prompting-iterate-rubric-calibration` (Domain 1), `workflow-solution-handoff-controls` (Domain
+    4), `governance-policy-exception-escalation` (Domain 6), and
+    `optimize-workflow-cost-latency-controls` (Domain 7).
+  - Wired the four items into `domain-1-prompting-set`, `domain-4-workflow-set`,
+    `domain-6-governance-set`, `domain-7-troubleshooting-set`, and their respective domain lessons'
+    `relatedQuestionIds`.
+  - The reviewed bank now holds **67** items (`35` single-choice, `32` multiple-response) with
+    per-domain availability **`9 / 14 / 8 / 11 / 8 / 10 / 7`**, giving every official domain at least
+    one spare item beyond its `8 / 13 / 7 / 10 / 7 / 9 / 6` 60-item timed simulation allocation.
+
+### Verification
+
+- `npm run typecheck`: pass (`tsc -b`, strict).
+- `npm run lint`: pass (`eslint .`, 0 problems).
+- Targeted Vitest suite (`question-bank`, `timed-exam-content`, `progress-selectors`, `study-pages`,
+  `timed-exam-page`): pass.
+- `npm run build`: pass.
+- `git diff --check`: clean.

@@ -25,10 +25,11 @@ describe("timed exam content selection", () => {
       14, 21, 12, 16, 12, 15, 10,
     ]);
     expect(timedExamEligibility.allocations.map((allocation) => allocation.available)).toEqual([
-      8, 14, 8, 10, 8, 9, 6,
+      9, 14, 8, 11, 8, 10, 7,
     ]);
-    // With 9 reviewed Domain 6 items, the allocator fills the exact
-    // blueprint-weighted 60-item distribution: 8 / 13 / 7 / 10 / 7 / 9 / 6.
+    // Every domain has at least one spare reviewed item beyond its blueprint
+    // allocation, and the allocator fills the exact 60-item distribution:
+    // 8 / 13 / 7 / 10 / 7 / 9 / 6.
     expect(timedExamEligibility.allocations.map((allocation) => allocation.allocated)).toEqual([
       8, 13, 7, 10, 7, 9, 6,
     ]);
@@ -37,7 +38,7 @@ describe("timed exam content selection", () => {
         (allocation) =>
           allocation.available > 0 &&
           allocation.allocated > 0 &&
-          allocation.allocated <= allocation.available,
+          allocation.allocated < allocation.available,
       ),
     ).toBe(true);
     expect(

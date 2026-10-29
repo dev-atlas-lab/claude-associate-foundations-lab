@@ -158,9 +158,9 @@ describe("progress summary and breakdown selectors", () => {
       questionById,
     );
 
-    expect(summary.bank.totalItems).toBe(63);
-    expect(summary.bank.singleChoiceItems).toBe(33);
-    expect(summary.bank.multipleResponseItems).toBe(30);
+    expect(summary.bank.totalItems).toBe(67);
+    expect(summary.bank.singleChoiceItems).toBe(35);
+    expect(summary.bank.multipleResponseItems).toBe(32);
     expect(summary.bank.objectivesCovered).toBe(30);
     expect(summary.bank.objectivesTotal).toBe(30);
     expect(summary.bank.domainsWithItems).toBe(7);
@@ -209,7 +209,7 @@ describe("progress summary and breakdown selectors", () => {
       questionById,
     );
 
-    expect(summary.bank.totalItems).toBe(63);
+    expect(summary.bank.totalItems).toBe(67);
     expect(summary.personal.submittedAttempts).toBe(1);
     expect(summary.personal.studySubmittedAttempts).toBe(1);
     expect(summary.personal.timedSubmittedAttempts).toBe(0);

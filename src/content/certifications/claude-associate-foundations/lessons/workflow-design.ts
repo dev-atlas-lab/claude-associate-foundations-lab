@@ -280,6 +280,7 @@ export const workflowDesignLesson: Lesson = lessonSchema.parse({
     "workflow-research-planning-practices",
     "workflow-solution-options",
     "workflow-solution-iteration",
+    "workflow-solution-handoff-controls",
     "workflow-integration-checkpoints",
     "workflow-stakeholder-brief",
     "workflow-stakeholder-evidence",

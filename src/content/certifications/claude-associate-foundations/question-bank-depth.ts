@@ -370,6 +370,194 @@ const regressionAdjustment: Question = questionSchema.parse({
   sourceIds: ["anthropic-evaluation-docs", "anthropic-prompting-best-practices"],
 });
 
+const rubricCalibration: Question = questionSchema.parse({
+  id: "prompting-iterate-rubric-calibration",
+  type: "single-choice",
+  stem: "A team is iterating on a prompt for customer escalation summaries, and two reviewers disagree on whether a revised prompt improved quality. What should the team establish before running another iteration?",
+  choices: [
+    {
+      id: "explicit-rubric-and-test-set",
+      text: "Define an explicit grading rubric with representative test cases and score both the baseline and revised outputs against the same criteria.",
+      explanation:
+        "Đúng: rubric rõ ràng trên cùng bộ test giúp hai reviewer chấm nhất quán và biết thay đổi có thực sự cải thiện chất lượng hay không.",
+    },
+    {
+      id: "prefer-longer-draft",
+      text: "Adopt whichever prompt produces the longer summary on the most recent ticket.",
+      explanation:
+        "Sai: độ dài trên một ticket đơn lẻ không phản ánh độ chính xác, tính đầy đủ hay khả năng tổng quát hóa.",
+    },
+    {
+      id: "rewrite-until-both-like-style",
+      text: "Keep rewriting the prompt informally until both reviewers like the tone of a single sample.",
+      explanation:
+        "Sai: chỉnh theo cảm tính trên một mẫu dễ gây vòng lặp thử-sai và bỏ sót các tiêu chí nghiệp vụ quan trọng.",
+    },
+    {
+      id: "average-two-models",
+      text: "Switch models immediately so the team does not need to agree on evaluation criteria.",
+      explanation:
+        "Sai: đổi model không thay thế được tiêu chí đánh giá; nếu không có rubric thì vẫn không biết output nào đạt yêu cầu.",
+    },
+  ],
+  correctChoiceIds: ["explicit-rubric-and-test-set"],
+  correctExplanation:
+    "Khi các reviewer bất đồng về chất lượng giữa hai phiên bản prompt, nguyên nhân thường là thiếu tiêu chí chấm rõ ràng. Thiết lập grading rubric cụ thể và chấm cả baseline lẫn phiên bản mới trên cùng bộ representative test cases giúp việc iterate dựa trên bằng chứng thay vì cảm tính.",
+  sourceIds: ["anthropic-prompting-best-practices", "anthropic-evaluation-docs"],
+});
+
+const solutionHandoffControls: Question = questionSchema.parse({
+  id: "workflow-solution-handoff-controls",
+  type: "multiple-response",
+  stem: "An operations team is designing a multi-step document-triage solution where Claude classifies incoming requests and drafts routing notes for human coordinators. Which three design practices keep the workflow reliable and auditable? Select three.",
+  choices: [
+    {
+      id: "structured-intermediate-outputs",
+      text: "Define structured intermediate outputs between classification and routing-note drafting so each stage can be inspected.",
+      explanation:
+        "Đúng: đầu ra trung gian có cấu trúc giúp kiểm tra từng bước và xác định nhanh lỗi nằm ở phân loại hay ở bước soạn ghi chú.",
+    },
+    {
+      id: "ambiguous-case-escalation",
+      text: "Route low-confidence or ambiguous requests to a human review queue with the supporting source excerpts attached.",
+      explanation:
+        "Đúng: chuyển các trường hợp mơ hồ kèm trích dẫn nguồn cho con người kiểm tra giúp giảm rủi ro phân luồng sai.",
+    },
+    {
+      id: "edge-case-validation",
+      text: "Test the workflow against edge cases and malformed inputs before expanding beyond the initial pilot.",
+      explanation:
+        "Đúng: kiểm thử trên edge case và input lỗi trước khi mở rộng giúp phát hiện điểm gãy của thiết kế.",
+    },
+    {
+      id: "hide-intermediate-classification",
+      text: "Hide intermediate classification fields so coordinators only see the final routing recommendation.",
+      explanation:
+        "Sai: ẩn bước trung gian làm giảm khả năng audit và khiến điều phối viên khó phát hiện phân loại sai.",
+    },
+    {
+      id: "auto-close-unclassified",
+      text: "Automatically close requests that do not match a standard category.",
+      explanation:
+        "Sai: tự động đóng các yêu cầu ngoại lệ không qua rà soát con người có thể làm mất yêu cầu quan trọng hoặc nhạy cảm.",
+    },
+    {
+      id: "skip-pilot-metrics",
+      text: "Roll out to all request types immediately and define success metrics after full deployment.",
+      explanation:
+        "Sai: triển khai toàn bộ trước khi có tiêu chí và kết quả pilot làm tăng rủi ro vận hành và không có baseline để so sánh.",
+    },
+  ],
+  correctChoiceIds: [
+    "structured-intermediate-outputs",
+    "ambiguous-case-escalation",
+    "edge-case-validation",
+  ],
+  correctExplanation:
+    "Một giải pháp workflow nhiều bước đáng tin cậy cần đầu ra trung gian có cấu trúc để dễ kiểm tra, cơ chế chuyển các case mơ hồ kèm bằng chứng sang human review, và kiểm thử kỹ trên edge case trước khi mở rộng. Ẩn dữ liệu trung gian, tự động đóng case lạ hoặc bỏ qua pilot đều làm giảm tính an toàn và khả năng giải trình.",
+  sourceIds: [
+    "anthropic-building-effective-agents",
+    "anthropic-evaluation-docs",
+    "anthropic-prompting-best-practices",
+  ],
+});
+
+const policyExceptionEscalation: Question = questionSchema.parse({
+  id: "governance-policy-exception-escalation",
+  type: "single-choice",
+  stem: "A project team wants to use Claude on a new internal dataset that is not yet covered by the organization's approved AI use-case register. What is the appropriate action under organizational AI governance?",
+  choices: [
+    {
+      id: "pause-and-submit-governance-review",
+      text: "Pause deployment on the unapproved dataset, submit the use case and data classification through the organization's governance review process, and proceed only after approval and required controls are documented.",
+      explanation:
+        "Đúng: khi dữ liệu và use case chưa nằm trong phạm vi phê duyệt, cần phân loại dữ liệu, xin phê duyệt theo quy trình quản trị và áp dụng đủ biện pháp kiểm soát trước khi chạy.",
+    },
+    {
+      id: "run-in-personal-chat",
+      text: "Test the dataset in a personal account first so the organization's workspace logs stay clean.",
+      explanation:
+        "Sai: đưa dữ liệu nội bộ sang tài khoản cá nhân vi phạm nguyên tắc kiểm soát truy cập, bảo mật và quản trị dữ liệu.",
+    },
+    {
+      id: "proceed-and-notify-later",
+      text: "Process the dataset immediately to meet the deadline and notify the governance team after the report is delivered.",
+      explanation:
+        "Sai: xử lý dữ liệu chưa được phê duyệt trước rồi báo cáo sau có thể gây lộ dữ liệu nhạy cảm không thể thu hồi.",
+    },
+    {
+      id: "strip-headers-only",
+      text: "Remove column headers from the file and upload it without checking data sensitivity or policy scope.",
+      explanation:
+        "Sai: xóa tiêu đề cột không thay thế việc phân loại dữ liệu và không làm cho nội dung nhạy cảm trở nên được phép sử dụng.",
+    },
+  ],
+  correctChoiceIds: ["pause-and-submit-governance-review"],
+  correctExplanation:
+    "Theo nguyên tắc quản trị AI trong tổ chức, khi một tập dữ liệu hoặc use case chưa được phê duyệt trong danh mục cho phép, nhóm phải tạm dừng việc đưa dữ liệu vào công cụ, thực hiện phân loại mức độ nhạy cảm và trình duyệt qua quy trình governance/compliance. Không được dùng tài khoản cá nhân hoặc tự ý chạy trước rồi xin phép sau.",
+  sourceIds: [
+    "anthropic-usage-policy",
+    "anthropic-claude-constitution",
+    "anthropic-privacy-policy",
+  ],
+});
+
+const workflowCostLatencyControls: Question = questionSchema.parse({
+  id: "optimize-workflow-cost-latency-controls",
+  type: "multiple-response",
+  stem: "After establishing a quality baseline for a recurring compliance-summary workflow, a team wants to reduce latency and token cost without degrading accuracy on critical cases. Which three actions follow sound optimization practice? Select three.",
+  choices: [
+    {
+      id: "trim-redundant-context",
+      text: "Trim redundant instructions and stale reference text so only high-signal context is sent on each run.",
+      explanation:
+        "Đúng: loại bỏ hướng dẫn trùng lặp và tài liệu lỗi thời giúp giảm token đầu vào, giảm độ trễ và giữ tín hiệu rõ hơn.",
+    },
+    {
+      id: "benchmark-faster-tier",
+      text: "Benchmark a faster, lower-cost model tier on the same representative evaluation set before switching production traffic.",
+      explanation:
+        "Đúng: thử nghiệm tier nhanh/rẻ hơn trên chính bộ evaluation baseline giúp xác nhận chất lượng vẫn đạt trước khi chuyển lưu lượng thật.",
+    },
+    {
+      id: "track-per-case-regressions",
+      text: "Track per-case quality alongside latency and cost after each change so critical edge-case regressions are caught immediately.",
+      explanation:
+        "Đúng: theo dõi chất lượng từng case song song với độ trễ và chi phí ngăn việc tối ưu tốc độ làm hỏng các case tuân thủ quan trọng.",
+    },
+    {
+      id: "drop-source-grounding",
+      text: "Remove source excerpts from the prompt so the model generates summaries from general memory.",
+      explanation:
+        "Sai: bỏ nguồn tham chiếu trong tác vụ tuân thủ làm tăng mạnh nguy cơ hallucination và sai lệch dữ kiện.",
+    },
+    {
+      id: "skip-regression-checks",
+      text: "Stop running the evaluation suite once latency drops below the target threshold.",
+      explanation:
+        "Sai: chỉ nhìn độ trễ mà bỏ kiểm thử chất lượng dễ làm lọt lỗi nghiêm trọng ra môi trường vận hành.",
+    },
+    {
+      id: "change-all-variables-together",
+      text: "Change the prompt structure, context window contents, and model tier simultaneously without intermediate measurement.",
+      explanation:
+        "Sai: thay đổi mọi biến cùng lúc mà không đo từng bước khiến nhóm không biết thay đổi nào giúp ích hay gây lỗi.",
+    },
+  ],
+  correctChoiceIds: [
+    "trim-redundant-context",
+    "benchmark-faster-tier",
+    "track-per-case-regressions",
+  ],
+  correctExplanation:
+    "Tối ưu hóa chi phí và độ trễ có kỷ luật đòi hỏi giữ nguyên baseline đánh giá: rút gọn context thừa để chỉ gửi thông tin high-signal, benchmark model tier nhanh/tiết kiệm hơn trên cùng bộ test đại diện, và giám sát chất lượng per-case cùng với latency/cost để không đánh đổi độ chính xác ở các case quan trọng.",
+  sourceIds: [
+    "anthropic-evaluation-docs",
+    "anthropic-prompting-best-practices",
+    "anthropic-choosing-model",
+  ],
+});
+
 export const coverageDepthQuestionBank: QuestionBankEntry[] = [
   reviewedEntry(effectivePromptAdditions, "prompting-create-effective-prompts", [
     "anthropic-prompting-best-practices",
@@ -378,6 +566,10 @@ export const coverageDepthQuestionBank: QuestionBankEntry[] = [
     "anthropic-prompting-best-practices",
     "anthropic-evaluation-docs",
     "anthropic-building-effective-agents",
+  ]),
+  reviewedEntry(rubricCalibration, "prompting-iterate", [
+    "anthropic-prompting-best-practices",
+    "anthropic-evaluation-docs",
   ]),
   reviewedEntry(requirementsArtifacts, "workflow-requirements-analysis", [
     "anthropic-evaluation-docs",
@@ -388,6 +580,11 @@ export const coverageDepthQuestionBank: QuestionBankEntry[] = [
     "anthropic-evaluation-docs",
     "anthropic-claude-constitution",
   ]),
+  reviewedEntry(solutionHandoffControls, "workflow-solution-design", [
+    "anthropic-building-effective-agents",
+    "anthropic-evaluation-docs",
+    "anthropic-prompting-best-practices",
+  ]),
   reviewedEntry(highRiskUseCase, "governance-use-case-fit", [
     "anthropic-usage-policy",
     "anthropic-claude-constitution",
@@ -397,6 +594,11 @@ export const coverageDepthQuestionBank: QuestionBankEntry[] = [
     "anthropic-usage-policy",
     "anthropic-evaluation-docs",
   ]),
+  reviewedEntry(policyExceptionEscalation, "governance-policies", [
+    "anthropic-usage-policy",
+    "anthropic-claude-constitution",
+    "anthropic-privacy-policy",
+  ]),
   reviewedEntry(diagnosticEvidence, "troubleshoot-diagnose", [
     "anthropic-prompting-best-practices",
     "anthropic-evaluation-docs",
@@ -404,5 +606,10 @@ export const coverageDepthQuestionBank: QuestionBankEntry[] = [
   reviewedEntry(regressionAdjustment, "troubleshoot-adjust", [
     "anthropic-evaluation-docs",
     "anthropic-prompting-best-practices",
+  ]),
+  reviewedEntry(workflowCostLatencyControls, "optimize-workflows", [
+    "anthropic-evaluation-docs",
+    "anthropic-prompting-best-practices",
+    "anthropic-choosing-model",
   ]),
 ];
