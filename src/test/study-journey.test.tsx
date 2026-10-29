@@ -226,4 +226,86 @@ describe("persisted study journey", () => {
       screen.getByRole("heading", { name: "Nguồn tham chiếu" }),
     ).toBeInTheDocument();
   });
+
+  it("allows practicing open review items in memory and marking correctly answered items reviewed", async () => {
+    const d2Def = getAssessment("domain-2-output-validation-set")!;
+    const d2Questions = getAssessmentQuestions(d2Def);
+    const d2Context = createAssessmentContext(d2Def, d2Questions);
+    const firstQ = d2Questions[0]!;
+    const secondQ = d2Questions[1]!;
+    const wrongFirst = firstQ.choices.find(
+      (choice) => !firstQ.correctChoiceIds.includes(choice.id),
+    )!;
+    const wrongSecond = secondQ.choices.find(
+      (choice) => !secondQ.correctChoiceIds.includes(choice.id),
+    )!;
+
+    // Submit an attempt with 2 incorrect answers (firstQ and secondQ) and the rest correct
+    let session = startAssessment(d2Context, {
+      sessionId: "d2-review-practice-source",
+      startedAt: "2026-10-28T06:00:00.000Z",
+    });
+    startStudyAttempt(d2Def, session, {
+      kind: "practice",
+      practiceSetId: d2Def.id,
+    });
+    session = chooseAnswer(d2Context, session, firstQ.id, [wrongFirst.id]);
+    session = chooseAnswer(d2Context, session, secondQ.id, [wrongSecond.id]);
+    for (const q of d2Questions.slice(2)) {
+      session = chooseAnswer(d2Context, session, q.id, q.correctChoiceIds);
+    }
+    saveStudySession(
+      submitAssessment(d2Context, session, "2026-10-28T06:10:00.000Z").session,
+    );
+
+    const user = userEvent.setup();
+    renderReview();
+
+    expect(screen.getByText("2 open items")).toBeInTheDocument();
+    const practiceLink = screen.getByRole("link", {
+      name: "Practice open items (2)",
+    });
+    expect(practiceLink).toHaveAttribute("href", "/review?mode=practice");
+
+    await user.click(practiceLink);
+
+    expect(
+      screen.getByRole("heading", { name: "Open review items practice" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("In-memory practice")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Start assessment" }));
+
+    // Answer firstQ correctly and leave secondQ unanswered
+    for (const choiceId of firstQ.correctChoiceIds) {
+      const choiceText = firstQ.choices.find((choice) => choice.id === choiceId)!.text;
+      await user.click(
+        screen.getByRole(firstQ.type === "multiple-response" ? "checkbox" : "radio", {
+          name: new RegExp(choiceText.slice(0, 24).replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
+        }),
+      );
+    }
+
+    await user.click(screen.getByRole("button", { name: "Submit assessment" }));
+    await user.click(screen.getByRole("button", { name: "Confirm submission" }));
+
+    expect(
+      screen.getByRole("heading", { name: "Review queue resolution" }),
+    ).toBeInTheDocument();
+    const markCorrectButton = screen.getByRole("button", {
+      name: "Mark 1 correct item reviewed",
+    });
+    await user.click(markCorrectButton);
+
+    expect(
+      screen.getByText(/Marked 1 correct item reviewed/i),
+    ).toBeInTheDocument();
+
+    await user.click(
+      screen.getAllByRole("link", { name: "Back to review queue" })[0]!,
+    );
+
+    expect(screen.getByText("1 open items")).toBeInTheDocument();
+    expect(screen.getByText("1 resolved")).toBeInTheDocument();
+  });
 });

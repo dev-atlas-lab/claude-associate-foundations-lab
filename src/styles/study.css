@@ -431,6 +431,14 @@
   font-weight: 400;
 }
 
+.review-practice-resolution {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+  padding: var(--space-5);
+}
+
 @media (max-width: 720px) {
   .storage-notice {
     padding-inline: var(--space-4);
@@ -446,7 +454,8 @@
     align-self: flex-end;
   }
 
-  .review-detail {
+  .review-detail,
+  .review-practice-resolution {
     padding: var(--space-4);
   }
 }

@@ -31,10 +31,12 @@ import {
   type TimedExamSession,
 } from "../domain";
 import {
+  buildReviewPracticeSet,
   deriveAggregatedReviewItems,
   deriveAttemptDomainBreakdown,
   deriveAttemptObjectiveBreakdown,
   deriveProgressSummary,
+  findCorrectlyAnsweredStudyReviewItems,
   isSubmittedTimedExamSession,
 } from "../features/progress/selectors";
 import {
@@ -1212,5 +1214,80 @@ describe("progress summary and breakdown selectors", () => {
     expect(resolvedSummary.review.studyUnresolved).toBe(0);
     expect(resolvedSummary.review.timedUnresolved).toBe(0);
     expect(resolvedSummary.review.resolved).toBe(1);
+  });
+
+  it("builds a deduplicated review practice set and resolves only correctly answered study items", () => {
+    expect(buildReviewPracticeSet([])).toBeNull();
+
+    const q1 = domainTwoQuestions[0]!;
+    const q2 = domainTwoQuestions[1]!;
+    const otherIds = domainTwoQuestions.slice(2).map((q) => q.id);
+
+    // Attempt 1 and Attempt 2 both miss q1; Attempt 2 also misses q2
+    const attempt1 = buildSubmittedStudyAttempt(domainTwoAssessment, {
+      sessionId: "rev-prac-1",
+      startedAt: "2026-10-28T01:00:00.000Z",
+      submittedAt: "2026-10-28T01:10:00.000Z",
+      incorrectQuestionIds: [q1.id],
+      correctQuestionIds: [q2.id, ...otherIds],
+    });
+    const attempt2 = buildSubmittedStudyAttempt(domainTwoAssessment, {
+      sessionId: "rev-prac-2",
+      startedAt: "2026-10-28T02:00:00.000Z",
+      submittedAt: "2026-10-28T02:10:00.000Z",
+      incorrectQuestionIds: [q1.id, q2.id],
+      correctQuestionIds: otherIds,
+    });
+
+    let state = upsertStudyAttempt(emptyStudyState, attempt1);
+    state = upsertStudyAttempt(state, attempt2);
+
+    const openItems = deriveAggregatedReviewItems(
+      state,
+      questionById,
+      questionBankEntries,
+      primaryBlueprint,
+    );
+    // 3 open review items (q1 in attempt 1, q1 in attempt 2, q2 in attempt 2), but only 2 unique questions
+    expect(openItems).toHaveLength(3);
+
+    const practiceSet = buildReviewPracticeSet(openItems, "incorrect");
+    expect(practiceSet).not.toBeNull();
+    expect(practiceSet!.definition.id).toBe("review-open-items-incorrect");
+    expect(practiceSet!.definition.title).toBe("Open incorrect review items practice");
+    expect(practiceSet!.questions.map((q) => q.id)).toEqual([q1.id, q2.id]);
+    expect(practiceSet!.sourceItems).toHaveLength(3);
+    expect(practiceSet!.resolvableStudyItems).toHaveLength(3);
+
+    // Simulate answering q1 correctly and q2 incorrectly in the review practice set
+    const practiceContext = createAssessmentContext(
+      practiceSet!.definition,
+      practiceSet!.questions,
+    );
+    let session = startAssessment(practiceContext, {
+      sessionId: "in-memory-review-practice",
+      startedAt: "2026-10-28T03:00:00.000Z",
+    });
+    session = chooseAnswer(practiceContext, session, q1.id, q1.correctChoiceIds);
+    const wrongChoiceQ2 = q2.choices.find(
+      (choice) => !q2.correctChoiceIds.includes(choice.id),
+    )!;
+    session = chooseAnswer(practiceContext, session, q2.id, [wrongChoiceQ2.id]);
+    const submittedOutcome = submitAssessment(
+      practiceContext,
+      session,
+      "2026-10-28T03:05:00.000Z",
+    );
+
+    const correctStudyItems = findCorrectlyAnsweredStudyReviewItems(
+      practiceSet!.sourceItems,
+      submittedOutcome.result,
+    );
+    // Both open review items for q1 (from attempt 1 and attempt 2) match the correct answer for q1
+    expect(correctStudyItems.map((item) => item.attemptId).sort()).toEqual([
+      "rev-prac-1",
+      "rev-prac-2",
+    ]);
+    expect(correctStudyItems.every((item) => item.question.id === q1.id)).toBe(true);
   });
 });

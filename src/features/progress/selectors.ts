@@ -2,6 +2,7 @@ import {
   calculateAttemptResult,
   countReviewResolutions,
   reviewKey,
+  type AssessmentDefinition,
   type AssessmentResult,
   type AttemptOrigin,
   type Blueprint,
@@ -1637,4 +1638,76 @@ export function deriveProgressSummary(
       resolved: countReviewResolutions(state),
     },
   };
+}
+
+export interface ReviewPracticeSet {
+  definition: AssessmentDefinition;
+  questions: Question[];
+  /** Unique question IDs in the practice set, in queue order. */
+  questionIds: string[];
+  /** Open review items corresponding to these questions (may include multiple attempts per question). */
+  sourceItems: AggregatedReviewItem[];
+  /** Subset of sourceItems that live in cfl.study.v1 and can be marked reviewed via resolveStudyReviewItem. */
+  resolvableStudyItems: AggregatedReviewItem[];
+}
+
+export function buildReviewPracticeSet(
+  items: readonly AggregatedReviewItem[],
+  reasonFilter: ReviewReason | "all" = "all",
+): ReviewPracticeSet | null {
+  const uniqueQuestions: Question[] = [];
+  const seenQuestionIds = new Set<string>();
+
+  for (const item of items) {
+    if (!seenQuestionIds.has(item.question.id)) {
+      seenQuestionIds.add(item.question.id);
+      uniqueQuestions.push(item.question);
+    }
+  }
+
+  if (uniqueQuestions.length === 0) {
+    return null;
+  }
+
+  const questionIds = uniqueQuestions.map((question) => question.id);
+  const filterTitle =
+    reasonFilter === "all"
+      ? "Open review items practice"
+      : `Open ${reasonFilter} review items practice`;
+
+  const definition: AssessmentDefinition = {
+    id: `review-open-items-${reasonFilter}`,
+    title: filterTitle,
+    description:
+      "Focused in-memory practice over the unique questions currently open in your review queue. Answer without seeing the key first, then optionally mark the questions you answered correctly as reviewed.",
+    questionIds,
+    policy: {
+      scoring: "all-or-nothing",
+      allowAnswerChangesBeforeSubmit: true,
+    },
+  };
+
+  return {
+    definition,
+    questions: uniqueQuestions,
+    questionIds,
+    sourceItems: [...items],
+    resolvableStudyItems: items.filter((item) => item.resolvableInStudyStore),
+  };
+}
+
+export function findCorrectlyAnsweredStudyReviewItems(
+  sourceItems: readonly AggregatedReviewItem[],
+  result: AssessmentResult,
+): AggregatedReviewItem[] {
+  const correctQuestionIds = new Set(
+    result.questions
+      .filter((questionScore) => questionScore.isCorrect)
+      .map((questionScore) => questionScore.questionId),
+  );
+
+  return sourceItems.filter(
+    (item) =>
+      item.resolvableInStudyStore && correctQuestionIds.has(item.question.id),
+  );
 }

@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, BookmarkCheck, Check } from "lucide-react";
+import { ArrowLeft, ArrowRight, BookmarkCheck, Check, Play } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Badge } from "../components/ui/Badge";
@@ -11,10 +11,19 @@ import {
   primaryBlueprint,
   questionBankEntries,
 } from "../content";
-import { type ReviewReason } from "../domain";
 import {
+  calculateAssessmentResult,
+  createAssessmentContext,
+  type AssessmentSession,
+  type ReviewReason,
+} from "../domain";
+import { AssessmentRunner } from "../features/assessment/components/AssessmentRunner";
+import {
+  buildReviewPracticeSet,
   deriveAggregatedReviewItems,
+  findCorrectlyAnsweredStudyReviewItems,
   type AggregatedReviewItem,
+  type ReviewPracticeSet,
 } from "../features/progress/selectors";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { resolveStudyReviewItem, useStudyState } from "../persistence/study-store";
@@ -74,6 +83,170 @@ function filterHref(reason: ReasonFilter): string {
   return reason === "all" ? "/review" : `/review?reason=${reason}`;
 }
 
+function practiceHref(reason: ReasonFilter): string {
+  const params = new URLSearchParams();
+  if (reason !== "all") {
+    params.set("reason", reason);
+  }
+  params.set("mode", "practice");
+  return `/review?${params.toString()}`;
+}
+
+function ReviewPracticeView({
+  initialPracticeSet,
+  reason,
+  currentOpenItems,
+}: {
+  initialPracticeSet: ReviewPracticeSet | null;
+  reason: ReasonFilter;
+  currentOpenItems: readonly AggregatedReviewItem[];
+}) {
+  const [frozenSet] = useState<ReviewPracticeSet | null>(() => initialPracticeSet);
+  const [submittedSession, setSubmittedSession] = useState<AssessmentSession | null>(null);
+  const [resolvedInThisRun, setResolvedInThisRun] = useState(0);
+
+  if (frozenSet === null) {
+    return (
+      <div className="page">
+        <PageHeader
+          eyebrow="Review"
+          title="Review mistakes"
+          lede="Focused in-memory practice over the open questions in your review queue."
+          meta={<Badge>0 questions</Badge>}
+        />
+        <EmptyState
+          icon={BookmarkCheck}
+          title="No open review items to practice"
+          actions={
+            <Link className="button button--secondary" to={filterHref(reason)}>
+              Back to review queue
+            </Link>
+          }
+        >
+          There are no open review items matching this filter right now. Return to the review queue
+          or start a practice set.
+        </EmptyState>
+      </div>
+    );
+  }
+
+  const submittedResult =
+    submittedSession !== null && submittedSession.status === "submitted"
+      ? calculateAssessmentResult(
+          createAssessmentContext(frozenSet.definition, frozenSet.questions),
+          submittedSession,
+        )
+      : null;
+  const currentOpenKeySet = new Set(currentOpenItems.map((item) => item.key));
+  const allCorrectStudyItems =
+    submittedResult === null
+      ? []
+      : findCorrectlyAnsweredStudyReviewItems(frozenSet.sourceItems, submittedResult);
+  const remainingCorrectStudyItems = allCorrectStudyItems.filter((item) =>
+    currentOpenKeySet.has(item.key),
+  );
+
+  return (
+    <div className="page">
+      <PageHeader
+        eyebrow="Review"
+        title="Review mistakes"
+        lede="Practice open review items in memory without seeing the answer key first. Submitting does not alter attempt history; you can optionally mark the items you answered correctly as reviewed."
+        meta={
+          <>
+            <Badge tone="accent">
+              {frozenSet.questions.length} unique{" "}
+              {frozenSet.questions.length === 1 ? "question" : "questions"}
+            </Badge>
+            <Badge>In-memory practice</Badge>
+          </>
+        }
+        actions={
+          <Link className="button button--ghost" to={filterHref(reason)}>
+            <ArrowLeft size={14} strokeWidth={2} aria-hidden="true" />
+            Review queue
+          </Link>
+        }
+      />
+
+      <AssessmentRunner
+        definition={frozenSet.definition}
+        questions={frozenSet.questions}
+        persisted={false}
+        onSessionChange={(session) => {
+          setSubmittedSession(session.status === "submitted" ? session : null);
+        }}
+      />
+
+      {submittedResult !== null ? (
+        <section
+          className="card review-practice-resolution"
+          aria-labelledby="review-practice-resolution-title"
+        >
+          <h2 className="section-title" id="review-practice-resolution-title">
+            Review queue resolution
+          </h2>
+          {remainingCorrectStudyItems.length > 0 ? (
+            <>
+              <p className="section-copy">
+                You answered {submittedResult.correctAnswers} of {submittedResult.totalQuestions}{" "}
+                {submittedResult.totalQuestions === 1 ? "question" : "questions"} correctly.{" "}
+                {remainingCorrectStudyItems.length} open study-queue{" "}
+                {remainingCorrectStudyItems.length === 1 ? "item matches" : "items match"} those
+                correct answers and can be marked reviewed now.
+              </p>
+              <div className="review-actions">
+                <button
+                  type="button"
+                  className="button button--primary"
+                  onClick={() => {
+                    for (const item of remainingCorrectStudyItems) {
+                      resolveStudyReviewItem(item.attemptId, item.question.id);
+                    }
+                    setResolvedInThisRun((prev) => prev + remainingCorrectStudyItems.length);
+                  }}
+                >
+                  <Check size={14} strokeWidth={2} aria-hidden="true" />
+                  Mark {remainingCorrectStudyItems.length} correct{" "}
+                  {remainingCorrectStudyItems.length === 1 ? "item" : "items"} reviewed
+                </button>
+                <Link className="button button--secondary" to={filterHref(reason)}>
+                  Back to review queue
+                </Link>
+              </div>
+            </>
+          ) : resolvedInThisRun > 0 ? (
+            <>
+              <p className="section-copy" role="status">
+                Marked {resolvedInThisRun} correct {resolvedInThisRun === 1 ? "item" : "items"}{" "}
+                reviewed. They have been removed from your open review queue.
+              </p>
+              <div className="review-actions">
+                <Link className="button button--secondary" to={filterHref(reason)}>
+                  Back to review queue
+                </Link>
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="section-copy">
+                {submittedResult.correctAnswers === 0
+                  ? "No questions were answered correctly in this practice run, so all open items remain in your review queue."
+                  : "No resolvable study-queue items remain for the questions answered correctly (items from the saved timed mock exam slot remain linked to that timed result)."}
+              </p>
+              <div className="review-actions">
+                <Link className="button button--secondary" to={filterHref(reason)}>
+                  Back to review queue
+                </Link>
+              </div>
+            </>
+          )}
+        </section>
+      ) : null}
+    </div>
+  );
+}
+
 export function ReviewPage() {
   useDocumentTitle("Review");
   const snapshot = useStudyState();
@@ -91,6 +264,8 @@ export function ReviewPage() {
   const reason = parseReason(searchParams.get("reason"));
   const filteredItems =
     reason === "all" ? items : items.filter((item) => item.reasons.includes(reason));
+  const practiceSet = buildReviewPracticeSet(filteredItems, reason);
+  const isPracticeMode = searchParams.get("mode") === "practice";
   const itemKey = searchParams.get("item");
   const detail = itemKey ? items.find((item) => item.key === itemKey) : undefined;
 
@@ -106,6 +281,17 @@ export function ReviewPage() {
       document.getElementById("review-resolved-title")?.focus();
     }
   }, [resolvedMessage]);
+
+  if (isPracticeMode) {
+    return (
+      <ReviewPracticeView
+        key={reason}
+        initialPracticeSet={practiceSet}
+        reason={reason}
+        currentOpenItems={items}
+      />
+    );
+  }
 
   if (itemKey && !detail) {
     return (
@@ -356,6 +542,14 @@ export function ReviewPage() {
             <Badge tone={items.length > 0 ? "warn" : "ok"}>{items.length} open items</Badge>
             <Badge>{snapshot.state.reviewResolutions.length} resolved</Badge>
           </>
+        }
+        actions={
+          practiceSet ? (
+            <Link className="button button--primary" to={practiceHref(reason)}>
+              <Play size={14} strokeWidth={2} aria-hidden="true" />
+              Practice open items ({practiceSet.questions.length})
+            </Link>
+          ) : undefined
         }
       />
 

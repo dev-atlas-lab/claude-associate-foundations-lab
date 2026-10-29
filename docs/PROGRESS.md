@@ -1038,3 +1038,29 @@ not done in this audit.
 - Targeted Vitest suite (`progress-selectors`, `lesson`, `practice-page`, `assessment-ui`,
   `timed-exam-page`, `study-journey`, `study-pages`): **7 files / 50 tests pass**.
 - `git diff --check`: clean.
+- Committed as `38b59b6` and pushed to `origin/main`; GitHub Actions CI run `40797871265` passed all
+  steps (typecheck, lint, unit/integration tests, production build, and Playwright E2E + axe
+  accessibility).
+
+## Phase C2.11 - Focused "Practice Open Review Items" runner (2026-10-29)
+
+### Scope
+
+- Added `buildReviewPracticeSet` and `findCorrectlyAnsweredStudyReviewItems` in
+  `src/features/progress/selectors.ts` to derive a deduplicated, filter-aware in-memory assessment
+  definition over the open review queue (`All`, `Incorrect`, `Unanswered`, or `Flagged`) without
+  mutating `cfl.study.v1`, `cfl.timed-exam.v1`, or `contentFingerprint`.
+- Updated `src/pages/ReviewPage.tsx` with a `Practice open items (N)` action and a dedicated
+  `/review?mode=practice` view (`ReviewPracticeView`) powered by `AssessmentRunner` (`persisted =
+  false`).
+- Added a post-submission `Review queue resolution` section on `/review?mode=practice` so learners
+  can explicitly mark the open `cfl.study.v1` review items they answered correctly as reviewed while
+  retaining any missed or unanswered items in the queue.
+
+### Verification
+
+- `npm run typecheck`: pass (`tsc -b`, strict).
+- `npm run lint`: pass (`eslint .`, 0 problems).
+- Targeted Vitest suite (`src/test/progress-selectors.test.ts` and `src/test/study-journey.test.tsx`):
+  pass.
+- `git diff --check`: clean.

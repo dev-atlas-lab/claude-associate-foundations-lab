@@ -212,7 +212,8 @@ destructive cleanup was performed.
 
 ### C2.10 - Learning effectiveness instrumentation
 
-Status: implemented and verified locally (2026-10-29).
+Status: implemented, verified locally, committed as `38b59b6`, and verified in GitHub Actions CI run
+`40797871265` (2026-10-29).
 
 - **C2.10-1:** Added curriculum lookup helpers in `src/content/index.ts` and pure read-only
   breakdown, review, and progress selectors in `src/features/progress/selectors.ts`.
@@ -227,6 +228,18 @@ Status: implemented and verified locally (2026-10-29).
 - **C2.10-5:** Upgraded `ProgressPage` with unique bank exposure (`X / 62`), First-seen vs. Latest
   vs. Cumulative accuracy, a 30-objective coverage & performance matrix, and a chronological
   submitted attempt history table.
+
+### C2.11 - Focused "Practice Open Review Items" runner
+
+Status: implemented and verified locally (2026-10-29).
+
+- Added `buildReviewPracticeSet` and `findCorrectlyAnsweredStudyReviewItems` in
+  `src/features/progress/selectors.ts` to build a deduplicated, filter-aware in-memory practice set
+  over open review items without changing `cfl.study.v1`, `cfl.timed-exam.v1`, or
+  `contentFingerprint`.
+- Added `/review?mode=practice` (`ReviewPracticeView`) on `ReviewPage.tsx` so learners can re-test
+  their open mistakes interactively without seeing the answer key first, and explicitly resolve the
+  `cfl.study.v1` items they answered correctly after submission.
 
 ### Remaining Phase D work
 
