@@ -1118,3 +1118,34 @@ not done in this audit.
 - `npm run lint`: pass (`eslint .`, 0 problems).
 - Targeted Vitest suite (`src/test/storage.test.ts` and `src/test/study-pages.test.tsx`): pass.
 - `git diff --check`: clean.
+- Committed as `b1fadea` and pushed to `origin/main`; GitHub Actions CI run `40803406347` passed all
+  steps (typecheck, lint, unit/integration tests, production build, and Playwright E2E + axe
+  accessibility).
+
+## Phase C2.14 - Deterministic question order shuffling & coverage matrix sync (2026-10-29)
+
+### Scope
+
+- Added `shuffleQuestionIds(questionIds, seed)` in `src/domain/mock-exam.ts` (re-exported from
+  `src/domain/index.ts`) using deterministic FNV-1a seeded ordering with single-step rotation
+  fallback so any explicit shuffle of 2+ questions produces a deterministic non-identity order.
+- Updated `AssessmentRunner` (`src/features/assessment/components/AssessmentRunner.tsx`),
+  `PersistedAssessment` (`src/features/study/components/PersistedAssessment.tsx`), and
+  `startPersistedAttempt` (`src/features/study/start-attempt.ts`) to support `Start shuffled` on the
+  start screen and `Shuffle & retry` after submission while keeping `Start assessment` and `New
+  attempt` in canonical authored order.
+- Persisted the shuffled `questionIds` snapshot on `StudyAttempt` in `cfl.study.v1`, restored
+  `initialAttempt.questionIds` across page reloads, and updated `isAttemptCompatibleWithRegistry` in
+  `src/persistence/storage.ts` so `in-progress` attempts with a permutation of the current assessment's
+  `questionIds` remain compatible during migration.
+- Synchronized `docs/CONTENT_COVERAGE_MATRIX.md` and `docs/UX_SPEC.md` with the 63-item reviewed bank
+  (`governance-privacy-third-party-connector`), the exact `8 / 13 / 7 / 10 / 7 / 9 / 6` 60-item
+  blueprint allocation, the Associate-refined `context-window` lesson, `/review?mode=practice`, and
+  shuffled practice attempts.
+
+### Verification
+
+- `npm run typecheck`: pass (`tsc -b`, strict).
+- `npm run lint`: pass (`eslint .`, 0 problems).
+- Vitest suite (`src/test/study-journey.test.tsx` and `src/test/storage.test.ts`): pass.
+- `git diff --check`: clean.

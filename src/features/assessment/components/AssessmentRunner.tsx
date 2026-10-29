@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, Flag, Play, RotateCcw, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Flag, Play, RotateCcw, Shuffle, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Link, useInRouterContext } from "react-router-dom";
 import {
@@ -13,6 +13,7 @@ import {
   goToNextQuestion,
   goToPreviousQuestion,
   goToQuestion,
+  shuffleQuestionIds,
   startAssessment,
   submitAssessment,
   toggleAnswerChoice,
@@ -32,8 +33,13 @@ interface AssessmentRunnerProps {
   questions: readonly Question[];
   /** Resume an existing attempt instead of showing the start screen. */
   initialSession?: AssessmentSession;
+  /** Question ordering snapshot for initialSession when resuming a shuffled attempt. */
+  initialQuestionIds?: readonly string[];
   /** Create and persist a new attempt. Return null when starting is blocked. */
-  onStart?: () => AssessmentSession | null;
+  onStart?: (
+    attemptDefinition?: AssessmentDefinition,
+    sessionId?: string,
+  ) => AssessmentSession | null;
   /** Called for in-progress changes and the transition to submitted. */
   onSessionChange?: (session: AssessmentSession) => void;
   persisted?: boolean;
@@ -74,14 +80,35 @@ export function AssessmentRunner({
   definition,
   questions,
   initialSession,
+  initialQuestionIds,
   onStart,
   onSessionChange,
   persisted = false,
   allowNewAttempt = true,
 }: AssessmentRunnerProps) {
+  const [activeQuestionIds, setActiveQuestionIds] = useState<readonly string[]>(() =>
+    initialQuestionIds && initialQuestionIds.length === definition.questionIds.length
+      ? [...initialQuestionIds]
+      : definition.questionIds,
+  );
+  const activeDefinition = useMemo<AssessmentDefinition>(
+    () => ({
+      ...definition,
+      questionIds: [...activeQuestionIds],
+    }),
+    [definition, activeQuestionIds],
+  );
+  const isShuffledOrder = useMemo(
+    () =>
+      activeDefinition.questionIds.length === definition.questionIds.length &&
+      activeDefinition.questionIds.some(
+        (questionId, index) => questionId !== definition.questionIds[index],
+      ),
+    [activeDefinition.questionIds, definition.questionIds],
+  );
   const context = useMemo(
-    () => createAssessmentContext(definition, questions),
-    [definition, questions],
+    () => createAssessmentContext(activeDefinition, questions),
+    [activeDefinition, questions],
   );
   const [session, setSession] = useState<AssessmentSession | null>(initialSession ?? null);
   const [confirming, setConfirming] = useState(false);
@@ -99,7 +126,6 @@ export function AssessmentRunner({
     onSessionChangeRef.current = onSessionChange;
   }, [onSessionChange]);
 
-
   const sessionId = session?.id;
   const sessionStatus = session?.status;
   const currentQuestionIndex = session?.currentQuestionIndex;
@@ -108,7 +134,7 @@ export function AssessmentRunner({
       ? calculateAssessmentResult(context, session)
       : null;
   const currentQuestionId =
-    session === null ? undefined : definition.questionIds[session.currentQuestionIndex];
+    session === null ? undefined : activeDefinition.questionIds[session.currentQuestionIndex];
   const currentQuestion =
     currentQuestionId === undefined ? undefined : context.questionById.get(currentQuestionId);
   const currentScore =
@@ -124,13 +150,14 @@ export function AssessmentRunner({
   const answeredCount =
     session === null
       ? 0
-      : definition.questionIds.filter(
+      : activeDefinition.questionIds.filter(
           (questionId) => (session.answers[questionId]?.length ?? 0) > 0,
         ).length;
-  const unansweredCount = definition.questionIds.length - answeredCount;
+  const unansweredCount = activeDefinition.questionIds.length - answeredCount;
   const isFirstQuestion = session !== null && session.currentQuestionIndex === 0;
   const isLastQuestion =
-    session !== null && session.currentQuestionIndex === definition.questionIds.length - 1;
+    session !== null &&
+    session.currentQuestionIndex === activeDefinition.questionIds.length - 1;
 
   useEffect(() => {
     if (sessionId !== undefined) {
@@ -169,13 +196,24 @@ export function AssessmentRunner({
     onSessionChangeRef.current(session);
   }, [session]);
 
-  const beginSession = () => {
+  const beginSession = (shuffle = false) => {
     setConfirming(false);
 
+    const nextSessionId = createId();
+    const nextQuestionIds =
+      shuffle && definition.questionIds.length > 1
+        ? shuffleQuestionIds(definition.questionIds, nextSessionId)
+        : [...definition.questionIds];
+    const nextDefinition: AssessmentDefinition = {
+      ...definition,
+      questionIds: nextQuestionIds,
+    };
+    const nextContext = createAssessmentContext(nextDefinition, questions);
+
     const nextSession = onStart
-      ? onStart()
-      : startAssessment(context, {
-          sessionId: createId(),
+      ? onStart(nextDefinition, nextSessionId)
+      : startAssessment(nextContext, {
+          sessionId: nextSessionId,
           startedAt: new Date().toISOString(),
         });
 
@@ -184,6 +222,7 @@ export function AssessmentRunner({
     }
 
     lastSavedStatusRef.current = nextSession.status;
+    setActiveQuestionIds(nextQuestionIds);
     setSession(nextSession);
   };
 
@@ -250,10 +289,24 @@ export function AssessmentRunner({
         </div>
 
         <div className="assessment-actions">
-          <button type="button" className="button button--primary" onClick={beginSession}>
+          <button
+            type="button"
+            className="button button--primary"
+            onClick={() => beginSession(false)}
+          >
             <Play size={14} strokeWidth={2} aria-hidden="true" />
             Start assessment
           </button>
+          {definition.questionIds.length > 1 ? (
+            <button
+              type="button"
+              className="button button--secondary"
+              onClick={() => beginSession(true)}
+            >
+              <Shuffle size={14} strokeWidth={2} aria-hidden="true" />
+              Start shuffled
+            </button>
+          ) : null}
           <span className="assessment-hint">
             {persisted
               ? "Answers are saved locally after each change. You can resume or review later."
@@ -274,7 +327,11 @@ export function AssessmentRunner({
           The definition references no current question. Start a new attempt after the content is
           fixed.
         </p>
-        <button type="button" className="button button--secondary" onClick={beginSession}>
+        <button
+          type="button"
+          className="button button--secondary"
+          onClick={() => beginSession(false)}
+        >
           <RotateCcw size={14} strokeWidth={2} aria-hidden="true" />
           Restart
         </button>
@@ -340,16 +397,33 @@ export function AssessmentRunner({
           <span className="assessment-kicker">Assessment</span>
           <h2 className="assessment-title">{definition.title}</h2>
           <p className="assessment-subtitle">
-            {answeredCount} of {definition.questionIds.length} answered ·{" "}
+            {answeredCount} of {activeDefinition.questionIds.length} answered ·{" "}
             {session.status === "submitted" ? "Submitted" : "In progress"}
+            {isShuffledOrder ? " · Shuffled order" : ""}
           </p>
         </div>
         <div className="assessment-header-actions">
           {session.status === "submitted" && allowNewAttempt ? (
-            <button type="button" className="button button--secondary button--sm" onClick={beginSession}>
-              <RotateCcw size={13} strokeWidth={2} aria-hidden="true" />
-              New attempt
-            </button>
+            <>
+              <button
+                type="button"
+                className="button button--secondary button--sm"
+                onClick={() => beginSession(false)}
+              >
+                <RotateCcw size={13} strokeWidth={2} aria-hidden="true" />
+                New attempt
+              </button>
+              {definition.questionIds.length > 1 ? (
+                <button
+                  type="button"
+                  className="button button--secondary button--sm"
+                  onClick={() => beginSession(true)}
+                >
+                  <Shuffle size={13} strokeWidth={2} aria-hidden="true" />
+                  Shuffle & retry
+                </button>
+              ) : null}
+            </>
           ) : null}
         </div>
       </header>
@@ -501,7 +575,7 @@ export function AssessmentRunner({
       <section className="assessment-question" aria-labelledby="assessment-question-title">
         <div className="assessment-question-meta">
           <span className="assessment-question-count">
-            Question {session.currentQuestionIndex + 1} of {definition.questionIds.length}
+            Question {session.currentQuestionIndex + 1} of {activeDefinition.questionIds.length}
           </span>
           <span
             className="assessment-answer-state"
@@ -690,7 +764,7 @@ export function AssessmentRunner({
       </section>
 
       <nav className="assessment-navigator" aria-label="Question navigator">
-        {definition.questionIds.map((questionId, index) => {
+        {activeDefinition.questionIds.map((questionId, index) => {
           const hasAnswer = (session.answers[questionId]?.length ?? 0) > 0;
           const flagged = session.flaggedQuestionIds.includes(questionId);
           const score = result?.questions[index];

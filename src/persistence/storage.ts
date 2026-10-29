@@ -346,7 +346,7 @@ function isAttemptCompatibleWithRegistry(
 
     if (
       currentDef.questionIds.length !== attempt.questionIds.length ||
-      !currentDef.questionIds.every((id, index) => id === attempt.questionIds[index])
+      !currentDef.questionIds.every((id) => questionIdSet.has(id))
     ) {
       return false;
     }

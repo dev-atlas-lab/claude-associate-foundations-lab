@@ -141,6 +141,37 @@ function orderBySeed(questionIds: readonly string[], seed: string): string[] {
 }
 
 /**
+ * Deterministically reorder question ids using the attempt seed. When two or
+ * more questions are present and the seeded sort happens to match the input
+ * order, rotate by one position so an explicit shuffle request always changes
+ * the presentation order while remaining deterministic for the same seed.
+ */
+export function shuffleQuestionIds(
+  questionIds: readonly string[],
+  seed: string,
+): string[] {
+  const trimmedSeed = seed.trim();
+
+  if (trimmedSeed === "") {
+    throw new Error("a shuffle seed is required");
+  }
+
+  const uniqueIds = [...new Set(questionIds)];
+  if (uniqueIds.length <= 1) {
+    return uniqueIds;
+  }
+
+  const ordered = orderBySeed(uniqueIds, `${trimmedSeed}:shuffle`);
+  const unchanged = ordered.every((id, index) => id === uniqueIds[index]);
+
+  if (unchanged) {
+    return [...ordered.slice(1), ordered[0]!];
+  }
+
+  return ordered;
+}
+
+/**
  * Seeded variant used by the timed simulation. Allocation still follows the
  * published domain weights and availability caps; the seed only chooses which
  * reviewed items fill the slots and the final presentation order.

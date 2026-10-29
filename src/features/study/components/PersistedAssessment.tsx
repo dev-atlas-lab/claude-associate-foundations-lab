@@ -1,11 +1,12 @@
 import { useState } from "react";
-import type {
-  AssessmentDefinition,
-  AssessmentSession,
-  AttemptOrigin,
-  Question,
+import {
+  findStudyAttempt,
+  type AssessmentDefinition,
+  type AssessmentSession,
+  type AttemptOrigin,
+  type Question,
 } from "../../../domain";
-import { saveStudySession } from "../../../persistence/study-store";
+import { getStudySnapshot, saveStudySession } from "../../../persistence/study-store";
 import { AssessmentRunner } from "../../assessment/components/AssessmentRunner";
 import { startPersistedAttempt } from "../start-attempt";
 
@@ -30,9 +31,20 @@ export function PersistedAssessment({
   allowNewAttempt = true,
 }: PersistedAssessmentProps) {
   const [startError, setStartError] = useState<string>();
+  const initialAttempt = initialSession
+    ? findStudyAttempt(getStudySnapshot().state, initialSession.id)
+    : undefined;
 
-  const handleStart = (): AssessmentSession | null => {
-    const outcome = startPersistedAttempt(definition, questions, origin);
+  const handleStart = (
+    attemptDefinition: AssessmentDefinition = definition,
+    sessionId?: string,
+  ): AssessmentSession | null => {
+    const outcome = startPersistedAttempt(
+      attemptDefinition,
+      questions,
+      origin,
+      sessionId,
+    );
 
     if (!outcome.ok) {
       setStartError(outcome.message);
@@ -54,6 +66,7 @@ export function PersistedAssessment({
         definition={definition}
         questions={questions}
         initialSession={initialSession}
+        initialQuestionIds={initialAttempt?.questionIds}
         onStart={handleStart}
         onSessionChange={saveStudySession}
         persisted

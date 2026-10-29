@@ -89,15 +89,16 @@ Design meaningful empty, completed, error, and reset-confirmation states. Do not
 
 - Every route renders inside `AppShell`, including `*` (404) and unknown lesson ids.
 - `/practice` is registry-driven: eight reviewed sets (seven domain sets plus one mixed set) support
-  `?set=` deep links, resume an in-progress attempt, and persist attempts locally. It is practice,
+  `?set=` deep links, resume an in-progress attempt, support deterministic shuffled question
+  ordering (`Start shuffled` and `Shuffle & retry`), and persist attempts locally. It is practice,
   not an official exam form.
-- `/mock-exam` runs a blueprint-weighted 60-of-60 preview drawn from 62 reviewed items, with no
+- `/mock-exam` runs a blueprint-weighted 60-of-60 preview drawn from 63 reviewed items, with no
   shortfall, no timer, and no scaled score. `/mock-exam/timed` is the distinct deadline-enforced
   simulation; it stores one attempt at `cfl.timed-exam.v1`, resumes the original question order and
   deadline after reload, auto-submits at expiry, and retains an immutable raw result.
-  `/review` derives incorrect, unanswered, and flagged items from submitted attempts and resolves
-  them only on explicit request. `/progress` separates reviewed-bank coverage from personal
-  performance.
+  `/review` derives incorrect, unanswered, and flagged items from submitted attempts, supports an
+  in-memory focused practice mode (`/review?mode=practice`), and resolves items only on explicit
+  request. `/progress` separates reviewed-bank coverage from personal performance.
 - The timed result shows a raw percentage only. It does not convert to the official 100-1,000 scale,
   claim a pass/fail outcome, or predict readiness. Discarding timed-exam data never touches
   `cfl.study.v1`.

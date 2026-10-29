@@ -34,11 +34,12 @@ export function startPersistedAttempt(
   definition: AssessmentDefinition,
   questions: readonly Question[],
   origin: AttemptOrigin,
+  sessionId = createId(),
 ): StartAttemptOutcome {
   try {
     const context = createAssessmentContext(definition, questions);
     const session = startAssessment(context, {
-      sessionId: createId(),
+      sessionId,
       startedAt: new Date().toISOString(),
     });
     const attempt = startStudyAttempt(definition, session, origin);

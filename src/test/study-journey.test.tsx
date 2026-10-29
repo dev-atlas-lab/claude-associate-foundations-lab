@@ -308,4 +308,49 @@ describe("persisted study journey", () => {
     expect(screen.getByText("1 open items")).toBeInTheDocument();
     expect(screen.getByText("1 resolved")).toBeInTheDocument();
   });
+
+  it("supports starting a shuffled practice attempt, persisting its question order across reload, and shuffling on retry", async () => {
+    const d2Def = getAssessment("domain-2-output-validation-set")!;
+    const user = userEvent.setup();
+    const view = renderPractice();
+
+    await user.click(screen.getByRole("button", { name: "Start shuffled" }));
+
+    expect(screen.getByText(/Shuffled order/)).toBeInTheDocument();
+
+    const envelope = JSON.parse(localStorage.getItem(STUDY_STORAGE_KEY) ?? "{}") as {
+      state?: {
+        attempts?: Array<{
+          questionIds: string[];
+          session: { id: string; status: string };
+        }>;
+      };
+    };
+    const firstAttempt = envelope.state?.attempts?.[0];
+    expect(firstAttempt).toBeDefined();
+    expect(firstAttempt!.questionIds).toHaveLength(d2Def.questionIds.length);
+    expect([...firstAttempt!.questionIds].sort()).toEqual([...d2Def.questionIds].sort());
+    expect(firstAttempt!.questionIds).not.toEqual(d2Def.questionIds);
+
+    // Reload and verify the exact shuffled order is restored
+    view.unmount();
+    reloadStudyStore();
+    renderPractice();
+
+    expect(screen.getByText(/Shuffled order/)).toBeInTheDocument();
+    const firstShuffledQuestion = getAssessmentQuestions({
+      ...d2Def,
+      questionIds: [firstAttempt!.questionIds[0]!],
+    })[0]!;
+    expect(screen.getByText(firstShuffledQuestion.stem)).toBeInTheDocument();
+
+    // Submit and verify Shuffle & retry starts a fresh shuffled attempt
+    await user.click(screen.getByRole("button", { name: "Submit assessment" }));
+    await user.click(screen.getByRole("button", { name: "Confirm submission" }));
+
+    expect(screen.getByRole("button", { name: "Shuffle & retry" })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Shuffle & retry" }));
+
+    expect(screen.getByText(/In progress · Shuffled order/)).toBeInTheDocument();
+  });
 });

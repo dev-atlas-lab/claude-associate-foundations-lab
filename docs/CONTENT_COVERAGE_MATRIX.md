@@ -1,11 +1,11 @@
 # Content Coverage Matrix
 
-**Matrix updated:** 2026-10-28
+**Matrix updated:** 2026-10-29
 **Source access dates:** 2026-10-26 for the original sources; 2026-10-27 for the Domain 5,
 workflow-design, Domain 3/4/6/7 lesson, and coverage-depth sources listed in the source key; all 27
-links rechecked 2026-10-28
-**Content audit:** `docs/CONTENT_AUDIT_2026-10-28.md` covers all 62 bank items, 8 lessons, 15
-glossary entries, 27 sources, the domain practice sets, and timed-exam integrity
+links rechecked 2026-10-28; 9th Domain 6 item and Associate-refined `context-window` lesson verified 2026-10-29
+**Content audit:** `docs/CONTENT_AUDIT_2026-10-28.md` covers the initial 62 bank items, 8 lessons, 15
+glossary entries, 27 sources, the domain practice sets, and timed-exam integrity; Phase C2.12 added the 63rd reviewed bank item (`governance-privacy-third-party-connector`)
 **Blueprint:** CCAO-F Exam Guide v1.0, effective July 2026  
 **Applicable attempt:** before 2026-11-14 (do not apply the 2026-11-17 / 2026-12-07 revision)  
 **Source of exam scope:** `docs/EXAM_BLUEPRINT.md`
@@ -18,7 +18,7 @@ This matrix separates three different things:
    without overstating what the exam will ask?
 
 A verified objective is **not** coverage. Today the product has one technical sample lesson, seven
-exam-mapped curriculum lessons, and a **62-item reviewed bank** spanning all seven domains and
+exam-mapped curriculum lessons, and a **63-item reviewed bank** spanning all seven domains and
 **all 30 objectives**. Every official objective has a mapped lesson and at least two reviewed
 practice items. That is reviewed content, not a claim that any domain is exhausted or that the bank
 is a full exam simulation.
@@ -75,36 +75,36 @@ repeating exact menu paths.
 | Objectives with reviewed original practice items | **30 / 30**, at least two items each |
 | Domains with at least one reviewed bank item | **7 / 7** |
 | Published lessons | **8** (7 exam-mapped curriculum lessons + 1 explicitly unmapped design sample) |
-| Authored questions | **70** (8 lesson questions + 62 reviewed bank items) |
-| Reviewed bank items | **62** (32 single-choice, 30 multiple-response) |
+| Authored questions | **71** (8 lesson questions + 63 reviewed bank items) |
+| Reviewed bank items | **63** (33 single-choice, 30 multiple-response) |
 | Assessment definitions | **9 registry assessments** (1 sample, 7 domain sets, 1 mixed) **+ 1 derived mock-exam preview** |
 | Practice sets | **8** (7 domain sets + 1 mixed set) |
-| Mock-exam preview | **60 of 60** verified-format slots, shortfall **0**; 62 reviewed items available, 2 not selected, blueprint-weighted, no filler |
+| Mock-exam preview | **60 of 60** verified-format slots, shortfall **0**; 63 reviewed items available, 3 not selected, exact `8 / 13 / 7 / 10 / 7 / 9 / 6` blueprint-weighted allocation, no filler |
 | Assessment core | **Implemented** (Phase C2.1); persistence, review queue, progress, and mock preview in Phase C2.3 |
 | Planned lessons | **0**; all seven domains now have a published mapped lesson |
-| Question bank status | **62 reviewed, exam-mapped items** across all 30 objectives; no official questions copied |
+| Question bank status | **63 reviewed, exam-mapped items** across all 30 objectives; no official questions copied |
 | Future guide revision | **Not applicable** to the pre-2026-11-14 attempt |
 
 ## Current content
 
 | Item | Type | Exam mapping | Exam scope status | Content verification | Content status | Coverage | Sources |
 |---|---|---|---|---|---|---|---|
-| `context-window` | Sample lesson | **Unmapped**. It has a plausible relationship to Domain 3's context/memory objective, but that mapping has **not** been reviewed and is not claimed | Related objective is **Verified** in G; the lesson itself is **not** exam coverage | Technical claims **Verified** against D on 2026-10-26 | **Published as a sample** | 1 lesson, 1 single-choice question, 1 sample assessment definition; no multiple-response item | D |
+| `context-window` | Sample lesson | **Unmapped**. It has a plausible relationship to Domain 3's context/memory objective, but that mapping has **not** been reviewed and is not claimed | Related objective is **Verified** in G; the lesson itself is **not** exam coverage | Technical claims **Verified** against D and PJ on 2026-10-29; refined for the Associate audience | **Published as a sample** | 1 lesson, 1 single-choice question, 1 sample assessment definition; no multiple-response item | D, PJ |
 | `evaluation-basics` | Curriculum lesson | Domain 2 — **verified mapping** to all six objectives | Six objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against R, E, PB, SO, AR and CC on 2026-10-26; bias remains policy-level | **Published** | 1 lesson, 1 single-choice knowledge check, 7 linked reviewed bank questions; route `/learn/evaluation-basics` | G, R, E, PB, SO, AR, CC |
 | `configuration-basics` | Curriculum lesson | Domain 5 — **verified mapping** to all four objectives | Four objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against PJ, RG, CN and PB on 2026-10-27; project limits and connector UI marked time-sensitive; project-memory nuance corrected 2026-10-28 | **Published** | 1 lesson, 1 single-choice knowledge check, 8 linked reviewed bank questions; route `/learn/configuration-basics` | G, PJ, RG, CN, PB |
 | `prompt-structure` | Curriculum lesson | Domain 1 — **verified mapping** to all four objectives | Four objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against PB and E on 2026-10-27; model names kept generic | **Published** | 1 lesson, 1 single-choice knowledge check, 8 linked reviewed bank questions; route `/learn/prompt-structure` | G, PB, E |
 | `product-selection` | Curriculum lesson | Domain 3 — **verified mapping** to all four objectives | Four objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against PJ, RG, RS, AR, MD and D on 2026-10-27; product UI and model details marked time-sensitive; project-memory nuance corrected 2026-10-28 | **Published** | 1 lesson, 1 single-choice knowledge check, 8 linked reviewed bank questions; route `/learn/product-selection` | G, PJ, RG, RS, AR, MD, D |
 | `workflow-design` | Curriculum lesson | Domain 4 — **verified mapping** to all five objectives | Five objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against BA, E, PB, RS, CC and PP on 2026-10-27; tooling details from BA are not used | **Published** | 1 lesson, 1 single-choice knowledge check, 10 linked reviewed bank questions; route `/learn/workflow-design` | G, BA, E, PB, RS, CC, PP |
-| `governance-responsible-use` | Curriculum lesson | Domain 6 — **verified mapping** to all four objectives | Four objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against CC, PP, R, E and CN on 2026-10-27; review principles only, not legal advice | **Published** | 1 lesson, 1 single-choice knowledge check, 8 linked reviewed bank questions; route `/learn/governance-responsible-use` | G, CC, PP, R, E, CN |
+| `governance-responsible-use` | Curriculum lesson | Domain 6 — **verified mapping** to all four objectives | Four objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against CC, PP, R, E and CN on 2026-10-29; review principles only, not legal advice | **Published** | 1 lesson, 1 single-choice knowledge check, 9 linked reviewed bank questions; route `/learn/governance-responsible-use` | G, CC, PP, R, E, CN |
 | `troubleshooting-optimization` | Curriculum lesson | Domain 7 — **verified mapping** to all three objectives | Three objectives are **Verified** in G; the lesson is exam-mapped | Technical claims **Verified** against E, PB, R, D, MD and BA on 2026-10-27; optimization trade-offs taught as measurement, not fixed limits | **Published** | 1 lesson, 1 single-choice knowledge check, 6 linked reviewed bank questions; route `/learn/troubleshooting-optimization` | G, E, PB, R, D, MD, BA |
 | `domain-2-output-validation-set` | Reviewed question bank + assessment | Domain 2 — **verified mapping** to all six objectives | Six objectives are **Verified** in G; bank covers all six, with bias treated as framing/equal treatment only | Technical claims **Verified** against R, E, PB, SO, AR and CC on 2026-10-26 | **Published** | 14 original items (8 single-choice, 6 multiple-response); all six objectives have at least two items | G, R, E, PB, SO, AR, CC |
 | `domain-1-prompting-set` | Reviewed question bank + assessment | Domain 1 — **verified mapping** to all four objectives | Four objectives are **Verified** in G | Technical claims **Verified** against PB, E and BA on 2026-10-27 | **Published** | 8 original items (4 single-choice, 4 multiple-response); every Domain 1 objective has two items | G, PB, E, BA |
 | `domain-3-context-set` | Reviewed question bank + assessment | Domain 3 — **verified mapping** to all four objectives | Four objectives are **Verified** in G; the `context-window` sample remains unmapped | Technical claims **Verified** against D, MD, PJ, RS, AR and PB on 2026-10-27 | **Published** | 8 original items (4 single-choice, 4 multiple-response); model questions describe capability tiers instead of frozen model names | G, D, MD, PJ, RS, AR, PB |
 | `domain-4-workflow-set` | Reviewed question bank + assessment | Domain 4 — **verified mapping** to all five objectives | Five objectives are **Verified** in G | Technical claims **Verified** against E, PB, RS, CC, PP and BA on 2026-10-27 | **Published** | 10 original items (5 single-choice, 5 multiple-response); every Domain 4 objective has two items | G, E, PB, RS, CC, PP, BA |
 | `domain-5-configuration-set` | Reviewed question bank + assessment | Domain 5 — **verified mapping** to all four objectives | Four objectives are **Verified** in G | Technical claims **Verified** against PJ, RG, CN and PB on 2026-10-27 | **Published** | 8 original items (4 single-choice, 4 multiple-response); every Domain 5 objective has two items | G, PJ, RG, CN, PB |
-| `domain-6-governance-set` | Reviewed question bank + assessment | Domain 6 — **verified mapping** to all four objectives | Four objectives are **Verified** in G | Technical claims **Verified** against CC, R, PP, PB and E on 2026-10-27; review principles only, not legal advice | **Published** | 8 original items (4 single-choice, 4 multiple-response); every Domain 6 objective has two items | G, CC, R, PP, PB, E |
+| `domain-6-governance-set` | Reviewed question bank + assessment | Domain 6 — **verified mapping** to all four objectives | Four objectives are **Verified** in G | Technical claims **Verified** against CC, R, PP, CN, PB and E on 2026-10-29; review principles only, not legal advice | **Published** | 9 original items (5 single-choice, 4 multiple-response); every Domain 6 objective has at least two items | G, CC, R, PP, CN, PB, E |
 | `domain-7-troubleshooting-set` | Reviewed question bank + assessment | Domain 7 — **verified mapping** to all three objectives | Three objectives are **Verified** in G | Technical claims **Verified** against PB, E, MD, R and BA on 2026-10-27 | **Published** | 6 original items (3 single-choice, 3 multiple-response); every Domain 7 objective has two items | G, PB, E, MD, R, BA |
-| `mixed-foundations-set` | Reviewed question bank + assessment | Domains 1–7 — **verified mappings** of all 62 bank items | Seven domains **Verified** | Same per-item verification as the domain sets | **Published** | Question ids derived from the reviewed bank so the set cannot drift; explicitly not a mock exam | G plus per-item sources |
+| `mixed-foundations-set` | Reviewed question bank + assessment | Domains 1–7 — **verified mappings** of all 63 bank items | Seven domains **Verified** | Same per-item verification as the domain sets | **Published** | Question ids derived from the reviewed bank so the set cannot drift; explicitly not a mock exam | G plus per-item sources |
 
 ## Objective coverage
 
@@ -165,7 +165,7 @@ official product documentation without pretending to know the live item bank.
 | Topic ID | Official objective | Exam scope | Content status | Coverage / next step | General-knowledge safety | Version |
 |---|---|---|---|---|---|---|
 | `governance-use-case-fit` | Identify appropriate and inappropriate use cases | **Verified** | **Reviewed lesson + 2 bank items** | `governance-responsible-use`; `governance-customer-assistant-safeguards`, `governance-use-case-triage` | Safe: high-risk triage principles from PP and CC; not a legal determination | v1.0 + PP, CC |
-| `governance-data-privacy` | Apply data sensitivity, regulatory, and privacy considerations | **Verified** | **Reviewed lesson + 2 bank items** | `governance-responsible-use`; `governance-privacy-confidential-upload`, `governance-privacy-controls` | **Principles only:** do not give legal advice; cite organizational policy and official privacy material | v1.0 + PP, CN |
+| `governance-data-privacy` | Apply data sensitivity, regulatory, and privacy considerations | **Verified** | **Reviewed lesson + 3 bank items** | `governance-responsible-use`; `governance-privacy-confidential-upload`, `governance-privacy-controls`, `governance-privacy-third-party-connector` | **Principles only:** do not give legal advice; cite organizational policy and official privacy material | v1.0 + PP, CN |
 | `governance-policies` | Follow organizational AI policies and governance standards | **Verified** | **Reviewed lesson + 2 bank items** | `governance-responsible-use`; `governance-policy-hiring-screening`, `governance-policy-operations` | **Principles only:** policy specifics vary by organization | v1.0 + PP, CC |
 | `governance-ethics` | Understand the ethical implications of AI usage | **Verified** | **Reviewed lesson + 2 bank items** | `governance-responsible-use`; `governance-human-oversight`, `governance-ethics-considerations` | Safe: responsible-use reasoning from CC and PP, clearly framed as judgment | v1.0 + CC, PP, E |
 
@@ -241,6 +241,7 @@ official product documentation without pretending to know the live item bank.
 | `workflow-integration-first-pilot` | Single-choice | Domain 4 · `workflow-integrate` | **Reviewed / published** | Original item on choosing a bounded, reversible review step with a human checkpoint and baseline. |
 | `governance-use-case-triage` | Single-choice | Domain 6 · `governance-use-case-fit` | **Reviewed / published** | Original item on pausing an automated insurance-denial use case for policy review and qualified human review. |
 | `governance-ethics-considerations` | Multiple-response | Domain 6 · `governance-ethics` | **Reviewed / published** | Exact-set item on disclosure/accountability, equal treatment, and traceable job-relevant evidence in a performance review. |
+| `governance-privacy-third-party-connector` | Single-choice | Domain 6 · `governance-data-privacy` | **Reviewed / published** | Original item on governance, data classification, and permission review before connecting a shared third-party drive containing sensitive records. |
 | `troubleshoot-diagnose-evidence` | Multiple-response | Domain 7 · `troubleshoot-diagnose` | **Reviewed / published** | Exact-set item on systematic missing fields, undefined requirements, and outdated examples as prompt/context evidence. |
 | `troubleshoot-adjust-regression` | Single-choice | Domain 7 · `troubleshoot-adjust` | **Reviewed / published** | Original item on keeping the baseline and rerunning the full suite when a change causes an edge-case regression. |
 | `context-window-root-cause` | Single-choice | **Unmapped** | **Sample, runnable in its lesson** | Tests a general context-budgeting decision; not official exam content. Its `context-window-sample` definition remains in the pack but `/practice` does not surface it. |
@@ -253,7 +254,7 @@ The assessment core is not coverage. It makes authored questions runnable. The m
 **30 / 30** objectives with reviewed practice items and **30 / 30** objectives with a reviewed,
 exam-mapped lesson. Every domain has one published mapped lesson, and every objective has at least
 two bank items. No objective is claimed to be exhaustively covered; depth per objective ranges from
-two to four items, and the 62-item bank still leaves two items outside the 60-item mock preview.
+two to four items, and the 63-item bank fills the exact `8 / 13 / 7 / 10 / 7 / 9 / 6` 60-item mock allocation while leaving three items outside a single 60-item preview.
 
 ## What the product may and may not claim
 
@@ -280,7 +281,7 @@ two to four items, and the 62-item bank still leaves two items outside the 60-it
   Domain 6 objectives, and links to reviewed bank questions.
 - The Domain 7 lesson `troubleshooting-optimization` is published, mapped to all three verified
   Domain 7 objectives, and links to reviewed bank questions.
-- The bank contains **62 original, reviewed items**, split into 32 single-choice and 30
+- The bank contains **63 original, reviewed items**, split into 33 single-choice and 30
   multiple-response items, each with Vietnamese explanations for every option, and covers every
   official objective with at least two items.
 - Bias is taught and assessed only at the framing/evidence-selection/equal-treatment level supported
@@ -292,14 +293,14 @@ two to four items, and the 62-item bank still leaves two items outside the 60-it
 - Progress separates reviewed-bank coverage from personal performance and shows a real zero-activity
   state instead of a fabricated score.
 - The untimed mock-exam preview selects **60 of the verified 60-item format** by blueprint weight
-  with no shortfall, using 60 of the 62 reviewed items and adding no filler or duplicates. It has no
+  with no shortfall, using 60 of the 63 reviewed items (`8 / 13 / 7 / 10 / 7 / 9 / 6`) and adding no filler or duplicates. It has no
   timer and no scaled score. A separate `/mock-exam/timed` attempt runs the 60-question /
   120-minute format with a persisted deadline and auto-submit; it is still practice content.
 
 **May not claim**
 
 - That any domain or objective is fully “covered” by a reviewed lesson or question bank.
-- That the 62-item bank is an exhaustive or official exam simulation. Every objective has at least
+- That the 63-item bank is an exhaustive or official exam simulation. Every objective has at least
   two items, but depth is still limited and no objective has more than four.
 - That the sample lesson is mapped to Domain 3.
 - That the 60 items are all scored, or that any per-domain item count is official.
