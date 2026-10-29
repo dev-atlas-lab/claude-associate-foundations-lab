@@ -1292,5 +1292,7 @@ not done in this audit.
 - `npm run typecheck`: pass (`tsc -b`, strict).
 - `npm run lint`: pass (`eslint .`, 0 problems).
 - Vitest suite: **209 tests across 24 files** pass.
+- Playwright E2E & Accessibility suite: **116 tests pass locally and in CI** across Chromium (`390px`, `768px`, `1440px`), dark/light themes, zero horizontal overflow, and axe-core 0-violation gate.
+- GitHub Actions CI: **Run 40865366457** (`push` on `main`) completed with **SUCCESS** across all 11 workflow steps.
 - `npm run build`: pass (`LessonPage` code-split chunk cleanly built at 52.97 kB).
 - `git diff --check`: clean.
