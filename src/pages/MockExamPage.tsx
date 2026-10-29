@@ -1,9 +1,10 @@
 import { Timer } from "lucide-react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Badge } from "../components/ui/Badge";
 import { Callout } from "../components/ui/Callout";
 import { PageHeader } from "../components/ui/PageHeader";
-import { mockExamDefinition, mockExamQuestions, mockExamSummary } from "../content/mock-exam";
+import { mockExamPresets } from "../content/mock-exam";
 import { primaryBlueprint, questionBankEntries } from "../content";
 import { findActiveAttempt, findLatestSubmittedAttempt } from "../domain";
 import { PersistedAssessment } from "../features/study/components/PersistedAssessment";
@@ -15,8 +16,16 @@ const domainById = new Map(primaryBlueprint.domains.map((domain) => [domain.id, 
 export function MockExamPage() {
   useDocumentTitle("Mock exam");
   const snapshot = useStudyState();
-  const activeAttempt = findActiveAttempt(snapshot.state, mockExamDefinition.id);
-  const latestSubmitted = findLatestSubmittedAttempt(snapshot.state, mockExamDefinition.id);
+  const [selectedPresetId, setSelectedPresetId] = useState<"set-1" | "set-2">("set-1");
+
+  const currentPreset =
+    mockExamPresets.find((p) => p.id === selectedPresetId) ?? mockExamPresets[0];
+
+  const activeAttempt = findActiveAttempt(snapshot.state, currentPreset.definition.id);
+  const latestSubmitted = findLatestSubmittedAttempt(
+    snapshot.state,
+    currentPreset.definition.id,
+  );
   const initialSession = activeAttempt?.session ?? latestSubmitted?.session;
 
   return (
@@ -29,20 +38,20 @@ export function MockExamPage() {
           <>
             <Badge tone="ok">Format verified</Badge>
             <Badge tone="warn">
-              {mockExamSummary.selectedItemCount}/{mockExamSummary.requestedItemCount} items
+              {currentPreset.summary.selectedItemCount}/{currentPreset.summary.requestedItemCount} items
             </Badge>
-            <Badge>Preview only</Badge>
+            <Badge>{currentPreset.badge}</Badge>
           </>
         }
       />
 
       <Callout tone="caution" title="This is a preview, not a timed simulation">
-        Exam Guide v{primaryBlueprint.version} specifies {mockExamSummary.requestedItemCount} items in{" "}
+        Exam Guide v{primaryBlueprint.version} specifies {currentPreset.summary.requestedItemCount} items in{" "}
         {primaryBlueprint.format.timeLimitMinutes} minutes. The reviewed bank has{" "}
         {questionBankEntries.length} items, so this run selects{" "}
-        {mockExamSummary.selectedItemCount} without duplicating an item.{" "}
-        {mockExamSummary.shortfall > 0
-          ? `A shortfall of ${mockExamSummary.shortfall} remains.`
+        {currentPreset.summary.selectedItemCount} without duplicating an item.{" "}
+        {currentPreset.summary.shortfall > 0
+          ? `A shortfall of ${currentPreset.summary.shortfall} remains.`
           : "No shortfall remains for the verified item count."}{" "}
         No timer is applied, and no scaled score or readiness claim is made.
       </Callout>
@@ -55,7 +64,7 @@ export function MockExamPage() {
           </h2>
           <p className="timed-entry-text">
             The preview above is untimed and is not a completed exam simulation. The timed version
-            runs {mockExamSummary.requestedItemCount} questions in{" "}
+            runs {currentPreset.summary.requestedItemCount} questions in{" "}
             {primaryBlueprint.format.timeLimitMinutes} minutes, saves the authoritative deadline,
             resumes the same attempt after a refresh, and submits automatically at expiry.
           </p>
@@ -65,13 +74,30 @@ export function MockExamPage() {
         </Link>
       </section>
 
+      <div className="study-filters" role="group" aria-label="Chọn bộ đề thi thử">
+        {mockExamPresets.map((preset) => (
+          <button
+            key={preset.id}
+            type="button"
+            className="study-filter"
+            aria-pressed={selectedPresetId === preset.id}
+            onClick={() => setSelectedPresetId(preset.id)}
+          >
+            <Badge tone={selectedPresetId === preset.id ? "accent" : "neutral"}>
+              {preset.badge}
+            </Badge>
+            <span>{preset.title}</span>
+          </button>
+        ))}
+      </div>
+
       <section className="section" aria-labelledby="allocation">
         <div className="section-heading-row">
           <h2 className="section-title" id="allocation">
-            Blueprint allocation
+            Blueprint allocation ({currentPreset.badge})
           </h2>
           <span className="section-note">
-            {mockExamSummary.domainsWithItems}/{primaryBlueprint.domains.length} domains have items
+            {currentPreset.summary.domainsWithItems}/{primaryBlueprint.domains.length} domains have items
           </span>
         </div>
 
@@ -89,7 +115,7 @@ export function MockExamPage() {
               </tr>
             </thead>
             <tbody>
-              {mockExamSummary.allocations.map((allocation) => {
+              {currentPreset.summary.allocations.map((allocation) => {
                 const domain = domainById.get(allocation.domainId);
 
                 return (
@@ -118,17 +144,17 @@ export function MockExamPage() {
       <section className="section" aria-labelledby="mock-runner">
         <div className="section-heading-row">
           <h2 className="section-title" id="mock-runner">
-            Run the preview
+            Run preview: {currentPreset.title}
           </h2>
           <span className="section-note">
-            {mockExamSummary.selectedItemCount} items · no timer · saved locally
+            {currentPreset.summary.selectedItemCount} items · no timer · saved locally
           </span>
         </div>
 
         <PersistedAssessment
-          key={mockExamDefinition.id}
-          definition={mockExamDefinition}
-          questions={mockExamQuestions}
+          key={currentPreset.definition.id}
+          definition={currentPreset.definition}
+          questions={currentPreset.questions}
           origin={{ kind: "mock-exam", blueprintId: primaryBlueprint.id }}
           initialSession={initialSession}
         />

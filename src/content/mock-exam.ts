@@ -1,10 +1,12 @@
 import {
   assessmentDefinitionSchema,
   selectMockExamQuestions,
+  selectTimedExamQuestions,
   type AssessmentDefinition,
   type MockExamDomainPool,
   type MockExamSelection,
 } from "../domain";
+import type { Question } from "../domain/lesson";
 import {
   getAssessmentQuestions,
   primaryBlueprint,
@@ -73,3 +75,74 @@ export const mockExamSummary = {
   domainsWithItems: mockExamSelection.allocations.filter((allocation) => allocation.allocated > 0)
     .length,
 };
+
+/* ── Mock Exam Set 2 (Alternative Blueprint Permutation) ─────────────────── */
+
+export const mockExamSet2Selection: MockExamSelection = selectTimedExamQuestions(
+  mockExamPools,
+  requestedItemCount,
+  "ccao-f-mock-set-2",
+);
+
+export const mockExamSet2Definition: AssessmentDefinition = assessmentDefinitionSchema.parse({
+  id: "mock-exam-preview-set-2",
+  title: "CCAO-F mock exam preview (Bộ đề #2)",
+  description: `Bộ đề thi thử số 2 gồm 60 câu hỏi theo đúng trọng số chính thức của 7 Domain CCAO-F, khai thác các câu hỏi hoán vị và ngân hàng dự phòng 105 câu để tạo bài thi độc lập.`,
+  questionIds: mockExamSet2Selection.selectedQuestionIds,
+  policy: {
+    scoring: "all-or-nothing",
+    allowAnswerChangesBeforeSubmit: true,
+  },
+});
+
+export const mockExamSet2Questions = getAssessmentQuestions(mockExamSet2Definition);
+
+if (mockExamSet2Questions.length !== mockExamSet2Definition.questionIds.length) {
+  throw new Error("mock-exam set 2 references a question that is not in the content registry");
+}
+
+export const mockExamSet2Summary = {
+  requestedItemCount,
+  selectedItemCount: mockExamSet2Selection.selectedQuestionIds.length,
+  shortfall: mockExamSet2Selection.shortfall,
+  allocations: mockExamSet2Selection.allocations,
+  domainsWithItems: mockExamSet2Selection.allocations.filter((allocation) => allocation.allocated > 0)
+    .length,
+};
+
+export interface MockExamPresetInfo {
+  id: "set-1" | "set-2";
+  title: string;
+  badge: string;
+  description: string;
+  seed: string;
+  definition: AssessmentDefinition;
+  selection: MockExamSelection;
+  questions: readonly Question[];
+  summary: typeof mockExamSummary;
+}
+
+export const mockExamPresets: readonly MockExamPresetInfo[] = [
+  {
+    id: "set-1",
+    title: "Bộ đề thi thử #1 (Mock Exam Set 1)",
+    badge: "Set 1",
+    description: "Bộ đề tiêu chuẩn phân bổ chính xác theo trọng số 7 Domain CCAO-F.",
+    seed: "ccao-f-mock-set-1",
+    definition: mockExamDefinition,
+    selection: mockExamSelection,
+    questions: mockExamQuestions,
+    summary: mockExamSummary,
+  },
+  {
+    id: "set-2",
+    title: "Bộ đề thi thử #2 (Mock Exam Set 2)",
+    badge: "Set 2",
+    description: "Bộ đề hoán vị thứ hai rút các câu hỏi dự phòng từ ngân hàng 105 câu, bảo đảm độ phủ kiến thức.",
+    seed: "ccao-f-mock-set-2",
+    definition: mockExamSet2Definition,
+    selection: mockExamSet2Selection,
+    questions: mockExamSet2Questions,
+    summary: mockExamSet2Summary,
+  },
+];

@@ -194,6 +194,34 @@ describe("SafetyGuardrailsSimulator", () => {
       screen.getByText(/Constitutional AI kích hoạt từ chối an toàn/i),
     ).toBeInTheDocument();
   });
+
+  it("switches to interactive custom defense lab and updates security score", () => {
+    render(<SafetyGuardrailsSimulator />);
+
+    const customTab = screen.getByRole("button", {
+      name: /Thử nghiệm Tấn công & Phòng vệ Tùy chỉnh/i,
+    });
+    fireEvent.click(customTab);
+
+    expect(screen.getByText(/Prompt Attack Payload/i)).toBeInTheDocument();
+    expect(screen.getByText(/Điểm bảo mật 100\/100/i)).toBeInTheDocument();
+
+    // Select Markdown Exfiltration template
+    const mdTemplateBtn = screen.getByRole("button", {
+      name: /Markdown Exfiltration Attack/i,
+    });
+    fireEvent.click(mdTemplateBtn);
+    expect(
+      screen.getByDisplayValue(/malicious-collector\.com/i),
+    ).toBeInTheDocument();
+
+    // Toggle off XML delimiters
+    const xmlCheckbox = screen.getAllByRole("checkbox")[0];
+    if (xmlCheckbox) {
+      fireEvent.click(xmlCheckbox);
+      expect(screen.getByText(/Điểm bảo mật 60\/100/i)).toBeInTheDocument();
+    }
+  });
 });
 
 describe("HallucinationEvaluationSandbox", () => {

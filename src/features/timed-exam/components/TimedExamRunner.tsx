@@ -20,7 +20,7 @@ import {
 } from "../../../content/timed-exam";
 import { createId } from "../../../lib/ids";
 import { browserNow } from "../use-deadline-clock";
-import { TimedExamIntro } from "./TimedExamIntro";
+import { TimedExamIntro, type TimedExamPresetChoice } from "./TimedExamIntro";
 import { TimedExamResultView } from "./TimedExamResultView";
 import { TimedExamSessionView } from "./TimedExamSessionView";
 
@@ -61,11 +61,18 @@ export function TimedExamRunner({
     return createTimedExamContext(session, resolved.questions);
   }, [resolved, session]);
 
-  const handleStart = () => {
+  const handleStart = (preset: TimedExamPresetChoice = "set-1") => {
     setStartError(undefined);
 
     const sessionId = createId("timed-exam");
-    const questionIds = selectTimedExamQuestionIds(sessionId);
+    const seed =
+      preset === "set-1"
+        ? "ccao-f-mock-set-1"
+        : preset === "set-2"
+          ? "ccao-f-mock-set-2"
+          : sessionId;
+
+    const questionIds = selectTimedExamQuestionIds(seed);
 
     if (questionIds.length !== timedExamRequestedItemCount) {
       setStartError(

@@ -1,6 +1,9 @@
 import { Play, ShieldAlert, Timer } from "lucide-react";
+import { useState } from "react";
 import { Badge } from "../../../components/ui/Badge";
 import { Callout } from "../../../components/ui/Callout";
+
+export type TimedExamPresetChoice = "set-1" | "set-2" | "random";
 
 export interface TimedExamAllocationView {
   domainId: string;
@@ -20,7 +23,7 @@ interface TimedExamIntroProps {
   canStart: boolean;
   storageWarning?: string;
   startError?: string;
-  onStart: () => void;
+  onStart: (preset: TimedExamPresetChoice) => void;
 }
 
 export function TimedExamIntro({
@@ -36,6 +39,7 @@ export function TimedExamIntro({
   startError,
   onStart,
 }: TimedExamIntroProps) {
+  const [selectedPreset, setSelectedPreset] = useState<TimedExamPresetChoice>("set-1");
   const domainById = new Map(domains.map((domain) => [domain.id, domain]));
 
   return (
@@ -118,11 +122,73 @@ export function TimedExamIntro({
         </Callout>
       ) : null}
 
+      <div className="timed-preset-section" role="region" aria-label="Chọn bộ đề thi mô phỏng">
+        <h3 className="timed-preset-heading">Chọn bộ đề thi mô phỏng:</h3>
+        <div className="timed-preset-cards" role="radiogroup" aria-label="Danh sách bộ đề">
+          <label className={`timed-preset-card ${selectedPreset === "set-1" ? "timed-preset-card--active" : ""}`}>
+            <input
+              type="radio"
+              name="timed-exam-preset"
+              value="set-1"
+              checked={selectedPreset === "set-1"}
+              onChange={() => setSelectedPreset("set-1")}
+            />
+            <div className="timed-preset-body">
+              <div className="timed-preset-head">
+                <span className="timed-preset-title">Bộ đề chuẩn #1 (Mock Exam Set 1)</span>
+                <Badge tone="accent">Set 1</Badge>
+              </div>
+              <p className="timed-preset-desc">
+                Bộ đề chuẩn phân bổ chính xác theo trọng số 7 Domain CCAO-F (14% D1, 21% D2, 12% D3, 16% D4, 12% D5, 15% D6, 10% D7).
+              </p>
+            </div>
+          </label>
+
+          <label className={`timed-preset-card ${selectedPreset === "set-2" ? "timed-preset-card--active" : ""}`}>
+            <input
+              type="radio"
+              name="timed-exam-preset"
+              value="set-2"
+              checked={selectedPreset === "set-2"}
+              onChange={() => setSelectedPreset("set-2")}
+            />
+            <div className="timed-preset-body">
+              <div className="timed-preset-head">
+                <span className="timed-preset-title">Bộ đề chuẩn #2 (Mock Exam Set 2)</span>
+                <Badge tone="ok">Set 2</Badge>
+              </div>
+              <p className="timed-preset-desc">
+                Bộ đề hoán vị thứ hai rút các câu hỏi dự phòng từ ngân hàng 105 câu, bảo đảm độ phủ kiến thức phong phú và độc lập.
+              </p>
+            </div>
+          </label>
+
+          <label className={`timed-preset-card ${selectedPreset === "random" ? "timed-preset-card--active" : ""}`}>
+            <input
+              type="radio"
+              name="timed-exam-preset"
+              value="random"
+              checked={selectedPreset === "random"}
+              onChange={() => setSelectedPreset("random")}
+            />
+            <div className="timed-preset-body">
+              <div className="timed-preset-head">
+                <span className="timed-preset-title">Bộ đề ngẫu nhiên (Randomized)</span>
+                <Badge tone="neutral">Dynamic</Badge>
+              </div>
+              <p className="timed-preset-desc">
+                Sinh một tổ hợp 60 câu hoàn toàn ngẫu nhiên bám sát trọng số 7 Domain cho mỗi lượt thi.
+              </p>
+            </div>
+          </label>
+        </div>
+      </div>
+
       <div className="assessment-actions">
         <button
           type="button"
           className="button button--primary"
-          onClick={onStart}
+          onClick={() => onStart(selectedPreset)}
           disabled={!canStart}
         >
           <Play size={14} strokeWidth={2} aria-hidden="true" />
@@ -130,7 +196,7 @@ export function TimedExamIntro({
         </button>
         <span className="assessment-hint">
           {canStart
-            ? `${selectedItemCount} of ${requestedItemCount} questions selected by published domain weight. The deadline is saved locally.`
+            ? `${selectedItemCount} of ${requestedItemCount} questions (${selectedPreset === "set-1" ? "Set 1" : selectedPreset === "set-2" ? "Set 2" : "Random"}) selected by published domain weight. The deadline is saved locally.`
             : "Starting is disabled until the reviewed bank can fill the full exam."}
         </span>
       </div>

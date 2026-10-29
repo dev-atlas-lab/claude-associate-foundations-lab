@@ -1390,3 +1390,27 @@ not done in this audit.
   - `npm run test` (Vitest): **217 tests across 25 test files** pass (100%).
   - `npm run build`: Production bundle built cleanly with zero CSS/JS warnings.
   - Playwright E2E & Accessibility: **116 tests pass** with zero WCAG/axe-core violations.
+
+## Phase C2.24 — Comprehensive Instant Drill (105 Items), Mock Exam Set #2 & Interactive Prompt Injection Lab (2026-10-29)
+
+### Scope
+
+- **Comprehensive Instant Drill Mode (`src/persistence/comprehensive-drill-store.ts`, `src/features/practice/components/ComprehensiveDrillView.tsx`):**
+  - Added dedicated full-bank study tab on `/practice`: "Ôn tập toàn diện — Tức thì (All 105 Bank Questions)" alongside "Bộ đề theo chủ đề".
+  - Instant Answer Feedback: As soon as the user checks answer choices and clicks "Xác nhận câu trả lời", immediate pass/fail feedback is revealed with comprehensive Vietnamese explanations for every option (A, B, C, D) and a strategic exam takeaway.
+  - Interactive Question Matrix: 105 numbered buttons allowing direct hopping, dynamically reflecting unattempted, correct, incorrect, and flagged states.
+  - Domain & Status Filters: Filter all questions across 7 CCAO-F Domains or by status (*Tất cả*, *Chưa làm*, *Đúng*, *Sai*, *Đã gắn cờ*), plus free-text search.
+  - Independent Persistence: Backed by `cfl.comprehensive-drill.v1` in `localStorage` via `useSyncExternalStore` with Zod schema validation, progress metrics (Total attempted, Accuracy %, Flagged count), and retry mechanics.
+- **Mock Exam Set #2 Implementation (`src/content/mock-exam.ts`, `src/pages/MockExamPage.tsx`, `TimedExamIntro.tsx`, `TimedExamRunner.tsx`):**
+  - Added `mockExamSet2Selection` and `mockExamSet2Definition` generating a distinct 60-question set mapped exactly to official domain weights.
+  - Added preset switcher on `/mock-exam` preview ("Set 1: Đề thi thử số 1" vs "Set 2: Đề thi thử số 2") with per-preset blueprint allocation summaries.
+  - Added exam preset selector on `/mock-exam/timed` allowing candidates to select between **Set 1 (Đề chuẩn số 1)**, **Set 2 (Đề chuẩn số 2)**, or **Randomized Attempt (Xáo trộn ngẫu nhiên)** before starting the 120-minute timed simulation.
+- **Enhanced Domain 6 Safety & Prompt Injection Playground (`src/features/visualizations/SafetyGuardrailsSimulator.tsx`):**
+  - Added interactive second tab: "Thử nghiệm Tấn công & Phòng vệ Tùy chỉnh (Live Defense Lab)".
+  - 4 quick attack payload templates: Markdown Exfiltration (`![leak](...)`), Base64 Instruction Smuggling, Tool Sabotage (`run_terminal`), and Sycophancy / Social Engineering.
+  - Dynamic defense toggle controls: XML Delimiters (`<user_input>`), Sovereign System Prompt Rules, and Human-in-the-Loop Confirmation Gate.
+  - Live assembled prompt inspector and dynamic Security Score meter (0–100/100) reflecting defense robustness.
+- **Quality Assurance & Verification:**
+  - Vitest: **223 unit tests across 26 test files** passing (100%).
+  - Playwright E2E & Accessibility: **116 tests** passing with zero axe-core / WCAG AA violations across dark and light themes.
+  - Strict TypeScript (`tsc -b`), ESLint, and production build clean.

@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from "react";
 import { allQuestions, assessments } from "../content";
 import { contentFingerprint } from "../content/fingerprint";
-import { mockExamDefinition } from "../content/mock-exam";
+import { mockExamDefinition, mockExamSet2Definition } from "../content/mock-exam";
 import {
   StudyStateError,
   createStudyAttempt,
@@ -28,7 +28,7 @@ import {
 
 const questionsById = new Map(allQuestions.map((question) => [question.id, question]));
 const assessmentsById = new Map(
-  [...assessments, mockExamDefinition].map((assessment) => [assessment.id, assessment]),
+  [...assessments, mockExamDefinition, mockExamSet2Definition].map((assessment) => [assessment.id, assessment]),
 );
 
 export type StudyStoreStatus =

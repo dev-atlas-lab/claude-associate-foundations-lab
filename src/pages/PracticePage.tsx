@@ -1,4 +1,4 @@
-import { ArrowLeft, ListChecks, RotateCcw, Search, X } from "lucide-react";
+import { ArrowLeft, BookOpen, ListChecks, RotateCcw, Search, Sparkles, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Badge } from "../components/ui/Badge";
@@ -18,6 +18,7 @@ import {
   findLatestSubmittedAttempt,
   type StudyState,
 } from "../domain";
+import { ComprehensiveDrillView } from "../features/practice/components/ComprehensiveDrillView";
 import { PersistedAssessment } from "../features/study/components/PersistedAssessment";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { useStudyState } from "../persistence/study-store";
@@ -123,6 +124,9 @@ export function PracticePage() {
   useDocumentTitle("Practice");
   const [searchParams] = useSearchParams();
   const snapshot = useStudyState();
+  const [mode, setMode] = useState<"sets" | "drill">(() => {
+    return searchParams.get("mode") === "drill" ? "drill" : "sets";
+  });
   const [categoryFilter, setCategoryFilter] = useState<PracticeCategory>("all");
   const [statusFilter, setStatusFilter] = useState<PracticeStatusFilter>("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -312,169 +316,196 @@ export function PracticePage() {
         <Link to="/progress">Progress</Link>.
       </Callout>
 
-      <section className="section" aria-labelledby="available-sets">
-        <div className="section-heading-row">
-          <h2 className="section-title" id="available-sets">
-            Reviewed practice sets
-          </h2>
-          <span className="section-note">
-            {practiceSets.length} sets · {questionBankEntries.length} reviewed items
-          </span>
-        </div>
+      <div className="study-filters" role="group" aria-label="Chế độ thực hành" style={{ marginBottom: "var(--space-4)" }}>
+        <button
+          type="button"
+          className="study-filter"
+          aria-pressed={mode === "sets"}
+          onClick={() => setMode("sets")}
+        >
+          <BookOpen size={14} strokeWidth={2} aria-hidden="true" />
+          <span>Bộ đề theo chủ đề ({practiceSets.length} bộ đề)</span>
+        </button>
+        <button
+          type="button"
+          className="study-filter"
+          aria-pressed={mode === "drill"}
+          onClick={() => setMode("drill")}
+        >
+          <Sparkles size={14} strokeWidth={2} aria-hidden="true" />
+          <span>Ôn tập toàn diện — Tức thì ({questionBankEntries.length} câu hỏi)</span>
+        </button>
+      </div>
 
-        <div className="practice-toolbar" role="region" aria-label="Bộ lọc và tìm kiếm bài thực hành">
-          <div className="study-filters" role="group" aria-label="Lọc theo phân loại bộ đề">
-            <button
-              className="study-filter"
-              type="button"
-              aria-pressed={categoryFilter === "all"}
-              onClick={() => setCategoryFilter("all")}
-            >
-              Tất cả bộ đề ({categoryCounts.all})
-            </button>
-            <button
-              className="study-filter"
-              type="button"
-              aria-pressed={categoryFilter === "domains"}
-              onClick={() => setCategoryFilter("domains")}
-            >
-              Theo từng Domain ({categoryCounts.domains})
-            </button>
-            <button
-              className="study-filter"
-              type="button"
-              aria-pressed={categoryFilter === "specialized"}
-              onClick={() => setCategoryFilter("specialized")}
-            >
-              Chuyên sâu & Ôn nhanh ({categoryCounts.specialized})
-            </button>
-          </div>
+      {mode === "drill" ? (
+        <ComprehensiveDrillView />
+      ) : (
+        <div>
+          <section className="section" aria-labelledby="available-sets">
+            <div className="section-heading-row">
+              <h2 className="section-title" id="available-sets">
+                Reviewed practice sets
+              </h2>
+              <span className="section-note">
+                {practiceSets.length} sets · {questionBankEntries.length} reviewed items
+              </span>
+            </div>
 
-          <div className="practice-toolbar-row">
-            <div className="practice-search-wrap">
-              <Search className="practice-search-icon" size={16} strokeWidth={2} aria-hidden="true" />
-              <input
-                className="practice-search-input"
-                type="search"
-                placeholder="Tìm theo tên bộ đề, domain, từ khóa..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                aria-label="Tìm kiếm bộ đề thực hành"
-              />
-              {searchQuery ? (
+            <div className="practice-toolbar" role="region" aria-label="Bộ lọc và tìm kiếm bài thực hành">
+              <div className="study-filters" role="group" aria-label="Lọc theo phân loại bộ đề">
                 <button
-                  className="practice-search-clear"
+                  className="study-filter"
                   type="button"
-                  onClick={() => setSearchQuery("")}
-                  aria-label="Xóa nội dung tìm kiếm"
+                  aria-pressed={categoryFilter === "all"}
+                  onClick={() => setCategoryFilter("all")}
                 >
-                  <X size={14} strokeWidth={2} aria-hidden="true" />
+                  Tất cả bộ đề ({categoryCounts.all})
                 </button>
-              ) : null}
-            </div>
-
-            <div className="practice-status-wrap">
-              <label className="practice-status-label" htmlFor="practice-status-filter">
-                Trạng thái:
-              </label>
-              <select
-                className="practice-status-select"
-                id="practice-status-filter"
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value as PracticeStatusFilter)}
-              >
-                <option value="all">Mọi trạng thái</option>
-                <option value="not-started">Chưa làm</option>
-                <option value="in-progress">Đang làm dở</option>
-                <option value="completed">Đã hoàn thành</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="practice-counts-summary">
-            <span>
-              Hiển thị {filteredSets.length} / {practiceSets.length} bộ đề
-            </span>
-            {categoryFilter !== "all" || statusFilter !== "all" || searchQuery ? (
-              <button
-                className="button button--ghost button--sm"
-                type="button"
-                onClick={() => {
-                  setCategoryFilter("all");
-                  setStatusFilter("all");
-                  setSearchQuery("");
-                }}
-              >
-                <RotateCcw size={12} strokeWidth={2} aria-hidden="true" />
-                Xóa bộ lọc
-              </button>
-            ) : null}
-          </div>
-        </div>
-
-        {filteredSets.length > 0 ? (
-          <div className="row-list">
-            {filteredSets.map((practiceSet) => {
-              const status = derivePracticeSetStatus(snapshot.state, practiceSet);
-
-              return (
-                <Link
-                  className="row"
-                  key={practiceSet.assessment.id}
-                  to={`/practice?set=${encodeURIComponent(practiceSet.assessment.id)}`}
+                <button
+                  className="study-filter"
+                  type="button"
+                  aria-pressed={categoryFilter === "domains"}
+                  onClick={() => setCategoryFilter("domains")}
                 >
-                  <span className="row-start" aria-hidden="true">
-                    {practiceSetBadge(practiceSet)}
-                  </span>
-                  <span className="row-body">
-                    <span className="row-title">{practiceSet.assessment.title}</span>
-                    <span className="row-meta">
-                      {domainLabel(practiceSet.domains.map((domain) => domain.code))} ·{" "}
-                      {practiceSet.objectiveIds.length} objectives · {practiceSet.questionCount} items ·{" "}
-                      {practiceSet.singleChoiceCount} single-choice / {practiceSet.multipleResponseCount}{" "}
-                      multiple-response
-                    </span>
-                    <span className="row-meta">
-                      <Badge tone={status.tone}>{status.label}</Badge>
-                    </span>
-                  </span>
-                  <span className="row-tail">Open</span>
-                </Link>
-              );
-            })}
-          </div>
-        ) : (
-          <EmptyState
-            icon={Search}
-            title="Không tìm thấy bộ đề phù hợp"
-            actions={
-              <button
-                className="button button--secondary"
-                type="button"
-                onClick={() => {
-                  setCategoryFilter("all");
-                  setStatusFilter("all");
-                  setSearchQuery("");
-                }}
-              >
-                <RotateCcw size={14} strokeWidth={2} aria-hidden="true" />
-                Đặt lại bộ lọc
-              </button>
-            }
-          >
-            Không có bộ đề thực hành nào thỏa mãn tiêu chí tìm kiếm và lọc hiện tại. Hãy thử chọn danh mục khác hoặc xóa từ khóa tìm kiếm.
-          </EmptyState>
-        )}
-      </section>
+                  Theo từng Domain ({categoryCounts.domains})
+                </button>
+                <button
+                  className="study-filter"
+                  type="button"
+                  aria-pressed={categoryFilter === "specialized"}
+                  onClick={() => setCategoryFilter("specialized")}
+                >
+                  Chuyên sâu & Ôn nhanh ({categoryCounts.specialized})
+                </button>
+              </div>
 
-      <section className="section">
-        <Callout tone="note" title="Objective coverage is complete; depth still varies">
-          The reviewed bank now has items for all seven official domains and every official
-          objective. Depth differs by domain, and every item is original practice material rather
-          than official exam content. The mixed set spans all domains, but it is practice, not a
-          mock exam.
-        </Callout>
-      </section>
+              <div className="practice-toolbar-row">
+                <div className="practice-search-wrap">
+                  <Search className="practice-search-icon" size={16} strokeWidth={2} aria-hidden="true" />
+                  <input
+                    className="practice-search-input"
+                    type="search"
+                    placeholder="Tìm theo tên bộ đề, domain, từ khóa..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    aria-label="Tìm kiếm bộ đề thực hành"
+                  />
+                  {searchQuery ? (
+                    <button
+                      className="practice-search-clear"
+                      type="button"
+                      onClick={() => setSearchQuery("")}
+                      aria-label="Xóa nội dung tìm kiếm"
+                    >
+                      <X size={14} strokeWidth={2} aria-hidden="true" />
+                    </button>
+                  ) : null}
+                </div>
+
+                <div className="practice-status-wrap">
+                  <label className="practice-status-label" htmlFor="practice-status-filter">
+                    Trạng thái:
+                  </label>
+                  <select
+                    className="practice-status-select"
+                    id="practice-status-filter"
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value as PracticeStatusFilter)}
+                  >
+                    <option value="all">Mọi trạng thái</option>
+                    <option value="not-started">Chưa làm</option>
+                    <option value="in-progress">Đang làm dở</option>
+                    <option value="completed">Đã hoàn thành</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="practice-counts-summary">
+                <span>
+                  Hiển thị {filteredSets.length} / {practiceSets.length} bộ đề
+                </span>
+                {categoryFilter !== "all" || statusFilter !== "all" || searchQuery ? (
+                  <button
+                    className="button button--ghost button--sm"
+                    type="button"
+                    onClick={() => {
+                      setCategoryFilter("all");
+                      setStatusFilter("all");
+                      setSearchQuery("");
+                    }}
+                  >
+                    <RotateCcw size={12} strokeWidth={2} aria-hidden="true" />
+                    Xóa bộ lọc
+                  </button>
+                ) : null}
+              </div>
+            </div>
+
+            {filteredSets.length > 0 ? (
+              <div className="row-list">
+                {filteredSets.map((practiceSet) => {
+                  const status = derivePracticeSetStatus(snapshot.state, practiceSet);
+
+                  return (
+                    <Link
+                      className="row"
+                      key={practiceSet.assessment.id}
+                      to={`/practice?set=${encodeURIComponent(practiceSet.assessment.id)}`}
+                    >
+                      <span className="row-start" aria-hidden="true">
+                        {practiceSetBadge(practiceSet)}
+                      </span>
+                      <span className="row-body">
+                        <span className="row-title">{practiceSet.assessment.title}</span>
+                        <span className="row-meta">
+                          {domainLabel(practiceSet.domains.map((domain) => domain.code))} ·{" "}
+                          {practiceSet.objectiveIds.length} objectives · {practiceSet.questionCount} items ·{" "}
+                          {practiceSet.singleChoiceCount} single-choice / {practiceSet.multipleResponseCount}{" "}
+                          multiple-response
+                        </span>
+                        <span className="row-meta">
+                          <Badge tone={status.tone}>{status.label}</Badge>
+                        </span>
+                      </span>
+                      <span className="row-tail">Open</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            ) : (
+              <EmptyState
+                icon={Search}
+                title="Không tìm thấy bộ đề phù hợp"
+                actions={
+                  <button
+                    className="button button--secondary"
+                    type="button"
+                    onClick={() => {
+                      setCategoryFilter("all");
+                      setStatusFilter("all");
+                      setSearchQuery("");
+                    }}
+                  >
+                    <RotateCcw size={14} strokeWidth={2} aria-hidden="true" />
+                    Đặt lại bộ lọc
+                  </button>
+                }
+              >
+                Không có bộ đề thực hành nào thỏa mãn tiêu chí tìm kiếm và lọc hiện tại. Hãy thử chọn danh mục khác hoặc xóa từ khóa tìm kiếm.
+              </EmptyState>
+            )}
+          </section>
+
+          <section className="section">
+            <Callout tone="note" title="Objective coverage is complete; depth still varies">
+              The reviewed bank now has items for all seven official domains and every official
+              objective. Depth differs by domain, and every item is original practice material rather
+              than official exam content. The mixed set spans all domains, but it is practice, not a
+              mock exam.
+            </Callout>
+          </section>
+        </div>
+      )}
     </div>
   );
 }
