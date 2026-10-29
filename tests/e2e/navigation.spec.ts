@@ -8,6 +8,7 @@ import { expectNoSkippedHeadingLevels, readHeadings } from "./helpers/a11y";
 import {
   getLessonNeighbours,
   getObjective,
+  getPracticeSetForDomain,
   getQuestionBankEntry,
   practiceSets,
   primaryBlueprint,
@@ -148,6 +149,13 @@ test.describe("lesson learning", () => {
           ? getObjective(firstEntry.examMapping.objectiveIds[0]!)
           : undefined;
 
+        const expectedPracticeSet = firstObjective
+          ? getPracticeSetForDomain(firstObjective.domain.id)
+          : undefined;
+        const expectedPracticeHref = expectedPracticeSet
+          ? `/practice?set=${encodeURIComponent(expectedPracticeSet.assessment.id)}`
+          : "/practice";
+
         expect(firstEntry, "related question must resolve in the bank").toBeDefined();
         expect(firstObjective, "related question objective must resolve").toBeDefined();
         await expect(
@@ -157,7 +165,7 @@ test.describe("lesson learning", () => {
           page
             .locator("#lesson-related-practice")
             .getByRole("link", { name: /practice/i }),
-        ).toHaveAttribute("href", "/practice");
+        ).toHaveAttribute("href", expectedPracticeHref);
       }
 
       const headings = await readHeadings(page);

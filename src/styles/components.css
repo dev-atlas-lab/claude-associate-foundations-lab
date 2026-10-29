@@ -254,6 +254,10 @@
   margin-right: 4px;
 }
 
+.row-meta .badge {
+  white-space: normal;
+}
+
 a.row {
   transition: background-color var(--duration-fast) var(--ease-out);
 }

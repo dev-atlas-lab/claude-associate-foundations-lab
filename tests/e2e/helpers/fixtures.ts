@@ -3,6 +3,7 @@ export {
   getLesson,
   getLessonNeighbours,
   getObjective,
+  getPracticeSetForDomain,
   getQuestion,
   getQuestionBankEntry,
   practiceSets,
