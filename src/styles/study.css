@@ -134,7 +134,8 @@
   color: var(--text-primary);
 }
 
-.study-filter[aria-current="page"] {
+.study-filter[aria-current="page"],
+.study-filter[aria-pressed="true"] {
   border-color: color-mix(in srgb, var(--accent) 45%, transparent);
   background: var(--accent-quiet);
   color: var(--accent-strong);
@@ -151,7 +152,8 @@
   text-align: center;
 }
 
-.study-filter[aria-current="page"] .study-filter-count {
+.study-filter[aria-current="page"] .study-filter-count,
+.study-filter[aria-pressed="true"] .study-filter-count {
   background: color-mix(in srgb, var(--accent) 20%, transparent);
   color: var(--accent-strong);
 }

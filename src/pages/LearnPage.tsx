@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Badge } from "../components/ui/Badge";
 import { Callout } from "../components/ui/Callout";
 import { PageHeader } from "../components/ui/PageHeader";
-import { plannedLessons, publishedLessons } from "../content";
+import { getObjective, plannedLessons, publishedLessons } from "../content";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 
 export function LearnPage() {
@@ -42,23 +42,36 @@ export function LearnPage() {
           <span className="section-note">{publishedLessons.length} published</span>
         </div>
         <div className="row-list">
-          {publishedLessons.map((lesson) => (
-            <Link className="row" key={lesson.id} to={`/learn/${lesson.id}`}>
-              <span className="row-start" aria-hidden="true">
-                <BookOpen size={14} strokeWidth={1.9} />
-              </span>
-              <span className="row-body">
-                <span className="row-title">{lesson.title}</span>
-                <span className="row-meta">
-                  <Clock3 size={11} strokeWidth={2} aria-hidden="true" />
-                  {lesson.estimatedMinutes} min · {lesson.level} ·{" "}
-                  {lesson.kind === "sample" ? "sample content" : "curriculum"}
-                  {lesson.examMapping.status === "unmapped" ? " · no official objective" : ""}
+          {publishedLessons.map((lesson) => {
+            const domain =
+              lesson.examMapping.objectiveIds.length > 0
+                ? getObjective(lesson.examMapping.objectiveIds[0]!)?.domain
+                : undefined;
+
+            return (
+              <Link className="row" key={lesson.id} to={`/learn/${lesson.id}`}>
+                <span className="row-start" aria-hidden="true">
+                  {domain ? domain.code.padStart(2, "0") : <BookOpen size={14} strokeWidth={1.9} />}
                 </span>
-              </span>
-              <ArrowRight size={15} strokeWidth={1.9} aria-hidden="true" className="row-tail" />
-            </Link>
-          ))}
+                <span className="row-body">
+                  <span className="row-title">{lesson.title}</span>
+                  <span className="row-meta">
+                    <Clock3 size={11} strokeWidth={2} aria-hidden="true" />
+                    {lesson.estimatedMinutes} min · {lesson.level} ·{" "}
+                    {lesson.kind === "sample"
+                      ? "sample content · unmapped"
+                      : domain
+                        ? `Domain ${domain.code} (${domain.weightPercent}%) · ${lesson.examMapping.objectiveIds.length} objectives`
+                        : "curriculum"}
+                    {lesson.relatedQuestionIds.length > 0
+                      ? ` · ${lesson.relatedQuestionIds.length} practice questions`
+                      : ""}
+                  </span>
+                </span>
+                <ArrowRight size={15} strokeWidth={1.9} aria-hidden="true" className="row-tail" />
+              </Link>
+            );
+          })}
         </div>
       </section>
 

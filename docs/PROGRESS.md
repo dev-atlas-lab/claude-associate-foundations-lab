@@ -1185,3 +1185,32 @@ not done in this audit.
   `timed-exam-page`): pass.
 - `npm run build`: pass.
 - `git diff --check`: clean.
+- Committed as `636c232` and pushed to `origin/main`; GitHub Actions CI run `40807509006` passed all
+  steps (typecheck, lint, unit/integration tests, production build, and Playwright E2E + axe
+  accessibility).
+
+## Phase C2.17 & C2.18 - Enriched Learn index, Glossary category filters & README sync (2026-10-29)
+
+### Scope
+
+- **Phase C2.17 (`src/pages/LearnPage.tsx`, `src/pages/GlossaryPage.tsx`, `src/styles/study.css`):**
+  - Enriched each lesson row on `/learn` with its official domain code in `.row-start` (`01`–`07` or
+    sample icon), domain title & blueprint weight (`Domain X (Y%)`), objective count (`N objectives`),
+    and linked practice question count (`M practice questions`).
+  - Added interactive category filter pills (`All categories` and distinct glossary categories with
+    term counts) on `/glossary` with accessible `aria-pressed` states, integrated with instant text
+    search and empty-state recovery.
+  - Added `.study-filter[aria-pressed="true"]` styles to `src/styles/study.css`.
+- **Phase C2.18 (`README.md`):**
+  - Synchronized `README.md` with all delivered phases through C2.17: 67-item bank (`35` single-choice,
+    `32` multiple-response), exact `8 / 13 / 7 / 10 / 7 / 9 / 6` blueprint allocation with spare items
+    in every domain, `/review?mode=practice`, deterministic question order shuffling, compatible study
+    data migration, actionable Study Desk, and `docs/DEPLOYMENT.md`.
+
+### Verification
+
+- `npm run typecheck`: pass (`tsc -b`, strict).
+- `npm run lint`: pass (`eslint .`, 0 problems).
+- Vitest suite (`glossary.test.tsx`, `navigation.test.tsx`): pass.
+- `npm run build`: pass.
+- `git diff --check`: clean.

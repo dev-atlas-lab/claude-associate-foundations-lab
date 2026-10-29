@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it } from "vitest";
@@ -54,5 +54,32 @@ describe("glossary search", () => {
 
     expect(screen.getByRole("status")).toHaveTextContent(`${glossary.length} terms`);
     expect(screen.getByRole("heading", { level: 2, name: "Token" })).toBeInTheDocument();
+  });
+
+  it("filters terms by category chip", async () => {
+    const user = userEvent.setup();
+    renderGlossary();
+
+    await screen.findByRole("searchbox", { name: "Search terms" });
+
+    const filterGroup = screen.getByRole("group", { name: "Filter terms by category" });
+    const allButton = within(filterGroup).getByRole("button", { name: /All categories/i });
+    expect(allButton).toHaveAttribute("aria-pressed", "true");
+
+    const categoryButtons = within(filterGroup).getAllByRole("button");
+    expect(categoryButtons.length).toBeGreaterThan(1);
+
+    const firstCategoryButton = categoryButtons[1]!;
+    await user.click(firstCategoryButton);
+
+    expect(firstCategoryButton).toHaveAttribute("aria-pressed", "true");
+    expect(allButton).toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByRole("status")).toHaveTextContent(new RegExp(`of ${glossary.length} terms`));
+
+    // Reset back to All
+    await user.click(allButton);
+    expect(allButton).toHaveAttribute("aria-pressed", "true");
+    expect(firstCategoryButton).toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByRole("status")).toHaveTextContent(`${glossary.length} terms`);
   });
 });

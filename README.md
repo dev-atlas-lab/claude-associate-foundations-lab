@@ -6,8 +6,8 @@ The product pairs Vietnamese explanations with English assessments: lessons, int
 
 ## Current status
 
-Phases B, C0, C1, C2.1, C2.2a, C2.2b, C2.3, C2.4, C2.5, C2.6, C2.7 and C2.8 are implemented on top of the
-validated scaffold.
+Phases B, C0, C1, C2.1, C2.2a, C2.2b, C2.3, C2.4, C2.5, C2.6, C2.7, C2.8, C2.9, C2.10, C2.11, C2.12,
+C2.13, C2.14, C2.15, C2.16, and C2.17 are implemented on top of the validated scaffold.
 
 - Design tokens, Dark / Light / System themes with localStorage persistence, responsive sidebar and
   mobile drawer, skip link, focus management, and reduced-motion support.
@@ -21,56 +21,61 @@ validated scaffold.
   explanations, and content status. `src/content/` holds the CCAO-F-specific data.
 - One representative lesson (`/learn/context-window`) covers the full reading pattern: Vietnamese
   explanation, English technical terms, an interactive budget diagram, a worked scenario, and an
-  English knowledge check with Vietnamese explanations for every option. It is explicitly **not**
-  mapped to an official objective yet.
+  English knowledge check with Vietnamese explanations for every option. It is refined for the Associate
+  audience and explicitly **not** mapped to an official objective yet.
 - The first exam-mapped curriculum lesson, `/learn/evaluation-basics`, teaches all six Domain 2
   objectives: accuracy/completeness, hallucination/inconsistency and bias detection, fact-checking,
   human-review escalation, audience editing, and output-format selection. It links to reviewed bank
   questions and is explicit about the limits of its bias evidence.
-- Seven mapped curriculum lessons now cover every exam domain: `/learn/evaluation-basics` (Domain 2),
+- Seven mapped curriculum lessons cover every exam domain: `/learn/evaluation-basics` (Domain 2),
   `/learn/prompt-structure` (Domain 1), `/learn/configuration-basics` (Domain 5),
   `/learn/product-selection` (Domain 3), `/learn/workflow-design` (Domain 4),
   `/learn/governance-responsible-use` (Domain 6), and `/learn/troubleshooting-optimization` (Domain 7).
   Each teaches all objectives in its domain, links to reviewed bank items, and includes an English
-  knowledge check with Vietnamese explanations.
+  knowledge check with Vietnamese explanations. The `/learn` index exposes domain codes, blueprint weights,
+  objective counts, and linked practice counts for each module.
 - A deterministic, certification-neutral assessment core in `src/domain/assessment.ts` supports
   single-choice and exact-set multiple-response scoring, answer changes, navigation, flags, explicit
   submission confirmation, review navigation, and idempotent submission. Scores are derived from
   submitted answers rather than stored in mutable state.
-- A reviewed, source-grounded bank of **62 original items** across all seven domains (32
-  single-choice, 30 multiple-response), covering all 30 official objectives with at least two items
+- A reviewed, source-grounded bank of **67 original items** across all seven domains (35
+  single-choice, 32 multiple-response), covering all 30 official objectives with at least two items
   each. Bank metadata is validated against the blueprint, certification, sources, and review status;
   no official questions are copied. See `src/domain/question-bank.ts`.
 - Practice (`/practice`) is registry-driven: eight sets (seven domain sets plus one mixed set) support
-  `?set=` deep links, resume an in-progress attempt, and save progress locally. English questions and
-  Vietnamese explanations appear after submission. There is no timer and no official form.
+  `?set=` deep links, resume an in-progress attempt, deterministic shuffled question ordering (`Start
+  shuffled` and `Shuffle & retry`), and save progress locally. English questions and Vietnamese
+  explanations appear after submission.
 - Versioned local persistence (`cfl.study.v1`) with a content fingerprint, corrupt/incompatible/
-  unavailable handling, raw backup download, and a two-step reset. Submitted attempts are immutable.
-- The Review page derives incorrect, unanswered, and flagged items from submitted attempts and
-  resolves them only through an explicit "Mark reviewed" action.
-- Progress separates reviewed-bank coverage from personal performance and shows a real zero-activity
-  state instead of a fabricated score.
-- The Mock exam page runs a blueprint-weighted **60-of-60 preview** drawn from the 62 reviewed items,
-  with no shortfall, no filler, no duplicates, no timer, and no scaled score. Two items are not
-  selected in a given deterministic preview.
+  unavailable handling, compatible study data migration for updated fingerprints, raw backup download,
+  and a two-step reset. Submitted attempts are immutable.
+- The Review page derives incorrect, unanswered, and flagged items from submitted attempts, supports an
+  in-memory focused practice mode (`/review?mode=practice`) with post-submission queue resolution, and
+  resolves items through an explicit action.
+- Progress separates reviewed-bank coverage from personal performance, reporting unique bank exposure
+  (67 items, 30 objectives), First-seen vs. Latest vs. Cumulative accuracy, a 30-objective coverage matrix,
+  and chronological submitted attempt history across study and timed simulations.
+- Dashboard (`/`) serves as an actionable study desk, surfacing active attempt resumption, open review
+  shortcuts, and domain blueprint rows with direct links to mapped lessons, domain practice, and
+  local bank exposure.
+- Technical glossary (`/glossary`) supports instant text search alongside interactive category filter
+  chips with live term counts.
+- The Mock exam page runs a blueprint-weighted **60-of-60 preview** drawn from the 67 reviewed items
+  with the exact `8 / 13 / 7 / 10 / 7 / 9 / 6` blueprint allocation, no shortfall, no filler, no
+  duplicates, no timer, and no scaled score. Every domain has spare items for variation.
 - The separate timed simulation (`/mock-exam/timed`) runs the verified **60-question / 120-minute**
   format with a persisted deadline, reload resume, auto-submit at expiry, manual/expiry submission
   labels, and an immutable raw result with post-submission review. It stores one attempt at
-  `cfl.timed-exam.v1`, independently of Practice data at `cfl.study.v1`. It is original practice
-  content, not an official exam form, scaled score, or pass prediction.
+  `cfl.timed-exam.v1`, independently of Practice data at `cfl.study.v1`.
 - Overall reviewed coverage is **30 / 30** objectives across all seven domains, with a mapped lesson
-  and at least two practice items for every objective. Depth remains limited (two to four items per
-  objective), so this is not a claim of exam readiness.
-- The Context Window sample lesson and its unmapped knowledge check remain available; the sample
-  assessment definition is still in the pack but is no longer the `/practice` surface.
+  and at least two practice items for every objective.
 - GitHub repository exists at <https://github.com/dev-atlas-lab/claude-associate-foundations-lab> on `main`.
 - A GitHub Actions CI workflow (`.github/workflows/ci.yml`) validates pull requests and pushes to
   `main` with typecheck, lint, unit/integration tests, the production build, and the Chromium
-  Playwright/axe suite. The first `main` run passed on 2026-10-28
-  ([run 40611368468](https://github.com/dev-atlas-lab/claude-associate-foundations-lab/actions/runs/40611368468)).
-- No Vercel project has been connected yet.
+  Playwright/axe suite.
+- Deployment runbook and SPA rewrite verification are documented in `docs/DEPLOYMENT.md`.
 
-Local quality gates currently pass: typecheck, lint, **177 unit/integration tests across 23 files**,
+Local quality gates currently pass: typecheck, lint, **201 unit/integration tests across 23 files**,
 **116 Playwright tests across 8 files**, and the production build. Routes are code-split with
 `React.lazy`; the timed page is its own 41.25 kB chunk (11.69 kB gzip), the largest JS chunks are
 434.92 kB (118.38 kB gzip) and 340.29 kB (107.90 kB gzip), and there is no Vite chunk-size warning.

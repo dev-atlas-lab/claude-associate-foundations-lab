@@ -10,20 +10,40 @@ export function GlossaryPage() {
   useDocumentTitle("Glossary");
 
   const [query, setQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const normalizedQuery = query.trim().toLowerCase();
 
+  const categories = useMemo(() => {
+    const unique = [...new Set(glossary.map((entry) => entry.category))].sort();
+    return ["all", ...unique];
+  }, []);
+
+  const countsByCategory = useMemo(() => {
+    const counts = new Map<string, number>();
+    counts.set("all", glossary.length);
+    for (const entry of glossary) {
+      counts.set(entry.category, (counts.get(entry.category) ?? 0) + 1);
+    }
+    return counts;
+  }, []);
+
   const results = useMemo(() => {
-    if (!normalizedQuery) {
-      return glossary;
+    let items =
+      selectedCategory === "all"
+        ? glossary
+        : glossary.filter((entry) => entry.category === selectedCategory);
+
+    if (normalizedQuery) {
+      items = items.filter((entry) =>
+        [entry.term, entry.expansion ?? "", entry.vi, entry.definition, entry.category]
+          .join(" ")
+          .toLowerCase()
+          .includes(normalizedQuery),
+      );
     }
 
-    return glossary.filter((entry) =>
-      [entry.term, entry.expansion ?? "", entry.vi, entry.definition, entry.category]
-        .join(" ")
-        .toLowerCase()
-        .includes(normalizedQuery),
-    );
-  }, [normalizedQuery]);
+    return items;
+  }, [selectedCategory, normalizedQuery]);
 
   return (
     <div className="page">
@@ -33,6 +53,27 @@ export function GlossaryPage() {
         lede="English terms kept intact, with a Vietnamese explanation of what each one actually changes in practice. Definitions are general study notes, not official exam wording."
         meta={<Badge tone="info">General study notes</Badge>}
       />
+
+      <div className="study-filters" role="group" aria-label="Filter terms by category">
+        {categories.map((cat) => {
+          const count = countsByCategory.get(cat) ?? 0;
+          const label = cat === "all" ? "All categories" : cat;
+          const isSelected = selectedCategory === cat;
+
+          return (
+            <button
+              type="button"
+              className="study-filter"
+              key={cat}
+              aria-pressed={isSelected}
+              onClick={() => setSelectedCategory(cat)}
+            >
+              <span>{label}</span>
+              <span className="study-filter-count">{count}</span>
+            </button>
+          );
+        })}
+      </div>
 
       <div className="search-row">
         <div className="field">
@@ -55,7 +96,7 @@ export function GlossaryPage() {
           </button>
         ) : null}
         <p className="result-count" role="status">
-          {normalizedQuery
+          {normalizedQuery || selectedCategory !== "all"
             ? `${results.length} of ${glossary.length} terms`
             : `${glossary.length} terms`}
         </p>
@@ -67,12 +108,19 @@ export function GlossaryPage() {
             icon={Search}
             title="No matching terms"
             actions={
-              <button type="button" className="button button--secondary" onClick={() => setQuery("")}>
+              <button
+                type="button"
+                className="button button--secondary"
+                onClick={() => {
+                  setQuery("");
+                  setSelectedCategory("all");
+                }}
+              >
                 Show all terms
               </button>
             }
           >
-            Nothing in the glossary matches “{query.trim()}”. Try a shorter term such as{" "}
+            Nothing in the glossary matches “{query.trim() || selectedCategory}”. Try a shorter term such as{" "}
             <span className="mono">token</span> or <span className="mono">context</span>.
           </EmptyState>
         ) : (
