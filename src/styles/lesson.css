@@ -911,7 +911,7 @@ a.pager-card:hover {
 }
 
 .flow-node-badge {
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -929,7 +929,7 @@ a.pager-card:hover {
 }
 
 .flow-node-sub {
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   color: var(--text-secondary);
 }
 
@@ -942,7 +942,7 @@ a.pager-card:hover {
 }
 
 .flow-arrow-text {
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   color: var(--text-secondary);
   margin-top: 2px;
 }
@@ -1056,13 +1056,13 @@ a.pager-card:hover {
 }
 
 .calc-model-badge {
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   color: var(--text-secondary);
 }
 
 .calc-model-price {
   font-family: var(--font-mono);
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   color: var(--accent-strong);
 }
 
@@ -1105,7 +1105,7 @@ a.pager-card:hover {
 .calc-slider-hints {
   display: flex;
   justify-content: space-between;
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   color: var(--text-secondary);
 }
 
@@ -1162,7 +1162,7 @@ a.pager-card:hover {
 }
 
 .calc-card-eyebrow {
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   font-weight: 700;
   text-transform: uppercase;
   color: var(--text-secondary);
@@ -1301,7 +1301,7 @@ a.pager-card:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--bg);
+  color: var(--text-primary);
   background: transparent;
   flex: 0 0 auto;
 }
@@ -1309,6 +1309,7 @@ a.pager-card:hover {
 .wb-checkbox--checked {
   background: var(--accent);
   border-color: var(--accent);
+  color: var(--accent-contrast);
 }
 
 .wb-layer-name {
@@ -1361,7 +1362,7 @@ a.pager-card:hover {
   height: 100%;
   background: var(--info);
   border-radius: 4px;
-  transition: width var(--duration-normal) var(--ease-out);
+  transition: width var(--duration-base) var(--ease-out);
 }
 
 .wb-meter-bar--ok {
