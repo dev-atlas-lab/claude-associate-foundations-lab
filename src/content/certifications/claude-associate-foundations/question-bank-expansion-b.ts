@@ -378,6 +378,46 @@ const privacyControls: Question = questionSchema.parse({
   ],
 });
 
+const thirdPartyConnectorGovernance: Question = questionSchema.parse({
+  id: "governance-privacy-third-party-connector",
+  type: "single-choice",
+  stem: "A customer-ops team wants to connect a shared Google Drive folder containing support transcripts to a Claude Project. How should data privacy and permissions be governed before enabling the integration?",
+  choices: [
+    {
+      id: "verify-rights-permissions-and-terms",
+      text: "Confirm the team has permission to use the transcripts, verify workspace retention and training settings, account for the third-party service's own privacy terms, and restrict connector write actions to least privilege.",
+      explanation:
+        "Đúng: người dùng phải có quyền đối với dữ liệu, kiểm tra retention/training settings, lưu ý rằng tích hợp bên thứ ba xử lý dữ liệu theo chính sách riêng của họ, và giới hạn quyền connector theo nguyên tắc least privilege.",
+    },
+    {
+      id: "provider-policy-overrides-drive",
+      text: "Enable the connector immediately because Anthropic's Privacy Policy automatically overrides Google Drive's terms and restricts folder access to read-only.",
+      explanation:
+        "Sai: tích hợp bên thứ ba vẫn chịu sự điều chỉnh của chính sách riêng bên đó, và connector thừa hưởng quyền của người dùng trừ khi được giới hạn rõ ràng.",
+    },
+    {
+      id: "connector-grants-extra-access",
+      text: "Use the connector so team members without Drive access can read restricted transcripts inside the Project.",
+      explanation:
+        "Sai: connector thừa hưởng quyền của tài khoản kết nối trong hệ thống nguồn và không phải cơ chế để vượt qua kiểm soát truy cập của tổ chức.",
+    },
+    {
+      id: "skip-classification-for-internal-drive",
+      text: "Skip data classification and redaction because files stored in a company Drive folder are already approved for any AI workflow.",
+      explanation:
+        "Sai: dữ liệu lưu nội bộ vẫn có thể chứa thông tin cá nhân hoặc nhạy cảm và cần được phân loại, tối thiểu hóa trước khi đưa vào AI workflow.",
+    },
+  ],
+  correctChoiceIds: ["verify-rights-permissions-and-terms"],
+  correctExplanation:
+    "Theo Privacy Policy và tài liệu connector của Anthropic, người dùng chịu trách nhiệm bảo đảm có quyền sử dụng dữ liệu trước khi tải lên hoặc kết nối dịch vụ bên thứ ba; các tích hợp bên thứ ba xử lý dữ liệu theo chính sách riêng của họ; và connector thừa hưởng quyền từ hệ thống nguồn trong khi Owner có thể giới hạn các hành động như write. Vì vậy cần kiểm tra quyền dữ liệu, retention/training settings và áp dụng least privilege trước khi bật tích hợp.",
+  sourceIds: [
+    "anthropic-privacy-policy",
+    "anthropic-connectors-help",
+    "anthropic-google-workspace-connectors",
+  ],
+});
+
 const hiringScreeningPolicy: Question = questionSchema.parse({
   id: "governance-policy-hiring-screening",
   type: "single-choice",
@@ -605,6 +645,11 @@ export const governanceExpansionQuestionBank: QuestionBankEntry[] = [
     "anthropic-privacy-policy",
     "anthropic-google-workspace-connectors",
     "anthropic-usage-policy",
+  ]),
+  reviewedEntry(thirdPartyConnectorGovernance, "governance-data-privacy", [
+    "anthropic-privacy-policy",
+    "anthropic-connectors-help",
+    "anthropic-google-workspace-connectors",
   ]),
   reviewedEntry(hiringScreeningPolicy, "governance-policies", [
     "anthropic-usage-policy",

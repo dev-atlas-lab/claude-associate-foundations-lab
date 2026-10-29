@@ -158,8 +158,8 @@ describe("progress summary and breakdown selectors", () => {
       questionById,
     );
 
-    expect(summary.bank.totalItems).toBe(62);
-    expect(summary.bank.singleChoiceItems).toBe(32);
+    expect(summary.bank.totalItems).toBe(63);
+    expect(summary.bank.singleChoiceItems).toBe(33);
     expect(summary.bank.multipleResponseItems).toBe(30);
     expect(summary.bank.objectivesCovered).toBe(30);
     expect(summary.bank.objectivesTotal).toBe(30);
@@ -209,7 +209,7 @@ describe("progress summary and breakdown selectors", () => {
       questionById,
     );
 
-    expect(summary.bank.totalItems).toBe(62);
+    expect(summary.bank.totalItems).toBe(63);
     expect(summary.personal.submittedAttempts).toBe(1);
     expect(summary.personal.studySubmittedAttempts).toBe(1);
     expect(summary.personal.timedSubmittedAttempts).toBe(0);
@@ -507,7 +507,7 @@ describe("progress summary and breakdown selectors", () => {
     expect(domainBreakdown).toHaveLength(7);
     expect(
       domainBreakdown.map((row) => row.totalQuestions),
-    ).toEqual([8, 13, 8, 10, 7, 8, 6]);
+    ).toEqual([8, 13, 7, 10, 7, 9, 6]);
     expect(
       domainBreakdown.every((row) => row.lessonId !== undefined && row.practiceSetId !== undefined),
     ).toBe(true);

@@ -1,10 +1,11 @@
 import { lessonSchema, type Lesson } from "../../../../domain";
 
 /**
- * Design-vertical-slice lesson. The technical content is checked against
- * Anthropic documentation, but the lesson is deliberately not mapped to an
- * official CCAO-F objective until it has been rewritten for the Associate
- * audience and reviewed against the verified blueprint.
+ * Design-vertical-slice sample lesson refined for the Associate audience.
+ * The technical content is checked against Anthropic documentation for both
+ * workspace workflows (Projects, chat history, uploaded files) and underlying
+ * context-window mechanics, while remaining explicitly unmapped (`kind: "sample"`)
+ * alongside the seven whole-domain curriculum lessons.
  */
 export const contextWindowLesson: Lesson = lessonSchema.parse({
   id: "context-window",
@@ -16,63 +17,64 @@ export const contextWindowLesson: Lesson = lessonSchema.parse({
   title: "Context window và ngân sách ngữ cảnh",
   englishTitle: "Context window and context budgeting",
   summary:
-    "Hiểu context window như bộ nhớ làm việc của model, biết thứ gì chiếm chỗ trong đó, và chọn lọc ngữ cảnh thay vì nhồi thêm tài liệu.",
+    "Hiểu context window như bộ nhớ làm việc của Claude trong cả giao diện chat/Projects lẫn workflow tích hợp, biết thứ gì chiếm chỗ trong đó, và chọn lọc ngữ cảnh thay vì nhồi thêm tài liệu.",
   level: "foundation",
-  estimatedMinutes: 9,
+  estimatedMinutes: 11,
   verification: {
     status: "verified",
-    checkedAt: "2026-10-26",
-    note: "Nội dung kỹ thuật được đối chiếu với tài liệu Anthropic về context window, token counting, compaction và context engineering (truy cập 26/10/2026). Đây là bài mẫu thiết kế, không phải bài học đã được ánh xạ vào blueprint CCAO-F.",
+    checkedAt: "2026-10-29",
+    note: "Nội dung kỹ thuật được đối chiếu với tài liệu Anthropic về context window, token counting, compaction, context engineering và quản lý Claude Projects (rà soát 29/10/2026 cho đối tượng Associate). Đây là bài mẫu nền tảng, giữ trạng thái unmapped để tách biệt với 7 bài học toàn domain đã ánh xạ vào blueprint CCAO-F.",
     sourceIds: [
       "anthropic-context-windows-doc",
       "anthropic-token-counting-doc",
       "anthropic-compaction-doc",
       "anthropic-context-engineering-blog",
+      "anthropic-projects-manage",
     ],
   },
   examMapping: {
     status: "unmapped",
     objectiveIds: [],
-    note: "Bài mẫu cho giai đoạn thiết kế, chưa được rà soát để gắn với objective chính thức nào của kỳ thi CCAO-F. Nội dung kỹ thuật dựa trên tài liệu Anthropic, không phải bằng chứng về phạm vi kỳ thi.",
+    note: "Bài mẫu nền tảng đã biên tập cho đối tượng Associate để minh hoạ cơ chế context window trước khi học Domain 3 (`product-selection`), giữ trạng thái unmapped để không làm lệch thống kê 7 bài học theo domain.",
   },
   objectives: [
-    "Giải thích context window là gì và vì sao nó giới hạn lượng thông tin model xử lý trong một request.",
-    "Phân biệt phần input và phần output cùng chia sẻ một cửa sổ ngữ cảnh.",
-    "Chọn chiến lược làm gọn ngữ cảnh khi hội thoại hoặc tài liệu bắt đầu quá lớn.",
+    "Giải thích context window là gì và vì sao nó giới hạn lượng thông tin Claude xử lý trong một lượt hội thoại hoặc request.",
+    "Nhận diện các thành phần cùng chia sẻ một cửa sổ ngữ cảnh trong Claude chat, Projects và workflow tích hợp (instructions, lịch sử hội thoại, tài liệu đính kèm/truy xuất và phần trả lời).",
+    "Chọn chiến lược làm gọn ngữ cảnh (tóm tắt sang chat mới, chọn lọc tài liệu đưa vào Project, hoặc compaction) khi hội thoại bắt đầu dài và nhiễu.",
   ],
   sections: [
     {
       kind: "paragraphs",
       heading: "Context window là gì?",
       paragraphs: [
-        "Context window là toàn bộ văn bản mà model có thể tham chiếu khi tạo câu trả lời — bao gồm cả câu trả lời đang được sinh ra. Anthropic mô tả nó như “working memory” của model: không phải kho dữ liệu huấn luyện, mà là phần ngữ cảnh của request hiện tại.",
-        "Vì là bộ nhớ làm việc, mọi thứ gửi kèm đều chiếm chỗ: system prompt, toàn bộ messages (kể cả tool result, ảnh và tài liệu), định nghĩa tool, và cả output mà model sinh ra. Token dùng cho thinking cũng tính vào cửa sổ này.",
-        "Mỗi response trả về trường usage cho biết request đã dùng bao nhiêu token. Khi cần biết trước, token counting API cho phép đo một request mà không phải gửi nó đi.",
+        "Context window là toàn bộ văn bản mà model có thể tham chiếu khi tạo câu trả lời — bao gồm cả câu trả lời đang được sinh ra. Anthropic mô tả nó như “working memory” của model: không phải kho dữ liệu huấn luyện, mà là phần ngữ cảnh của phiên làm việc hoặc request hiện tại.",
+        "Dù bạn dùng Claude qua giao diện chat/Projects hay qua workflow tích hợp, mọi thứ đi kèm lượt hỏi đều chiếm chỗ trong cùng một bộ nhớ làm việc: system prompt hoặc Project instructions, toàn bộ lịch sử messages trong cuộc hội thoại hiện tại (kể cả tool result, ảnh và file đính kèm), các đoạn tài liệu được nạp từ Project knowledge, và cả output mà Claude sinh ra. Token dùng cho extended thinking cũng tính vào cửa sổ này.",
+        "Ở cấp độ tích hợp API, mỗi response trả về trường usage cho biết request đã dùng bao nhiêu token và token counting API cho phép đo trước khi gửi. Ở cấp độ người dùng Claude hằng ngày, điều đó có nghĩa là một cuộc chat kéo dài qua nhiều chủ đề hoặc đính kèm nguyên tệp tài liệu lớn sẽ nhanh chóng làm đầy ngân sách ngữ cảnh.",
       ],
     },
     {
       kind: "callout",
       tone: "caution",
       title: "Nhiều context hơn không tự động tốt hơn",
-      body: "Khi số token tăng, độ chính xác và khả năng hồi tưởng có thể giảm — Anthropic gọi hiện tượng này là context rot. Chọn lọc nội dung quan trọng thường hiệu quả hơn là nhồi thêm tài liệu.",
+      body: "Khi số token tăng, độ chính xác và khả năng hồi tưởng các ràng buộc quan trọng có thể giảm — Anthropic gọi hiện tượng này là context rot. Chọn lọc tài liệu đúng trọng tâm hoặc tóm tắt các quyết định đã chốt sang một cuộc chat mới thường hiệu quả hơn là tiếp tục nối dài một luồng hội thoại đã nhiễu.",
     },
     {
       kind: "paragraphs",
       heading: "Token không phải từ",
       paragraphs: [
-        "Token là đơn vị văn bản model xử lý, không tương ứng 1-1 với từ. Cùng một ý, tiếng Việt thường tốn nhiều token hơn tiếng Anh; code, JSON và dãy số dài cũng tốn token hơn văn xuôi thông thường.",
-        "Vì vậy đừng ước lượng ngân sách bằng cách đếm từ. Hãy đo bằng token counting API, và nhớ rằng con số trả về là ước tính: lượng token thực tế có thể lệch một chút so với lúc gửi thật.",
+        "Token là đơn vị văn bản model xử lý, không tương ứng 1-1 với từ. Cùng một ý, tiếng Việt thường tốn nhiều token hơn tiếng Anh; bảng biểu lớn, code, JSON và dãy số dài cũng tốn token hơn văn xuôi thông thường.",
+        "Vì vậy đừng ước lượng ngân sách chỉ bằng số trang hay số từ. Khi làm việc trong Claude Projects hoặc chat, hãy ưu tiên đưa các tài liệu chuẩn hóa, gọn và giàu tín hiệu (high-signal) thay vì tải lên các bản nháp trùng lặp; khi xây dựng workflow tự động, hãy đo bằng token counting API và lưu ý con số trả về là ước tính.",
       ],
     },
     {
       kind: "list",
       heading: "Giữ ngữ cảnh gọn mà vẫn đủ thông tin",
       items: [
-        "Đặt instruction quan trọng trong system prompt ổn định thay vì lặp lại ở mỗi lượt.",
-        "Tóm tắt các lượt hội thoại cũ thành ghi chú ngắn thay vì gửi lại toàn bộ lịch sử.",
-        "Chỉ đưa những đoạn tài liệu thực sự liên quan (retrieval) thay vì cả kho tài liệu.",
-        "Với hội thoại rất dài, dùng compaction hoặc context editing để phần cũ được nén lại.",
-        "Chừa ngân sách cho output: input và output cùng chia sẻ một cửa sổ, nên đặt max_tokens quá lớn cũng ăn vào chỗ trống.",
+        "Đặt quy tắc và vai trò ổn định trong Project instructions hoặc system prompt thay vì lặp lại ở mỗi lượt chat.",
+        "Khi cuộc trò chuyện đổi sang tác vụ mới hoặc đã qua nhiều vòng thử-sai, hãy tóm tắt các quyết định đã chốt thành ghi chú ngắn rồi mở một cuộc chat mới.",
+        "Chỉ đưa những tài liệu hoặc đoạn trích thực sự liên quan (retrieval / curated Project knowledge) thay vì đính kèm cả kho tài liệu vào mỗi lượt.",
+        "Với các luồng hội thoại hoặc agent chạy dài, dùng tóm tắt có cấu trúc, compaction hoặc context editing để nén phần lịch sử cũ.",
+        "Chừa ngân sách cho output: input và output cùng chia sẻ một cửa sổ, nên input quá nặng hoặc đặt max_tokens quá lớn đều làm hẹp phần còn lại.",
       ],
     },
     {
@@ -179,5 +181,6 @@ export const contextWindowLesson: Lesson = lessonSchema.parse({
     "anthropic-token-counting-doc",
     "anthropic-compaction-doc",
     "anthropic-context-engineering-blog",
+    "anthropic-projects-manage",
   ],
 });

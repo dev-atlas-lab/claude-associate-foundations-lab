@@ -251,6 +251,7 @@ export const governanceResponsibleUseLesson: Lesson = lessonSchema.parse({
     "governance-customer-assistant-safeguards",
     "governance-privacy-confidential-upload",
     "governance-privacy-controls",
+    "governance-privacy-third-party-connector",
     "governance-policy-hiring-screening",
     "governance-policy-operations",
     "governance-use-case-triage",

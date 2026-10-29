@@ -139,12 +139,13 @@ export const domainSixGovernanceAssessment: AssessmentDefinition =
     id: "domain-6-governance-set",
     title: "Domain 6: Governance, Risk, and Responsible Use",
     description:
-      "Eight reviewed English practice items on appropriate use cases, data privacy, organizational policy, high-risk review, and human oversight. Explanations for every option are in Vietnamese after submission. These teach review principles, not legal advice. Original practice material, not official CCAO-F content.",
+      "Nine reviewed English practice items on appropriate use cases, data privacy, third-party connector governance, organizational policy, high-risk review, and human oversight. Explanations for every option are in Vietnamese after submission. These teach review principles, not legal advice. Original practice material, not official CCAO-F content.",
     questionIds: [
       "governance-human-oversight",
       "governance-customer-assistant-safeguards",
       "governance-privacy-confidential-upload",
       "governance-privacy-controls",
+      "governance-privacy-third-party-connector",
       "governance-policy-hiring-screening",
       "governance-policy-operations",
       "governance-use-case-triage",

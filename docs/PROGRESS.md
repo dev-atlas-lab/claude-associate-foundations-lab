@@ -1064,3 +1064,33 @@ not done in this audit.
 - Targeted Vitest suite (`src/test/progress-selectors.test.ts` and `src/test/study-journey.test.tsx`):
   pass.
 - `git diff --check`: clean.
+- Committed as `3e90c92` and pushed to `origin/main`; GitHub Actions CI run `40800441329` passed all
+  steps (typecheck, lint, unit/integration tests, production build, and Playwright E2E + axe
+  accessibility).
+
+## Phase C2.12 - Domain 6 9th reviewed item & Associate-refined Context Window lesson (2026-10-29)
+
+### Scope
+
+- Added `governance-privacy-third-party-connector` (single-choice, mapped to
+  `governance-data-privacy`) to `src/content/certifications/claude-associate-foundations/question-bank-expansion-b.ts`,
+  `domainSixGovernanceAssessment` (`src/content/certifications/claude-associate-foundations/assessments.ts`),
+  and `governanceResponsibleUseLesson.relatedQuestionIds`
+  (`src/content/certifications/claude-associate-foundations/lessons/governance-responsible-use.ts`).
+- The reviewed question bank now totals **63** items (33 single-choice, 30 multiple-response) with
+  **9** reviewed Domain 6 items, allowing the 60-item timed simulation and untimed mock preview to
+  fill the exact blueprint-weighted distribution **`8 / 13 / 7 / 10 / 7 / 9 / 6`** without requiring
+  the previous Domain 6-to-Domain 3 fallback.
+- Refined `src/content/certifications/claude-associate-foundations/lessons/context-window.ts` for the
+  Associate audience by connecting context-window working memory, token budgeting, and `context rot`
+  to everyday Claude workflows (Projects knowledge, chat history, file attachments, and summarizing
+  state into a clean chat), while preserving its `kind: "sample"` and `examMapping.status:
+  "unmapped"` invariants.
+
+### Verification
+
+- `npm run typecheck`: pass (`tsc -b`, strict).
+- `npm run lint`: pass (`eslint .`, 0 problems).
+- Targeted Vitest suite (`question-bank`, `timed-exam-content`, `progress-selectors`, `curriculum`,
+  `lesson`, `domain-2-content`, `mock-exam`): **7 files / 69 tests pass**.
+- `git diff --check`: clean.

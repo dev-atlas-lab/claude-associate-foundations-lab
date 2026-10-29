@@ -231,7 +231,8 @@ Status: implemented, verified locally, committed as `38b59b6`, and verified in G
 
 ### C2.11 - Focused "Practice Open Review Items" runner
 
-Status: implemented and verified locally (2026-10-29).
+Status: implemented, verified locally, committed as `3e90c92`, and verified in GitHub Actions CI run
+`40800441329` (2026-10-29).
 
 - Added `buildReviewPracticeSet` and `findCorrectlyAnsweredStudyReviewItems` in
   `src/features/progress/selectors.ts` to build a deduplicated, filter-aware in-memory practice set
@@ -240,6 +241,19 @@ Status: implemented and verified locally (2026-10-29).
 - Added `/review?mode=practice` (`ReviewPracticeView`) on `ReviewPage.tsx` so learners can re-test
   their open mistakes interactively without seeing the answer key first, and explicitly resolve the
   `cfl.study.v1` items they answered correctly after submission.
+
+### C2.12 - Domain 6 9th reviewed item & Associate-refined Context Window lesson
+
+Status: implemented and verified locally (2026-10-29).
+
+- Added `governance-privacy-third-party-connector` (Domain 6, `governance-data-privacy`), bringing
+  the reviewed bank to **63** items (33 single-choice, 30 multiple-response) and **9** Domain 6
+  items so the 60-item timed exam and mock preview fill the exact `8 / 13 / 7 / 10 / 7 / 9 / 6`
+  blueprint allocation.
+- Refined `context-window` (`src/content/certifications/claude-associate-foundations/lessons/context-window.ts`)
+  for the Associate audience (connecting working memory and token budgeting to Projects, chat
+  history, file uploads, and fresh-chat handoffs) while keeping it explicitly unmapped (`kind:
+  "sample"`).
 
 ### Remaining Phase D work
 
