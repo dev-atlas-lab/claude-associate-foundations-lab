@@ -10,12 +10,14 @@ import {
   startAssessment,
   submitAssessment,
 } from "../domain";
+import { StudyStorageNotice } from "../features/study/components/StudyStorageNotice";
 import { ThemeProvider } from "../hooks/ThemeProvider";
 import { MockExamPage } from "../pages/MockExamPage";
 import { ProgressPage } from "../pages/ProgressPage";
 import { SettingsPage } from "../pages/SettingsPage";
-import { STUDY_STORAGE_KEY } from "../persistence/storage";
+import { STUDY_SCHEMA_VERSION, STUDY_STORAGE_KEY } from "../persistence/storage";
 import {
+  reloadStudyStore,
   resetStudyData,
   saveStudySession,
   startStudyAttempt,
@@ -137,5 +139,68 @@ describe("settings local data", () => {
     expect(
       screen.queryByRole("button", { name: "Confirm reset study data" }),
     ).not.toBeInTheDocument();
+  });
+
+  it("migrates compatible attempts when the stored content fingerprint is stale", async () => {
+    const d5Def = getAssessment("domain-5-configuration-set")!;
+    const d5Questions = getAssessmentQuestions(d5Def);
+    const d5Context = createAssessmentContext(d5Def, d5Questions);
+    let session = startAssessment(d5Context, {
+      sessionId: "d5-migratable-1",
+      startedAt: "2026-10-28T09:00:00.000Z",
+    });
+    startStudyAttempt(d5Def, session, {
+      kind: "practice",
+      practiceSetId: d5Def.id,
+    });
+    session = chooseAnswer(
+      d5Context,
+      session,
+      d5Questions[0]!.id,
+      d5Questions[0]!.correctChoiceIds,
+    );
+    saveStudySession(
+      submitAssessment(d5Context, session, "2026-10-28T09:05:00.000Z").session,
+    );
+
+    const savedEnvelope = JSON.parse(window.localStorage.getItem(STUDY_STORAGE_KEY)!) as {
+      schemaVersion: number;
+      contentFingerprint: string;
+      savedAt: string;
+      state: unknown;
+    };
+    window.localStorage.setItem(
+      STUDY_STORAGE_KEY,
+      JSON.stringify({
+        ...savedEnvelope,
+        schemaVersion: STUDY_SCHEMA_VERSION,
+        contentFingerprint: "stale-fingerprint-before-c212",
+      }),
+    );
+    reloadStudyStore();
+
+    const user = userEvent.setup();
+    renderPage(
+      <main id="main-content" tabIndex={-1}>
+        <StudyStorageNotice />
+        <ProgressPage />
+      </main>,
+    );
+
+    const alert = screen.getByRole("alert", { name: "Saved study data needs attention" });
+    expect(alert).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "No submitted attempts yet" }),
+    ).toBeInTheDocument();
+
+    const migrateButton = within(alert).getByRole("button", {
+      name: "Migrate compatible attempts (1)",
+    });
+    await user.click(migrateButton);
+
+    expect(
+      screen.queryByRole("alert", { name: "Saved study data needs attention" }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByText("Unique bank exposure").closest(".stat")).toHaveTextContent("8/63");
   });
 });

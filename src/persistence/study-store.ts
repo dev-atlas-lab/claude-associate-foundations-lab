@@ -1,5 +1,7 @@
 import { useSyncExternalStore } from "react";
+import { allQuestions, assessments } from "../content";
 import { contentFingerprint } from "../content/fingerprint";
+import { mockExamDefinition } from "../content/mock-exam";
 import {
   StudyStateError,
   createStudyAttempt,
@@ -18,9 +20,16 @@ import {
 import {
   clearStudyStateFromStorage,
   getBrowserStorage,
+  inspectCompatibleStudyMigration,
   loadStudyStateFromStorage,
   saveStudyStateToStorage,
+  type StudyMigrationPlan,
 } from "./storage";
+
+const questionsById = new Map(allQuestions.map((question) => [question.id, question]));
+const assessmentsById = new Map(
+  [...assessments, mockExamDefinition].map((assessment) => [assessment.id, assessment]),
+);
 
 export type StudyStoreStatus =
   | "ready"
@@ -39,6 +48,7 @@ export interface StudySnapshot {
   storageAvailable: boolean;
   storedVersion?: number;
   storedFingerprint?: string;
+  migrationPlan?: StudyMigrationPlan;
 }
 
 export type StudyStoreErrorCode = "local-data-blocked" | "attempt-already-active";
@@ -86,7 +96,15 @@ function loadSnapshot(): StudySnapshot {
         rawBackup: result.raw,
         storageAvailable: true,
       };
-    case "incompatible":
+    case "incompatible": {
+      const migrationPlan = inspectCompatibleStudyMigration(
+        result.raw,
+        result.storedVersion,
+        result.storedFingerprint,
+        contentFingerprint,
+        questionsById,
+        assessmentsById,
+      );
       return {
         status: "incompatible",
         state: emptyStudyState,
@@ -95,7 +113,9 @@ function loadSnapshot(): StudySnapshot {
         storageAvailable: true,
         storedVersion: result.storedVersion,
         storedFingerprint: result.storedFingerprint,
+        migrationPlan,
       };
+    }
   }
 }
 
@@ -278,6 +298,15 @@ export function resetStudyData(): void {
     storageAvailable: result.ok,
     message: result.ok ? undefined : result.message,
   });
+}
+
+export function migrateCompatibleStudyData(): boolean {
+  if (snapshot.status !== "incompatible" || !snapshot.migrationPlan?.canMigrate) {
+    return false;
+  }
+
+  emit(persist(snapshot.migrationPlan.migratedState));
+  return true;
 }
 
 /** Re-read storage. Used by Settings and by tests after external changes. */

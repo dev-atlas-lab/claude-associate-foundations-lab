@@ -244,7 +244,8 @@ Status: implemented, verified locally, committed as `3e90c92`, and verified in G
 
 ### C2.12 - Domain 6 9th reviewed item & Associate-refined Context Window lesson
 
-Status: implemented and verified locally (2026-10-29).
+Status: implemented, verified locally, committed as `6778ece` / `c1c07d6`, and verified in GitHub
+Actions CI run `40802276918` (2026-10-29).
 
 - Added `governance-privacy-third-party-connector` (Domain 6, `governance-data-privacy`), bringing
   the reviewed bank to **63** items (33 single-choice, 30 multiple-response) and **9** Domain 6
@@ -254,6 +255,16 @@ Status: implemented and verified locally (2026-10-29).
   for the Associate audience (connecting working memory and token budgeting to Projects, chat
   history, file uploads, and fresh-chat handoffs) while keeping it explicitly unmapped (`kind:
   "sample"`).
+
+### C2.13 - Explicit compatible study data migration
+
+Status: implemented and verified locally (2026-10-29).
+
+- Added `inspectCompatibleStudyMigration` in `src/persistence/storage.ts` and
+  `migrateCompatibleStudyData` in `src/persistence/study-store.ts`.
+- Updated `StudyStorageNotice.tsx` so learners with a stale `contentFingerprint` (schema v1) can
+  explicitly migrate compatible attempts and review resolutions to the current fingerprint while
+  keeping corrupt or schema-incompatible payloads quarantined behind backup + reset.
 
 ### Remaining Phase D work
 

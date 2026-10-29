@@ -1,9 +1,18 @@
 import { describe, expect, it } from "vitest";
-import { emptyStudyState } from "../domain";
+import { allQuestions, assessments, getAssessment, getAssessmentQuestions } from "../content";
+import {
+  chooseAnswer,
+  createAssessmentContext,
+  createStudyAttempt,
+  emptyStudyState,
+  startAssessment,
+  submitAssessment,
+} from "../domain";
 import {
   STUDY_SCHEMA_VERSION,
   STUDY_STORAGE_KEY,
   clearStudyStateFromStorage,
+  inspectCompatibleStudyMigration,
   loadStudyStateFromStorage,
   saveStudyStateToStorage,
   type StorageLike,
@@ -171,5 +180,83 @@ describe("versioned study storage", () => {
     const storage = createStorage(envelope());
     expect(clearStudyStateFromStorage(storage).ok).toBe(true);
     expect(storage.values.has(STUDY_STORAGE_KEY)).toBe(false);
+  });
+
+  it("extracts compatible submitted and matching in-progress attempts from a stale-fingerprint v1 envelope while dropping mismatched in-progress attempts", () => {
+    const questionsById = new Map(allQuestions.map((question) => [question.id, question]));
+    const assessmentsById = new Map(assessments.map((assessment) => [assessment.id, assessment]));
+
+    const d5Def = getAssessment("domain-5-configuration-set")!;
+    const d5Questions = getAssessmentQuestions(d5Def);
+    const d5Context = createAssessmentContext(d5Def, d5Questions);
+    let submittedSession = startAssessment(d5Context, {
+      sessionId: "d5-submitted-old",
+      startedAt: "2026-10-27T08:00:00.000Z",
+    });
+    submittedSession = chooseAnswer(
+      d5Context,
+      submittedSession,
+      d5Questions[0]!.id,
+      d5Questions[0]!.correctChoiceIds,
+    );
+    submittedSession = submitAssessment(
+      d5Context,
+      submittedSession,
+      "2026-10-27T08:05:00.000Z",
+    ).session;
+    const validSubmittedAttempt = createStudyAttempt(d5Def, submittedSession, {
+      kind: "practice",
+      practiceSetId: d5Def.id,
+    });
+
+    // An in-progress attempt whose questionIds no longer match the current assessment definition (e.g. an older subset)
+    const subsetDef = {
+      ...d5Def,
+      questionIds: d5Def.questionIds.slice(0, 4),
+    };
+    const subsetContext = createAssessmentContext(subsetDef, d5Questions.slice(0, 4));
+    const mismatchedActiveSession = startAssessment(subsetContext, {
+      sessionId: "d5-active-mismatched",
+      startedAt: "2026-10-27T09:00:00.000Z",
+    });
+    const mismatchedActiveAttempt = createStudyAttempt(subsetDef, mismatchedActiveSession, {
+      kind: "practice",
+      practiceSetId: d5Def.id,
+    });
+
+    const staleRaw = envelope({
+      contentFingerprint: "study-v1-older-bank",
+      state: {
+        attempts: [validSubmittedAttempt, mismatchedActiveAttempt],
+        reviewResolutions: [
+          {
+            attemptId: "d5-submitted-old",
+            questionId: d5Questions[1]!.id,
+            resolvedAt: "2026-10-27T08:06:00.000Z",
+          },
+          {
+            attemptId: "d5-active-mismatched",
+            questionId: d5Questions[0]!.id,
+            resolvedAt: "2026-10-27T09:01:00.000Z",
+          },
+        ],
+      },
+    });
+
+    const plan = inspectCompatibleStudyMigration(
+      staleRaw,
+      STUDY_SCHEMA_VERSION,
+      "study-v1-older-bank",
+      fingerprint,
+      questionsById,
+      assessmentsById,
+    );
+
+    expect(plan.canMigrate).toBe(true);
+    expect(plan.compatibleAttempts).toHaveLength(1);
+    expect(plan.compatibleAttempts[0]?.session.id).toBe("d5-submitted-old");
+    expect(plan.droppedAttempts).toBe(1);
+    expect(plan.compatibleResolutions).toHaveLength(1);
+    expect(plan.compatibleResolutions[0]?.attemptId).toBe("d5-submitted-old");
   });
 });

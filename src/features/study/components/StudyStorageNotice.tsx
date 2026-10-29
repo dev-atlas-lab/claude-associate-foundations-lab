@@ -1,7 +1,11 @@
-import { Download, RotateCcw, ShieldAlert } from "lucide-react";
+import { Check, Download, RotateCcw, ShieldAlert } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { downloadTextFile } from "../../../lib/download";
-import { resetStudyData, useStudyState } from "../../../persistence/study-store";
+import {
+  migrateCompatibleStudyData,
+  resetStudyData,
+  useStudyState,
+} from "../../../persistence/study-store";
 
 function backupFilename(): string {
   const stamp = new Date().toISOString().replace(/[:.]/g, "-");
@@ -76,8 +80,36 @@ export function StudyStorageNotice() {
             resolutions in this browser.
           </p>
         ) : null}
+        {snapshot.status === "incompatible" && snapshot.migrationPlan?.canMigrate ? (
+          <p className="storage-notice-text">
+            {snapshot.migrationPlan.compatibleAttempts.length} saved{" "}
+            {snapshot.migrationPlan.compatibleAttempts.length === 1 ? "attempt" : "attempts"} still{" "}
+            {snapshot.migrationPlan.compatibleAttempts.length === 1 ? "matches" : "match"} the
+            current questions and answer keys and can be migrated safely
+            {snapshot.migrationPlan.droppedAttempts > 0
+              ? ` (${snapshot.migrationPlan.droppedAttempts} incompatible ${snapshot.migrationPlan.droppedAttempts === 1 ? "attempt" : "attempts"} will be skipped)`
+              : ""}
+            .
+          </p>
+        ) : null}
 
         <div className="storage-notice-actions">
+          {snapshot.status === "incompatible" && snapshot.migrationPlan?.canMigrate ? (
+            <button
+              type="button"
+              className="button button--primary button--sm"
+              onClick={() => {
+                migrateCompatibleStudyData();
+                document
+                  .getElementById("main-content")
+                  ?.focus({ preventScroll: true });
+              }}
+            >
+              <Check size={13} strokeWidth={2} aria-hidden="true" />
+              Migrate compatible attempts ({snapshot.migrationPlan.compatibleAttempts.length})
+            </button>
+          ) : null}
+
           {snapshot.rawBackup ? (
             <button
               type="button"

@@ -1,5 +1,13 @@
 import { z } from "zod";
-import { studyStateSchema, type StudyState } from "../domain";
+import {
+  emptyStudyState,
+  studyStateSchema,
+  type AssessmentDefinition,
+  type Question,
+  type ReviewResolution,
+  type StudyAttempt,
+  type StudyState,
+} from "../domain";
 
 /**
  * Versioned local-study envelope. The adapter is deliberately small and
@@ -267,4 +275,161 @@ export function getBrowserStorage(): StorageLike | undefined {
   } catch {
     return undefined;
   }
+}
+
+export interface StudyMigrationPlan {
+  canMigrate: boolean;
+  compatibleAttempts: StudyAttempt[];
+  droppedAttempts: number;
+  compatibleResolutions: ReviewResolution[];
+  migratedState: StudyState;
+}
+
+const emptyMigrationPlan: StudyMigrationPlan = {
+  canMigrate: false,
+  compatibleAttempts: [],
+  droppedAttempts: 0,
+  compatibleResolutions: [],
+  migratedState: emptyStudyState,
+};
+
+function isAttemptCompatibleWithRegistry(
+  attempt: StudyAttempt,
+  questionsById: ReadonlyMap<string, Question>,
+  assessmentsById: ReadonlyMap<string, AssessmentDefinition>,
+): boolean {
+  if (attempt.questionIds.length === 0) {
+    return false;
+  }
+
+  const questionIdSet = new Set(attempt.questionIds);
+
+  for (const questionId of attempt.questionIds) {
+    if (!questionsById.has(questionId)) {
+      return false;
+    }
+  }
+
+  for (const [answeredQuestionId, choiceIds] of Object.entries(attempt.session.answers)) {
+    if (!questionIdSet.has(answeredQuestionId)) {
+      return false;
+    }
+
+    const question = questionsById.get(answeredQuestionId);
+    if (!question) {
+      return false;
+    }
+
+    const validChoiceIds = new Set(question.choices.map((choice) => choice.id));
+    for (const choiceId of choiceIds) {
+      if (!validChoiceIds.has(choiceId)) {
+        return false;
+      }
+    }
+  }
+
+  for (const flaggedId of attempt.session.flaggedQuestionIds) {
+    if (!questionIdSet.has(flaggedId)) {
+      return false;
+    }
+  }
+
+  if (attempt.origin.kind === "practice" && !assessmentsById.has(attempt.origin.practiceSetId)) {
+    return false;
+  }
+
+  if (attempt.session.status === "in-progress") {
+    const currentDef = assessmentsById.get(attempt.session.assessmentId);
+    if (!currentDef) {
+      return false;
+    }
+
+    if (
+      currentDef.questionIds.length !== attempt.questionIds.length ||
+      !currentDef.questionIds.every((id, index) => id === attempt.questionIds[index])
+    ) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/**
+ * Inspect an incompatible v1 envelope whose contentFingerprint is stale and
+ * extract the subset of attempts and review resolutions that remain valid
+ * against the current question bank and assessment registry.
+ */
+export function inspectCompatibleStudyMigration(
+  raw: string | undefined,
+  storedVersion: number | undefined,
+  storedFingerprint: string | undefined,
+  currentFingerprint: string,
+  questionsById: ReadonlyMap<string, Question>,
+  assessmentsById: ReadonlyMap<string, AssessmentDefinition>,
+): StudyMigrationPlan {
+  if (
+    !raw ||
+    storedVersion !== STUDY_SCHEMA_VERSION ||
+    !storedFingerprint ||
+    storedFingerprint === currentFingerprint
+  ) {
+    return emptyMigrationPlan;
+  }
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    return emptyMigrationPlan;
+  }
+
+  const envelope = studyEnvelopeSchema.safeParse(parsed);
+  if (!envelope.success) {
+    return emptyMigrationPlan;
+  }
+
+  const compatibleAttempts: StudyAttempt[] = [];
+  let droppedAttempts = 0;
+
+  for (const attempt of envelope.data.state.attempts) {
+    if (isAttemptCompatibleWithRegistry(attempt, questionsById, assessmentsById)) {
+      compatibleAttempts.push(attempt);
+    } else {
+      droppedAttempts += 1;
+    }
+  }
+
+  if (compatibleAttempts.length === 0) {
+    return {
+      ...emptyMigrationPlan,
+      droppedAttempts,
+    };
+  }
+
+  const compatibleAttemptById = new Map(
+    compatibleAttempts.map((attempt) => [attempt.session.id, new Set(attempt.questionIds)]),
+  );
+
+  const compatibleResolutions = envelope.data.state.reviewResolutions.filter((resolution) => {
+    const questionSet = compatibleAttemptById.get(resolution.attemptId);
+    return questionSet !== undefined && questionSet.has(resolution.questionId);
+  });
+
+  const migratedCandidate = studyStateSchema.safeParse({
+    attempts: compatibleAttempts,
+    reviewResolutions: compatibleResolutions,
+  });
+
+  if (!migratedCandidate.success) {
+    return emptyMigrationPlan;
+  }
+
+  return {
+    canMigrate: true,
+    compatibleAttempts,
+    droppedAttempts,
+    compatibleResolutions,
+    migratedState: migratedCandidate.data,
+  };
 }

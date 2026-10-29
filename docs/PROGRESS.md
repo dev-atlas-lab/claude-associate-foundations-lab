@@ -1094,3 +1094,27 @@ not done in this audit.
 - Targeted Vitest suite (`question-bank`, `timed-exam-content`, `progress-selectors`, `curriculum`,
   `lesson`, `domain-2-content`, `mock-exam`): **7 files / 69 tests pass**.
 - `git diff --check`: clean.
+- Committed as `6778ece` / `c1c07d6` and pushed to `origin/main`; GitHub Actions CI run `40802276918`
+  passed all steps (typecheck, lint, 200 unit/integration tests, production build, and Playwright E2E
+  + axe accessibility).
+
+## Phase C2.13 - Explicit compatible study data migration (2026-10-29)
+
+### Scope
+
+- Added `inspectCompatibleStudyMigration` and `StudyMigrationPlan` in `src/persistence/storage.ts` to
+  inspect stale-fingerprint `cfl.study.v1` envelopes (`schemaVersion === 1`), verifying each saved
+  attempt against the current question bank and assessment registry (valid question IDs, valid answer
+  choice IDs, valid flags, valid practice set origin, and matching `questionIds` for `in-progress`
+  attempts) and filtering `reviewResolutions` to compatible attempts.
+- Updated `src/persistence/study-store.ts` (`migrationPlan` on `StudySnapshot` and
+  `migrateCompatibleStudyData`) and `src/features/study/components/StudyStorageNotice.tsx` to offer
+  an explicit `Migrate compatible attempts (N)` action alongside `Download raw backup` and `Reset
+  local data` without silently resuming stale envelopes.
+
+### Verification
+
+- `npm run typecheck`: pass (`tsc -b`, strict).
+- `npm run lint`: pass (`eslint .`, 0 problems).
+- Targeted Vitest suite (`src/test/storage.test.ts` and `src/test/study-pages.test.tsx`): pass.
+- `git diff --check`: clean.
