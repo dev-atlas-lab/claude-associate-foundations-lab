@@ -60,7 +60,7 @@ describe("progress page", () => {
     renderPage(<ProgressPage />);
 
     expect(screen.getByRole("heading", { level: 1, name: "Learning progress" })).toBeInTheDocument();
-    expect(screen.getByText("62 reviewed items")).toBeInTheDocument();
+    expect(screen.getByText("63 reviewed items")).toBeInTheDocument();
     expect(screen.getByText("30/30")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "No submitted attempts yet" })).toBeInTheDocument();
   });
@@ -89,7 +89,7 @@ describe("progress page", () => {
 
     renderPage(<ProgressPage />);
 
-    expect(screen.getByText("Unique bank exposure").closest(".stat")).toHaveTextContent("8/62");
+    expect(screen.getByText("Unique bank exposure").closest(".stat")).toHaveTextContent("8/63");
     expect(screen.getByText("First-seen accuracy").closest(".stat")).toHaveTextContent("100%");
     expect(screen.getByText("Latest accuracy").closest(".stat")).toHaveTextContent("100%");
 

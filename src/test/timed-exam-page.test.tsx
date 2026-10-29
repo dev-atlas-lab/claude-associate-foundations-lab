@@ -47,7 +47,7 @@ describe("timed exam page", () => {
     expect(screen.getByText("60 items · 120 min")).toBeInTheDocument();
     expect(screen.getByText("60 questions")).toBeInTheDocument();
     expect(screen.getByText("120 minutes")).toBeInTheDocument();
-    expect(screen.getByText("62 reviewed items available", { selector: ".badge" })).toBeInTheDocument();
+    expect(screen.getByText("63 reviewed items available", { selector: ".badge" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Start timed exam" })).toBeEnabled();
 
     const table = screen.getByRole("table", {
