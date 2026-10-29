@@ -13,17 +13,17 @@ describe("WorkflowPatternsSimulator", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("Test intro for workflow simulator")).toBeInTheDocument();
 
-    // Verify pattern tabs
-    const routingTab = screen.getByRole("tab", { name: /1\. Routing/i });
-    const loopTab = screen.getByRole("tab", { name: /2\. Evaluator-Optimizer/i });
-    const parallelTab = screen.getByRole("tab", { name: /3\. Parallelization/i });
-    const orchTab = screen.getByRole("tab", { name: /4\. Orchestrator-Workers/i });
+    // Verify pattern options
+    const routingTab = screen.getByRole("button", { name: /1\. Routing/i });
+    const loopTab = screen.getByRole("button", { name: /2\. Evaluator-Optimizer/i });
+    const parallelTab = screen.getByRole("button", { name: /3\. Parallelization/i });
+    const orchTab = screen.getByRole("button", { name: /4\. Orchestrator-Workers/i });
 
-    expect(routingTab).toHaveAttribute("aria-selected", "true");
+    expect(routingTab).toHaveAttribute("aria-pressed", "true");
 
     // Switch to Evaluator-Optimizer
     fireEvent.click(loopTab);
-    expect(loopTab).toHaveAttribute("aria-selected", "true");
+    expect(loopTab).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByText("Generator LLM")).toBeInTheDocument();
     expect(screen.getByText(/Chạy Kiểm định Lần 1/i)).toBeInTheDocument();
 

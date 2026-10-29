@@ -698,6 +698,51 @@ a.pager-card:hover {
   .diagram-bar {
     height: 34px;
   }
+
+  .workflow-simulator,
+  .cost-calculator,
+  .prompt-workbench {
+    padding: var(--space-3);
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .workflow-canvas {
+    padding: var(--space-3);
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .workflow-flow-diagram,
+  .workflow-loop-diagram {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .flow-node {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .flow-arrow {
+    transform: rotate(90deg);
+    padding: var(--space-2) 0;
+    align-self: center;
+  }
+
+  .flow-arrow-text {
+    display: none;
+  }
+
+  .flow-parallel-branches,
+  .flow-workers-grid,
+  .calc-model-selector,
+  .calc-controls-grid,
+  .calc-results-grid,
+  .wb-layers-grid,
+  .wb-metrics-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ── Interactive Visualizations: Workflow, Cost, Prompt Workbench ─────────── */
@@ -934,8 +979,8 @@ a.pager-card:hover {
 }
 
 .flow-arrow-text {
-  font-size: 0.65rem;
-  color: var(--text-tertiary);
+  font-size: var(--text-2xs);
+  color: var(--text-secondary);
   margin-top: 2px;
 }
 
@@ -1097,8 +1142,8 @@ a.pager-card:hover {
 .calc-slider-hints {
   display: flex;
   justify-content: space-between;
-  font-size: 0.65rem;
-  color: var(--text-tertiary);
+  font-size: var(--text-2xs);
+  color: var(--text-secondary);
 }
 
 .calc-eligibility {

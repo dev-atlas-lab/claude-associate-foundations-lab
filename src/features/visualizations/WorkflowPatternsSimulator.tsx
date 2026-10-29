@@ -112,14 +112,13 @@ export function WorkflowPatternsSimulator({ intro }: { intro: string }) {
         <p className="workflow-intro">{intro}</p>
       </div>
 
-      {/* Pattern Selector Tabs */}
-      <div className="workflow-tabs" role="tablist" aria-label="Workflow Pattern Tabs">
+      {/* Pattern Selector Buttons */}
+      <div className="workflow-tabs" role="group" aria-label="Workflow Pattern Options">
         {patterns.map((pattern) => (
           <button
             key={pattern.id}
             type="button"
-            role="tab"
-            aria-selected={selectedPattern === pattern.id}
+            aria-pressed={selectedPattern === pattern.id}
             className={`workflow-tab ${selectedPattern === pattern.id ? "workflow-tab--active" : ""}`}
             onClick={() => {
               setSelectedPattern(pattern.id);

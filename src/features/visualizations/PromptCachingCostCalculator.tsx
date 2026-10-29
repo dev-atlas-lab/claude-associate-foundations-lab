@@ -263,7 +263,7 @@ export function PromptCachingCostCalculator({ intro }: { intro: string }) {
 
       {/* Key Associate Exam Facts */}
       <div className="calc-takeaway">
-        <h4 className="calc-takeaway-title">3 Điểm Cốt Lõi cho Kỳ Thi CCAO-F (Domain 7)</h4>
+        <div className="calc-takeaway-title">3 Điểm Cốt Lõi cho Kỳ Thi CCAO-F (Domain 7)</div>
         <ul className="calc-takeaway-list">
           <li>
             <strong>Ngưỡng tối thiểu & TTL:</strong> Ngưỡng tạo cache là <strong>1,024 tokens</strong> (Sonnet/Opus) và <strong>2,048 tokens</strong> (Haiku). Cache tồn tại trong <strong>5 phút</strong> và được gia hạn tự động sau mỗi lượt đọc.
