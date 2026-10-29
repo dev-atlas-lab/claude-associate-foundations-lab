@@ -131,11 +131,18 @@ describe("Domain 5 curriculum coverage", () => {
       (question) => question.type === "multiple-response",
     );
 
-    expect(multipleResponse).toHaveLength(4);
+    expect(multipleResponse).toHaveLength(5);
 
     for (const question of multipleResponse) {
       expect(question.stem).toMatch(/select (two|three|four)/i);
-      expect(question.correctChoiceIds).toHaveLength(3);
+      const match = question.stem.match(/select (two|three|four)/i);
+      const count =
+        match?.[1]?.toLowerCase() === "two"
+          ? 2
+          : match?.[1]?.toLowerCase() === "three"
+            ? 3
+            : 4;
+      expect(question.correctChoiceIds).toHaveLength(count);
     }
   });
 });

@@ -96,7 +96,7 @@ describe("persisted study journey", () => {
 
     await user.click(screen.getByRole("button", { name: "New attempt" }));
 
-    expect(await screen.findByText(/Question 1 of 19/)).toBeInTheDocument();
+    expect(await screen.findByText(/Question 1 of 22/)).toBeInTheDocument();
     expect(screen.getByText("Not answered")).toBeInTheDocument();
 
     const afterNewAttempt = readEnvelope();
@@ -114,7 +114,7 @@ describe("persisted study journey", () => {
     const review = renderReview();
 
     expect(screen.getByRole("heading", { name: "Review mistakes" })).toBeInTheDocument();
-    expect(screen.getByText("19 open items")).toBeInTheDocument();
+    expect(screen.getByText("22 open items")).toBeInTheDocument();
 
     const queueSection = screen.getByRole("heading", { name: "Open queue" }).closest("section");
     expect(queueSection).not.toBeNull();
@@ -129,7 +129,7 @@ describe("persisted study journey", () => {
 
     await user.click(screen.getByRole("link", { name: "Review queue" }));
 
-    expect(screen.getByText("19 open items")).toBeInTheDocument();
+    expect(screen.getByText("22 open items")).toBeInTheDocument();
 
     await user.click(
       within(screen.getByRole("list", { name: "Open review items" })).getAllByRole("link")[0]!,
@@ -142,7 +142,7 @@ describe("persisted study journey", () => {
 
     await user.click(screen.getByRole("link", { name: "Back to review queue" }));
 
-    expect(screen.getByText("18 open items")).toBeInTheDocument();
+    expect(screen.getByText("21 open items")).toBeInTheDocument();
     expect(screen.getByText("1 resolved")).toBeInTheDocument();
 
     review.unmount();

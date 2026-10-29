@@ -117,6 +117,13 @@ export const evaluationBasicsLesson: Lesson = lessonSchema.parse({
       ],
     },
     {
+      kind: "diagram",
+      diagramId: "hallucination-evaluation-sandbox",
+      heading: "Thực hành tương tác: Audit & Defect Classifier Sandbox",
+      intro:
+        "Thử nghiệm kiểm chứng các claim từ bản nháp của Claude so với tài liệu nguồn (ground truth). Phân loại chính xác từng dạng khiếm khuyết: Factual Hallucination, Internal Inconsistency, Fabricated Citation, hoặc Missing Constraint theo chuẩn Anthropic Evaluation.",
+    },
+    {
       kind: "paragraphs",
       heading: "Khi nào cần human review?",
       paragraphs: [

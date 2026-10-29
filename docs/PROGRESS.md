@@ -1354,3 +1354,39 @@ not done in this audit.
   - Resolved `.study-filter-count` 4.48:1 contrast borderline by setting `var(--text-secondary)` and `font-weight-medium`.
   - Vitest suite expanded to **215 tests across 25 test files** (100% passing).
   - Playwright E2E suite verifies **116 tests passing** with 0 axe-core violations across dark and light themes.
+
+## Phase C2.23 - Hallucination Evaluation Sandbox, Bank Expansion to 105 Items & Rich Mock Exam Pacing Review (2026-10-29)
+
+### Scope
+
+- **Domain 2 Hallucination & Defect Evaluation Sandbox (`src/features/visualizations/HallucinationEvaluationSandbox.tsx`):**
+  - Designed and implemented a dedicated interactive visualizer embedded in `/learn/evaluation-basics`.
+  - 3 enterprise scenarios with ground truth source vs generated Claude draft:
+    1. *Finance Q3 Report*: Internal Inconsistency (3.2% expansion vs contracted in 4 regions) and Factual Hallucination ($40M vs $14M).
+    2. *Legal NDA Review*: Fabricated Citation (International Privacy Act 2024 Art. 12) and Missing Critical Constraint (unauthorized sharing with sub-contractors).
+    3. *Healthcare Dosage Guidelines*: Lethal Dosage Hallucination (40mg/4h vs 20mg/day max) and bypassing human review in high-risk prescription cases.
+  - Interactive Claim Audit with Defect Classifier (`verified-accurate`, `factual-hallucination`, `internal-inconsistency`, `fabricated-citation`, `missing-constraint`).
+  - Score summary, detailed Anthropic rubric advice, and CCAO-F Domain 2 exam takeaways.
+  - Full keyboard accessibility, semantic `h3`/`h4` heading hierarchy, and zero axe-core violations in light/dark themes.
+- **Question Bank Expansion D to 105 Items (`src/content/certifications/claude-associate-foundations/question-bank-expansion-d.ts`):**
+  - Authored 15 original, highly realistic enterprise scenario questions across all 7 domains:
+    - Domain 1 (+2): `prompting-few-shot-distributional-diversity`, `prompting-cot-xml-thinking-separation` (14 total items in D1)
+    - Domain 2 (+3): `output-automated-vs-human-eval-tradeoff`, `output-adversarial-counterfactual-probe`, `output-markdown-table-schema-fidelity` (22 total items in D2)
+    - Domain 3 (+2): `product-model-hybrid-routing-cost-latency`, `context-memory-long-context-retrieval-needle` (12 total items in D3)
+    - Domain 4 (+2): `workflow-tool-use-error-handling-fallback`, `workflow-evaluator-optimizer-stopping-criterion` (17 total items in D4)
+    - Domain 5 (+2): `config-workspace-sharing-conflict-resolution`, `config-connector-sync-staleness-alert` (13 total items in D5)
+    - Domain 6 (+2): `governance-pii-redaction-pre-processing-guardrail`, `governance-jailbreak-refusal-neutrality` (15 total items in D6)
+    - Domain 7 (+2): `troubleshoot-streaming-time-to-first-token-bottleneck`, `troubleshoot-prompt-caching-break-investigation` (12 total items in D7)
+  - Bank distribution updated to 60 single-choice and 45 multiple-response items (105 total).
+  - All questions validated at runtime via `questionSchema.parse` with strict English stems/choices and detailed Vietnamese rationale for every choice.
+- **Post-Submission Mock Exam Review Mode & Pacing Analysis (`src/features/timed-exam/components/TimedExamResultView.tsx`, `QuestionNavigator.tsx`):**
+  - Added Pacing & Time Management Card displaying total time used, percentage of 120-minute SLA, average time per question, and diagnostic Pacing Status badge (`Tốc độ nhanh` / `Tốc độ chuẩn mực` / `Nguy cơ thiếu giờ`).
+  - Added Review Mode Filter Tabs: *Tất cả (60)*, *Câu sai*, *Chưa trả lời*, *Đã đánh dấu*, *Câu đúng*.
+  - Added filtered item jumping: Previous/Next buttons automatically traverse through the currently filtered subset.
+  - Linked `QuestionNavigator` with active filter indicator (`data-filtered-out="true"`).
+- **Test Suite Alignment & Quality Gate:**
+  - `npm run typecheck` (`tsc -b`): Pass (0 errors).
+  - `npm run lint` (`eslint .`): Pass (0 warnings/errors).
+  - `npm run test` (Vitest): **217 tests across 25 test files** pass (100%).
+  - `npm run build`: Production bundle built cleanly with zero CSS/JS warnings.
+  - Playwright E2E & Accessibility: **116 tests pass** with zero WCAG/axe-core violations.

@@ -28,10 +28,10 @@ const vietnameseDiacriticPattern =
 
 describe("reviewed question bank", () => {
   it("publishes reviewed bank entries and runnable assessments", () => {
-    expect(questionBankEntries).toHaveLength(90);
-    expect(questionBank).toHaveLength(90);
+    expect(questionBankEntries).toHaveLength(105);
+    expect(questionBank).toHaveLength(105);
     expect(assessment).toBeDefined();
-    expect(assessment?.questionIds).toHaveLength(19);
+    expect(assessment?.questionIds).toHaveLength(22);
     expect(assessment?.policy).toEqual({
       scoring: "all-or-nothing",
       allowAnswerChangesBeforeSubmit: true,
@@ -61,10 +61,10 @@ describe("reviewed question bank", () => {
     }
 
     expect([...counts.entries()].sort()).toEqual([
-      ["output-edit-adapt", 2],
-      ["output-evaluate-accuracy", 3],
+      ["output-edit-adapt", 3],
+      ["output-evaluate-accuracy", 4],
       ["output-fact-check", 3],
-      ["output-format-selection", 3],
+      ["output-format-selection", 4],
       ["output-human-review", 2],
       ["output-identify-hallucinations", 6],
     ]);
@@ -111,9 +111,9 @@ describe("reviewed question bank", () => {
 
     expect(domainFiveObjectiveIds.size).toBe(4);
     expect([...counts.entries()].sort()).toEqual([
-      ["config-knowledge-connectors", 3],
+      ["config-knowledge-connectors", 4],
       ["config-maintain", 3],
-      ["config-project-instructions", 3],
+      ["config-project-instructions", 4],
       ["config-system-instructions", 2],
     ]);
   });
@@ -140,8 +140,8 @@ describe("reviewed question bank", () => {
   it("includes both single-choice and multiple-response items", () => {
     const types = questionBank.map((question) => question.type);
 
-    expect(types.filter((type) => type === "single-choice")).toHaveLength(52);
-    expect(types.filter((type) => type === "multiple-response")).toHaveLength(38);
+    expect(types.filter((type) => type === "single-choice")).toHaveLength(60);
+    expect(types.filter((type) => type === "multiple-response")).toHaveLength(45);
     expect(new Set(questionBank.map((question) => question.id)).size).toBe(questionBank.length);
   });
 
@@ -149,7 +149,7 @@ describe("reviewed question bank", () => {
     const resolved = assessment ? getAssessmentQuestions(assessment) : [];
 
     expect(resolved.map((question) => question.id)).toEqual(assessment?.questionIds);
-    expect(resolved).toHaveLength(19);
+    expect(resolved).toHaveLength(22);
     expect(resolved.every((question) => getQuestionBankEntry(question.id) !== undefined)).toBe(
       true,
     );
@@ -162,7 +162,7 @@ describe("reviewed question bank", () => {
     const fiveResolved = domainFive ? getAssessmentQuestions(domainFive) : [];
 
     expect(domainFive?.policy.scoring).toBe("all-or-nothing");
-    expect(fiveResolved).toHaveLength(11);
+    expect(fiveResolved).toHaveLength(13);
     expect(
       fiveResolved.every(
         (question) => getQuestionBankEntry(question.id)?.examMapping.status === "verified",

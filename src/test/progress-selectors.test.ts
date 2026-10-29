@@ -158,9 +158,9 @@ describe("progress summary and breakdown selectors", () => {
       questionById,
     );
 
-    expect(summary.bank.totalItems).toBe(90);
-    expect(summary.bank.singleChoiceItems).toBe(52);
-    expect(summary.bank.multipleResponseItems).toBe(38);
+    expect(summary.bank.totalItems).toBe(105);
+    expect(summary.bank.singleChoiceItems).toBe(60);
+    expect(summary.bank.multipleResponseItems).toBe(45);
     expect(summary.bank.objectivesCovered).toBe(30);
     expect(summary.bank.objectivesTotal).toBe(30);
     expect(summary.bank.domainsWithItems).toBe(7);
@@ -169,7 +169,7 @@ describe("progress summary and breakdown selectors", () => {
       (domain) => domain.domainId === "configuration-knowledge-management",
     );
 
-    expect(domainFive?.itemCount).toBe(11);
+    expect(domainFive?.itemCount).toBe(13);
     expect(domainFive?.objectivesCovered).toBe(4);
     expect(summary.bank.domains.every((domain) => domain.itemCount > 0)).toBe(true);
     expect(
@@ -209,18 +209,18 @@ describe("progress summary and breakdown selectors", () => {
       questionById,
     );
 
-    expect(summary.bank.totalItems).toBe(90);
+    expect(summary.bank.totalItems).toBe(105);
     expect(summary.personal.submittedAttempts).toBe(1);
     expect(summary.personal.studySubmittedAttempts).toBe(1);
     expect(summary.personal.timedSubmittedAttempts).toBe(0);
-    expect(summary.personal.uniqueItemsAttempted).toBe(19);
+    expect(summary.personal.uniqueItemsAttempted).toBe(22);
     expect(summary.personal.uniqueItemsAnswered).toBe(1);
     expect(summary.personal.objectivesPracticed).toBe(6);
     expect(summary.personal.objectivesAnswered).toBe(1);
     expect(summary.personal.answeredQuestions).toBe(1);
     expect(summary.personal.correctAnswers).toBe(0);
     expect(summary.personal.incorrectAnswers).toBe(1);
-    expect(summary.personal.unansweredQuestions).toBe(18);
+    expect(summary.personal.unansweredQuestions).toBe(21);
     expect(summary.personal.accuracyOnAnswered).toBe(0);
     expect(summary.personal.rawPercentage).toBe(0);
     expect(summary.personal.lastSubmittedAt).toBe("2026-10-26T09:10:00.000Z");
@@ -229,11 +229,11 @@ describe("progress summary and breakdown selectors", () => {
       (domain) => domain.domainId === "output-evaluation-validation",
     );
 
-    expect(domainTwo?.attemptedQuestions).toBe(19);
-    expect(domainTwo?.uniqueAttemptedItems).toBe(19);
+    expect(domainTwo?.attemptedQuestions).toBe(22);
+    expect(domainTwo?.uniqueAttemptedItems).toBe(22);
     expect(domainTwo?.uniqueAnsweredItems).toBe(1);
     expect(domainTwo?.incorrectAnswers).toBe(1);
-    expect(domainTwo?.unansweredQuestions).toBe(18);
+    expect(domainTwo?.unansweredQuestions).toBe(21);
     expect(domainTwo?.accuracyOnAnswered).toBe(0);
     expect(domainTwo?.lessonId).toBe("evaluation-basics");
     expect(domainTwo?.practiceSetId).toBe("domain-2-output-validation-set");
@@ -241,8 +241,8 @@ describe("progress summary and breakdown selectors", () => {
     const firstObjective = summary.personal.objectives.find(
       (objective) => objective.objectiveId === "output-evaluate-accuracy",
     );
-    expect(firstObjective?.bankItemCount).toBe(3);
-    expect(firstObjective?.practicedItemCount).toBe(3);
+    expect(firstObjective?.bankItemCount).toBe(4);
+    expect(firstObjective?.practicedItemCount).toBe(4);
     expect(firstObjective?.answeredItemCount).toBe(1);
     expect(firstObjective?.latestCorrectCount).toBe(0);
     expect(firstObjective?.latestIncorrectCount).toBe(1);
@@ -255,8 +255,8 @@ describe("progress summary and breakdown selectors", () => {
     expect(unansweredObjective?.answeredItemCount).toBe(0);
     expect(unansweredObjective?.signal).toBe("unanswered-only");
 
-    expect(summary.review.unresolved).toBe(19);
-    expect(summary.review.studyUnresolved).toBe(19);
+    expect(summary.review.unresolved).toBe(22);
+    expect(summary.review.studyUnresolved).toBe(22);
     expect(summary.review.timedUnresolved).toBe(0);
     expect(summary.review.resolved).toBe(0);
   });

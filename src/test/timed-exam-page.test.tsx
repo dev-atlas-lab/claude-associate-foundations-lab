@@ -161,7 +161,15 @@ describe("timed exam page", () => {
     expect(resultHeading).toHaveFocus();
     expect(screen.getByText("Manual submission")).toBeInTheDocument();
     expect(screen.getAllByText("1.67%").length).toBeGreaterThan(0);
-    expect(screen.getByText("Chưa trả lời").nextElementSibling).toHaveTextContent("59");
+    expect(screen.getAllByText("Chưa trả lời")[0]?.nextElementSibling).toHaveTextContent("59");
+    expect(
+      screen.getByRole("heading", {
+        name: "Phân tích nhịp độ & thời gian (Pacing Analysis)",
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("group", { name: "Bộ lọc câu hỏi xem lại" }),
+    ).toBeInTheDocument();
     expect(screen.getByText("Nguồn tham chiếu")).toBeInTheDocument();
     expect(screen.getByText(/không phải dự đoán đậu\/rớt/i)).toBeInTheDocument();
 

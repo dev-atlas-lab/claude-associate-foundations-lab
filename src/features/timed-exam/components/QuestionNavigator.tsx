@@ -7,6 +7,7 @@ interface QuestionNavigatorProps {
   mode: "exam" | "review";
   /** Per-question outcomes in attempt order, available after submission. */
   outcomes?: readonly QuestionOutcome[];
+  filteredIndices?: readonly number[];
   onSelect: (index: number) => void;
 }
 
@@ -36,6 +37,7 @@ export function QuestionNavigator({
   currentIndex,
   mode,
   outcomes,
+  filteredIndices,
   onSelect,
 }: QuestionNavigatorProps) {
   return (
@@ -52,6 +54,7 @@ export function QuestionNavigator({
           const answered = (session.session.answers[questionId]?.length ?? 0) > 0;
           const flagged = session.session.flaggedQuestionIds.includes(questionId);
           const outcome = outcomes?.[index];
+          const isFilteredOut = filteredIndices !== undefined && !filteredIndices.includes(index);
           const state =
             mode === "review" && outcome !== undefined
               ? outcome
@@ -66,6 +69,7 @@ export function QuestionNavigator({
               key={questionId}
               className="assessment-nav-button timed-nav-button"
               data-state={state}
+              data-filtered-out={isFilteredOut ? "true" : undefined}
               data-current={index === currentIndex ? "true" : undefined}
               aria-current={index === currentIndex ? "step" : undefined}
               aria-label={`Question ${index + 1}, ${label}${index === currentIndex ? ", current" : ""}`}

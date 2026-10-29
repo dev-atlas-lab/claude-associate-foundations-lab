@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+import { HallucinationEvaluationSandbox } from "../features/visualizations/HallucinationEvaluationSandbox";
 import { ModelSelectionMatrix } from "../features/visualizations/ModelSelectionMatrix";
 import { PromptCachingCostCalculator } from "../features/visualizations/PromptCachingCostCalculator";
 import { PromptLayeringWorkbench } from "../features/visualizations/PromptLayeringWorkbench";
@@ -192,5 +193,94 @@ describe("SafetyGuardrailsSimulator", () => {
     expect(
       screen.getByText(/Constitutional AI kích hoạt từ chối an toàn/i),
     ).toBeInTheDocument();
+  });
+});
+
+describe("HallucinationEvaluationSandbox", () => {
+  it("renders scenario selector and switches scenarios", () => {
+    render(<HallucinationEvaluationSandbox intro="Evaluation sandbox intro" />);
+
+    expect(screen.getByText("Evaluation sandbox intro")).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", {
+        name: /Bàn Thử Nghiệm Tương Tác: Nhận Diện Hallucination & Thẩm Định Output/i,
+      }),
+    ).toBeInTheDocument();
+
+    // Default scenario is Finance Q3
+    expect(
+      screen.getByRole("button", { name: /Tình huống 1: Báo cáo Tài chính Q3/i }),
+    ).toHaveAttribute("aria-pressed", "true");
+    expect(
+      screen.getByRole("heading", { name: /Tài liệu Nguồn Xác thực/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /Văn bản do Claude tạo ra/i }),
+    ).toBeInTheDocument();
+
+    // Switch to Legal NDA scenario
+    const legalBtn = screen.getByRole("button", { name: /Tình huống 2: Thỏa thuận Bảo mật NDA/i });
+    fireEvent.click(legalBtn);
+    expect(legalBtn).toHaveAttribute("aria-pressed", "true");
+    expect(
+      screen.getByText(/Hợp đồng Bảo mật Thông tin NDA-2026/i),
+    ).toBeInTheDocument();
+
+    // Switch to Healthcare Dosage scenario
+    const healthBtn = screen.getByRole("button", { name: /Tình huống 3: Hướng dẫn Kê đơn/i });
+    fireEvent.click(healthBtn);
+    expect(healthBtn).toHaveAttribute("aria-pressed", "true");
+    expect(
+      screen.getByText(/Dược thư Quốc gia: Hướng dẫn Kê đơn/i),
+    ).toBeInTheDocument();
+  });
+
+  it("classifies claims, triggers verification, displays score and resets", () => {
+    render(<HallucinationEvaluationSandbox />);
+
+    // In Finance scenario:
+    // Claim 1 (claim-1): Internal Inconsistency
+    const claim1Group = screen.getByRole("group", { name: "Phân loại claim-1" });
+    const claim1Btns = claim1Group.querySelectorAll("button");
+    const inconsistencyBtn1 = Array.from(claim1Btns).find((b) =>
+      b.textContent?.includes("Internal Inconsistency"),
+    );
+    expect(inconsistencyBtn1).toBeDefined();
+    fireEvent.click(inconsistencyBtn1!);
+
+    // Claim 2 (claim-2): Verified Accurate
+    const claim2Group = screen.getByRole("group", { name: "Phân loại claim-2" });
+    const claim2Btns = claim2Group.querySelectorAll("button");
+    const verifiedBtn2 = Array.from(claim2Btns).find((b) =>
+      b.textContent?.includes("Verified Accurate"),
+    );
+    expect(verifiedBtn2).toBeDefined();
+    fireEvent.click(verifiedBtn2!);
+
+    // Claim 3 (claim-3): Factual Hallucination
+    const claim3Group = screen.getByRole("group", { name: "Phân loại claim-3" });
+    const claim3Btns = claim3Group.querySelectorAll("button");
+    const factualBtn3 = Array.from(claim3Btns).find((b) =>
+      b.textContent?.includes("Factual Hallucination"),
+    );
+    expect(factualBtn3).toBeDefined();
+    fireEvent.click(factualBtn3!);
+
+    // Verification button should now be enabled
+    const verifyBtn = screen.getByRole("button", {
+      name: /Kiểm định & Đối chiếu Rubric Anthropic/i,
+    });
+    expect(verifyBtn).not.toBeDisabled();
+    fireEvent.click(verifyBtn);
+
+    // Score summary is displayed
+    expect(screen.getByText(/Kết quả thẩm định của bạn/i)).toBeInTheDocument();
+    expect(screen.getByText(/claims chính xác/i)).toBeInTheDocument();
+
+    // Reset button returns to interactive state
+    const resetBtn = screen.getByRole("button", { name: /Thử lại kịch bản này/i });
+    fireEvent.click(resetBtn);
+
+    expect(screen.queryByText(/Kết quả thẩm định của bạn/i)).not.toBeInTheDocument();
   });
 });

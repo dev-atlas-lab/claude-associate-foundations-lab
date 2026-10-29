@@ -84,7 +84,7 @@ describe("practice page", () => {
         name: "Domain 2: Output Evaluation and Validation",
       }),
     ).toHaveLength(2);
-    expect(screen.getByText("19 questions")).toBeInTheDocument();
+    expect(screen.getByText("22 questions")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Start assessment" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "All practice sets" })).toHaveAttribute(
       "href",
@@ -101,7 +101,7 @@ describe("practice page", () => {
         name: "Domain 5: Configuration and Knowledge Management",
       }),
     ).toHaveLength(2);
-    expect(screen.getByText("11 questions")).toBeInTheDocument();
+    expect(screen.getByText("13 questions")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Start assessment" })).toBeInTheDocument();
   });
 
@@ -161,7 +161,7 @@ describe("practice page", () => {
       name: /Domain 5: Configuration and Knowledge Management/i,
     });
     expect(
-      within(inProgressD5Card).getByText("In progress (1/11 answered)"),
+      within(inProgressD5Card).getByText("In progress (1/13 answered)"),
     ).toBeInTheDocument();
     inProgressView.unmount();
 
@@ -182,7 +182,7 @@ describe("practice page", () => {
       name: /Domain 5: Configuration and Knowledge Management/i,
     });
     expect(
-      within(completedD5Card).getByText("Completed (Last: 9.09% · 1 attempt)"),
+      within(completedD5Card).getByText("Completed (Last: 7.69% · 1 attempt)"),
     ).toBeInTheDocument();
     completedView.unmount();
 
@@ -202,7 +202,7 @@ describe("practice page", () => {
     });
     expect(
       within(combinedD5Card).getByText(
-        "In progress (0/11 answered) · Last: 9.09% · 1 attempt",
+        "In progress (0/13 answered) · Last: 7.69% · 1 attempt",
       ),
     ).toBeInTheDocument();
   });
