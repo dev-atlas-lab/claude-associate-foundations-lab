@@ -207,6 +207,12 @@
   letter-spacing: 0.03em;
 }
 
+.review-item-objective {
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+}
+
 .review-item-reasons {
   display: flex;
   flex-wrap: wrap;
@@ -409,6 +415,20 @@
   color: var(--accent);
   font-family: var(--font-mono);
   font-size: var(--text-xs);
+}
+
+.data-table td.data-table-cell-wrap {
+  white-space: normal;
+  min-width: 14rem;
+}
+
+.table-remediation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  margin-top: var(--space-1);
+  font-size: var(--text-xs);
+  font-weight: 400;
 }
 
 @media (max-width: 720px) {

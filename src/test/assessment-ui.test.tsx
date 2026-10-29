@@ -1,9 +1,18 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import {
+  getAssessment,
+  getAssessmentQuestions,
+  getQuestionCurriculumContext,
+} from "../content";
+import {
   assessmentDefinitionSchema,
+  createAssessmentContext,
   questionSchema,
+  startAssessment,
+  submitAssessment,
   type AssessmentDefinition,
   type Question,
 } from "../domain";
@@ -165,5 +174,81 @@ describe("assessment runner", () => {
     expect(screen.getByRole("status")).toHaveTextContent("Chưa đúng");
     expect(screen.getByText("Correct answer")).toBeInTheDocument();
     expect(screen.getByText("Your answer")).toBeInTheDocument();
+  });
+
+  it("renders per-objective breakdown and question curriculum context for a single-domain set", () => {
+    const d7Def = getAssessment("domain-7-troubleshooting-set")!;
+    const d7Questions = getAssessmentQuestions(d7Def);
+    const d7Context = createAssessmentContext(d7Def, d7Questions);
+    const submittedSession = submitAssessment(
+      d7Context,
+      startAssessment(d7Context, {
+        sessionId: "d7-sub-1",
+        startedAt: "2026-10-28T09:00:00.000Z",
+      }),
+      "2026-10-28T09:10:00.000Z",
+    ).session;
+
+    render(
+      <MemoryRouter>
+        <AssessmentRunner
+          definition={d7Def}
+          questions={d7Questions}
+          initialSession={submittedSession}
+        />
+      </MemoryRouter>,
+    );
+
+    const objTable = screen.getByRole("table", {
+      name: "Attempt breakdown by official objective",
+    });
+    expect(within(objTable).getAllByRole("row")).toHaveLength(4); // header + 3 D7 objectives
+    expect(
+      within(objTable).getAllByRole("link", { name: /Bài học:/i })[0],
+    ).toHaveAttribute("href", "/learn/troubleshooting-optimization");
+
+    const qContext = getQuestionCurriculumContext(d7Questions[0]!.id)!;
+    expect(
+      screen.getByRole("heading", { name: "Mục tiêu & bài học liên quan" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText(qContext.objective!.statement, { selector: ".question-context-meta *" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: `Ôn lại bài học: ${qContext.lesson!.title}` }),
+    ).toHaveAttribute("href", `/learn/${qContext.lesson!.id}`);
+    expect(
+      screen.getByRole("heading", { name: "Nguồn tham chiếu" }),
+    ).toBeInTheDocument();
+  });
+
+  it("renders per-domain breakdown with lesson and domain practice links for a multi-domain set", () => {
+    const mixedDef = getAssessment("mixed-foundations-set")!;
+    const mixedQuestions = getAssessmentQuestions(mixedDef);
+    const mixedContext = createAssessmentContext(mixedDef, mixedQuestions);
+    const submittedSession = submitAssessment(
+      mixedContext,
+      startAssessment(mixedContext, {
+        sessionId: "mixed-sub-1",
+        startedAt: "2026-10-28T09:00:00.000Z",
+      }),
+      "2026-10-28T09:30:00.000Z",
+    ).session;
+
+    render(
+      <MemoryRouter>
+        <AssessmentRunner
+          definition={mixedDef}
+          questions={mixedQuestions}
+          initialSession={submittedSession}
+        />
+      </MemoryRouter>,
+    );
+
+    const domainTable = screen.getByRole("table", {
+      name: "Attempt breakdown by official domain",
+    });
+    expect(within(domainTable).getAllByRole("row")).toHaveLength(8); // header + 7 official domains
+    expect(
+      within(domainTable).getByRole("link", { name: "Luyện tập Domain 2" }),
+    ).toHaveAttribute("href", "/practice?set=domain-2-output-validation-set");
   });
 });

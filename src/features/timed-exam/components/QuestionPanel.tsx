@@ -1,10 +1,20 @@
 import { Flag, X } from "lucide-react";
 import type { RefObject } from "react";
+import { Link } from "react-router-dom";
 import type {
   Question,
   QuestionOutcome,
   Source,
 } from "../../../domain";
+
+export interface QuestionPanelCurriculumContext {
+  domainCode: string;
+  domainTitle: string;
+  objectiveStatement: string;
+  lessonId?: string;
+  lessonTitle?: string;
+  practiceSetId?: string;
+}
 
 interface QuestionPanelProps {
   question: Question;
@@ -18,6 +28,7 @@ interface QuestionPanelProps {
   onToggleFlag?: () => void;
   headingRef?: RefObject<HTMLLegendElement | null>;
   sources?: readonly Source[];
+  curriculumContext?: QuestionPanelCurriculumContext;
 }
 
 function optionLetters(index: number): string {
@@ -52,6 +63,7 @@ export function QuestionPanel({
   onToggleFlag,
   headingRef,
   sources = [],
+  curriculumContext,
 }: QuestionPanelProps) {
   const review = mode === "review";
   const answered = selectedChoiceIds.length > 0;
@@ -220,6 +232,34 @@ export function QuestionPanel({
           </div>
         ) : null}
       </form>
+
+      {review && curriculumContext ? (
+        <div className="question-curriculum-context">
+          <h4 className="question-context-title">Mục tiêu & bài học liên quan</h4>
+          <p className="question-context-meta">
+            <span className="data-table-code">D{curriculumContext.domainCode}</span>{" "}
+            <strong>
+              Domain {curriculumContext.domainCode}: {curriculumContext.domainTitle}
+            </strong>{" "}
+            — <span lang="en">{curriculumContext.objectiveStatement}</span>
+          </p>
+          <div className="question-context-links">
+            {curriculumContext.lessonId && curriculumContext.lessonTitle ? (
+              <Link className="inline-link" to={`/learn/${curriculumContext.lessonId}`}>
+                Ôn lại bài học: {curriculumContext.lessonTitle}
+              </Link>
+            ) : null}
+            {curriculumContext.practiceSetId ? (
+              <Link
+                className="inline-link"
+                to={`/practice?set=${encodeURIComponent(curriculumContext.practiceSetId)}`}
+              >
+                Luyện tập Domain {curriculumContext.domainCode}
+              </Link>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
 
       {review && sources.length > 0 ? (
         <div className="timed-sources">

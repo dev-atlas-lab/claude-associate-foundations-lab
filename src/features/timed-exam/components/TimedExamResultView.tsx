@@ -7,7 +7,14 @@ import {
   type AssessmentContext,
   type TimedExamSession,
 } from "../../../domain";
-import { getQuestionBankEntry, getSources } from "../../../content";
+import {
+  getQuestionBankEntry,
+  getQuestionCurriculumContext,
+  getSources,
+  primaryBlueprint,
+  questionBankEntries,
+} from "../../../content";
+import { deriveAttemptDomainBreakdown } from "../../progress/selectors";
 import {
   formatLocalTimestamp,
 } from "../format";
@@ -67,6 +74,13 @@ export function TimedExamResultView({
   const score = result.questions[index];
   const submissionReason = session.submissionReason ?? "user";
   const bankEntry = question === undefined ? undefined : getQuestionBankEntry(question.id);
+  const questionContext =
+    question === undefined ? undefined : getQuestionCurriculumContext(question.id);
+  const domainBreakdown = deriveAttemptDomainBreakdown(
+    result,
+    questionBankEntries,
+    primaryBlueprint,
+  );
   const sourceIds =
     question === undefined
       ? []
@@ -174,6 +188,60 @@ export function TimedExamResultView({
           với chế độ all-or-nothing; câu chưa trả lời được tính là sai và được báo riêng. Không có
           partial credit.
         </p>
+
+        {domainBreakdown.length > 0 ? (
+          <div className="assessment-breakdown">
+            <h3 className="assessment-breakdown-title">Phân tích theo official domain</h3>
+            <div className="table-wrap">
+              <table className="data-table">
+                <caption className="sr-only">Timed exam performance by official domain</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Domain</th>
+                    <th scope="col">Weight</th>
+                    <th scope="col">Correct / Total</th>
+                    <th scope="col">Incorrect</th>
+                    <th scope="col">Unanswered</th>
+                    <th scope="col">Raw %</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {domainBreakdown.map((row) => (
+                    <tr key={row.domainId}>
+                      <th scope="row">
+                        <span className="data-table-code">{row.code}</span> {row.title}
+                        {row.lessonId || row.practiceSetId ? (
+                          <div className="table-remediation">
+                            {row.lessonId && row.lessonTitle ? (
+                              <Link className="inline-link" to={`/learn/${row.lessonId}`}>
+                                Bài học: {row.lessonTitle}
+                              </Link>
+                            ) : null}
+                            {row.practiceSetId ? (
+                              <Link
+                                className="inline-link"
+                                to={`/practice?set=${encodeURIComponent(row.practiceSetId)}`}
+                              >
+                                Luyện tập Domain {row.code}
+                              </Link>
+                            ) : null}
+                          </div>
+                        ) : null}
+                      </th>
+                      <td>{row.weightPercent}%</td>
+                      <td>
+                        {row.correctAnswers}/{row.totalQuestions}
+                      </td>
+                      <td>{row.incorrectAnswers}</td>
+                      <td>{row.unansweredQuestions}</td>
+                      <td>{row.rawPercentage ?? 0}%</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        ) : null}
       </section>
 
       <section className="section timed-review" aria-labelledby="timed-review-title">
@@ -198,6 +266,18 @@ export function TimedExamResultView({
               outcome={score.outcome}
               headingRef={headingRef}
               sources={sources}
+              curriculumContext={
+                questionContext?.domain && questionContext?.objective
+                  ? {
+                      domainCode: questionContext.domain.code,
+                      domainTitle: questionContext.domain.title,
+                      objectiveStatement: questionContext.objective.statement,
+                      lessonId: questionContext.lesson?.id,
+                      lessonTitle: questionContext.lesson?.title,
+                      practiceSetId: questionContext.practiceSet?.assessment.id,
+                    }
+                  : undefined
+              }
             />
 
             <nav className="assessment-pager" aria-label="Timed exam review questions">

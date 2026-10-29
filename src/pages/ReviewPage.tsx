@@ -5,15 +5,20 @@ import { Badge } from "../components/ui/Badge";
 import { Callout } from "../components/ui/Callout";
 import { EmptyState } from "../components/ui/EmptyState";
 import { PageHeader } from "../components/ui/PageHeader";
-import { allQuestions, getPracticeSet } from "../content";
 import {
-  deriveReviewItems,
-  type AttemptOrigin,
-  type ReviewItem,
-  type ReviewReason,
-} from "../domain";
+  allQuestions,
+  getQuestionCurriculumContext,
+  primaryBlueprint,
+  questionBankEntries,
+} from "../content";
+import { type ReviewReason } from "../domain";
+import {
+  deriveAggregatedReviewItems,
+  type AggregatedReviewItem,
+} from "../features/progress/selectors";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { resolveStudyReviewItem, useStudyState } from "../persistence/study-store";
+import { useTimedExamState } from "../persistence/timed-exam-store";
 
 const questionById = new Map(allQuestions.map((question) => [question.id, question]));
 
@@ -35,14 +40,6 @@ function parseReason(value: string | null): ReasonFilter {
   return value === "incorrect" || value === "unanswered" || value === "flagged" ? value : "all";
 }
 
-function originLabel(origin: AttemptOrigin): string {
-  if (origin.kind === "practice") {
-    return getPracticeSet(origin.practiceSetId)?.assessment.title ?? origin.practiceSetId;
-  }
-
-  return "Mock exam preview";
-}
-
 function formatSubmittedAt(value: string): string {
   return new Date(value).toLocaleString("en-GB", {
     dateStyle: "medium",
@@ -50,7 +47,7 @@ function formatSubmittedAt(value: string): string {
   });
 }
 
-function outcomeLabel(item: ReviewItem): string {
+function outcomeLabel(item: AggregatedReviewItem): string {
   if (item.score.outcome === "correct") {
     return "Correct, flagged";
   }
@@ -62,7 +59,7 @@ function outcomeLabel(item: ReviewItem): string {
   return "Incorrect";
 }
 
-function itemHref(item: ReviewItem, reason: ReasonFilter): string {
+function itemHref(item: AggregatedReviewItem, reason: ReasonFilter): string {
   const params = new URLSearchParams();
   params.set("item", item.key);
 
@@ -80,10 +77,17 @@ function filterHref(reason: ReasonFilter): string {
 export function ReviewPage() {
   useDocumentTitle("Review");
   const snapshot = useStudyState();
+  const timedSnapshot = useTimedExamState();
   const [searchParams] = useSearchParams();
   const [resolvedMessage, setResolvedMessage] = useState<string>();
 
-  const items = deriveReviewItems(snapshot.state, questionById);
+  const items = deriveAggregatedReviewItems(
+    snapshot.state,
+    questionById,
+    questionBankEntries,
+    primaryBlueprint,
+    timedSnapshot.session,
+  );
   const reason = parseReason(searchParams.get("reason"));
   const filteredItems =
     reason === "all" ? items : items.filter((item) => item.reasons.includes(reason));
@@ -138,8 +142,14 @@ export function ReviewPage() {
     const previous = index > 0 ? navigationItems[index - 1] : undefined;
     const next =
       index >= 0 && index < navigationItems.length - 1 ? navigationItems[index + 1] : undefined;
+    const detailContext = getQuestionCurriculumContext(detail.question.id);
+    const detailSources = detailContext?.sources ?? [];
 
     const markReviewed = () => {
+      if (!detail.resolvableInStudyStore) {
+        return;
+      }
+
       resolveStudyReviewItem(detail.attemptId, detail.question.id);
       setResolvedMessage("Marked reviewed. This item left the queue.");
     };
@@ -149,7 +159,7 @@ export function ReviewPage() {
         <PageHeader
           eyebrow="Review"
           title="Review mistakes"
-          lede={`${originLabel(detail.origin)} · submitted ${formatSubmittedAt(detail.submittedAt)}`}
+          lede={`${detail.originLabel} · submitted ${formatSubmittedAt(detail.submittedAt)}`}
           meta={
             <>
               {detail.reasons.map((itemReason) => (
@@ -158,6 +168,12 @@ export function ReviewPage() {
                 </Badge>
               ))}
               <Badge>{outcomeLabel(detail)}</Badge>
+              {detail.repeatMissCount > 1 ? (
+                <Badge tone="warn">Missed in {detail.repeatMissCount} attempts</Badge>
+              ) : null}
+              {detail.storageKey === "cfl.timed-exam.v1" ? (
+                <Badge tone="accent">Saved timed exam slot</Badge>
+              ) : null}
             </>
           }
           actions={
@@ -243,11 +259,69 @@ export function ReviewPage() {
             ))}
           </div>
 
+          {detail.domainCode && detail.domainTitle && detail.objectiveStatement ? (
+            <div className="question-curriculum-context">
+              <h3 className="question-context-title">Mục tiêu & bài học liên quan</h3>
+              <p className="question-context-meta">
+                <span className="data-table-code">D{detail.domainCode}</span>{" "}
+                <strong>
+                  Domain {detail.domainCode}: {detail.domainTitle}
+                </strong>{" "}
+                — <span lang="en">{detail.objectiveStatement}</span>
+              </p>
+              {detail.repeatMissCount > 1 ? (
+                <p className="question-context-note">
+                  Repeated mistake: câu hỏi này đã trả lời sai trong {detail.repeatMissCount} lần nộp
+                  bài.
+                </p>
+              ) : null}
+              <div className="question-context-links">
+                {detail.lessonId && detail.lessonTitle ? (
+                  <Link className="inline-link" to={`/learn/${detail.lessonId}`}>
+                    Ôn lại bài học: {detail.lessonTitle}
+                  </Link>
+                ) : null}
+                {detail.practiceSetId ? (
+                  <Link
+                    className="inline-link"
+                    to={`/practice?set=${encodeURIComponent(detail.practiceSetId)}`}
+                  >
+                    Luyện tập Domain {detail.domainCode}
+                  </Link>
+                ) : null}
+              </div>
+            </div>
+          ) : null}
+
+          {detailSources.length > 0 ? (
+            <div className="timed-sources">
+              <h3 className="timed-sources-title">Nguồn tham chiếu</h3>
+              <ul className="timed-source-list">
+                {detailSources.map((source) => (
+                  <li className="timed-source" key={source.id}>
+                    <a className="inline-link" href={source.url} target="_blank" rel="noreferrer">
+                      {source.title}
+                    </a>
+                    <span className="timed-source-meta">
+                      {source.publisher} · truy cập {source.accessedAt}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+
           <div className="review-actions">
-            <button type="button" className="button button--primary" onClick={markReviewed}>
-              <Check size={14} strokeWidth={2} aria-hidden="true" />
-              Mark reviewed
-            </button>
+            {detail.resolvableInStudyStore ? (
+              <button type="button" className="button button--primary" onClick={markReviewed}>
+                <Check size={14} strokeWidth={2} aria-hidden="true" />
+                Mark reviewed
+              </button>
+            ) : (
+              <Link className="button button--secondary" to="/mock-exam/timed">
+                Open timed exam result
+              </Link>
+            )}
             {previous ? (
               <Link className="button button--secondary" to={itemHref(previous, reason)}>
                 <ArrowLeft size={14} strokeWidth={2} aria-hidden="true" />
@@ -262,8 +336,9 @@ export function ReviewPage() {
             ) : null}
           </div>
           <p className="review-hint">
-            Opening an item never resolves it. Mark reviewed only when you have read the
-            explanation and decided what to change.
+            {detail.resolvableInStudyStore
+              ? "Opening an item never resolves it. Mark reviewed only when you have read the explanation and decided what to change."
+              : "This item comes from your saved timed mock exam slot (cfl.timed-exam.v1). It remains visible here while that timed result is retained."}
           </p>
         </article>
       </div>
@@ -349,11 +424,18 @@ export function ReviewPage() {
                       {item.question.stem}
                     </span>
                     <span className="review-item-meta">
-                      {originLabel(item.origin)} · {formatSubmittedAt(item.submittedAt)} ·{" "}
+                      {item.originLabel} · {formatSubmittedAt(item.submittedAt)} ·{" "}
                       {item.question.type === "multiple-response"
                         ? "Multiple-response"
                         : "Single-choice"}
                     </span>
+                    {item.domainCode && item.domainTitle && item.objectiveStatement ? (
+                      <span className="review-item-objective">
+                        <span className="data-table-code">D{item.domainCode}</span> Domain{" "}
+                        {item.domainCode}: {item.domainTitle} —{" "}
+                        <span lang="en">{item.objectiveStatement}</span>
+                      </span>
+                    ) : null}
                     <span className="review-item-reasons">
                       {item.reasons.map((itemReason) => (
                         <Badge
@@ -363,6 +445,12 @@ export function ReviewPage() {
                           {reasonLabels[itemReason]}
                         </Badge>
                       ))}
+                      {item.repeatMissCount > 1 ? (
+                        <Badge tone="warn">Missed in {item.repeatMissCount} attempts</Badge>
+                      ) : null}
+                      {item.storageKey === "cfl.timed-exam.v1" ? (
+                        <Badge tone="accent">Saved timed exam slot</Badge>
+                      ) : null}
                     </span>
                   </span>
                   <span className="review-item-tail">

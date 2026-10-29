@@ -21,6 +21,7 @@
 - [x] First GitHub Actions run passed on `main` (run 40611368468, 2026-10-28).
 - [x] Timed 60-question / 120-minute mock exam with persisted deadline, reload recovery, auto-submit, expiry labeling, and an immutable raw result implemented (Phase C2.8, 2026-10-28).
 - [x] Full content and assessment audit completed for 62 bank items, 8 lessons, 15 glossary entries, 27 sources, domain practice sets, and timed-exam integrity (Phase C2.9, 2026-10-28); E2E expectations for the expanded Domain 7 practice set aligned with registry counts.
+- [x] Learning-effectiveness instrumentation (Phase C2.10, 2026-10-29): lesson-to-practice deep links, practice set status badges, post-submission domain/objective breakdowns, question curriculum context & sources, enriched mistake review with repeat-miss detection and timed-exam visibility, and progress bank exposure, first-seen vs. latest accuracy, 30-objective coverage matrix, and submitted attempt history.
 - [ ] Official scaled score and pass prediction remain unimplemented by design; no official source supports inventing them.
 - [ ] Vercel deployment verified.
 
@@ -1002,3 +1003,38 @@ not done in this audit.
 - `npm test`: pass (**23 files / 178 tests**).
 - `npm run build`: pass.
 - `npm run test:e2e`: pass (**116 Playwright tests across 8 files**).
+
+## Phase C2.10 - Learning effectiveness instrumentation (2026-10-29)
+
+### Scope
+
+- Implemented all five tickets (`C2.10-1` through `C2.10-5`) from
+  `docs/LEARNING_EFFECTIVENESS_DISCOVERY.md` with zero changes to `cfl.study.v1`,
+  `cfl.timed-exam.v1`, or `contentFingerprint`.
+- Added curriculum lookup helpers (`getLessonForObjective`, `getLessonForDomain`,
+  `getPracticeSetForDomain`, `getQuestionCurriculumContext`) in `src/content/index.ts`.
+- Added pure read-time breakdown and aggregation selectors in `src/features/progress/selectors.ts`:
+  - `deriveAttemptDomainBreakdown` and `deriveAttemptObjectiveBreakdown`;
+  - `deriveAggregatedReviewItems` across `cfl.study.v1` and submitted `cfl.timed-exam.v1` sessions,
+    with domain/objective enrichment, remediation links, and `repeatMissCount`;
+  - Extended `deriveProgressSummary` with unique bank exposure (`uniqueItemsAttempted`,
+    `uniqueItemsAnswered`, `objectivesPracticed`), `firstSeen` vs. `latest` vs. `cumulative`
+    accuracy, a 30-objective performance matrix (`ObjectivePerformance[]`), and chronological
+    `attemptHistory` (`AttemptHistoryEntry[]`).
+- Linked every exam-mapped lesson's practice CTA directly to `/practice?set=<domainSetId>` and
+  added real local status badges (`Not started`, `In progress`, `Completed`) to `/practice` rows.
+- Added post-submission per-domain / per-objective breakdown tables and question curriculum context
+  (Domain, Objective statement, mapped Lesson link, Domain Practice link, and official Sources) to
+  `AssessmentRunner`, `TimedExamResultView`, and `QuestionPanel`.
+- Upgraded `ReviewPage` to show Domain/Objective context, official Sources, Lesson and Practice
+  remediation links, repeat-miss notices, and submitted timed-exam mistakes/flags.
+- Upgraded `ProgressPage` to report unique bank exposure, First-seen vs. Latest accuracy, the
+  30-objective coverage matrix, and chronological submitted attempt history.
+
+### Verification
+
+- `npm run typecheck`: pass (`tsc -b`, strict).
+- `npm run lint`: pass (`eslint .`, 0 problems).
+- Targeted Vitest suite (`progress-selectors`, `lesson`, `practice-page`, `assessment-ui`,
+  `timed-exam-page`, `study-journey`, `study-pages`): **7 files / 50 tests pass**.
+- `git diff --check`: clean.

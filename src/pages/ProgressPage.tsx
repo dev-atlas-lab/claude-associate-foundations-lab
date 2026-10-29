@@ -5,9 +5,13 @@ import { Callout } from "../components/ui/Callout";
 import { EmptyState } from "../components/ui/EmptyState";
 import { PageHeader } from "../components/ui/PageHeader";
 import { allQuestions, primaryBlueprint, questionBankEntries } from "../content";
-import { deriveProgressSummary } from "../features/progress/selectors";
+import {
+  deriveProgressSummary,
+  type AttemptHistorySource,
+} from "../features/progress/selectors";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { useStudyState } from "../persistence/study-store";
+import { useTimedExamState } from "../persistence/timed-exam-store";
 
 const questionById = new Map(allQuestions.map((question) => [question.id, question]));
 
@@ -26,14 +30,28 @@ function formatDate(value: string | undefined): string {
   });
 }
 
+function formatAttemptSourceLabel(source: AttemptHistorySource): string {
+  if (source === "practice") {
+    return "Practice";
+  }
+
+  if (source === "timed-mock-exam") {
+    return "Timed simulation";
+  }
+
+  return "Untimed preview";
+}
+
 export function ProgressPage() {
   useDocumentTitle("Progress");
   const snapshot = useStudyState();
+  const timedSnapshot = useTimedExamState();
   const summary = deriveProgressSummary(
     snapshot.state,
     questionBankEntries,
     primaryBlueprint,
     questionById,
+    timedSnapshot.session,
   );
   const hasAttempts = summary.personal.submittedAttempts > 0;
 
@@ -163,6 +181,43 @@ export function ProgressPage() {
                   {formatPercent(summary.personal.rawPercentage)}
                 </span>
               </article>
+              <article className="stat">
+                <span className="stat-label">Unique bank exposure</span>
+                <span className="stat-value">
+                  {summary.personal.uniqueItemsAttempted}/{summary.bank.totalItems}
+                </span>
+                <span className="stat-hint">
+                  {summary.personal.uniqueItemsAnswered} answered ·{" "}
+                  {summary.personal.objectivesPracticed}/{summary.bank.objectivesTotal} objectives
+                  practiced
+                </span>
+              </article>
+              <article className="stat">
+                <span className="stat-label">First-seen accuracy</span>
+                <span className="stat-value">
+                  {summary.personal.firstSeen.status === "available"
+                    ? formatPercent(summary.personal.firstSeen.percentage)
+                    : "—"}
+                </span>
+                <span className="stat-hint">
+                  {summary.personal.firstSeen.status === "available"
+                    ? `${summary.personal.firstSeen.correct}/${summary.personal.firstSeen.answered} correct on first answered encounter`
+                    : summary.personal.firstSeen.note}
+                </span>
+              </article>
+              <article className="stat">
+                <span className="stat-label">Latest accuracy</span>
+                <span className="stat-value">
+                  {summary.personal.latest.status === "available"
+                    ? formatPercent(summary.personal.latest.percentage)
+                    : "—"}
+                </span>
+                <span className="stat-hint">
+                  {summary.personal.latest.status === "available"
+                    ? `${summary.personal.latest.correct}/${summary.personal.latest.answered} correct on most recent answered encounter`
+                    : summary.personal.latest.note}
+                </span>
+              </article>
             </div>
 
             <div className="table-wrap">
@@ -178,6 +233,8 @@ export function ProgressPage() {
                     <th scope="col">Incorrect</th>
                     <th scope="col">Unanswered</th>
                     <th scope="col">Accuracy</th>
+                    <th scope="col">Unique seen</th>
+                    <th scope="col">Latest</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -185,12 +242,37 @@ export function ProgressPage() {
                     <tr key={domain.domainId}>
                       <th scope="row">
                         <span className="data-table-code">{domain.code}</span> {domain.title}
+                        {domain.lessonId || domain.practiceSetId ? (
+                          <div className="table-remediation">
+                            {domain.lessonId && domain.lessonTitle ? (
+                              <Link className="inline-link" to={`/learn/${domain.lessonId}`}>
+                                Bài học: {domain.lessonTitle}
+                              </Link>
+                            ) : null}
+                            {domain.practiceSetId ? (
+                              <Link
+                                className="inline-link"
+                                to={`/practice?set=${encodeURIComponent(domain.practiceSetId)}`}
+                              >
+                                Luyện tập Domain {domain.code}
+                              </Link>
+                            ) : null}
+                          </div>
+                        ) : null}
                       </th>
                       <td>{domain.attemptedQuestions}</td>
                       <td>{domain.correctAnswers}</td>
                       <td>{domain.incorrectAnswers}</td>
                       <td>{domain.unansweredQuestions}</td>
                       <td>{formatPercent(domain.accuracyOnAnswered)}</td>
+                      <td>
+                        {domain.uniqueAttemptedItems}/{domain.bankItemCount}
+                      </td>
+                      <td>
+                        {domain.latestOrderUnavailable
+                          ? "Unavailable"
+                          : formatPercent(domain.latestAccuracy)}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -199,8 +281,10 @@ export function ProgressPage() {
 
             <Callout tone="note" title="These are practice metrics, not a readiness score">
               Accuracy is calculated from your submitted answers. It is not a scaled exam score, not
-              a prediction, and not comparable to the official 100–1,000 scale. A small bank also
-              means the same question can appear in more than one attempt.
+              a prediction, and not comparable to the official 100–1,000 scale. A small bank (2–4
+              reviewed items per objective) also means the same question can appear in more than one
+              attempt; compare first-seen accuracy against latest accuracy so repeated questions do
+              not mask unfamiliar concepts.
             </Callout>
           </>
         ) : (
@@ -219,6 +303,140 @@ export function ProgressPage() {
           </EmptyState>
         )}
       </section>
+
+      {hasAttempts ? (
+        <section className="section" aria-labelledby="objective-coverage">
+          <div className="section-heading-row">
+            <h2 className="section-title" id="objective-coverage">
+              Objective coverage & performance
+            </h2>
+            <span className="section-note">
+              {summary.personal.objectivesPracticed}/{summary.bank.objectivesTotal} objectives
+              practiced · 2–4 reviewed items per objective
+            </span>
+          </div>
+
+          <div className="table-wrap">
+            <table className="data-table">
+              <caption className="sr-only">
+                Objective coverage and latest outcomes across all 30 official objectives
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Objective</th>
+                  <th scope="col">Bank items</th>
+                  <th scope="col">Practiced</th>
+                  <th scope="col">First-seen correct</th>
+                  <th scope="col">Latest correct</th>
+                  <th scope="col">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {summary.personal.objectives.map((objective) => (
+                  <tr key={objective.objectiveId}>
+                    <th scope="row">
+                      <span className="data-table-code">D{objective.domainCode}</span>{" "}
+                      <span lang="en">{objective.statement}</span>
+                      {objective.lessonId || objective.practiceSetId ? (
+                        <div className="table-remediation">
+                          {objective.lessonId && objective.lessonTitle ? (
+                            <Link className="inline-link" to={`/learn/${objective.lessonId}`}>
+                              Bài học: {objective.lessonTitle}
+                            </Link>
+                          ) : null}
+                          {objective.practiceSetId ? (
+                            <Link
+                              className="inline-link"
+                              to={`/practice?set=${encodeURIComponent(objective.practiceSetId)}`}
+                            >
+                              Luyện tập Domain {objective.domainCode}
+                            </Link>
+                          ) : null}
+                        </div>
+                      ) : null}
+                    </th>
+                    <td>{objective.bankItemCount}</td>
+                    <td>
+                      {objective.practicedItemCount}/{objective.bankItemCount}
+                    </td>
+                    <td>
+                      {objective.firstSeenOrderUnavailable
+                        ? "Unavailable"
+                        : `${objective.firstSeenCorrectCount}/${objective.firstSeenAnsweredCount}`}
+                    </td>
+                    <td>
+                      {objective.latestOrderUnavailable
+                        ? "Unavailable"
+                        : `${objective.latestCorrectCount}/${objective.bankItemCount}`}
+                    </td>
+                    <td className="data-table-cell-wrap">{objective.signalLabel}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      ) : null}
+
+      {hasAttempts ? (
+        <section className="section" aria-labelledby="attempt-history">
+          <div className="section-heading-row">
+            <h2 className="section-title" id="attempt-history">
+              Submitted attempt history
+            </h2>
+            <span className="section-note">
+              {summary.personal.attemptHistory.length} submitted{" "}
+              {summary.personal.attemptHistory.length === 1 ? "attempt" : "attempts"} (most recent
+              first)
+            </span>
+          </div>
+
+          <div className="table-wrap">
+            <table className="data-table">
+              <caption className="sr-only">Chronological submitted attempt history</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Assessment</th>
+                  <th scope="col">Submitted</th>
+                  <th scope="col">Correct / Total</th>
+                  <th scope="col">Incorrect</th>
+                  <th scope="col">Unanswered</th>
+                  <th scope="col">Flagged</th>
+                  <th scope="col">Raw %</th>
+                </tr>
+              </thead>
+              <tbody>
+                {summary.personal.attemptHistory.map((entry) => (
+                  <tr key={`${entry.storageKey}:${entry.attemptId}`}>
+                    <th scope="row">
+                      {entry.title}
+                      <div className="table-remediation">
+                        <Badge>{formatAttemptSourceLabel(entry.source)}</Badge>
+                        {entry.storageKey === "cfl.timed-exam.v1" ? (
+                          <Badge tone="accent">
+                            Saved timed exam slot
+                            {entry.submissionReason === "time-expired"
+                              ? " · Automatic expiry"
+                              : " · Manual submission"}
+                          </Badge>
+                        ) : null}
+                      </div>
+                    </th>
+                    <td>{formatDate(entry.submittedAt)}</td>
+                    <td>
+                      {entry.correctAnswers}/{entry.totalQuestions}
+                    </td>
+                    <td>{entry.incorrectAnswers}</td>
+                    <td>{entry.unansweredQuestions}</td>
+                    <td>{entry.flaggedQuestions}</td>
+                    <td>{entry.rawPercentage}%</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      ) : null}
 
       <section className="section" aria-labelledby="review-status">
         <div className="section-heading-row">

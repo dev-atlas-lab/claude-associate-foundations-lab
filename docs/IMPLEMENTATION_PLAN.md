@@ -210,6 +210,24 @@ destructive cleanup was performed.
 - Verified locally: targeted **9 files / 71 tests**, typecheck, lint, and `git diff --check`. Full
   `npm test`, Playwright E2E, and the production build remain delegated to CI after a push.
 
+### C2.10 - Learning effectiveness instrumentation
+
+Status: implemented and verified locally (2026-10-29).
+
+- **C2.10-1:** Added curriculum lookup helpers in `src/content/index.ts` and pure read-only
+  breakdown, review, and progress selectors in `src/features/progress/selectors.ts`.
+- **C2.10-2:** Linked lesson practice CTAs directly to `/practice?set=<domainSetId>` and added
+  local activity status badges (`Not started`, `In progress`, `Completed`) on `/practice`.
+- **C2.10-3:** Added post-submission domain/objective breakdown tables and question-level
+  Domain/Objective/Lesson/Practice/Sources context in `AssessmentRunner`, `TimedExamResultView`,
+  and `QuestionPanel`.
+- **C2.10-4:** Enriched `ReviewPage` with Domain/Objective metadata, official Sources, Lesson and
+  Domain Practice remediation links, repeat-miss indicators, and read-time visibility for submitted
+  timed-exam mistakes/flags.
+- **C2.10-5:** Upgraded `ProgressPage` with unique bank exposure (`X / 62`), First-seen vs. Latest
+  vs. Cumulative accuracy, a 30-objective coverage & performance matrix, and a chronological
+  submitted attempt history table.
+
 ### Remaining Phase D work
 
 - Treat 62 items as a starting depth, not a finished bank. Add items only for distinct decisions in

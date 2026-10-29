@@ -1,5 +1,12 @@
 import { ArrowLeft, ArrowRight, Flag, Play, RotateCcw, X } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Link, useInRouterContext } from "react-router-dom";
+import {
+  getQuestionCurriculumContext,
+  getSources,
+  primaryBlueprint,
+  questionBankEntries,
+} from "../../../content";
 import {
   calculateAssessmentResult,
   createAssessmentContext,
@@ -15,6 +22,10 @@ import {
   type Question,
 } from "../../../domain";
 import { createId } from "../../../lib/ids";
+import {
+  deriveAttemptDomainBreakdown,
+  deriveAttemptObjectiveBreakdown,
+} from "../../progress/selectors";
 
 interface AssessmentRunnerProps {
   definition: AssessmentDefinition;
@@ -31,6 +42,32 @@ interface AssessmentRunnerProps {
 
 function optionLetters(index: number): string {
   return String.fromCharCode(65 + index);
+}
+
+function SafeLink({
+  to,
+  className,
+  children,
+}: {
+  to: string;
+  className?: string;
+  children: ReactNode;
+}) {
+  const inRouter = useInRouterContext();
+
+  if (inRouter) {
+    return (
+      <Link className={className} to={to}>
+        {children}
+      </Link>
+    );
+  }
+
+  return (
+    <a className={className} href={to}>
+      {children}
+    </a>
+  );
 }
 
 export function AssessmentRunner({
@@ -277,6 +314,25 @@ export function AssessmentRunner({
     return undefined;
   };
 
+  const domainBreakdown =
+    result === null
+      ? []
+      : deriveAttemptDomainBreakdown(result, questionBankEntries, primaryBlueprint);
+  const objectiveBreakdown =
+    result === null
+      ? []
+      : deriveAttemptObjectiveBreakdown(result, questionBankEntries, primaryBlueprint);
+  const currentQuestionContext =
+    currentScore === undefined
+      ? undefined
+      : getQuestionCurriculumContext(currentQuestion.id);
+  const currentQuestionSources =
+    currentScore === undefined
+      ? []
+      : currentQuestionContext !== undefined
+        ? currentQuestionContext.sources
+        : getSources(currentQuestion.sourceIds);
+
   return (
     <div className="assessment">
       <header className="assessment-header">
@@ -339,6 +395,106 @@ export function AssessmentRunner({
             100–1.000 và không dự đoán kết quả thi. Mỗi câu được chấm all-or-nothing; câu chưa trả
             lời tính là sai.
           </p>
+
+          {domainBreakdown.length > 1 ? (
+            <div className="assessment-breakdown">
+              <h4 className="assessment-breakdown-title">Phân tích theo official domain</h4>
+              <div className="table-wrap">
+                <table className="data-table">
+                  <caption className="sr-only">Attempt breakdown by official domain</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Domain</th>
+                      <th scope="col">Weight</th>
+                      <th scope="col">Correct / Total</th>
+                      <th scope="col">Incorrect</th>
+                      <th scope="col">Unanswered</th>
+                      <th scope="col">Raw %</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {domainBreakdown.map((row) => (
+                      <tr key={row.domainId}>
+                        <th scope="row">
+                          <span className="data-table-code">{row.code}</span> {row.title}
+                          {row.lessonId || (row.practiceSetId && row.practiceSetId !== definition.id) ? (
+                            <div className="table-remediation">
+                              {row.lessonId && row.lessonTitle ? (
+                                <SafeLink className="inline-link" to={`/learn/${row.lessonId}`}>
+                                  Bài học: {row.lessonTitle}
+                                </SafeLink>
+                              ) : null}
+                              {row.practiceSetId && row.practiceSetId !== definition.id ? (
+                                <SafeLink
+                                  className="inline-link"
+                                  to={`/practice?set=${encodeURIComponent(row.practiceSetId)}`}
+                                >
+                                  Luyện tập Domain {row.code}
+                                </SafeLink>
+                              ) : null}
+                            </div>
+                          ) : null}
+                        </th>
+                        <td>{row.weightPercent}%</td>
+                        <td>
+                          {row.correctAnswers}/{row.totalQuestions}
+                        </td>
+                        <td>{row.incorrectAnswers}</td>
+                        <td>{row.unansweredQuestions}</td>
+                        <td>{row.rawPercentage ?? 0}%</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          ) : domainBreakdown.length === 1 && objectiveBreakdown.length > 0 ? (
+            <div className="assessment-breakdown">
+              <h4 className="assessment-breakdown-title">Phân tích theo official objective</h4>
+              <div className="table-wrap">
+                <table className="data-table">
+                  <caption className="sr-only">Attempt breakdown by official objective</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Objective</th>
+                      <th scope="col">Correct / Total</th>
+                      <th scope="col">Incorrect</th>
+                      <th scope="col">Unanswered</th>
+                      <th scope="col">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {objectiveBreakdown.map((row) => (
+                      <tr key={row.objectiveId}>
+                        <th scope="row">
+                          <span className="data-table-code">D{row.domainCode}</span> {row.statement}
+                          {row.lessonId && row.lessonTitle ? (
+                            <div className="table-remediation">
+                              <SafeLink className="inline-link" to={`/learn/${row.lessonId}`}>
+                                Bài học: {row.lessonTitle}
+                              </SafeLink>
+                            </div>
+                          ) : null}
+                        </th>
+                        <td>
+                          {row.correctAnswers}/{row.totalQuestions}
+                        </td>
+                        <td>{row.incorrectAnswers}</td>
+                        <td>{row.unansweredQuestions}</td>
+                        <td>
+                          {row.correctAnswers === row.totalQuestions
+                            ? `All correct (${row.correctAnswers}/${row.totalQuestions})`
+                            : row.answeredQuestions === 0
+                              ? `Unanswered (0/${row.totalQuestions})`
+                              : `Needs review (${row.correctAnswers}/${row.totalQuestions})`}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          ) : null}
         </section>
       ) : null}
 
@@ -458,6 +614,58 @@ export function AssessmentRunner({
             </div>
           )}
         </form>
+
+        {currentScore !== undefined &&
+        currentQuestionContext?.domain &&
+        currentQuestionContext?.objective ? (
+          <div className="question-curriculum-context">
+            <h4 className="question-context-title">Mục tiêu & bài học liên quan</h4>
+            <p className="question-context-meta">
+              <span className="data-table-code">D{currentQuestionContext.domain.code}</span>{" "}
+              <strong>
+                Domain {currentQuestionContext.domain.code}: {currentQuestionContext.domain.title}
+              </strong>{" "}
+              — <span lang="en">{currentQuestionContext.objective.statement}</span>
+            </p>
+            <div className="question-context-links">
+              {currentQuestionContext.lesson ? (
+                <SafeLink
+                  className="inline-link"
+                  to={`/learn/${currentQuestionContext.lesson.id}`}
+                >
+                  Ôn lại bài học: {currentQuestionContext.lesson.title}
+                </SafeLink>
+              ) : null}
+              {currentQuestionContext.practiceSet &&
+              currentQuestionContext.practiceSet.assessment.id !== definition.id ? (
+                <SafeLink
+                  className="inline-link"
+                  to={`/practice?set=${encodeURIComponent(currentQuestionContext.practiceSet.assessment.id)}`}
+                >
+                  Luyện tập Domain {currentQuestionContext.domain.code}
+                </SafeLink>
+              ) : null}
+            </div>
+          </div>
+        ) : null}
+
+        {currentScore !== undefined && currentQuestionSources.length > 0 ? (
+          <div className="timed-sources">
+            <h4 className="timed-sources-title">Nguồn tham chiếu</h4>
+            <ul className="timed-source-list">
+              {currentQuestionSources.map((source) => (
+                <li className="timed-source" key={source.id}>
+                  <a className="inline-link" href={source.url} target="_blank" rel="noreferrer">
+                    {source.title}
+                  </a>
+                  <span className="timed-source-meta">
+                    {source.publisher} · truy cập {source.accessedAt}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
 
         <nav className="assessment-pager" aria-label="Assessment questions">
           <button

@@ -164,6 +164,17 @@ describe("timed exam page", () => {
     expect(screen.getByText("Nguồn tham chiếu")).toBeInTheDocument();
     expect(screen.getByText(/không phải dự đoán đậu\/rớt/i)).toBeInTheDocument();
 
+    const breakdownTable = screen.getByRole("table", {
+      name: "Timed exam performance by official domain",
+    });
+    expect(within(breakdownTable).getAllByRole("row")).toHaveLength(8);
+    expect(
+      within(breakdownTable).getByRole("link", { name: "Luyện tập Domain 5" }),
+    ).toHaveAttribute("href", "/practice?set=domain-5-configuration-set");
+    expect(
+      screen.getByRole("heading", { name: "Mục tiêu & bài học liên quan" }),
+    ).toBeInTheDocument();
+
     for (const checkbox of screen.getAllByRole(inputRole)) {
       expect(checkbox).toBeDisabled();
     }
