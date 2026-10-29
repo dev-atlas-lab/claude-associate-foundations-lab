@@ -84,7 +84,7 @@ describe("practice page", () => {
         name: "Domain 2: Output Evaluation and Validation",
       }),
     ).toHaveLength(2);
-    expect(screen.getByText("14 questions")).toBeInTheDocument();
+    expect(screen.getByText("15 questions")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Start assessment" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "All practice sets" })).toHaveAttribute(
       "href",
@@ -101,7 +101,7 @@ describe("practice page", () => {
         name: "Domain 5: Configuration and Knowledge Management",
       }),
     ).toHaveLength(2);
-    expect(screen.getByText("8 questions")).toBeInTheDocument();
+    expect(screen.getByText("9 questions")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Start assessment" })).toBeInTheDocument();
   });
 
@@ -161,11 +161,11 @@ describe("practice page", () => {
       name: /Domain 5: Configuration and Knowledge Management/i,
     });
     expect(
-      within(inProgressD5Card).getByText("In progress (1/8 answered)"),
+      within(inProgressD5Card).getByText("In progress (1/9 answered)"),
     ).toBeInTheDocument();
     inProgressView.unmount();
 
-    // 3. Submit that attempt (1/8 = 12.5%) -> Completed (Last: 12.5% · 1 attempt)
+    // 3. Submit that attempt (1/9 = 11.11%) -> Completed (Last: 11.11% · 1 attempt)
     const submitted1 = submitAssessment(
       d5Context,
       session1,
@@ -182,7 +182,7 @@ describe("practice page", () => {
       name: /Domain 5: Configuration and Knowledge Management/i,
     });
     expect(
-      within(completedD5Card).getByText("Completed (Last: 12.5% · 1 attempt)"),
+      within(completedD5Card).getByText("Completed (Last: 11.11% · 1 attempt)"),
     ).toBeInTheDocument();
     completedView.unmount();
 
@@ -202,7 +202,7 @@ describe("practice page", () => {
     });
     expect(
       within(combinedD5Card).getByText(
-        "In progress (0/8 answered) · Last: 12.5% · 1 attempt",
+        "In progress (0/9 answered) · Last: 11.11% · 1 attempt",
       ),
     ).toBeInTheDocument();
   });

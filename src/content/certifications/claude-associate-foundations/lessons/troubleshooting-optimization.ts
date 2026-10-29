@@ -151,43 +151,43 @@ export const troubleshootingOptimizationLesson: Lesson = lessonSchema.parse({
   keyTerms: [
     {
       en: "Diagnostic baseline",
-      vi: "Mốc chẩn đoán",
-      note: "Kết quả hiện tại trên cùng bộ test trước khi thay đổi.",
+      vi: "Diagnostic baseline (mốc đối chuẩn chẩn đoán)",
+      note: "Kết quả đo lường hiện tại trên cùng một bộ test case chuẩn trước khi tiến hành bất kỳ chỉnh sửa nào.",
     },
     {
       en: "Failure classification",
-      vi: "Phân loại lỗi",
-      note: "Xác định lỗi thuộc yêu cầu, context, cấu trúc task hay năng lực model.",
+      vi: "Failure classification (phân loại căn nguyên lỗi)",
+      note: "Phương pháp xác định nguyên nhân cốt lõi: lỗi do chỉ dẫn chưa rõ, thiếu context, cấu trúc task sai hay vượt quá năng lực model.",
     },
     {
       en: "Regression",
-      vi: "Hồi quy chất lượng",
-      note: "Một thay đổi cải thiện case này nhưng làm hỏng case khác.",
+      vi: "Regression (lỗi thoái lui / suy giảm chất lượng)",
+      note: "Hiện tượng một điều chỉnh mới giúp cải thiện một test case nhưng vô tình làm sai lệch hoặc hỏng các test case vốn đã chạy tốt trước đó.",
     },
     {
       en: "Latency",
-      vi: "Độ trễ",
-      note: "Thời gian từ yêu cầu đến khi có kết quả dùng được.",
+      vi: "Latency (độ trễ phản hồi)",
+      note: "Khoảng thời gian từ lúc gửi yêu cầu đến khi nhận được kết quả hoàn chỉnh có thể đưa vào sử dụng.",
     },
     {
       en: "Cost per successful outcome",
-      vi: "Chi phí cho mỗi kết quả đúng",
-      note: "Chi phí cần đo cùng chất lượng, không chỉ giá token.",
+      vi: "Cost per successful outcome (chi phí trên mỗi kết quả đạt chuẩn)",
+      note: "Chỉ số kinh tế thực tế đo lường tổng chi phí token và tài nguyên để tạo ra một kết quả đúng, thay vì chỉ so sánh giá token thô.",
     },
     {
       en: "Right-sizing",
-      vi: "Chọn đúng mức năng lực",
-      note: "Dùng model và effort đủ cho task, không dư thừa.",
+      vi: "Right-sizing (chọn đúng cấp năng lực model)",
+      note: "Chiến lược sử dụng đúng model và cấu hình tham số vừa đủ cho yêu cầu nhiệm vụ, tránh lãng phí model quá lớn cho tác vụ đơn giản.",
     },
     {
       en: "Prompt caching",
-      vi: "Cache phần prompt lặp lại",
-      note: "Giảm chi phí cho prefix ổn định; vẫn chiếm chỗ trong context.",
+      vi: "Prompt caching (bộ nhớ đệm prompt)",
+      note: "Cơ chế lưu trữ tạm thời phần prefix prompt hoặc tài liệu cố định lặp lại để giảm đáng kể chi phí và thời gian sinh token.",
     },
     {
       en: "Batch processing",
-      vi: "Xử lý theo lô",
-      note: "Phù hợp với tác vụ không cần phản hồi tức thì; cần kiểm tra điều kiện áp dụng.",
+      vi: "Batch processing (xử lý hàng loạt theo mẻ)",
+      note: "Phương thức gửi đồng loạt nhiều yêu cầu không yêu cầu phản hồi tức thì để nhận mức chiết khấu chi phí lớn hơn từ Anthropic API.",
     },
   ],
   scenario: {
@@ -256,6 +256,7 @@ export const troubleshootingOptimizationLesson: Lesson = lessonSchema.parse({
     "optimize-workflow-cost-latency-controls",
     "troubleshoot-diagnose-evidence",
     "troubleshoot-adjust-regression",
+    "troubleshoot-regression-prompt-pinning",
   ],
   takeaways: [
     "Chẩn đoán bắt đầu bằng tái hiện, tiêu chí thành công và baseline, không bằng đổi model.",

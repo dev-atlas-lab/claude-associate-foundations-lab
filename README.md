@@ -7,7 +7,7 @@ The product pairs Vietnamese explanations with English assessments: lessons, int
 ## Current status
 
 Phases B, C0, C1, C2.1, C2.2a, C2.2b, C2.3, C2.4, C2.5, C2.6, C2.7, C2.8, C2.9, C2.10, C2.11, C2.12,
-C2.13, C2.14, C2.15, C2.16, and C2.17 are implemented on top of the validated scaffold.
+C2.13, C2.14, C2.15, C2.16, C2.17, C2.18, and C2.19 are implemented on top of the validated scaffold.
 
 - Design tokens, Dark / Light / System themes with localStorage persistence, responsive sidebar and
   mobile drawer, skip link, focus management, and reduced-motion support.
@@ -38,13 +38,14 @@ C2.13, C2.14, C2.15, C2.16, and C2.17 are implemented on top of the validated sc
   single-choice and exact-set multiple-response scoring, answer changes, navigation, flags, explicit
   submission confirmation, review navigation, and idempotent submission. Scores are derived from
   submitted answers rather than stored in mutable state.
-- A reviewed, source-grounded bank of **67 original items** across all seven domains (35
-  single-choice, 32 multiple-response), covering all 30 official objectives with at least two items
+- A reviewed, source-grounded bank of **72 original items** across all seven domains (38
+  single-choice, 34 multiple-response), covering all 30 official objectives with at least two items
   each. Bank metadata is validated against the blueprint, certification, sources, and review status;
   no official questions are copied. See `src/domain/question-bank.ts`.
-- Practice (`/practice`) is registry-driven: eight sets (seven domain sets plus one mixed set) support
+- Practice (`/practice`) is registry-driven: **11 sets** (seven domain sets, one mixed set, plus three
+  specialized sets: High-Weight Core 51%, Quick Drill 15 Scenarios, and Enterprise Scenarios) support
   `?set=` deep links, resume an in-progress attempt, deterministic shuffled question ordering (`Start
-  shuffled` and `Shuffle & retry`), and save progress locally. English questions and Vietnamese
+  shuffled` and `Shuffle & retry`), and save progress locally. English questions and naturalized Vietnamese
   explanations appear after submission.
 - Versioned local persistence (`cfl.study.v1`) with a content fingerprint, corrupt/incompatible/
   unavailable handling, compatible study data migration for updated fingerprints, raw backup download,
@@ -53,32 +54,33 @@ C2.13, C2.14, C2.15, C2.16, and C2.17 are implemented on top of the validated sc
   in-memory focused practice mode (`/review?mode=practice`) with post-submission queue resolution, and
   resolves items through an explicit action.
 - Progress separates reviewed-bank coverage from personal performance, reporting unique bank exposure
-  (67 items, 30 objectives), First-seen vs. Latest vs. Cumulative accuracy, a 30-objective coverage matrix,
+  (72 items, 30 objectives), First-seen vs. Latest vs. Cumulative accuracy, a 30-objective coverage matrix,
   and chronological submitted attempt history across study and timed simulations.
 - Dashboard (`/`) serves as an actionable study desk, surfacing active attempt resumption, open review
   shortcuts, and domain blueprint rows with direct links to mapped lessons, domain practice, and
   local bank exposure.
 - Technical glossary (`/glossary`) supports instant text search alongside interactive category filter
   chips with live term counts.
-- The Mock exam page runs a blueprint-weighted **60-of-60 preview** drawn from the 67 reviewed items
+- The Mock exam page runs a blueprint-weighted **60-of-60 preview** drawn from the 72 reviewed items
   with the exact `8 / 13 / 7 / 10 / 7 / 9 / 6` blueprint allocation, no shortfall, no filler, no
-  duplicates, no timer, and no scaled score. Every domain has spare items for variation.
+  duplicates, no timer, and no scaled score. Every domain has spare items for variation (`10 / 15 / 8 / 12 / 9 / 10 / 8`).
 - The separate timed simulation (`/mock-exam/timed`) runs the verified **60-question / 120-minute**
   format with a persisted deadline, reload resume, auto-submit at expiry, manual/expiry submission
   labels, and an immutable raw result with post-submission review. It stores one attempt at
   `cfl.timed-exam.v1`, independently of Practice data at `cfl.study.v1`.
 - Overall reviewed coverage is **30 / 30** objectives across all seven domains, with a mapped lesson
-  and at least two practice items for every objective.
+  and at least two practice items for every objective. All lessons and glossaries feature naturalized
+  Vietnamese engineering terminology retaining industry-standard English keywords.
 - GitHub repository exists at <https://github.com/dev-atlas-lab/claude-associate-foundations-lab> on `main`.
 - A GitHub Actions CI workflow (`.github/workflows/ci.yml`) validates pull requests and pushes to
   `main` with typecheck, lint, unit/integration tests, the production build, and the Chromium
   Playwright/axe suite.
 - Deployment runbook and SPA rewrite verification are documented in `docs/DEPLOYMENT.md`.
 
-Local quality gates currently pass: typecheck, lint, **201 unit/integration tests across 23 files**,
+Local quality gates currently pass: typecheck, lint, **205 unit/integration tests across 23 files**,
 **116 Playwright tests across 8 files**, and the production build. Routes are code-split with
-`React.lazy`; the timed page is its own 41.25 kB chunk (11.69 kB gzip), the largest JS chunks are
-434.92 kB (118.38 kB gzip) and 340.29 kB (107.90 kB gzip), and there is no Vite chunk-size warning.
+`React.lazy`; the timed page is its own 37.35 kB chunk (10.18 kB gzip), the largest JS chunks are
+476.13 kB (130.54 kB gzip) and 340.42 kB (107.96 kB gzip), and there is no Vite chunk-size warning.
 **71 axe-core scans** cover 35 states in both themes plus the open mobile drawer and report
 **0 violations**; manual browser checks cover landmarks, heading order, keyboard focus, skip link,
 drawer focus trapping, reduced motion, and responsive widths. The timed suite adds clock-controlled

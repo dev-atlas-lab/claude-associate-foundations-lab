@@ -17,7 +17,7 @@ export const contextWindowLesson: Lesson = lessonSchema.parse({
   title: "Context window và ngân sách ngữ cảnh",
   englishTitle: "Context window and context budgeting",
   summary:
-    "Hiểu context window như bộ nhớ làm việc của Claude trong cả giao diện chat/Projects lẫn workflow tích hợp, biết thứ gì chiếm chỗ trong đó, và chọn lọc ngữ cảnh thay vì nhồi thêm tài liệu.",
+    "Hiểu context window như bộ nhớ làm việc (working memory) của Claude trong cả giao diện chat/Projects lẫn workflow API tích hợp, nắm rõ các thành phần chiếm dung lượng token, và chủ động tinh gọn ngữ cảnh thay vì nhồi nhét tài liệu.",
   level: "foundation",
   estimatedMinutes: 11,
   verification: {
@@ -39,42 +39,42 @@ export const contextWindowLesson: Lesson = lessonSchema.parse({
   },
   objectives: [
     "Giải thích context window là gì và vì sao nó giới hạn lượng thông tin Claude xử lý trong một lượt hội thoại hoặc request.",
-    "Nhận diện các thành phần cùng chia sẻ một cửa sổ ngữ cảnh trong Claude chat, Projects và workflow tích hợp (instructions, lịch sử hội thoại, tài liệu đính kèm/truy xuất và phần trả lời).",
-    "Chọn chiến lược làm gọn ngữ cảnh (tóm tắt sang chat mới, chọn lọc tài liệu đưa vào Project, hoặc compaction) khi hội thoại bắt đầu dài và nhiễu.",
+    "Nhận diện các thành phần cùng chia sẻ dung lượng context window trong Claude chat, Projects và workflow tích hợp (system instructions, lịch sử hội thoại, file tài liệu đính kèm/retrieval và nội dung phản hồi).",
+    "Chọn chiến lược tối ưu ngữ cảnh (tóm tắt sang chat mới, chọn lọc tài liệu đưa vào Project, hoặc áp dụng compaction) khi luồng trao đổi bắt đầu kéo dài và phân mảnh.",
   ],
   sections: [
     {
       kind: "paragraphs",
       heading: "Context window là gì?",
       paragraphs: [
-        "Context window là toàn bộ văn bản mà model có thể tham chiếu khi tạo câu trả lời — bao gồm cả câu trả lời đang được sinh ra. Anthropic mô tả nó như “working memory” của model: không phải kho dữ liệu huấn luyện, mà là phần ngữ cảnh của phiên làm việc hoặc request hiện tại.",
-        "Dù bạn dùng Claude qua giao diện chat/Projects hay qua workflow tích hợp, mọi thứ đi kèm lượt hỏi đều chiếm chỗ trong cùng một bộ nhớ làm việc: system prompt hoặc Project instructions, toàn bộ lịch sử messages trong cuộc hội thoại hiện tại (kể cả tool result, ảnh và file đính kèm), các đoạn tài liệu được nạp từ Project knowledge, và cả output mà Claude sinh ra. Token dùng cho extended thinking cũng tính vào cửa sổ này.",
-        "Ở cấp độ tích hợp API, mỗi response trả về trường usage cho biết request đã dùng bao nhiêu token và token counting API cho phép đo trước khi gửi. Ở cấp độ người dùng Claude hằng ngày, điều đó có nghĩa là một cuộc chat kéo dài qua nhiều chủ đề hoặc đính kèm nguyên tệp tài liệu lớn sẽ nhanh chóng làm đầy ngân sách ngữ cảnh.",
+        "Context window là toàn bộ phạm vi văn bản mà model có thể tham chiếu khi tạo câu trả lời — bao gồm cả phần nội dung đang sinh ra. Anthropic mô tả nó như “working memory” (bộ nhớ làm việc tạm thời) của model: không phải kho tri thức huấn luyện vĩnh viễn, mà là không gian ngữ cảnh của riêng phiên làm việc hoặc request hiện tại.",
+        "Dù bạn dùng Claude qua giao diện chat/Projects hay qua workflow tích hợp API, mọi thông tin đi kèm lượt gọi đều cùng chia sẻ một bộ nhớ làm việc: system prompt hoặc Project instructions, toàn bộ lịch sử messages trong cuộc hội thoại (kể cả tool result, hình ảnh và file đính kèm), các đoạn tài liệu được nạp từ Project knowledge, và cả output mà Claude sinh ra. Token dùng cho extended thinking cũng tính vào context window này.",
+        "Ở cấp độ tích hợp API, mỗi response trả về trường usage cho biết request đã tiêu tốn bao nhiêu token và token counting API cho phép đo lường chính xác trước khi gửi. Ở góc độ người dùng Claude hằng ngày, điều đó có nghĩa là một cuộc chat kéo dài qua quá nhiều chủ đề hoặc đính kèm nguyên file tài liệu lớn sẽ nhanh chóng làm đầy ngân sách token.",
       ],
     },
     {
       kind: "callout",
       tone: "caution",
-      title: "Nhiều context hơn không tự động tốt hơn",
-      body: "Khi số token tăng, độ chính xác và khả năng hồi tưởng các ràng buộc quan trọng có thể giảm — Anthropic gọi hiện tượng này là context rot. Chọn lọc tài liệu đúng trọng tâm hoặc tóm tắt các quyết định đã chốt sang một cuộc chat mới thường hiệu quả hơn là tiếp tục nối dài một luồng hội thoại đã nhiễu.",
+      title: "Nhiều context hơn không đồng nghĩa với câu trả lời tốt hơn",
+      body: "Khi số lượng token tăng quá cao, độ chuẩn xác và khả năng hồi tưởng các ràng buộc cốt lõi có thể suy giảm — Anthropic gọi hiện tượng này là context rot. Việc chắt lọc tài liệu đúng trọng tâm hoặc tóm tắt các quyết định quan trọng sang một phiên chat mới luôn đem lại hiệu quả cao hơn là cố nhồi thêm tài liệu vào một luồng trò chuyện đã loãng.",
     },
     {
       kind: "paragraphs",
-      heading: "Token không phải từ",
+      heading: "Token không phải là từ (words)",
       paragraphs: [
-        "Token là đơn vị văn bản model xử lý, không tương ứng 1-1 với từ. Cùng một ý, tiếng Việt thường tốn nhiều token hơn tiếng Anh; bảng biểu lớn, code, JSON và dãy số dài cũng tốn token hơn văn xuôi thông thường.",
-        "Vì vậy đừng ước lượng ngân sách chỉ bằng số trang hay số từ. Khi làm việc trong Claude Projects hoặc chat, hãy ưu tiên đưa các tài liệu chuẩn hóa, gọn và giàu tín hiệu (high-signal) thay vì tải lên các bản nháp trùng lặp; khi xây dựng workflow tự động, hãy đo bằng token counting API và lưu ý con số trả về là ước tính.",
+        "Token là đơn vị xử lý văn bản cơ bản của model, không tương ứng 1-1 với từ. Cùng một câu văn, tiếng Việt thường tiêu tốn nhiều token hơn tiếng Anh; các bảng biểu dữ liệu lớn, mã nguồn (code), JSON và chuỗi số dài cũng tốn nhiều token hơn văn xuôi thông thường.",
+        "Vì vậy, đừng ước tính ngân sách chỉ dựa trên số trang hay số từ. Khi làm việc trong Claude Projects hoặc chat, hãy ưu tiên đưa vào các tài liệu chuẩn hóa, súc tích và giàu tín hiệu (high-signal) thay vì tải lên các bản nháp trùng lặp; khi xây dựng workflow tự động, hãy đo lường thực tế bằng token counting API.",
       ],
     },
     {
       kind: "list",
-      heading: "Giữ ngữ cảnh gọn mà vẫn đủ thông tin",
+      heading: "Chiến lược giữ ngữ cảnh tinh gọn và giàu thông tin",
       items: [
-        "Đặt quy tắc và vai trò ổn định trong Project instructions hoặc system prompt thay vì lặp lại ở mỗi lượt chat.",
-        "Khi cuộc trò chuyện đổi sang tác vụ mới hoặc đã qua nhiều vòng thử-sai, hãy tóm tắt các quyết định đã chốt thành ghi chú ngắn rồi mở một cuộc chat mới.",
-        "Chỉ đưa những tài liệu hoặc đoạn trích thực sự liên quan (retrieval / curated Project knowledge) thay vì đính kèm cả kho tài liệu vào mỗi lượt.",
-        "Với các luồng hội thoại hoặc agent chạy dài, dùng tóm tắt có cấu trúc, compaction hoặc context editing để nén phần lịch sử cũ.",
-        "Chừa ngân sách cho output: input và output cùng chia sẻ một cửa sổ, nên input quá nặng hoặc đặt max_tokens quá lớn đều làm hẹp phần còn lại.",
+        "Đặt quy tắc và vai trò cố định trong Project instructions hoặc system prompt thay vì gõ lặp lại ở mỗi lượt chat.",
+        "Khi cuộc hội thoại chuyển sang nhiệm vụ mới hoặc đã qua nhiều vòng thử-sai, hãy tóm tắt các quyết định đã chốt thành ghi chú ngắn rồi mở một cuộc chat mới.",
+        "Chỉ đưa những tài liệu hoặc đoạn trích thực sự liên quan (retrieval / curated Project knowledge) thay vì đính kèm toàn bộ kho lưu trữ vào mỗi lượt.",
+        "Với các luồng hội thoại hoặc agent chạy dài, áp dụng tóm tắt có cấu trúc, compaction hoặc context editing để tinh giản lịch sử cũ.",
+        "Luôn dự trù ngân sách cho output: input và output cùng chia sẻ một context window, nên nếu input quá nặng hoặc đặt max_tokens quá sát trần sẽ làm bó hẹp không gian phản hồi của model.",
       ],
     },
     {
@@ -82,39 +82,39 @@ export const contextWindowLesson: Lesson = lessonSchema.parse({
       heading: "Ngân sách context trong một request",
       diagramId: "context-budget",
       intro:
-        "Một request điển hình chia sẻ một cửa sổ duy nhất cho input và output. Chọn từng phần để xem nó chiếm chỗ vì lý do gì và nên xử lý ra sao. Tỉ lệ dưới đây là ví dụ minh hoạ, không phải quy định của Anthropic.",
+        "Một request điển hình chia sẻ một context window duy nhất cho cả input và output. Chọn từng phần để xem nó chiếm dung lượng vì lý do gì và nên xử lý ra sao. Tỉ lệ dưới đây là ví dụ minh hoạ, không phải quy định cứng của Anthropic.",
     },
   ],
   keyTerms: [
     {
       en: "Context window",
-      vi: "Cửa sổ ngữ cảnh",
-      note: "Toàn bộ token model có thể tham chiếu trong một request, gồm cả phần output được sinh ra.",
+      vi: "Context window (vùng ngữ cảnh làm việc)",
+      note: "Toàn bộ lượng token model có thể tham chiếu trong một request, bao gồm cả phần output được sinh ra.",
     },
     {
       en: "Token",
-      vi: "Đơn vị token",
-      note: "Mảnh văn bản model xử lý. Không tương ứng 1-1 với từ và khác nhau giữa các ngôn ngữ.",
+      vi: "Token (đơn vị xử lý văn bản)",
+      note: "Mảnh ký tự/văn bản mà model phân tích. Không tương ứng 1-1 với từ và tiêu hao khác nhau giữa các ngôn ngữ.",
     },
     {
       en: "System prompt",
-      vi: "Chỉ dẫn hệ thống",
-      note: "Phần hướng dẫn đặt trước hội thoại: vai trò, ràng buộc và quy tắc cần giữ ổn định.",
+      vi: "System prompt (chỉ dẫn hệ thống)",
+      note: "Phần hướng dẫn đặt ở đầu phiên: định hình vai trò, phạm vi kiến thức và các quy tắc bất biến.",
     },
     {
       en: "Prompt caching",
-      vi: "Bộ nhớ đệm prompt",
-      note: "Tái sử dụng phần prefix đã xử lý để giảm chi phí và độ trễ; token đã cache vẫn chiếm cửa sổ ngữ cảnh.",
+      vi: "Prompt caching (bộ nhớ đệm prompt)",
+      note: "Tái sử dụng phần prefix đã xử lý trước đó để giảm chi phí và độ trễ; lưu ý token đã cache vẫn chiếm dung lượng context window.",
     },
     {
       en: "Compaction",
-      vi: "Nén ngữ cảnh",
-      note: "Tóm tắt phần hội thoại cũ để cuộc trò chuyện tiếp tục được khi gần chạm giới hạn cửa sổ.",
+      vi: "Compaction (cơ chế nén ngữ cảnh)",
+      note: "Tự động tóm tắt phần hội thoại cũ để cuộc trò chuyện tiếp tục diễn ra liền mạch khi sắp chạm giới hạn context window.",
     },
     {
       en: "Context rot",
-      vi: "Suy giảm do ngữ cảnh dài",
-      note: "Độ chính xác và khả năng hồi tưởng giảm khi ngữ cảnh phình to và nhiều nhiễu.",
+      vi: "Context rot (suy giảm độ tập trung do ngữ cảnh quá dài)",
+      note: "Hiện tượng độ chính xác và khả năng hồi tưởng các chỉ dẫn quan trọng bị giảm sút khi ngữ cảnh bị phình to và lẫn nhiều thông tin nhiễu.",
     },
   ],
   scenario: {

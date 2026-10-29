@@ -37,7 +37,21 @@ function domainLabel(codes: string[]): string {
 function practiceSetBadge(practiceSet: PracticeSetSummary): string {
   const [onlyDomain] = practiceSet.domains;
 
-  return onlyDomain && practiceSet.domains.length === 1 ? onlyDomain.code : "M";
+  if (onlyDomain && practiceSet.domains.length === 1) {
+    return onlyDomain.code;
+  }
+
+  if (practiceSet.assessment.id === "high-weight-core-set") {
+    return "HW";
+  }
+  if (practiceSet.assessment.id === "quick-drill-set") {
+    return "QD";
+  }
+  if (practiceSet.assessment.id === "enterprise-scenarios-set") {
+    return "EN";
+  }
+
+  return "M";
 }
 
 interface PracticeSetActivityStatus {

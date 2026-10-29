@@ -28,7 +28,7 @@ export const domainTwoOutputValidationAssessment: AssessmentDefinition =
     id: "domain-2-output-validation-set",
     title: "Domain 2: Output Evaluation and Validation",
     description:
-      "Fourteen reviewed English practice items covering accuracy and completeness, hallucination/inconsistency and bias detection, source-based fact-checking, human-review escalation, audience editing, and output-format selection. Explanations for every option are in Vietnamese after submission. These are original practice items, not official CCAO-F questions, and this is not a mock exam.",
+      "Fifteen reviewed English practice items covering accuracy and completeness, hallucination/inconsistency and bias detection, source-based fact-checking, human-review escalation, audience editing, and output-format selection. Explanations for every option are in Vietnamese after submission. These are original practice items, not official CCAO-F questions, and this is not a mock exam.",
     questionIds: [
       "output-accuracy-review-plan",
       "output-accurate-but-incomplete",
@@ -44,6 +44,7 @@ export const domainTwoOutputValidationAssessment: AssessmentDefinition =
       "output-format-decisions",
       "output-bias-one-sided-framing",
       "output-bias-unequal-standards",
+      "output-evaluation-hallucination-audit-plan",
     ],
     policy: {
       scoring: "all-or-nothing",
@@ -61,7 +62,7 @@ export const domainOnePromptingAssessment: AssessmentDefinition =
     id: "domain-1-prompting-set",
     title: "Domain 1: Prompting and Task Execution",
     description:
-      "Nine reviewed English practice items on writing specific prompts, decomposing complex requests, iterating with evidence and rubrics, and adapting prompting strategies to analysis, research, drafting, and brainstorming tasks. Explanations for every option are in Vietnamese after submission. Original practice material, not official CCAO-F content.",
+      "Ten reviewed English practice items on writing specific prompts, decomposing complex requests, iterating with evidence and rubrics, and adapting prompting strategies to analysis, research, drafting, and brainstorming tasks. Explanations for every option are in Vietnamese after submission. Original practice material, not official CCAO-F content.",
     questionIds: [
       "prompting-specific-brief",
       "prompting-decompose-steps",
@@ -72,6 +73,7 @@ export const domainOnePromptingAssessment: AssessmentDefinition =
       "prompting-adapt-task-types",
       "prompting-effective-prompt-additions",
       "prompting-decomposition-decision",
+      "prompting-multilingual-nuance-control",
     ],
     policy: practicePolicy,
   });
@@ -100,7 +102,7 @@ export const domainFourWorkflowAssessment: AssessmentDefinition =
     id: "domain-4-workflow-set",
     title: "Domain 4: Workflow Integration and Solution Design",
     description:
-      "Eleven reviewed English practice items on requirements analysis, research and planning, solution design and iteration, responsible workflow integration, and stakeholder communication. Explanations for every option are in Vietnamese after submission. Original practice material, not official CCAO-F content.",
+      "Twelve reviewed English practice items on requirements analysis, research and planning, solution design and iteration, responsible workflow integration, and stakeholder communication. Explanations for every option are in Vietnamese after submission. Original practice material, not official CCAO-F content.",
     questionIds: [
       "workflow-requirements-extraction",
       "workflow-research-current-scan",
@@ -108,6 +110,7 @@ export const domainFourWorkflowAssessment: AssessmentDefinition =
       "workflow-solution-options",
       "workflow-solution-iteration",
       "workflow-solution-handoff-controls",
+      "workflow-routing-intent-classification",
       "workflow-integration-checkpoints",
       "workflow-stakeholder-brief",
       "workflow-stakeholder-evidence",
@@ -122,7 +125,7 @@ export const domainFiveConfigurationAssessment: AssessmentDefinition =
     id: "domain-5-configuration-set",
     title: "Domain 5: Configuration and Knowledge Management",
     description:
-      "Eight reviewed English practice items on configuring Project knowledge and instructions, managing connectors and permissions, writing effective system-level instructions, and maintaining configurations over time. Explanations for every option are in Vietnamese after submission. Original practice material, not official CCAO-F content.",
+      "Nine reviewed English practice items on configuring Project knowledge and instructions, managing connectors and permissions, writing effective system-level instructions, and maintaining configurations over time. Explanations for every option are in Vietnamese after submission. Original practice material, not official CCAO-F content.",
     questionIds: [
       "config-project-brief-setup",
       "config-project-context-scope",
@@ -132,6 +135,7 @@ export const domainFiveConfigurationAssessment: AssessmentDefinition =
       "config-system-instruction-components",
       "config-knowledge-refresh",
       "config-maintenance-cadence",
+      "configuration-project-permission-revocation",
     ],
     policy: practicePolicy,
   });
@@ -162,7 +166,7 @@ export const domainSevenTroubleshootingAssessment: AssessmentDefinition =
     id: "domain-7-troubleshooting-set",
     title: "Domain 7: Troubleshooting and Optimization",
     description:
-      "Seven reviewed English practice items on diagnosing weak prompts, using feedback to improve them, establishing a baseline, and optimizing quality, latency, and cost. Explanations for every option are in Vietnamese after submission. Original practice material, not official CCAO-F content.",
+      "Eight reviewed English practice items on diagnosing weak prompts, using feedback to improve them, establishing a baseline, and optimizing quality, latency, and cost. Explanations for every option are in Vietnamese after submission. Original practice material, not official CCAO-F content.",
     questionIds: [
       "troubleshoot-diagnose-prompt",
       "troubleshoot-feedback-loop",
@@ -171,6 +175,108 @@ export const domainSevenTroubleshootingAssessment: AssessmentDefinition =
       "optimize-workflow-cost-latency-controls",
       "troubleshoot-diagnose-evidence",
       "troubleshoot-adjust-regression",
+      "troubleshoot-regression-prompt-pinning",
+    ],
+    policy: practicePolicy,
+  });
+
+/**
+ * Curated high-weight practice set covering Domains 1, 2, and 4 (51% of blueprint weight).
+ */
+export const highWeightCoreAssessment: AssessmentDefinition =
+  assessmentDefinitionSchema.parse({
+    id: "high-weight-core-set",
+    title: "High-Weight Core: Domains 1, 2 & 4 (51% Blueprint)",
+    description:
+      "A curated 24-item practice set focusing on the three highest-weight domains in the CCAO-F exam: Prompting and Task Execution (Domain 1, 14%), Output Evaluation and Validation (Domain 2, 21%), and Workflow Integration and Solution Design (Domain 4, 16%). Explanations are in Vietnamese after submission. Original practice material, not official exam content.",
+    questionIds: [
+      "prompting-specific-brief",
+      "prompting-decompose-steps",
+      "prompting-iterate-rubric-calibration",
+      "prompting-analysis-task-strategy",
+      "prompting-adapt-task-types",
+      "prompting-effective-prompt-additions",
+      "prompting-decomposition-decision",
+      "prompting-multilingual-nuance-control",
+      "output-accuracy-review-plan",
+      "output-accurate-but-incomplete",
+      "output-fabricated-policy-detail",
+      "output-hallucination-signals",
+      "output-fact-check-retention",
+      "output-human-review-high-stakes",
+      "output-format-decisions",
+      "output-evaluation-hallucination-audit-plan",
+      "workflow-requirements-extraction",
+      "workflow-research-current-scan",
+      "workflow-solution-options",
+      "workflow-solution-iteration",
+      "workflow-solution-handoff-controls",
+      "workflow-integration-checkpoints",
+      "workflow-integration-first-pilot",
+      "workflow-routing-intent-classification",
+    ],
+    policy: practicePolicy,
+  });
+
+/**
+ * Rapid 15-question cross-domain drill for quick review across all 7 domains.
+ */
+export const quickDrillAssessment: AssessmentDefinition =
+  assessmentDefinitionSchema.parse({
+    id: "quick-drill-set",
+    title: "Quick Drill: 15 Core Scenarios",
+    description:
+      "A fast-paced 15-item cross-domain drill covering high-frequency practical scenarios across all seven official domains. Explanations for every option are in Vietnamese after submission. Original practice material, not official exam content.",
+    questionIds: [
+      "prompting-specific-brief",
+      "prompting-decompose-steps",
+      "output-accuracy-review-plan",
+      "output-fabricated-policy-detail",
+      "output-human-review-triggers",
+      "context-summarize-and-restart",
+      "model-family-tradeoffs",
+      "workflow-requirements-extraction",
+      "workflow-solution-handoff-controls",
+      "config-project-brief-setup",
+      "config-connector-permission-model",
+      "governance-privacy-controls",
+      "governance-policy-exception-escalation",
+      "troubleshoot-diagnose-prompt",
+      "optimize-workflow-cost-latency-controls",
+    ],
+    policy: practicePolicy,
+  });
+
+/**
+ * Enterprise operational realities: configuration, governance, and optimization (Domains 5, 6, 7).
+ */
+export const enterpriseScenariosAssessment: AssessmentDefinition =
+  assessmentDefinitionSchema.parse({
+    id: "enterprise-scenarios-set",
+    title: "Enterprise Scenarios: Knowledge, Governance & Optimization",
+    description:
+      "A specialized 20-item practice set covering enterprise operational realities: configuring Project Knowledge and connectors (Domain 5), data privacy and compliance guardrails (Domain 6), and troubleshooting latency, cost, and regressions (Domain 7). Explanations are in Vietnamese after submission. Original practice material, not official exam content.",
+    questionIds: [
+      "config-project-brief-setup",
+      "config-project-context-scope",
+      "config-connector-rollout",
+      "config-connector-permission-model",
+      "config-system-instruction-quality",
+      "config-knowledge-refresh",
+      "configuration-project-permission-revocation",
+      "governance-human-oversight",
+      "governance-privacy-confidential-upload",
+      "governance-privacy-controls",
+      "governance-privacy-third-party-connector",
+      "governance-policy-operations",
+      "governance-policy-exception-escalation",
+      "governance-ethics-considerations",
+      "troubleshoot-diagnose-prompt",
+      "troubleshoot-feedback-loop",
+      "optimize-workflow-baseline",
+      "optimize-workflow-cost-latency-controls",
+      "troubleshoot-adjust-regression",
+      "troubleshoot-regression-prompt-pinning",
     ],
     policy: practicePolicy,
   });

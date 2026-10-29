@@ -558,8 +558,235 @@ const workflowCostLatencyControls: Question = questionSchema.parse({
   ],
 });
 
+const multilingualNuanceControl: Question = questionSchema.parse({
+  id: "prompting-multilingual-nuance-control",
+  type: "single-choice",
+  stem: "A multinational team prompts Claude to localize technical compliance guidelines into Vietnamese and Japanese for regional branches. Early drafts showed inconsistent translation of regulatory terms and an overly informal tone for executive leadership. Which prompt enhancement best resolves both issues?",
+  choices: [
+    {
+      id: "glossary-and-examples",
+      text: "Provide an approved regulatory glossary in structured XML tags, define the formal executive audience and tone constraints in the system prompt, and supply two vetted few-shot examples.",
+      explanation:
+        "Đúng: kết hợp bảng thuật ngữ chuẩn hóa trong thẻ XML, ràng buộc văn phong trang trọng cho ban lãnh đạo và vài ví dụ mẫu chuẩn (few-shot) giúp model định hình chính xác cả thuật ngữ lẫn văn phong.",
+    },
+    {
+      id: "raise-temperature",
+      text: "Raise temperature to 0.9 so Claude invents culturally engaging phrasings for legal clauses.",
+      explanation:
+        "Sai: tăng temperature làm tăng độ ngẫu nhiên và biến thiên văn bản, hoàn toàn không phù hợp với văn bản tuân thủ pháp lý vốn cần tính nhất quán cao.",
+    },
+    {
+      id: "open-ended-instruction",
+      text: "Add an instruction saying “translate as naturally as possible” without supplying canonical bilingual term definitions.",
+      explanation:
+        "Sai: chỉ dẫn chung chung không giải quyết được vấn đề thuật ngữ kỹ thuật bị dịch sai hoặc thiếu đồng bộ qua các tài liệu.",
+    },
+    {
+      id: "split-isolated-prompts",
+      text: "Translate each sentence in separate isolated requests without sharing previously approved definitions.",
+      explanation:
+        "Sai: dịch từng câu cô lập làm mất mạch ngữ cảnh tổng thể và làm trầm trọng thêm tình trạng không đồng nhất thuật ngữ.",
+    },
+  ],
+  correctChoiceIds: ["glossary-and-examples"],
+  correctExplanation:
+    "Để kiểm soát chất lượng dịch thuật và bản địa hóa chuyên ngành, cách hiệu quả nhất theo Anthropic Best Practices là: cung cấp bảng thuật ngữ chuẩn (glossary) trong thẻ XML tường minh, quy định rõ đối tượng độc giả/văn phong mong muốn, và cung cấp vài ví dụ đối chiếu chuẩn chỉnh (few-shot examples).",
+  sourceIds: ["anthropic-prompting-best-practices"],
+});
+
+const hallucinationAuditPlan: Question = questionSchema.parse({
+  id: "output-evaluation-hallucination-audit-plan",
+  type: "multiple-response",
+  stem: "A risk analyst is validating a 40-page technical risk assessment drafted by Claude from raw operational incident transcripts. Which three audit procedures are most effective for detecting and eliminating hallucinations before distribution? Select three.",
+  choices: [
+    {
+      id: "isolate-verifiable-claims",
+      text: "Isolate all quantitative metrics, dates, and causal conclusions into an audit table and require direct word-for-word citations from the transcripts.",
+      explanation:
+        "Đúng: bóc tách các nhận định định lượng, mốc thời gian và quan hệ nhân quả để đối chiếu trích dẫn trực tiếp là cách chắc chắn nhất để kiểm chứng tính xác thực.",
+    },
+    {
+      id: "flag-unsupported-claims",
+      text: "Explicitly qualify or delete any claim that cannot be corroborated by evidence in the provided source transcripts.",
+      explanation:
+        "Đúng: nguyên tắc cốt lõi của fact-checking là hạ mức độ khẳng định hoặc lược bỏ dứt điểm các luận điểm không có bằng chứng chứng minh.",
+    },
+    {
+      id: "cross-check-inconsistencies",
+      text: "Cross-check for internal contradictions between different sections of the report analyzing related operational incidents.",
+      explanation:
+        "Đúng: kiểm tra chéo các mâu thuẫn nội tại giữa các phần là tín hiệu quan trọng để phát hiện những đoạn model suy diễn thiếu nhất quán.",
+    },
+    {
+      id: "rely-on-fluency",
+      text: "Accept statements that sound highly confident and use polished corporate prose as inherently verified.",
+      explanation:
+        "Sai: văn phong tự tin và mượt mà không chứng minh được tính xác thực; hallucination thường xuất hiện dưới dạng câu văn rất trôi chảy.",
+    },
+    {
+      id: "re-prompt-multiple-times",
+      text: "Re-run the prompt five times and accept the majority response as ground truth without consulting source transcripts.",
+      explanation:
+        "Sai: kiểm tra chéo giữa các lần chạy (Best-of-N) có thể phát hiện sự thiếu nhất quán nhưng không thay thế được việc đối chiếu với tài liệu gốc.",
+    },
+    {
+      id: "remove-source-constraints",
+      text: "Remove source document boundaries so Claude can fill informational gaps from broad internet training memory.",
+      explanation:
+        "Sai: bỏ giới hạn tài liệu nguồn sẽ khiến model tự do suy diễn và làm tăng vọt nguy cơ hallucination trong báo cáo rủi ro.",
+    },
+  ],
+  correctChoiceIds: [
+    "isolate-verifiable-claims",
+    "flag-unsupported-claims",
+    "cross-check-inconsistencies",
+  ],
+  correctExplanation:
+    "Quy trình kiểm soát hallucination bài bản đòi hỏi bóc tách các claim cụ thể để kiểm chứng bằng trích dẫn nguyên văn từ nguồn gốc, kiên quyết loại bỏ các khẳng định thiếu căn cứ, và rà soát mâu thuẫn nội bộ giữa các phần trong văn bản. Không được dựa vào văn phong tự tin hay kết quả đa số mà bỏ qua tài liệu đối soát.",
+  sourceIds: [
+    "anthropic-reduce-hallucinations-doc",
+    "anthropic-evaluation-docs",
+  ],
+});
+
+const routingIntentClassification: Question = questionSchema.parse({
+  id: "workflow-routing-intent-classification",
+  type: "single-choice",
+  stem: "An enterprise customer service architecture receives 100,000 requests per day. 80% are straightforward order status inquiries, while 20% involve nuanced legal or contractual disputes requiring multi-step reasoning. Which architecture best balances responsiveness, cost, and analytical rigor?",
+  choices: [
+    {
+      id: "routing-tier-pattern",
+      text: "Implement an upfront routing classifier using a fast, low-cost model to fulfill status lookups directly and escalate complex dispute requests to a higher-capability model tier.",
+      explanation:
+        "Đúng: mô hình phân luồng (routing) dùng model nhanh/rẻ (như Haiku) xử lý khối lượng lớn tác vụ đơn giản và chỉ chuyển 20% ca phức tạp cho model chuyên sâu (như Sonnet) là giải pháp tối ưu chi phí và độ trễ.",
+    },
+    {
+      id: "all-opus-chain",
+      text: "Route 100% of incoming inquiries through a multi-agent chain powered exclusively by the largest model tier.",
+      explanation:
+        "Sai: dùng model lớn nhất cho toàn bộ 100,000 yêu cầu mỗi ngày sẽ gây lãng phí chi phí token khổng lồ và độ trễ không cần thiết cho 80% tác vụ tra cứu đơn giản.",
+    },
+    {
+      id: "single-haiku-only",
+      text: "Enforce a single fast model across all requests without any escalation path for multi-step contractual analysis.",
+      explanation:
+        "Sai: model nhỏ khó đảm bảo chiều sâu lập luận và độ chính xác cho các tranh chấp pháp lý/hợp đồng phức tạp.",
+    },
+    {
+      id: "unsupervised-agent",
+      text: "Deploy an unconstrained autonomous agent that browses internal databases indefinitely for every inquiry without a stopping condition.",
+      explanation:
+        "Sai: thiếu điều kiện dừng và cơ chế kiểm soát sẽ dẫn đến vòng lặp vô tận, bùng nổ chi phí và tiềm ẩn rủi ro sai sót.",
+    },
+  ],
+  correctChoiceIds: ["routing-tier-pattern"],
+  correctExplanation:
+    "Theo hướng dẫn 'Building effective agents' của Anthropic, mô hình định tuyến (Routing) là mẫu kiến trúc cơ bản và hiệu quả nhất khi có sự phân hóa rõ rệt giữa các luồng tác vụ. Nó giúp chuyển hướng chính xác tác vụ đơn giản tới model tối ưu tốc độ/chi phí, và chỉ dành tài nguyên model cao cấp cho bài toán đòi hỏi suy luận phức tạp.",
+  sourceIds: [
+    "anthropic-building-effective-agents",
+    "anthropic-choosing-model",
+  ],
+});
+
+const projectPermissionRevocation: Question = questionSchema.parse({
+  id: "configuration-project-permission-revocation",
+  type: "single-choice",
+  stem: "A project administrator learns that an external consultant has completed their engagement but still possesses access to a shared Claude Project containing proprietary financial strategies. Which administrative action properly secures the Project environment?",
+  choices: [
+    {
+      id: "remove-member-audit-knowledge",
+      text: "Remove the consultant from the Project and organization workspace, rotate any shared connector credentials they handled, and audit Project knowledge files to ensure access is fully terminated.",
+      explanation:
+        "Đúng: phải thu hồi quyền ở cấp thành viên workspace/project và xoay vòng (rotate) credential của các connector ngoài để đảm bảo chấm dứt hoàn toàn quyền truy cập dữ liệu nhạy cảm.",
+    },
+    {
+      id: "archive-project-only",
+      text: "Archive the Project, assuming that archiving automatically revokes member permissions and disconnects shared tools.",
+      explanation:
+        "Sai: việc archive Project chỉ ẩn project khỏi giao diện hoạt động nhưng vẫn bảo lưu danh sách thành viên và cấu hình; nó không thay thế cho việc thu hồi quyền.",
+    },
+    {
+      id: "prompt-ignore-contractor",
+      text: "Add a Project instruction telling Claude to decline questions submitted by that specific consultant's name.",
+      explanation:
+        "Sai: prompt instruction không thể làm công cụ kiểm soát truy cập (access control) và không ngăn chặn được việc người đó đọc kho tài liệu Project knowledge.",
+    },
+    {
+      id: "delete-single-file-only",
+      text: "Delete one financial strategy document from Project knowledge while leaving the consultant's Project membership active.",
+      explanation:
+        "Sai: chỉ xóa một file không ngăn được người đó xem các tài liệu còn lại, các cuộc trò chuyện chia sẻ hoặc tiếp tục sử dụng Project.",
+    },
+  ],
+  correctChoiceIds: ["remove-member-audit-knowledge"],
+  correctExplanation:
+    "Quản trị Project theo nguyên tắc bảo mật và quyền tối thiểu đòi hỏi phải thu hồi quyền thành viên ở cấp độ tài khoản/workspace và cập nhật credential của các connector liên quan. Không thể dựa vào tính năng Archive hay prompt instruction để thay thế cho cơ chế phân quyền bảo mật thực tế.",
+  sourceIds: [
+    "anthropic-projects-manage",
+    "anthropic-usage-policy",
+  ],
+});
+
+const regressionPromptPinning: Question = questionSchema.parse({
+  id: "troubleshoot-regression-prompt-pinning",
+  type: "multiple-response",
+  stem: "After modifying a customer support prompt to incorporate newly announced product return policies, the team observes that accuracy on handling legacy warranty claims dropped from 94% to 78%. Which three diagnostic actions should the team take to address this regression? Select three.",
+  choices: [
+    {
+      id: "run-baseline-eval-suite",
+      text: "Evaluate the modified prompt against the entire regression test suite representing both legacy warranty cases and new return scenarios.",
+      explanation:
+        "Đúng: chạy lại bộ kiểm thử toàn diện trên cả trường hợp cũ lẫn trường hợp mới giúp đo lường chính xác phạm vi và mức độ nghiêm trọng của lỗi thoái lui (regression).",
+    },
+    {
+      id: "diff-prompt-changes",
+      text: "Inspect the diff between the previous baseline prompt and the updated version to locate overlapping or conflicting constraints.",
+      explanation:
+        "Đúng: so sánh chi tiết các thay đổi trong câu chữ và ràng buộc của prompt giúp phát hiện chính xác chỗ quy định mới lấn át hoặc mâu thuẫn với quy định cũ.",
+    },
+    {
+      id: "categorize-failure-modes",
+      text: "Categorize the failed legacy test cases to determine whether errors stem from ambiguous instructions, missing context, or overly restrictive return rules.",
+      explanation:
+        "Đúng: phân loại cụ thể các ca bị lỗi giúp nhóm xác định đúng căn nguyên lỗi thay vì sửa mò không có định hướng.",
+    },
+    {
+      id: "switch-models-immediately",
+      text: "Immediately migrate to a different model family in production without investigating the prompt wording differences.",
+      explanation:
+        "Sai: đổi model đột ngột làm thay đổi quá nhiều biến số cùng lúc và không giải quyết được căn nguyên mâu thuẫn logic trong prompt.",
+    },
+    {
+      id: "delete-legacy-eval-cases",
+      text: "Delete legacy warranty cases from the evaluation dataset so the pass rate reflects only the new return policy.",
+      explanation:
+        "Sai: xóa test case để làm đẹp số liệu là hành vi che giấu lỗi thoái lui trong sản phẩm thực tế.",
+    },
+    {
+      id: "double-max-tokens",
+      text: "Double max_tokens in production in hopes that generating longer answers will naturally reconcile conflicting warranty rules.",
+      explanation:
+        "Sai: tăng max_tokens chỉ kéo dài câu trả lời chứ không sửa được xung đột về mặt chỉ dẫn logic trong prompt.",
+    },
+  ],
+  correctChoiceIds: [
+    "run-baseline-eval-suite",
+    "diff-prompt-changes",
+    "categorize-failure-modes",
+  ],
+  correctExplanation:
+    "Xử lý lỗi hồi quy (regression) có phương pháp đòi hỏi: chạy lại toàn bộ bộ kiểm thử đại diện (gồm cả case cũ và mới), soi diff để định vị xung đột câu chữ giữa các phiên bản prompt, và phân loại bản chất các ca bị lỗi để tinh chỉnh có mục tiêu. Tuyệt đối không xóa test case, đổi model vội vã hay tăng token một cách mù quáng.",
+  sourceIds: [
+    "anthropic-prompting-best-practices",
+    "anthropic-evaluation-docs",
+  ],
+});
+
 export const coverageDepthQuestionBank: QuestionBankEntry[] = [
   reviewedEntry(effectivePromptAdditions, "prompting-create-effective-prompts", [
+    "anthropic-prompting-best-practices",
+  ]),
+  reviewedEntry(multilingualNuanceControl, "prompting-create-effective-prompts", [
     "anthropic-prompting-best-practices",
   ]),
   reviewedEntry(decompositionDecision, "prompting-task-decomposition", [
@@ -569,6 +796,10 @@ export const coverageDepthQuestionBank: QuestionBankEntry[] = [
   ]),
   reviewedEntry(rubricCalibration, "prompting-iterate", [
     "anthropic-prompting-best-practices",
+    "anthropic-evaluation-docs",
+  ]),
+  reviewedEntry(hallucinationAuditPlan, "output-identify-hallucinations", [
+    "anthropic-reduce-hallucinations-doc",
     "anthropic-evaluation-docs",
   ]),
   reviewedEntry(requirementsArtifacts, "workflow-requirements-analysis", [
@@ -585,6 +816,14 @@ export const coverageDepthQuestionBank: QuestionBankEntry[] = [
     "anthropic-evaluation-docs",
     "anthropic-prompting-best-practices",
   ]),
+  reviewedEntry(routingIntentClassification, "workflow-solution-design", [
+    "anthropic-building-effective-agents",
+    "anthropic-choosing-model",
+  ]),
+  reviewedEntry(projectPermissionRevocation, "config-maintain", [
+    "anthropic-projects-manage",
+    "anthropic-usage-policy",
+  ]),
   reviewedEntry(highRiskUseCase, "governance-use-case-fit", [
     "anthropic-usage-policy",
     "anthropic-claude-constitution",
@@ -600,6 +839,10 @@ export const coverageDepthQuestionBank: QuestionBankEntry[] = [
     "anthropic-privacy-policy",
   ]),
   reviewedEntry(diagnosticEvidence, "troubleshoot-diagnose", [
+    "anthropic-prompting-best-practices",
+    "anthropic-evaluation-docs",
+  ]),
+  reviewedEntry(regressionPromptPinning, "troubleshoot-diagnose", [
     "anthropic-prompting-best-practices",
     "anthropic-evaluation-docs",
   ]),

@@ -158,9 +158,9 @@ describe("progress summary and breakdown selectors", () => {
       questionById,
     );
 
-    expect(summary.bank.totalItems).toBe(67);
-    expect(summary.bank.singleChoiceItems).toBe(35);
-    expect(summary.bank.multipleResponseItems).toBe(32);
+    expect(summary.bank.totalItems).toBe(72);
+    expect(summary.bank.singleChoiceItems).toBe(38);
+    expect(summary.bank.multipleResponseItems).toBe(34);
     expect(summary.bank.objectivesCovered).toBe(30);
     expect(summary.bank.objectivesTotal).toBe(30);
     expect(summary.bank.domainsWithItems).toBe(7);
@@ -169,7 +169,7 @@ describe("progress summary and breakdown selectors", () => {
       (domain) => domain.domainId === "configuration-knowledge-management",
     );
 
-    expect(domainFive?.itemCount).toBe(8);
+    expect(domainFive?.itemCount).toBe(9);
     expect(domainFive?.objectivesCovered).toBe(4);
     expect(summary.bank.domains.every((domain) => domain.itemCount > 0)).toBe(true);
     expect(
@@ -209,18 +209,18 @@ describe("progress summary and breakdown selectors", () => {
       questionById,
     );
 
-    expect(summary.bank.totalItems).toBe(67);
+    expect(summary.bank.totalItems).toBe(72);
     expect(summary.personal.submittedAttempts).toBe(1);
     expect(summary.personal.studySubmittedAttempts).toBe(1);
     expect(summary.personal.timedSubmittedAttempts).toBe(0);
-    expect(summary.personal.uniqueItemsAttempted).toBe(14);
+    expect(summary.personal.uniqueItemsAttempted).toBe(15);
     expect(summary.personal.uniqueItemsAnswered).toBe(1);
     expect(summary.personal.objectivesPracticed).toBe(6);
     expect(summary.personal.objectivesAnswered).toBe(1);
     expect(summary.personal.answeredQuestions).toBe(1);
     expect(summary.personal.correctAnswers).toBe(0);
     expect(summary.personal.incorrectAnswers).toBe(1);
-    expect(summary.personal.unansweredQuestions).toBe(13);
+    expect(summary.personal.unansweredQuestions).toBe(14);
     expect(summary.personal.accuracyOnAnswered).toBe(0);
     expect(summary.personal.rawPercentage).toBe(0);
     expect(summary.personal.lastSubmittedAt).toBe("2026-10-26T09:10:00.000Z");
@@ -229,11 +229,11 @@ describe("progress summary and breakdown selectors", () => {
       (domain) => domain.domainId === "output-evaluation-validation",
     );
 
-    expect(domainTwo?.attemptedQuestions).toBe(14);
-    expect(domainTwo?.uniqueAttemptedItems).toBe(14);
+    expect(domainTwo?.attemptedQuestions).toBe(15);
+    expect(domainTwo?.uniqueAttemptedItems).toBe(15);
     expect(domainTwo?.uniqueAnsweredItems).toBe(1);
     expect(domainTwo?.incorrectAnswers).toBe(1);
-    expect(domainTwo?.unansweredQuestions).toBe(13);
+    expect(domainTwo?.unansweredQuestions).toBe(14);
     expect(domainTwo?.accuracyOnAnswered).toBe(0);
     expect(domainTwo?.lessonId).toBe("evaluation-basics");
     expect(domainTwo?.practiceSetId).toBe("domain-2-output-validation-set");
@@ -255,8 +255,8 @@ describe("progress summary and breakdown selectors", () => {
     expect(unansweredObjective?.answeredItemCount).toBe(0);
     expect(unansweredObjective?.signal).toBe("unanswered-only");
 
-    expect(summary.review.unresolved).toBe(14);
-    expect(summary.review.studyUnresolved).toBe(14);
+    expect(summary.review.unresolved).toBe(15);
+    expect(summary.review.studyUnresolved).toBe(15);
     expect(summary.review.timedUnresolved).toBe(0);
     expect(summary.review.resolved).toBe(0);
   });
@@ -528,7 +528,7 @@ describe("progress summary and breakdown selectors", () => {
     expect(objectiveBreakdown).toHaveLength(6);
     expect(
       objectiveBreakdown.reduce((sum, row) => sum + row.totalQuestions, 0),
-    ).toBe(14);
+    ).toBe(domainTwoQuestions.length);
     expect(
       objectiveBreakdown.every((row) => row.domainCode === "2" && row.lessonId === "evaluation-basics"),
     ).toBe(true);
@@ -1145,16 +1145,16 @@ describe("progress summary and breakdown selectors", () => {
   });
 
   it("distinguishes unpracticed vs practiced-but-unanswered items, handles the 4-question objective, partial-bank-correct, and resolved study review items", () => {
-    // Domain 2 objective `output-identify-hallucinations` has 4 bank items
+    // Domain 2 objective `output-identify-hallucinations` has 5 bank items
     const hallucinationIds = questionBankEntries
       .filter(
         (entry) => entry.examMapping.objectiveIds[0] === "output-identify-hallucinations",
       )
       .map((entry) => entry.question.id);
-    expect(hallucinationIds).toHaveLength(4);
+    expect(hallucinationIds).toHaveLength(5);
 
-    // Subset definition containing only the first 2 of the 4 hallucination items:
-    // Answer 1 correct, leave 1 unanswered, and leave the other 2 unpracticed (not in the attempt)
+    // Subset definition containing only the first 2 of the 5 hallucination items:
+    // Answer 1 correct, leave 1 unanswered, and leave the other 3 unpracticed (not in the attempt)
     const subsetDefinition: AssessmentDefinition = {
       id: "hallucination-subset",
       title: "Hallucination subset",
@@ -1180,16 +1180,16 @@ describe("progress summary and breakdown selectors", () => {
     const hallucinationObj = subsetSummary.personal.objectives.find(
       (obj) => obj.objectiveId === "output-identify-hallucinations",
     )!;
-    expect(hallucinationObj.bankItemCount).toBe(4);
+    expect(hallucinationObj.bankItemCount).toBe(5);
     expect(hallucinationObj.practicedItemCount).toBe(2);
-    expect(hallucinationObj.unpracticedItemCount).toBe(2);
+    expect(hallucinationObj.unpracticedItemCount).toBe(3);
     expect(hallucinationObj.answeredItemCount).toBe(1);
     expect(hallucinationObj.unansweredItemCount).toBe(1);
     expect(hallucinationObj.latestCorrectCount).toBe(1);
     expect(hallucinationObj.latestIncorrectCount).toBe(0);
     expect(hallucinationObj.signal).toBe("partial-bank-correct");
     expect(hallucinationObj.signalLabel).toContain(
-      "Partially practiced (1/4 bank items correct on latest)",
+      "Partially practiced (1/5 bank items correct on latest)",
     );
 
     // Resolve the 1 unanswered study review item and verify review counts update while timed review stays independent

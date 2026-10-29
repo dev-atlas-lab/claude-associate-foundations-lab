@@ -52,9 +52,9 @@ describe("mock exam preview page", () => {
     const cells = within(domainFiveRow).getAllByRole("cell").map((cell) => cell.textContent);
 
     expect(cells[0]).toBe("12%");
-    expect(cells[1]).toBe("8");
+    expect(cells[1]).toBe("9");
     expect(Number(cells[2])).toBeGreaterThan(0);
-    expect(Number(cells[2])).toBeLessThanOrEqual(8);
+    expect(Number(cells[2])).toBeLessThanOrEqual(9);
   });
 });
 
@@ -63,7 +63,7 @@ describe("progress page", () => {
     renderPage(<ProgressPage />);
 
     expect(screen.getByRole("heading", { level: 1, name: "Learning progress" })).toBeInTheDocument();
-    expect(screen.getByText("67 reviewed items")).toBeInTheDocument();
+    expect(screen.getByText("72 reviewed items")).toBeInTheDocument();
     expect(screen.getByText("30/30")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "No submitted attempts yet" })).toBeInTheDocument();
   });
@@ -92,7 +92,7 @@ describe("progress page", () => {
 
     renderPage(<ProgressPage />);
 
-    expect(screen.getByText("Unique bank exposure").closest(".stat")).toHaveTextContent("8/67");
+    expect(screen.getByText("Unique bank exposure").closest(".stat")).toHaveTextContent("9/72");
     expect(screen.getByText("First-seen accuracy").closest(".stat")).toHaveTextContent("100%");
     expect(screen.getByText("Latest accuracy").closest(".stat")).toHaveTextContent("100%");
 
@@ -202,7 +202,7 @@ describe("settings local data", () => {
     expect(
       screen.queryByRole("alert", { name: "Saved study data needs attention" }),
     ).not.toBeInTheDocument();
-    expect(screen.getByText("Unique bank exposure").closest(".stat")).toHaveTextContent("8/67");
+    expect(screen.getByText("Unique bank exposure").closest(".stat")).toHaveTextContent("9/72");
   });
 });
 
@@ -230,11 +230,14 @@ describe("dashboard actionable study desk", () => {
     renderPage(<DashboardPage />);
 
     expect(screen.getByRole("heading", { name: "Continue active study" })).toBeInTheDocument();
-    expect(screen.getByText(/In progress · 1\/8 answered/)).toBeInTheDocument();
+    expect(screen.getByText(/In progress · 1\/9 answered/)).toBeInTheDocument();
 
     const blueprintRegion = screen.getByRole("region", { name: "Exam blueprint" });
+    const domainOneRow = within(blueprintRegion)
+      .getAllByRole("generic")
+      .find((el) => el.classList?.contains("row") && el.textContent?.includes("Prompting and Task Execution"))!;
     expect(
-      within(blueprintRegion).getByRole("link", { name: /Practice \(9 items\)/ }),
+      within(domainOneRow).getByRole("link", { name: /Practice \(10 items\)/ }),
     ).toHaveAttribute("href", "/practice?set=domain-1-prompting-set");
   });
 });

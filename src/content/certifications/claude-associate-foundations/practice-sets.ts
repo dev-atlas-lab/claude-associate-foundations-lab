@@ -35,6 +35,34 @@ export const practiceSets: PracticeSet[] = [
     domainIds: ["troubleshooting-optimization"],
   },
   {
+    assessmentId: "high-weight-core-set",
+    domainIds: [
+      "prompting-task-execution",
+      "output-evaluation-validation",
+      "workflow-integration-solution-design",
+    ],
+  },
+  {
+    assessmentId: "quick-drill-set",
+    domainIds: [
+      "prompting-task-execution",
+      "output-evaluation-validation",
+      "product-model-selection",
+      "workflow-integration-solution-design",
+      "configuration-knowledge-management",
+      "governance-risk-responsible-use",
+      "troubleshooting-optimization",
+    ],
+  },
+  {
+    assessmentId: "enterprise-scenarios-set",
+    domainIds: [
+      "configuration-knowledge-management",
+      "governance-risk-responsible-use",
+      "troubleshooting-optimization",
+    ],
+  },
+  {
     assessmentId: "mixed-foundations-set",
     domainIds: [
       "prompting-task-execution",

@@ -1214,3 +1214,43 @@ not done in this audit.
 - Vitest suite (`glossary.test.tsx`, `navigation.test.tsx`): pass.
 - `npm run build`: pass.
 - `git diff --check`: clean.
+
+## Phase C2.19 - Vietnamese Phrasing Naturalization, 72-Item Bank Depth & 3 Specialized Practice Sets (2026-10-29)
+
+### Scope
+
+- **Vietnamese technical phrasing naturalization (`src/content/certifications/claude-associate-foundations/`):**
+  - Replaced literal, awkward Vietnamese translations with natural, industry-standard engineering terminology retaining English keywords across all 8 lessons and the glossary:
+    - `Context window`: polished "ngân sách ngữ cảnh" (context token budget), "nén ngữ cảnh" (context compaction), "suy thoái ngữ cảnh" (context rot), and "bộ nhớ làm việc tạm thời" (working memory).
+    - `Prompt structure`: polished `Prompt (câu lệnh / chỉ dẫn đầu vào)`, "phân rã tác vụ" (task decomposition), "tiêu chí nghiệm thu" (success criteria / rubric), and "đường chuẩn" (baseline).
+    - `Evaluation basics`: naturalized "ảo giác" (hallucination), "thiên kiến dẫn dắt" (framing bias), "kiểm chứng nguồn độc lập" (fact-checking), "bàn giao rà soát thủ công" (human review escalation), and Artifacts.
+    - `Product selection`: replaced awkward "bề mặt sản phẩm" with `Giao diện & Phân hệ tương tác (Product surface)`, naturalized Claude Projects, Deep Research, and Artifacts.
+    - `Workflow design`: naturalized Workflows, LLM Routing, Agentic handoff, and Evaluator-Optimizer loops.
+    - `Configuration basics`: replaced awkward "tri thức của project" and "kết nối dịch vụ" with `Project knowledge (kho tài liệu tri thức dự án)`, `Project instructions`, `Connector (bộ kết nối dịch vụ ngoài)`, and RAG.
+    - `Governance & responsible use`: naturalized "mức độ phù hợp ca sử dụng" (use-case fit), "ca sử dụng rủi ro cao" (high-risk use case), "con người giám sát" (human-in-the-loop), and AI disclosure.
+    - `Troubleshooting & optimization`: naturalized "đường chuẩn chẩn đoán" (diagnostic baseline), "phân loại lỗi" (failure classification), "hồi quy chất lượng" (regression), "chi phí trên mỗi kết quả hợp lệ" (cost per successful outcome), and Prompt caching.
+    - `Glossary`: naturalized definitions and labels for token, context window, context rot, prompt, system prompt, temperature, RAG, and compaction.
+- **Question bank depth expansion (67 -> 72 items):**
+  - Added 5 new original, source-grounded items in `question-bank-depth.ts`:
+    1. `prompting-multilingual-nuance-control` (Domain 1, single-choice)
+    2. `output-evaluation-hallucination-audit-plan` (Domain 2, multiple-response)
+    3. `workflow-routing-intent-classification` (Domain 4, single-choice)
+    4. `configuration-project-permission-revocation` (Domain 5, single-choice)
+    5. `troubleshoot-regression-prompt-pinning` (Domain 7, multiple-response)
+  - Bank totals now: **72 items** (`38` single-choice, `34` multiple-response).
+  - Domain item distribution: **`10 / 15 / 8 / 12 / 9 / 10 / 8`**; every official domain has at least 2 spare items beyond its 60-question timed simulation allocation (`8 / 13 / 7 / 10 / 7 / 9 / 6`).
+  - Mapped all 5 items into their respective domain lesson `relatedQuestionIds`.
+- **Three new specialized practice sets (`assessments.ts`, `practice-sets.ts`, `PracticePage.tsx`):**
+  - Expanded practice sets from 8 to **11 total sets**:
+    1. `high-weight-core-set` ("High-Weight Core: Domains 1, 2 & 4 (51% Blueprint)", 24 items, badge `HW`).
+    2. `quick-drill-set` ("Quick Drill: 15 Core Scenarios", 15 cross-domain items, badge `QD`).
+    3. `enterprise-scenarios-set` ("Enterprise Scenarios: Knowledge, Governance & Optimization", 20 items across Domains 5, 6, 7, badge `EN`).
+  - Updated `PracticePage.tsx` badge generation to support `HW`, `QD`, and `EN` prefixes alongside `M` and domain numbers `01`–`07`.
+
+### Verification
+
+- `npm run typecheck`: pass (`tsc -b`, strict).
+- `npm run lint`: pass (`eslint .`, 0 problems).
+- Vitest suite: **205 tests across 23 files** pass.
+- `npm run build`: pass (`dist/` built cleanly in 5.48s).
+- `git diff --check`: clean.

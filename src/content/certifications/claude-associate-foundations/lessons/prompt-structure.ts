@@ -154,43 +154,43 @@ export const promptStructureLesson: Lesson = lessonSchema.parse({
   keyTerms: [
     {
       en: "Prompt",
-      vi: "Câu lệnh giao việc",
-      note: "Tập chỉ dẫn và context đưa cho model để tạo ra output mong muốn.",
+      vi: "Prompt (câu lệnh / chỉ dẫn đầu vào)",
+      note: "Tập hợp chỉ dẫn, bối cảnh và ràng buộc đưa cho model để sinh ra kết quả mong muốn.",
     },
     {
       en: "Context",
-      vi: "Ngữ cảnh",
-      note: "Tài liệu, dữ liệu, ví dụ và thông tin nền giúp model hiểu task.",
+      vi: "Context (ngữ cảnh / tài liệu nền)",
+      note: "Tài liệu, dữ liệu tham chiếu, ví dụ và thông tin nền tảng giúp model hiểu rõ bài toán.",
     },
     {
       en: "Constraint",
-      vi: "Ràng buộc",
-      note: "Giới hạn về nội dung, độ dài, nguồn, format hoặc điều không được làm.",
+      vi: "Constraint (ràng buộc / giới hạn)",
+      note: "Các giới hạn về độ dài, ngôn ngữ, nguồn thông tin, định dạng hoặc hành động bị cấm.",
     },
     {
       en: "Task decomposition",
-      vi: "Chia nhỏ tác vụ",
-      note: "Tách yêu cầu phức tạp thành bước có đầu ra và điểm kiểm tra rõ ràng.",
+      vi: "Task decomposition (chia nhỏ tác vụ)",
+      note: "Kỹ thuật phân rã yêu cầu phức tạp thành các bước trung gian có đầu ra và điểm kiểm tra rõ ràng.",
     },
     {
       en: "Success criteria",
-      vi: "Tiêu chí thành công",
-      note: "Mô tả cụ thể, đo được về việc output đạt yêu cầu hay chưa.",
+      vi: "Success criteria (tiêu chí thành công)",
+      note: "Các tiêu chuẩn cụ thể, đo lường được để xác định kết quả đầu ra có đạt chất lượng hay không.",
     },
     {
       en: "Baseline",
-      vi: "Mốc so sánh",
-      note: "Phiên bản prompt và kết quả hiện tại dùng để đo tác động của thay đổi.",
+      vi: "Baseline (mốc đối chuẩn)",
+      note: "Phiên bản prompt và kết quả hiện tại dùng làm mốc so sánh trước khi thực hiện cải tiến.",
     },
     {
       en: "Few-shot examples",
-      vi: "Ví dụ mẫu",
-      note: "Một vài ví dụ relevant, diverse và có cấu trúc để định hướng format và tone.",
+      vi: "Few-shot examples (các ví dụ mẫu)",
+      note: "Một vài ví dụ mẫu chuẩn chỉnh, đa dạng để định hướng phong cách, cấu trúc và định dạng cho model.",
     },
     {
       en: "Edge case",
-      vi: "Trường hợp biên",
-      note: "Tình huống hiếm hoặc khó thường bị bỏ sót nếu chỉ test ví dụ đẹp.",
+      vi: "Edge case (trường hợp biên / ca đặc biệt)",
+      note: "Những tình huống hiếm gặp hoặc đầu vào bất thường dễ bị bỏ sót nếu chỉ thử nghiệm các trường hợp lý tưởng.",
     },
   ],
   scenario: {
@@ -260,6 +260,7 @@ export const promptStructureLesson: Lesson = lessonSchema.parse({
     "prompting-iterate-rubric-calibration",
     "prompting-analysis-task-strategy",
     "prompting-adapt-task-types",
+    "prompting-multilingual-nuance-control",
   ],
   takeaways: [
     "Prompt hiệu quả nêu goal, audience, context, constraints, format và success criteria.",

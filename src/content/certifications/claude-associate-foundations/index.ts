@@ -12,7 +12,10 @@ export {
   domainSixGovernanceAssessment,
   domainThreeContextAssessment,
   domainTwoOutputValidationAssessment,
+  enterpriseScenariosAssessment,
+  highWeightCoreAssessment,
   mixedFoundationsAssessment,
+  quickDrillAssessment,
 } from "./assessments";
 export { contextWindowLesson } from "./lessons/context-window";
 export { evaluationBasicsLesson } from "./lessons/evaluation-basics";

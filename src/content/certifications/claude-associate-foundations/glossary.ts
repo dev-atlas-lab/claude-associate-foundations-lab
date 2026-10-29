@@ -11,7 +11,7 @@ export const glossaryEntries: GlossaryEntry[] = z
     {
       id: "token",
       term: "Token",
-      vi: "Đơn vị token",
+      vi: "Token (đơn vị từ tố)",
       definition:
         "Mảnh văn bản mà model xử lý. Token không tương ứng 1-1 với từ và số token cho cùng một nội dung khác nhau giữa các ngôn ngữ.",
       category: "Core concepts",
@@ -19,7 +19,7 @@ export const glossaryEntries: GlossaryEntry[] = z
     {
       id: "context-window",
       term: "Context window",
-      vi: "Cửa sổ ngữ cảnh",
+      vi: "Context window (vùng ngữ cảnh làm việc)",
       definition:
         "Toàn bộ token model có thể tham chiếu trong một request, gồm system prompt, messages, tài liệu, tool và cả output được sinh ra.",
       category: "Core concepts",
@@ -27,7 +27,7 @@ export const glossaryEntries: GlossaryEntry[] = z
     {
       id: "context-rot",
       term: "Context rot",
-      vi: "Suy giảm do ngữ cảnh dài",
+      vi: "Context rot (suy giảm độ tập trung ngữ cảnh)",
       definition:
         "Hiện tượng độ chính xác và khả năng hồi tưởng giảm khi số token trong ngữ cảnh tăng; thông tin dài hoặc không liên quan có thể làm vấn đề nặng hơn.",
       category: "Core concepts",
@@ -35,7 +35,7 @@ export const glossaryEntries: GlossaryEntry[] = z
     {
       id: "prompt",
       term: "Prompt",
-      vi: "Câu lệnh đầu vào",
+      vi: "Prompt (câu lệnh / chỉ dẫn)",
       definition:
         "Nội dung người dùng gửi cho model: câu hỏi, hướng dẫn, dữ liệu kèm theo và định dạng mong muốn của câu trả lời.",
       category: "Core concepts",
@@ -43,7 +43,7 @@ export const glossaryEntries: GlossaryEntry[] = z
     {
       id: "system-prompt",
       term: "System prompt",
-      vi: "Chỉ dẫn hệ thống",
+      vi: "System prompt (chỉ dẫn hệ thống)",
       definition:
         "Phần hướng dẫn đặt trước hội thoại, thường mô tả vai trò, ràng buộc và quy tắc cần giữ ổn định qua các lượt.",
       category: "Prompting",
@@ -51,7 +51,7 @@ export const glossaryEntries: GlossaryEntry[] = z
     {
       id: "temperature",
       term: "Temperature",
-      vi: "Độ ngẫu nhiên",
+      vi: "Temperature (tham số độ ngẫu nhiên)",
       definition:
         "Tham số điều chỉnh mức độ biến thiên của output. Giá trị thấp cho kết quả ổn định hơn; giá trị cao cho nhiều biến thể hơn.",
       category: "Prompting",
@@ -92,9 +92,9 @@ export const glossaryEntries: GlossaryEntry[] = z
       id: "rag",
       term: "RAG",
       expansion: "Retrieval-Augmented Generation",
-      vi: "Truy xuất tăng cường",
+      vi: "RAG (sinh văn bản kèm truy xuất)",
       definition:
-        "Truy xuất các đoạn tài liệu liên quan rồi đưa chúng vào ngữ cảnh trước khi sinh câu trả lời, giúp giảm bịa đặt và tiết kiệm context.",
+        "Kỹ thuật truy xuất các đoạn tài liệu liên quan nhất rồi đưa vào context window trước khi sinh câu trả lời, giúp hạn chế hallucination và tiết kiệm token.",
       category: "Operations",
     },
     {
@@ -117,9 +117,9 @@ export const glossaryEntries: GlossaryEntry[] = z
     {
       id: "compaction",
       term: "Compaction",
-      vi: "Nén ngữ cảnh",
+      vi: "Compaction (nén ngữ cảnh hội thoại)",
       definition:
-        "Tóm tắt phần hội thoại cũ để cuộc trò chuyện tiếp tục được khi gần chạm giới hạn context window.",
+        "Cơ chế tự động tóm tắt phần hội thoại cũ để cuộc trò chuyện tiếp tục được duy trì khi gần chạm giới hạn context window.",
       category: "Operations",
     },
     {

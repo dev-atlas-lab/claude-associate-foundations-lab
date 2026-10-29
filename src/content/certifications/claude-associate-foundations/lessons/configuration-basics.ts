@@ -177,43 +177,43 @@ export const configurationBasicsLesson: Lesson = lessonSchema.parse({
   keyTerms: [
     {
       en: "Project",
-      vi: "Không gian làm việc",
-      note: "Workspace tự chứa, có lịch sử chat và knowledge base riêng; instructions áp dụng cho mọi chat trong project.",
+      vi: "Claude Projects (không gian làm việc dự án)",
+      note: "Workspace chuyên biệt của Claude chứa lịch sử hội thoại, bộ tài liệu tham chiếu và hướng dẫn áp dụng chung cho mọi thành viên trong dự án.",
     },
     {
       en: "Project knowledge",
-      vi: "Tri thức của project",
-      note: "Tập tài liệu, file hoặc code được dùng làm context chung cho các chat trong project.",
+      vi: "Project knowledge (kho tài liệu tri thức dự án)",
+      note: "Tập hợp file tài liệu, dữ liệu hoặc code được đưa vào Project làm nguồn ngữ cảnh nền tảng cho Claude tra cứu.",
     },
     {
       en: "Project instructions",
-      vi: "Chỉ dẫn của project",
-      note: "Quy tắc hành vi, giọng điệu, audience và format được lưu ở cấp project.",
+      vi: "Project instructions (bộ quy tắc / chỉ dẫn dự án)",
+      note: "Các chỉ dẫn về vai trò, văn phong, quy tắc bắt buộc và định dạng đầu ra được cấu hình ở cấp độ Project.",
     },
     {
       en: "Connector",
-      vi: "Kết nối dịch vụ",
-      note: "Cầu nối cho Claude truy cập dữ liệu và thực hiện hành động trong dịch vụ bên ngoài, theo quyền của người dùng.",
+      vi: "Connector (bộ kết nối dịch vụ ngoài)",
+      note: "Cầu nối tích hợp cho phép Claude truy xuất dữ liệu hoặc kích hoạt thao tác trên các ứng dụng bên thứ ba theo quyền hạn người dùng.",
     },
     {
       en: "Retrieval augmented generation (RAG)",
-      vi: "Sinh câu trả lời có truy xuất",
-      note: "Cơ chế tìm và đưa vào context những phần tài liệu liên quan thay vì nạp toàn bộ knowledge.",
+      vi: "RAG (Retrieval-Augmented Generation / sinh văn bản kèm truy xuất)",
+      note: "Kỹ thuật tự động tìm kiếm và nạp các đoạn thông tin liên quan nhất từ kho tài liệu lớn vào context window thay vì gửi toàn bộ tài liệu cùng lúc.",
     },
     {
       en: "System-level instruction",
-      vi: "Chỉ dẫn cấp hệ thống",
-      note: "Chỉ dẫn nền tảng cho vai trò, nguồn, giới hạn và escalation của assistant.",
+      vi: "System-level instruction (chỉ dẫn cấp hệ thống)",
+      note: "Chỉ dẫn nền tảng đóng vai trò làm khung xương sống định hình mục tiêu, phạm vi dữ liệu và cơ chế chuyển tiếp (escalation) của trợ lý AI.",
     },
     {
       en: "Least privilege",
-      vi: "Quyền tối thiểu",
-      note: "Chỉ cấp quyền cần thiết cho công việc, và thu hẹp hành động ghi khi không cần.",
+      vi: "Least privilege (nguyên tắc đặc quyền tối thiểu)",
+      note: "Nguyên tắc bảo mật chỉ cấp đúng và đủ quyền đọc/ghi cần thiết cho tác vụ; hạn chế tối đa các quyền can thiệp dữ liệu nguy hiểm.",
     },
     {
       en: "Regression test",
-      vi: "Kiểm thử hồi quy",
-      note: "Chạy lại bộ câu hỏi đại diện sau thay đổi để phát hiện hành vi quan trọng bị hỏng.",
+      vi: "Regression test (kiểm thử hồi quy)",
+      note: "Quy trình chạy lại bộ câu hỏi tiêu chuẩn sau mỗi lần cập nhật cấu hình hoặc tài liệu để đảm bảo không làm phát sinh lỗi mới.",
     },
   ],
   scenario: {
@@ -282,6 +282,7 @@ export const configurationBasicsLesson: Lesson = lessonSchema.parse({
     "config-system-instruction-components",
     "config-knowledge-refresh",
     "config-maintenance-cadence",
+    "configuration-project-permission-revocation",
   ],
   takeaways: [
     "Project knowledge giữ nguồn dùng chung; project instructions giữ quy tắc hành vi cho mọi chat.",

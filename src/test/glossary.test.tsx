@@ -26,7 +26,8 @@ describe("glossary search", () => {
     await screen.findByRole("searchbox", { name: "Search terms" });
     expect(screen.getByRole("status")).toHaveTextContent(`${glossary.length} terms`);
     expect(screen.getByRole("heading", { level: 2, name: "Token" })).toBeInTheDocument();
-    expect(screen.getByText("Đơn vị token")).toBeInTheDocument();
+    const tokenEntry = glossary.find((entry) => entry.term === "Token")!;
+    expect(screen.getByText(tokenEntry.vi)).toBeInTheDocument();
   });
 
   it("filters by English term, Vietnamese term, or definition text", async () => {

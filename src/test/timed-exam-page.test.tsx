@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import type { ReactNode } from "react";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { questionBankEntries } from "../content";
 import { getTimedExamQuestion } from "../content/timed-exam";
 import type { TimedExamSession } from "../domain";
 import { TimedExamIntro } from "../features/timed-exam/components/TimedExamIntro";
@@ -47,7 +48,7 @@ describe("timed exam page", () => {
     expect(screen.getByText("60 items · 120 min")).toBeInTheDocument();
     expect(screen.getByText("60 questions")).toBeInTheDocument();
     expect(screen.getByText("120 minutes")).toBeInTheDocument();
-    expect(screen.getByText("67 reviewed items available", { selector: ".badge" })).toBeInTheDocument();
+    expect(screen.getByText(`${questionBankEntries.length} reviewed items available`, { selector: ".badge" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Start timed exam" })).toBeEnabled();
 
     const table = screen.getByRole("table", {

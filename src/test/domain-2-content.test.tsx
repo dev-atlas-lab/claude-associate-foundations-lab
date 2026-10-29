@@ -56,7 +56,7 @@ describe("Domain 2 curriculum coverage", () => {
       expect(counts.get(objective.id) ?? 0).toBeGreaterThanOrEqual(2);
     }
 
-    expect(domainTwoEntries).toHaveLength(14);
+    expect(domainTwoEntries).toHaveLength(15);
     expect(
       domainTwoEntries.filter((entry) => entry.question.id.startsWith("output-bias-")),
     ).toHaveLength(2);

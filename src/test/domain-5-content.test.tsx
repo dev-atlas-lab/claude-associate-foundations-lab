@@ -92,7 +92,7 @@ describe("Domain 5 curriculum coverage", () => {
     const practiceSet = getPracticeSet("domain-5-configuration-set");
 
     expect(practiceSet).toBeDefined();
-    expect(practiceSet?.questionCount).toBe(8);
+    expect(practiceSet?.questionCount).toBe(questions.length);
     expect(practiceSet?.domains.map((entry) => entry.id)).toEqual([
       "configuration-knowledge-management",
     ]);
@@ -144,8 +144,8 @@ describe("Domain 5 scoring", () => {
   it("scores exact selections as correct", () => {
     const result = scoreAttempt();
 
-    expect(result.totalQuestions).toBe(8);
-    expect(result.correctAnswers).toBe(8);
+    expect(result.totalQuestions).toBe(questions.length);
+    expect(result.correctAnswers).toBe(questions.length);
     expect(result.incorrectAnswers).toBe(0);
     expect(result.unansweredQuestions).toBe(0);
   });
@@ -162,7 +162,7 @@ describe("Domain 5 scoring", () => {
     )!;
 
     expect(partial.outcome).toBe("incorrect");
-    expect(result.correctAnswers).toBe(7);
+    expect(result.correctAnswers).toBe(questions.length - 1);
   });
 
   it("fails a multiple-response item that adds an extra incorrect choice", () => {
@@ -178,7 +178,7 @@ describe("Domain 5 scoring", () => {
     const extra = result.questions.find((score) => score.questionId === extraQuestion.id)!;
 
     expect(extra.outcome).toBe("incorrect");
-    expect(result.correctAnswers).toBe(7);
+    expect(result.correctAnswers).toBe(questions.length - 1);
   });
 });
 
