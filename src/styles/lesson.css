@@ -698,51 +698,6 @@ a.pager-card:hover {
   .diagram-bar {
     height: 34px;
   }
-
-  .workflow-simulator,
-  .cost-calculator,
-  .prompt-workbench {
-    padding: var(--space-3);
-    max-width: 100%;
-    min-width: 0;
-  }
-
-  .workflow-canvas {
-    padding: var(--space-3);
-    max-width: 100%;
-    min-width: 0;
-  }
-
-  .workflow-flow-diagram,
-  .workflow-loop-diagram {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .flow-node {
-    min-width: 0;
-    width: 100%;
-  }
-
-  .flow-arrow {
-    transform: rotate(90deg);
-    padding: var(--space-2) 0;
-    align-self: center;
-  }
-
-  .flow-arrow-text {
-    display: none;
-  }
-
-  .flow-parallel-branches,
-  .flow-workers-grid,
-  .calc-model-selector,
-  .calc-controls-grid,
-  .calc-results-grid,
-  .wb-layers-grid,
-  .wb-metrics-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 /* ── Interactive Visualizations: Workflow, Cost, Prompt Workbench ─────────── */
@@ -750,6 +705,9 @@ a.pager-card:hover {
 .workflow-simulator,
 .cost-calculator,
 .prompt-workbench {
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
   margin-top: var(--space-4);
   margin-bottom: var(--space-4);
   padding: var(--space-5);
@@ -826,7 +784,7 @@ a.pager-card:hover {
 }
 
 .workflow-tab--active {
-  background: var(--accent-subtle);
+  background: var(--accent-quiet);
   border-color: var(--accent);
   color: var(--accent-strong);
   font-weight: 600;
@@ -861,6 +819,9 @@ a.pager-card:hover {
 }
 
 .workflow-canvas {
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
   background: var(--surface-3);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
@@ -892,6 +853,9 @@ a.pager-card:hover {
 
 .workflow-flow-diagram,
 .workflow-loop-diagram {
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -934,17 +898,17 @@ a.pager-card:hover {
 
 .flow-node--evaluator.flow-node--fail {
   border-left: 3px solid var(--warn);
-  background: var(--warn-subtle);
+  background: var(--warn-quiet);
 }
 
 .flow-node--evaluator.flow-node--pass {
   border-left: 3px solid var(--ok);
-  background: var(--ok-subtle);
+  background: var(--ok-quiet);
 }
 
 .flow-node--approved {
   border-left: 3px solid var(--ok);
-  background: var(--ok-subtle);
+  background: var(--ok-quiet);
 }
 
 .flow-node-badge {
@@ -1082,7 +1046,7 @@ a.pager-card:hover {
 }
 
 .calc-model-btn--active {
-  background: var(--accent-subtle);
+  background: var(--accent-quiet);
   border-color: var(--accent);
 }
 
@@ -1160,13 +1124,13 @@ a.pager-card:hover {
 }
 
 .calc-status--ok {
-  background: var(--ok-subtle);
+  background: var(--ok-quiet);
   border: 1px solid var(--ok);
   color: var(--text-primary);
 }
 
 .calc-status--warn {
-  background: var(--warn-subtle);
+  background: var(--warn-quiet);
   border: 1px solid var(--warn);
   color: var(--text-primary);
 }
@@ -1190,12 +1154,12 @@ a.pager-card:hover {
 
 .calc-card--cached {
   border-color: var(--ok);
-  background: var(--ok-subtle);
+  background: var(--ok-quiet);
 }
 
 .calc-card--savings {
   border-color: var(--accent);
-  background: var(--accent-subtle);
+  background: var(--accent-quiet);
 }
 
 .calc-card-eyebrow {
@@ -1479,4 +1443,61 @@ a.pager-card:hover {
   color: var(--text-primary);
   line-height: var(--leading-normal);
   margin: 0;
+}
+
+.text-ok {
+  color: var(--ok);
+}
+
+.text-accent {
+  color: var(--accent);
+}
+
+/* ── Interactive Visualizations Responsive Overrides ── */
+
+@media (max-width: 720px) {
+  .workflow-simulator,
+  .cost-calculator,
+  .prompt-workbench {
+    padding: var(--space-3);
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .workflow-canvas {
+    padding: var(--space-3);
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .workflow-flow-diagram,
+  .workflow-loop-diagram {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .flow-node {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .flow-arrow {
+    transform: rotate(90deg);
+    padding: var(--space-2) 0;
+    align-self: center;
+  }
+
+  .flow-arrow-text {
+    display: none;
+  }
+
+  .flow-parallel-branches,
+  .flow-workers-grid,
+  .calc-model-selector,
+  .calc-controls-grid,
+  .calc-results-grid,
+  .wb-layers-grid,
+  .wb-metrics-grid {
+    grid-template-columns: 1fr;
+  }
 }
