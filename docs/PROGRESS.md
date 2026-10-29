@@ -1296,3 +1296,27 @@ not done in this audit.
 - GitHub Actions CI: **Run 40865366457** (`push` on `main`) completed with **SUCCESS** across all 11 workflow steps.
 - `npm run build`: pass (`LessonPage` code-split chunk cleanly built at 52.97 kB).
 - `git diff --check`: clean.
+
+## Phase C2.21 - Practice Hub Filters, Exam Readiness Diagnostic & Curriculum Polish (2026-10-29)
+
+### Scope
+
+- **Practice Hub Filter & Search System (`src/pages/PracticePage.tsx`, `src/styles/study.css`):**
+  - Category pill selector: *All sets* (11), *Domain sets* (7), *Specialized & Drills* (4: High-Weight Core, Quick Drill, Enterprise Scenarios, Mixed Foundations).
+  - Activity status filter: *All statuses*, *Not started*, *In progress*, *Completed*.
+  - Real-time search query input matching title, description, and domain codes with clear button (`X`).
+  - Active filter counter ("Hiển thị X / 11 bộ đề") with quick reset action and empty state fallback.
+  - Comprehensive unit test coverage in `src/test/practice-page.test.tsx` (8 tests passing).
+- **Exam Readiness Scorecard & Study Diagnostic (`src/pages/ProgressPage.tsx`, `src/styles/study.css`):**
+  - Added Blueprint-Weighted Diagnostic Card with:
+    - *Blueprint Practiced Coverage* (% of total blueprint domain weights with attempted items).
+    - *Weighted Latest Accuracy* (percentage average weighted by official domain blueprint percentages).
+    - *Overall Readiness Index* (coverage $\times$ accuracy diagnostic metric with non-predictive disclosure).
+  - Added *Top Priority Remediation Focus Areas* (highlighting up to 3 objectives needing review based on recent misses and domain weights, with direct links to lessons and practice sets).
+  - Added *Print / Export Report* button (`window.print()`) with `@media print` CSS rules hiding navigation, topbar, and buttons while preserving clean, high-contrast diagnostic tables and cards.
+  - Comprehensive unit test coverage in `src/test/progress-page.test.tsx` (3 tests passing).
+- **Naturalize & Polish Vietnamese Curriculum Text:**
+  - Reviewed and naturalized Vietnamese translations across `prompt-structure.ts`, `configuration-basics.ts`, `workflow-design.ts`, and `troubleshooting-optimization.ts`.
+  - Phrased into natural, idiomatic software engineering Vietnamese while strictly adhering to Anthropic guidelines and preserving 100% exact English technical terminology (*system prompt, few-shot prompting, XML delimiters, task decomposition, prompt caching, human-in-the-loop checkpoints, human escalation, traceability, least privilege*).
+- **Vitest Suite Expansion:**
+  - Vitest suite expanded from 209 to **213 tests across 25 test files** (all green).

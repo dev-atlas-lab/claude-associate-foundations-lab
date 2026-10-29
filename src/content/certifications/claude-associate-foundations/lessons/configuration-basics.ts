@@ -95,25 +95,25 @@ export const configurationBasicsLesson: Lesson = lessonSchema.parse({
     },
     {
       kind: "paragraphs",
-      heading: "Project instructions: quy tắc hành vi, không phải kho tài liệu",
+      heading: "Project instructions: Định hình hành vi, không phải nơi lưu trữ tài liệu",
       paragraphs: [
-        "Project instructions nên trả lời các câu hỏi ổn định: assistant đóng vai gì, phục vụ ai, được dùng nguồn nào, phải từ chối hoặc chuyển người khi nào, và output cần format ra sao. Hướng dẫn prompting của Anthropic nhấn mạnh chỉ dẫn rõ ràng, có context và ví dụ khi cần; instruction càng cụ thể thì hành vi càng nhất quán (Anthropic, “Prompting best practices”).",
-        "Không nên dán toàn bộ chính sách vào instruction. Tài liệu dài thuộc về knowledge; instruction giữ phần hành vi cốt lõi. Cách tách này giúp con người review, cập nhật và kiểm thử từng lớp mà không phải sửa một khối văn bản khổng lồ mỗi lần chính sách thay đổi.",
+        "Project instructions cần quy định rõ những chuẩn mực vận hành dài hạn: trợ lý AI đóng vai trò gì, phục vụ nhóm người dùng nào, được phép khai thác nguồn tài liệu nào, các trường hợp bắt buộc phải từ chối hoặc chuyển tiếp chuyên viên con người (human escalation), và cấu trúc định dạng chuẩn cho đầu ra. Hướng dẫn prompting của Anthropic nhấn mạnh rằng chỉ dẫn càng tường minh, có ngữ cảnh và kèm ví dụ cụ thể thì hành vi của Claude càng đạt tính nhất quán cao (Anthropic, “Prompting best practices”).",
+        "Tránh dán toàn bộ văn bản chính sách hay tài liệu nghiệp vụ vào phần instruction. Tài liệu tham chiếu dung lượng lớn thuộc về Project Knowledge; Project Instructions chỉ nên lưu giữ quy tắc hành vi và chuẩn mực xử lý cốt lõi. Sự phân tách này giúp đội ngũ dễ dàng kiểm thử, bảo trì và cập nhật từng thành phần mà không làm xáo trộn toàn bộ cấu hình hệ thống.",
       ],
     },
     {
       kind: "callout",
       tone: "caution",
-      title: "Instruction dài không đồng nghĩa instruction tốt",
-      body: "Một instruction nhồi quá nhiều quy tắc, đặc biệt khi các quy tắc mâu thuẫn hoặc lặp lại, có thể khiến model bỏ sót phần quan trọng. Hãy giữ instruction ngắn, có thứ bậc, và kiểm tra bằng các câu hỏi đại diện sau mỗi thay đổi.",
+      title: "Chỉ dẫn dài dòng không đồng nghĩa với hiệu quả",
+      body: "Việc nhồi nhét quá nhiều quy tắc vào instruction, đặc biệt khi các quy tắc có sự chồng chéo hoặc mâu thuẫn ngầm định, có thể khiến Claude bị nhiễu và bỏ sót các ràng buộc trọng yếu. Hãy giữ instruction súc tích, phân cấp thứ tự ưu tiên rõ ràng bằng thẻ XML, và luôn chạy đánh giá lại với bộ câu hỏi test case đại diện sau mỗi lần cập nhật.",
     },
     {
       kind: "paragraphs",
-      heading: "Connector: quyền nguồn, quyền tổ chức và quyền hành động",
+      heading: "Connectors: Quyền truy cập nguồn, quản trị tổ chức và kiểm soát hành động",
       paragraphs: [
-        "Connector cho phép Claude truy cập ứng dụng, lấy dữ liệu và thực hiện hành động trong dịch vụ được kết nối. Claude thừa hưởng quyền của từng người dùng từ dịch vụ nguồn: nếu một người không truy cập được file, channel hoặc record trong hệ thống gốc thì connector cũng không thể chạm tới (Anthropic, “Use connectors to extend Claude's capabilities”).",
-        "Trên Team và Enterprise, Owner hoặc Primary Owner phải bật connector ở cấp tổ chức, nhưng từng người vẫn phải tự xác thực tài khoản. Bật connector không cấp quyền truy cập file và cũng không thay thế đăng nhập cá nhân. Owner có thể giới hạn hành động, ví dụ cho phép đọc email nhưng chặn gửi; các giới hạn này chỉ thu hẹp quyền, không bao giờ mở rộng quyền so với hệ thống nguồn.",
-        "Với Google Workspace, Gmail, Calendar và Drive mặc định yêu cầu phê duyệt trước các hành động như gửi email hoặc chia sẻ, di chuyển, xóa file. Dữ liệu lấy qua connector được lưu cùng chat và có thể xóa bằng cách xóa chat; Anthropic cũng nêu rõ chính sách không dùng dữ liệu connector để huấn luyện, kèm caveat cho tài khoản tiêu dùng đã chọn chia sẻ nội dung sao chép để cải thiện model (Anthropic, “Use Google Workspace connectors”).",
+        "Connectors cho phép Claude tích hợp trực tiếp vào các ứng dụng doanh nghiệp bên ngoài để đọc dữ liệu và hỗ trợ thực thi tác vụ. Claude tuân thủ nghiêm ngặt cơ chế kế thừa quyền của từng tài khoản người dùng từ hệ thống gốc: nếu một nhân sự không có quyền xem một file, thư mục hoặc bản ghi cụ thể trên hệ thống nguồn, Claude qua connector cũng tuyệt đối không thể truy cập nội dung đó (Anthropic, “Use connectors to extend Claude's capabilities”).",
+        "Trên các gói Team và Enterprise, Quản trị viên (Owner / Primary Owner) phải kích hoạt connector ở cấp độ toàn tổ chức, nhưng từng cá nhân vẫn bắt buộc phải tự đăng nhập và xác thực (OAuth). Việc bật connector không tự động cấp thêm quyền đọc file hay thay thế cơ chế bảo mật cá nhân. Quan trọng hơn, Quản trị viên có thể thiết lập chính sách giới hạn hành động (ví dụ: cho phép đọc email nhưng chặn quyền gửi); các chính sách này hoạt động theo nguyên tắc đặc quyền tối thiểu (least privilege), chỉ có thể thu hẹp chứ không bao giờ mở rộng quyền so với quyền hạn trên hệ thống gốc.",
+        "Đối với Google Workspace (Gmail, Calendar, Drive), mặc định hệ thống luôn yêu cầu xác nhận phê duyệt từ con người (human confirmation) trước khi thực thi các hành động ghi nhạy cảm như gửi email, chia sẻ, di chuyển hoặc xóa tệp. Dữ liệu truy vấn qua connector được gắn liền với phiên chat và sẽ bị xóa hoàn toàn khi xóa chat. Anthropic cam kết không sử dụng dữ liệu doanh nghiệp từ connector để huấn luyện model (Anthropic, “Use Google Workspace connectors”).",
       ],
     },
     {

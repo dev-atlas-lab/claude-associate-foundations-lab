@@ -1,4 +1,5 @@
-import { ChartNoAxesColumnIncreasing, ListChecks } from "lucide-react";
+import { ChartNoAxesColumnIncreasing, ListChecks, Printer, Target } from "lucide-react";
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Badge } from "../components/ui/Badge";
 import { Callout } from "../components/ui/Callout";
@@ -55,6 +56,46 @@ export function ProgressPage() {
   );
   const hasAttempts = summary.personal.submittedAttempts > 0;
 
+  const { practicedBlueprintWeight, weightedAccuracy, readinessIndex, priorityRemediations } =
+    useMemo(() => {
+      let practicedWeight = 0;
+      let weightedAccSum = 0;
+
+      for (const d of summary.personal.domains) {
+        if (d.attemptedQuestions > 0 && d.latestAccuracy !== undefined) {
+          practicedWeight += d.weightPercent;
+          weightedAccSum += (d.latestAccuracy * d.weightPercent);
+        }
+      }
+
+      const weightedAcc =
+        practicedWeight > 0 ? Math.round((weightedAccSum / practicedWeight) * 10) / 10 : undefined;
+
+      const readiness =
+        practicedWeight > 0 && weightedAcc !== undefined
+          ? Math.round(((practicedWeight / 100) * (weightedAcc / 100)) * 100)
+          : 0;
+
+      const needReview = summary.personal.objectives.filter(
+        (o) => o.signal === "needs-review",
+      );
+      const partial = summary.personal.objectives.filter(
+        (o) => o.signal === "partial-bank-correct",
+      );
+      const unpracticed = summary.personal.objectives.filter(
+        (o) => o.signal === "not-practiced",
+      );
+
+      const prioritized = [...needReview, ...partial, ...unpracticed].slice(0, 3);
+
+      return {
+        practicedBlueprintWeight: practicedWeight,
+        weightedAccuracy: weightedAcc,
+        readinessIndex: readiness,
+        priorityRemediations: prioritized,
+      };
+    }, [summary.personal.domains, summary.personal.objectives]);
+
   return (
     <div className="page">
       <PageHeader
@@ -68,6 +109,16 @@ export function ProgressPage() {
               {hasAttempts ? `${summary.personal.submittedAttempts} submitted` : "No attempts yet"}
             </Badge>
           </>
+        }
+        actions={
+          <button
+            className="button button--secondary"
+            type="button"
+            onClick={() => window.print()}
+          >
+            <Printer size={14} strokeWidth={2} aria-hidden="true" />
+            In / Xuất Báo cáo (PDF)
+          </button>
         }
       />
 
@@ -155,6 +206,100 @@ export function ProgressPage() {
 
         {hasAttempts ? (
           <>
+            <article className="readiness-card" aria-label="Exam Readiness & Blueprint Balance">
+              <div className="readiness-header">
+                <div className="readiness-title-group">
+                  <span className="readiness-icon-wrap" aria-hidden="true">
+                    <Target size={22} strokeWidth={2} />
+                  </span>
+                  <div>
+                    <h3 className="readiness-title">
+                      Chỉ số Sẵn sàng Thi & Cân bằng Blueprint (Diagnostic Index)
+                    </h3>
+                    <span className="readiness-subtitle">
+                      Dựa trên phân bổ trọng số kỳ thi chính thức và kết quả lần làm gần nhất trên ngân hàng câu hỏi
+                    </span>
+                  </div>
+                </div>
+                <Badge tone={readinessIndex >= 70 ? "ok" : readinessIndex >= 40 ? "accent" : "warn"}>
+                  {readinessIndex >= 70 ? "Tốt · Sẵn sàng cao" : readinessIndex >= 40 ? "Đang tiến bộ" : "Cần củng cố thêm"}
+                </Badge>
+              </div>
+
+              <div className="readiness-metrics-grid">
+                <div className="readiness-metric-box">
+                  <span className="readiness-metric-label">Blueprint Practiced Coverage</span>
+                  <span className="readiness-metric-value">{practicedBlueprintWeight}%</span>
+                  <span className="readiness-metric-hint">
+                    Tổng trọng số các Domain bạn đã làm ít nhất 1 bài
+                  </span>
+                </div>
+
+                <div className="readiness-metric-box">
+                  <span className="readiness-metric-label">Weighted Latest Accuracy</span>
+                  <span className="readiness-metric-value">
+                    {weightedAccuracy !== undefined ? `${weightedAccuracy}%` : "—"}
+                  </span>
+                  <span className="readiness-metric-hint">
+                    Độ chính xác trung bình theo trọng số đề thi
+                  </span>
+                </div>
+
+                <div className="readiness-metric-box">
+                  <span className="readiness-metric-label">Overall Readiness Index</span>
+                  <span className="readiness-metric-value">{readinessIndex}%</span>
+                  <span className="readiness-metric-hint">
+                    Tích hợp độ bao phủ Blueprint và tỷ lệ làm đúng
+                  </span>
+                </div>
+              </div>
+
+              {priorityRemediations.length > 0 ? (
+                <div className="remediation-section">
+                  <div className="section-heading-row">
+                    <h4 className="section-subtitle" style={{ fontSize: "var(--text-sm)", fontWeight: 600 }}>
+                      Mục tiêu ưu tiên cần củng cố (Top Focus Areas)
+                    </h4>
+                    <span className="section-note">
+                      Dựa trên câu làm sai gần đây hoặc chưa luyện tập
+                    </span>
+                  </div>
+                  <div className="remediation-grid">
+                    {priorityRemediations.map((obj) => (
+                      <div className="remediation-card" key={obj.objectiveId}>
+                        <div className="remediation-card-head">
+                          <Badge tone={obj.signal === "needs-review" ? "warn" : "neutral"}>
+                            Domain {obj.domainCode}
+                          </Badge>
+                          <span className="section-note" style={{ fontSize: "var(--text-xs)" }}>
+                            {obj.signalLabel}
+                          </span>
+                        </div>
+                        <p className="remediation-statement" lang="en">
+                          {obj.statement}
+                        </p>
+                        <div className="remediation-actions">
+                          {obj.lessonId && obj.lessonTitle ? (
+                            <Link className="inline-link" to={`/learn/${obj.lessonId}`}>
+                              Bài học: {obj.lessonTitle}
+                            </Link>
+                          ) : null}
+                          {obj.practiceSetId ? (
+                            <Link
+                              className="inline-link"
+                              to={`/practice?set=${encodeURIComponent(obj.practiceSetId)}`}
+                            >
+                              Luyện tập Domain {obj.domainCode}
+                            </Link>
+                          ) : null}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+            </article>
+
             <div className="stat-grid">
               <article className="stat">
                 <span className="stat-label">Submitted attempts</span>

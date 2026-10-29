@@ -441,6 +441,262 @@
   padding: var(--space-5);
 }
 
+/* ── Practice Hub Filter Toolbar ────────────────────────────────────────── */
+
+.practice-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+  padding: var(--space-4);
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+}
+
+.practice-toolbar-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.practice-search-wrap {
+  position: relative;
+  flex: 1 1 260px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.practice-search-icon {
+  position: absolute;
+  left: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-tertiary);
+  pointer-events: none;
+}
+
+.practice-search-input {
+  width: 100%;
+  min-height: 38px;
+  padding: 0 var(--space-8);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  color: var(--text-primary);
+  font-size: var(--text-sm);
+  transition: border-color var(--duration-fast) var(--ease-out);
+}
+
+.practice-search-input:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 1px;
+  border-color: var(--accent);
+}
+
+.practice-search-clear {
+  position: absolute;
+  right: var(--space-2);
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-tertiary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out);
+}
+
+.practice-search-clear:hover {
+  color: var(--text-primary);
+  background: var(--surface-3);
+}
+
+.practice-status-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.practice-status-label {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.practice-status-select {
+  min-height: 38px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  color: var(--text-primary);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-out);
+}
+
+.practice-status-select:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 1px;
+  border-color: var(--accent);
+}
+
+.practice-counts-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding-top: var(--space-1);
+}
+
+/* ── Progress Exam Readiness & Diagnostic Card ─────────────────────────── */
+
+.readiness-card {
+  padding: var(--space-5);
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.readiness-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.readiness-title-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.readiness-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: var(--accent-quiet);
+  color: var(--accent-strong);
+}
+
+.readiness-title {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.readiness-subtitle {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+}
+
+.readiness-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-3);
+}
+
+.readiness-metric-box {
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.readiness-metric-label {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.readiness-metric-value {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+}
+
+.readiness-metric-hint {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+}
+
+/* ── Remediation Focus Recommendations ─────────────────────────────────── */
+
+.remediation-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.remediation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-3);
+}
+
+.remediation-card {
+  padding: var(--space-4);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.remediation-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.remediation-statement {
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  line-height: var(--leading-snug);
+  margin: var(--space-1) 0;
+}
+
+.remediation-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: auto;
+  padding-top: var(--space-2);
+  border-top: 1px dashed var(--border-subtle);
+}
+
 @media (max-width: 720px) {
   .storage-notice {
     padding-inline: var(--space-4);
@@ -459,5 +715,80 @@
   .review-detail,
   .review-practice-resolution {
     padding: var(--space-4);
+  }
+
+  .practice-toolbar {
+    padding: var(--space-3);
+  }
+
+  .practice-status-wrap {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .practice-status-select {
+    flex: 1 1 auto;
+  }
+
+  .readiness-card {
+    padding: var(--space-4);
+  }
+}
+
+/* ── Print / PDF Styles ─────────────────────────────────────────────────── */
+
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #111827 !important;
+  }
+
+  .sidebar,
+  .topbar,
+  .skip-link,
+  .page-header-actions,
+  .button,
+  .study-filters,
+  .practice-toolbar,
+  nav {
+    display: none !important;
+  }
+
+  .main,
+  .page {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .readiness-card,
+  .stat,
+  .data-table,
+  .table-wrap,
+  .callout,
+  .remediation-card {
+    border: 1px solid #d1d5db !important;
+    background: #ffffff !important;
+    color: #111827 !important;
+    break-inside: avoid;
+    box-shadow: none !important;
+  }
+
+  .readiness-metric-box {
+    border: 1px solid #e5e7eb !important;
+    background: #f9fafb !important;
+  }
+
+  .text-primary,
+  .stat-value,
+  .readiness-metric-value,
+  .section-title {
+    color: #111827 !important;
+  }
+
+  .text-secondary,
+  .stat-label,
+  .section-note {
+    color: #4b5563 !important;
   }
 }

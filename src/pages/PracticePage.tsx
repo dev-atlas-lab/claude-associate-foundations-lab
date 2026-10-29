@@ -1,4 +1,5 @@
-import { ArrowLeft, ListChecks } from "lucide-react";
+import { ArrowLeft, ListChecks, RotateCcw, Search, X } from "lucide-react";
+import { useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Badge } from "../components/ui/Badge";
 import { Callout } from "../components/ui/Callout";
@@ -54,9 +55,13 @@ function practiceSetBadge(practiceSet: PracticeSetSummary): string {
   return "M";
 }
 
-interface PracticeSetActivityStatus {
+export type PracticeCategory = "all" | "domains" | "specialized";
+export type PracticeStatusFilter = "all" | "not-started" | "in-progress" | "completed";
+
+export interface PracticeSetActivityStatus {
   tone: "neutral" | "accent" | "ok";
   label: string;
+  kind: "not-started" | "in-progress" | "completed";
 }
 
 function derivePracticeSetStatus(
@@ -87,12 +92,14 @@ function derivePracticeSetStatus(
       return {
         tone: "accent",
         label: `In progress (${answeredCount}/${totalCount} answered) · Last: ${latestResult.rawPercentage}% · ${attemptsLabel}`,
+        kind: "in-progress",
       };
     }
 
     return {
       tone: "accent",
       label: `In progress (${answeredCount}/${totalCount} answered)`,
+      kind: "in-progress",
     };
   }
 
@@ -101,12 +108,14 @@ function derivePracticeSetStatus(
     return {
       tone: "ok",
       label: `Completed (Last: ${latestResult.rawPercentage}% · ${attemptsLabel})`,
+      kind: "completed",
     };
   }
 
   return {
     tone: "neutral",
     label: "Not started",
+    kind: "not-started",
   };
 }
 
@@ -114,11 +123,69 @@ export function PracticePage() {
   useDocumentTitle("Practice");
   const [searchParams] = useSearchParams();
   const snapshot = useStudyState();
+  const [categoryFilter, setCategoryFilter] = useState<PracticeCategory>("all");
+  const [statusFilter, setStatusFilter] = useState<PracticeStatusFilter>("all");
+  const [searchQuery, setSearchQuery] = useState("");
+
   const selectedSetId = searchParams.get("set");
   const selectedSet = selectedSetId
     ? practiceSets.find((practiceSet) => practiceSet.assessment.id === selectedSetId)
     : undefined;
   const unknownSet = selectedSetId !== null && selectedSet === undefined;
+
+  const categoryCounts = useMemo(() => {
+    let domainCount = 0;
+    let specCount = 0;
+    for (const set of practiceSets) {
+      if (set.domains.length === 1) {
+        domainCount++;
+      } else {
+        specCount++;
+      }
+    }
+    return {
+      all: practiceSets.length,
+      domains: domainCount,
+      specialized: specCount,
+    };
+  }, []);
+
+  const filteredSets = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+
+    return practiceSets.filter((practiceSet) => {
+      if (categoryFilter === "domains" && practiceSet.domains.length !== 1) {
+        return false;
+      }
+      if (categoryFilter === "specialized" && practiceSet.domains.length <= 1) {
+        return false;
+      }
+
+      if (statusFilter !== "all") {
+        const status = derivePracticeSetStatus(snapshot.state, practiceSet);
+        if (status.kind !== statusFilter) {
+          return false;
+        }
+      }
+
+      if (q) {
+        const titleMatch = practiceSet.assessment.title.toLowerCase().includes(q);
+        const descMatch =
+          practiceSet.assessment.description?.toLowerCase().includes(q) ?? false;
+        const domainMatch = practiceSet.domains.some(
+          (d) =>
+            d.code.toLowerCase().includes(q) ||
+            d.title.toLowerCase().includes(q) ||
+            `domain ${d.code}`.includes(q),
+        );
+        if (!titleMatch && !descMatch && !domainMatch) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }, [categoryFilter, statusFilter, searchQuery, snapshot.state]);
 
   if (selectedSet) {
     const questions = getAssessmentQuestions(selectedSet.assessment);
@@ -254,36 +321,150 @@ export function PracticePage() {
             {practiceSets.length} sets · {questionBankEntries.length} reviewed items
           </span>
         </div>
-        <div className="row-list">
-          {practiceSets.map((practiceSet) => {
-            const status = derivePracticeSetStatus(snapshot.state, practiceSet);
 
-            return (
-              <Link
-                className="row"
-                key={practiceSet.assessment.id}
-                to={`/practice?set=${encodeURIComponent(practiceSet.assessment.id)}`}
+        <div className="practice-toolbar" role="region" aria-label="Bộ lọc và tìm kiếm bài thực hành">
+          <div className="study-filters" role="group" aria-label="Lọc theo phân loại bộ đề">
+            <button
+              className="study-filter"
+              type="button"
+              aria-pressed={categoryFilter === "all"}
+              onClick={() => setCategoryFilter("all")}
+            >
+              Tất cả bộ đề ({categoryCounts.all})
+            </button>
+            <button
+              className="study-filter"
+              type="button"
+              aria-pressed={categoryFilter === "domains"}
+              onClick={() => setCategoryFilter("domains")}
+            >
+              Theo từng Domain ({categoryCounts.domains})
+            </button>
+            <button
+              className="study-filter"
+              type="button"
+              aria-pressed={categoryFilter === "specialized"}
+              onClick={() => setCategoryFilter("specialized")}
+            >
+              Chuyên sâu & Ôn nhanh ({categoryCounts.specialized})
+            </button>
+          </div>
+
+          <div className="practice-toolbar-row">
+            <div className="practice-search-wrap">
+              <Search className="practice-search-icon" size={16} strokeWidth={2} aria-hidden="true" />
+              <input
+                className="practice-search-input"
+                type="search"
+                placeholder="Tìm theo tên bộ đề, domain, từ khóa..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                aria-label="Tìm kiếm bộ đề thực hành"
+              />
+              {searchQuery ? (
+                <button
+                  className="practice-search-clear"
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  aria-label="Xóa nội dung tìm kiếm"
+                >
+                  <X size={14} strokeWidth={2} aria-hidden="true" />
+                </button>
+              ) : null}
+            </div>
+
+            <div className="practice-status-wrap">
+              <label className="practice-status-label" htmlFor="practice-status-filter">
+                Trạng thái:
+              </label>
+              <select
+                className="practice-status-select"
+                id="practice-status-filter"
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value as PracticeStatusFilter)}
               >
-                <span className="row-start" aria-hidden="true">
-                  {practiceSetBadge(practiceSet)}
-                </span>
-                <span className="row-body">
-                  <span className="row-title">{practiceSet.assessment.title}</span>
-                  <span className="row-meta">
-                    {domainLabel(practiceSet.domains.map((domain) => domain.code))} ·{" "}
-                    {practiceSet.objectiveIds.length} objectives · {practiceSet.questionCount} items ·{" "}
-                    {practiceSet.singleChoiceCount} single-choice / {practiceSet.multipleResponseCount}{" "}
-                    multiple-response
-                  </span>
-                  <span className="row-meta">
-                    <Badge tone={status.tone}>{status.label}</Badge>
-                  </span>
-                </span>
-                <span className="row-tail">Open</span>
-              </Link>
-            );
-          })}
+                <option value="all">Mọi trạng thái</option>
+                <option value="not-started">Chưa làm</option>
+                <option value="in-progress">Đang làm dở</option>
+                <option value="completed">Đã hoàn thành</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="practice-counts-summary">
+            <span>
+              Hiển thị {filteredSets.length} / {practiceSets.length} bộ đề
+            </span>
+            {categoryFilter !== "all" || statusFilter !== "all" || searchQuery ? (
+              <button
+                className="button button--ghost button--sm"
+                type="button"
+                onClick={() => {
+                  setCategoryFilter("all");
+                  setStatusFilter("all");
+                  setSearchQuery("");
+                }}
+              >
+                <RotateCcw size={12} strokeWidth={2} aria-hidden="true" />
+                Xóa bộ lọc
+              </button>
+            ) : null}
+          </div>
         </div>
+
+        {filteredSets.length > 0 ? (
+          <div className="row-list">
+            {filteredSets.map((practiceSet) => {
+              const status = derivePracticeSetStatus(snapshot.state, practiceSet);
+
+              return (
+                <Link
+                  className="row"
+                  key={practiceSet.assessment.id}
+                  to={`/practice?set=${encodeURIComponent(practiceSet.assessment.id)}`}
+                >
+                  <span className="row-start" aria-hidden="true">
+                    {practiceSetBadge(practiceSet)}
+                  </span>
+                  <span className="row-body">
+                    <span className="row-title">{practiceSet.assessment.title}</span>
+                    <span className="row-meta">
+                      {domainLabel(practiceSet.domains.map((domain) => domain.code))} ·{" "}
+                      {practiceSet.objectiveIds.length} objectives · {practiceSet.questionCount} items ·{" "}
+                      {practiceSet.singleChoiceCount} single-choice / {practiceSet.multipleResponseCount}{" "}
+                      multiple-response
+                    </span>
+                    <span className="row-meta">
+                      <Badge tone={status.tone}>{status.label}</Badge>
+                    </span>
+                  </span>
+                  <span className="row-tail">Open</span>
+                </Link>
+              );
+            })}
+          </div>
+        ) : (
+          <EmptyState
+            icon={Search}
+            title="Không tìm thấy bộ đề phù hợp"
+            actions={
+              <button
+                className="button button--secondary"
+                type="button"
+                onClick={() => {
+                  setCategoryFilter("all");
+                  setStatusFilter("all");
+                  setSearchQuery("");
+                }}
+              >
+                <RotateCcw size={14} strokeWidth={2} aria-hidden="true" />
+                Đặt lại bộ lọc
+              </button>
+            }
+          >
+            Không có bộ đề thực hành nào thỏa mãn tiêu chí tìm kiếm và lọc hiện tại. Hãy thử chọn danh mục khác hoặc xóa từ khóa tìm kiếm.
+          </EmptyState>
+        )}
       </section>
 
       <section className="section">
