@@ -255,7 +255,11 @@ export function PromptLayeringWorkbench({ intro }: { intro: string }) {
             {showFullCode ? "Thu gọn code" : "Mở rộng toàn màn hình"}
           </button>
         </div>
-        <pre className={`wb-code-block ${showFullCode ? "wb-code-block--expanded" : ""}`}>
+        <pre
+          className={`wb-code-block ${showFullCode ? "wb-code-block--expanded" : ""}`}
+          tabIndex={0}
+          aria-label="Bản xem trước prompt kết hợp"
+        >
           <code>{assembledPrompt || "// Chưa chọn lớp nào. Hãy bật ít nhất một lớp ở trên."}</code>
         </pre>
       </div>

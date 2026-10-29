@@ -860,7 +860,6 @@ a.pager-card:hover {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
-  overflow-x: auto;
   padding: var(--space-2) 0;
 }
 
@@ -1007,7 +1006,7 @@ a.pager-card:hover {
   align-items: center;
   gap: var(--space-2);
   font-size: var(--text-xs);
-  color: var(--accent);
+  color: var(--accent-strong);
   margin-bottom: var(--space-1);
 }
 
@@ -1064,7 +1063,7 @@ a.pager-card:hover {
 .calc-model-price {
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  color: var(--accent);
+  color: var(--accent-strong);
 }
 
 .calc-role-note {
@@ -1434,7 +1433,7 @@ a.pager-card:hover {
 .wb-takeaway strong {
   display: block;
   font-size: var(--text-xs);
-  color: var(--accent);
+  color: var(--accent-strong);
   margin-bottom: 2px;
 }
 
@@ -1450,7 +1449,7 @@ a.pager-card:hover {
 }
 
 .text-accent {
-  color: var(--accent);
+  color: var(--accent-strong);
 }
 
 /* ── Interactive Visualizations Responsive Overrides ── */
