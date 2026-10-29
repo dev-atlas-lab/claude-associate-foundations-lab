@@ -23,7 +23,7 @@
 - [x] Full content and assessment audit completed for 62 bank items, 8 lessons, 15 glossary entries, 27 sources, domain practice sets, and timed-exam integrity (Phase C2.9, 2026-10-28); E2E expectations for the expanded Domain 7 practice set aligned with registry counts.
 - [x] Learning-effectiveness instrumentation (Phase C2.10, 2026-10-29): lesson-to-practice deep links, practice set status badges, post-submission domain/objective breakdowns, question curriculum context & sources, enriched mistake review with repeat-miss detection and timed-exam visibility, and progress bank exposure, first-seen vs. latest accuracy, 30-objective coverage matrix, and submitted attempt history.
 - [ ] Official scaled score and pass prediction remain unimplemented by design; no official source supports inventing them.
-- [ ] Vercel deployment verified.
+- [x] Vercel deployment verified (production deployment completed via Vercel).
 
 ## Scan of 2026-10-26 — repository preparation
 
@@ -1320,3 +1320,37 @@ not done in this audit.
   - Phrased into natural, idiomatic software engineering Vietnamese while strictly adhering to Anthropic guidelines and preserving 100% exact English technical terminology (*system prompt, few-shot prompting, XML delimiters, task decomposition, prompt caching, human-in-the-loop checkpoints, human escalation, traceability, least privilege*).
 - **Vitest Suite Expansion:**
   - Vitest suite expanded from 209 to **213 tests across 25 test files** (all green).
+
+## Phase C2.22 - Interactive Visualizers (Domains 3 & 6), Bank Expansion to 90 Items & Vercel Production Verification (2026-10-29)
+
+### Scope
+
+- **Domain 3 Model Selection & Token Economics Matrix (`src/features/visualizations/ModelSelectionMatrix.tsx`):**
+  - Added an interactive visualizer for `product-selection` (`/learn/product-selection`) embedding real workload profiles:
+    - 4 realistic enterprise workload presets: *Customer Support Intent Triage (100k req/day)*, *Real-time Interactive Coding Assistant*, *Autonomous Document Audit & Synthesis*, and *Batch Content Extraction*.
+    - Dynamic volume and token sliders (1k-200k req/day, 200-20k input tokens, 50-5k output tokens).
+    - Model comparison cards across Claude 3.5 Haiku, Claude 3.5 Sonnet, and Claude 3 Opus with live 30-day cost calculations, TTFT latency, reasoning scores, and CCAO-F "Efficiency-First" takeaways.
+    - Fully accessible semantics (`h3`/`h4` heading hierarchy, native button controls, zero WCAG violations).
+- **Domain 6 Safety & Guardrails Simulator (`src/features/visualizations/SafetyGuardrailsSimulator.tsx`):**
+  - Added an interactive visualizer for `governance-responsible-use` (`/learn/governance-responsible-use`) demonstrating prompt safety and defense in depth:
+    - 3 attack scenarios: *Indirect Prompt Injection via Untrusted External Data*, *Jailbreak & Role Hijacking*, and *Confidential Data Exfiltration*.
+    - Interactive defense toggle: *Anthropic Guardrails (XML Tag Delimitation + Sovereign System Prompt + Constitutional AI)* vs. *Unprotected Raw String Concatenation*.
+    - Live payload inspection, delimitation preview, real Claude response comparison, and qualified human-in-the-loop review takeaways.
+- **Question Bank Expansion to 90 Items (`src/content/certifications/claude-associate-foundations/question-bank-expansion-c.ts`):**
+  - Authored 18 reviewed, workplace scenario practice items across all 7 domains:
+    - Domain 1: `prompting-xml-containment-best-practice`, `prompting-iterative-regression-triage` (12 total items in D1)
+    - Domain 2: `output-inconsistency-edge-case-spotting`, `output-rubric-grading-calibration`, `output-citation-groundedness-verification`, `output-structured-json-repair-workflow` (19 total items in D2)
+    - Domain 3: `product-model-right-sizing-workload`, `product-surface-projects-vs-artifacts` (10 total items in D3)
+    - Domain 4: `workflow-evaluator-optimizer-design`, `workflow-parallel-routing-latency-optimization`, `workflow-stakeholder-limitation-framing` (15 total items in D4)
+    - Domain 5: `config-connector-least-privilege-audit`, `config-project-memory-vs-instruction` (11 total items in D5)
+    - Domain 6: `governance-indirect-injection-mitigation`, `governance-high-risk-human-checkpoint`, `governance-constitutional-refusal-tone` (13 total items in D6)
+    - Domain 7: `troubleshoot-cache-invalidation-diagnosis`, `troubleshoot-systematic-variable-isolation` (10 total items in D7)
+  - All questions strictly formatted with English question stems and choices, detailed Vietnamese technical explanations, and runtime Zod validation.
+  - Updated domain assessment definitions and practice set mappings accordingly.
+- **Vercel Production Deployment Verified:**
+  - Confirmed live Vercel production deployment and marked complete in progress checklist.
+- **Quality & Accessibility Engineering:**
+  - Resolved `label-content-name-mismatch` and `heading-order` violations in visualizer components.
+  - Resolved `.study-filter-count` 4.48:1 contrast borderline by setting `var(--text-secondary)` and `font-weight-medium`.
+  - Vitest suite expanded to **215 tests across 25 test files** (100% passing).
+  - Playwright E2E suite verifies **116 tests passing** with 0 axe-core violations across dark and light themes.

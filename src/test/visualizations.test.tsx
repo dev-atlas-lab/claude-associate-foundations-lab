@@ -1,7 +1,9 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+import { ModelSelectionMatrix } from "../features/visualizations/ModelSelectionMatrix";
 import { PromptCachingCostCalculator } from "../features/visualizations/PromptCachingCostCalculator";
 import { PromptLayeringWorkbench } from "../features/visualizations/PromptLayeringWorkbench";
+import { SafetyGuardrailsSimulator } from "../features/visualizations/SafetyGuardrailsSimulator";
 import { WorkflowPatternsSimulator } from "../features/visualizations/WorkflowPatternsSimulator";
 
 describe("WorkflowPatternsSimulator", () => {
@@ -119,5 +121,76 @@ describe("PromptLayeringWorkbench", () => {
     const resetBtn = screen.getByRole("button", { name: /Khởi tạo lại/i });
     fireEvent.click(resetBtn);
     expect(screen.getByText(/1 lớp kích hoạt/i)).toBeInTheDocument();
+  });
+});
+
+describe("ModelSelectionMatrix", () => {
+  it("renders workload presets, switches presets and updates model recommendations", () => {
+    render(<ModelSelectionMatrix intro="Model matrix intro" />);
+
+    expect(screen.getByText("Model matrix intro")).toBeInTheDocument();
+
+    // Default preset is customer-triage with Haiku recommended
+    expect(screen.getAllByText(/Gợi ý: HAIKU/i).length).toBeGreaterThanOrEqual(1);
+
+    // Switch to coding-agent preset
+    const codingPresetBtn = screen.getByRole("button", {
+      name: /AI Coding Assistant & Tự động hóa Review Code/i,
+    });
+    fireEvent.click(codingPresetBtn);
+    expect(codingPresetBtn).toHaveAttribute("aria-pressed", "true");
+
+    // Check that slider values updated to coding preset values (4,000 input tokens)
+    expect(screen.getByText("4,000 tokens")).toBeInTheDocument();
+
+    // Model cards are present and selectable
+    const sonnetCard = screen.getByRole("button", { name: /Claude 3.5 Sonnet/i });
+    fireEvent.click(sonnetCard);
+    expect(sonnetCard).toHaveAttribute("aria-pressed", "true");
+  });
+});
+
+describe("SafetyGuardrailsSimulator", () => {
+  it("switches attack scenarios and toggles defense modes", () => {
+    render(<SafetyGuardrailsSimulator intro="Safety intro" />);
+
+    expect(screen.getByText("Safety intro")).toBeInTheDocument();
+
+    // Default scenario is indirect injection in guarded mode
+    expect(
+      screen.getByText(/Indirect Prompt Injection qua Dữ liệu ngoài/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Phòng vệ thành công nhờ Thẻ XML & System Prompt tối thượng/i),
+    ).toBeInTheDocument();
+
+    // Switch to Unprotected mode
+    const unprotectedBtn = screen.getByRole("button", {
+      name: /Chưa bảo vệ \(Nối chuỗi thô - Raw String Concatenation\)/i,
+    });
+    fireEvent.click(unprotectedBtn);
+    expect(unprotectedBtn).toHaveAttribute("aria-pressed", "true");
+    expect(
+      screen.getByText(/Bị tấn công thành công \(Prompt Injection Exploit\)/i),
+    ).toBeInTheDocument();
+
+    // Switch to Jailbreak scenario
+    const jailbreakBtn = screen.getByRole("button", {
+      name: /Jailbreak & Role Hijacking/i,
+    });
+    fireEvent.click(jailbreakBtn);
+    expect(jailbreakBtn).toHaveAttribute("aria-pressed", "true");
+    expect(
+      screen.getAllByText(/FREEDOM_AI/i).length,
+    ).toBeGreaterThanOrEqual(1);
+
+    // Toggle back to Guarded mode
+    const guardedBtn = screen.getByRole("button", {
+      name: /Chuẩn Anthropic Guardrails/i,
+    });
+    fireEvent.click(guardedBtn);
+    expect(
+      screen.getByText(/Constitutional AI kích hoạt từ chối an toàn/i),
+    ).toBeInTheDocument();
   });
 });

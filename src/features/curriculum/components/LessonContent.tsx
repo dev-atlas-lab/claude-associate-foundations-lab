@@ -3,8 +3,10 @@ import { Link } from "react-router-dom";
 import { Callout } from "../../../components/ui/Callout";
 import type { Lesson, QuestionType, Source } from "../../../domain";
 import { ContextWindowDiagram } from "../../visualizations/ContextWindowDiagram";
+import { ModelSelectionMatrix } from "../../visualizations/ModelSelectionMatrix";
 import { PromptCachingCostCalculator } from "../../visualizations/PromptCachingCostCalculator";
 import { PromptLayeringWorkbench } from "../../visualizations/PromptLayeringWorkbench";
+import { SafetyGuardrailsSimulator } from "../../visualizations/SafetyGuardrailsSimulator";
 import { WorkflowPatternsSimulator } from "../../visualizations/WorkflowPatternsSimulator";
 import { KnowledgeCheck } from "./KnowledgeCheck";
 
@@ -119,6 +121,10 @@ export function LessonContent({
                 <PromptCachingCostCalculator intro={section.intro} />
               ) : section.diagramId === "prompt-layering-workbench" ? (
                 <PromptLayeringWorkbench intro={section.intro} />
+              ) : section.diagramId === "model-selection-matrix" ? (
+                <ModelSelectionMatrix intro={section.intro} />
+              ) : section.diagramId === "safety-guardrails-simulator" ? (
+                <SafetyGuardrailsSimulator intro={section.intro} />
               ) : (
                 <Callout tone="note" title="Visualisation not available">
                   This lesson references the diagram <span className="mono">{section.diagramId}</span>,

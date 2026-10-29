@@ -146,9 +146,10 @@
   padding: 0 var(--space-1);
   border-radius: var(--radius-full);
   background: var(--surface-3);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   font-family: var(--font-mono);
   font-size: 0.625rem;
+  font-weight: var(--font-weight-medium);
   text-align: center;
 }
 

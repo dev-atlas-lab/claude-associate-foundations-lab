@@ -158,9 +158,9 @@ describe("progress summary and breakdown selectors", () => {
       questionById,
     );
 
-    expect(summary.bank.totalItems).toBe(72);
-    expect(summary.bank.singleChoiceItems).toBe(38);
-    expect(summary.bank.multipleResponseItems).toBe(34);
+    expect(summary.bank.totalItems).toBe(90);
+    expect(summary.bank.singleChoiceItems).toBe(52);
+    expect(summary.bank.multipleResponseItems).toBe(38);
     expect(summary.bank.objectivesCovered).toBe(30);
     expect(summary.bank.objectivesTotal).toBe(30);
     expect(summary.bank.domainsWithItems).toBe(7);
@@ -169,7 +169,7 @@ describe("progress summary and breakdown selectors", () => {
       (domain) => domain.domainId === "configuration-knowledge-management",
     );
 
-    expect(domainFive?.itemCount).toBe(9);
+    expect(domainFive?.itemCount).toBe(11);
     expect(domainFive?.objectivesCovered).toBe(4);
     expect(summary.bank.domains.every((domain) => domain.itemCount > 0)).toBe(true);
     expect(
@@ -209,18 +209,18 @@ describe("progress summary and breakdown selectors", () => {
       questionById,
     );
 
-    expect(summary.bank.totalItems).toBe(72);
+    expect(summary.bank.totalItems).toBe(90);
     expect(summary.personal.submittedAttempts).toBe(1);
     expect(summary.personal.studySubmittedAttempts).toBe(1);
     expect(summary.personal.timedSubmittedAttempts).toBe(0);
-    expect(summary.personal.uniqueItemsAttempted).toBe(15);
+    expect(summary.personal.uniqueItemsAttempted).toBe(19);
     expect(summary.personal.uniqueItemsAnswered).toBe(1);
     expect(summary.personal.objectivesPracticed).toBe(6);
     expect(summary.personal.objectivesAnswered).toBe(1);
     expect(summary.personal.answeredQuestions).toBe(1);
     expect(summary.personal.correctAnswers).toBe(0);
     expect(summary.personal.incorrectAnswers).toBe(1);
-    expect(summary.personal.unansweredQuestions).toBe(14);
+    expect(summary.personal.unansweredQuestions).toBe(18);
     expect(summary.personal.accuracyOnAnswered).toBe(0);
     expect(summary.personal.rawPercentage).toBe(0);
     expect(summary.personal.lastSubmittedAt).toBe("2026-10-26T09:10:00.000Z");
@@ -229,11 +229,11 @@ describe("progress summary and breakdown selectors", () => {
       (domain) => domain.domainId === "output-evaluation-validation",
     );
 
-    expect(domainTwo?.attemptedQuestions).toBe(15);
-    expect(domainTwo?.uniqueAttemptedItems).toBe(15);
+    expect(domainTwo?.attemptedQuestions).toBe(19);
+    expect(domainTwo?.uniqueAttemptedItems).toBe(19);
     expect(domainTwo?.uniqueAnsweredItems).toBe(1);
     expect(domainTwo?.incorrectAnswers).toBe(1);
-    expect(domainTwo?.unansweredQuestions).toBe(14);
+    expect(domainTwo?.unansweredQuestions).toBe(18);
     expect(domainTwo?.accuracyOnAnswered).toBe(0);
     expect(domainTwo?.lessonId).toBe("evaluation-basics");
     expect(domainTwo?.practiceSetId).toBe("domain-2-output-validation-set");
@@ -241,8 +241,8 @@ describe("progress summary and breakdown selectors", () => {
     const firstObjective = summary.personal.objectives.find(
       (objective) => objective.objectiveId === "output-evaluate-accuracy",
     );
-    expect(firstObjective?.bankItemCount).toBe(2);
-    expect(firstObjective?.practicedItemCount).toBe(2);
+    expect(firstObjective?.bankItemCount).toBe(3);
+    expect(firstObjective?.practicedItemCount).toBe(3);
     expect(firstObjective?.answeredItemCount).toBe(1);
     expect(firstObjective?.latestCorrectCount).toBe(0);
     expect(firstObjective?.latestIncorrectCount).toBe(1);
@@ -251,19 +251,19 @@ describe("progress summary and breakdown selectors", () => {
     const unansweredObjective = summary.personal.objectives.find(
       (objective) => objective.objectiveId === "output-fact-check",
     );
-    expect(unansweredObjective?.practicedItemCount).toBe(2);
+    expect(unansweredObjective?.practicedItemCount).toBe(3);
     expect(unansweredObjective?.answeredItemCount).toBe(0);
     expect(unansweredObjective?.signal).toBe("unanswered-only");
 
-    expect(summary.review.unresolved).toBe(15);
-    expect(summary.review.studyUnresolved).toBe(15);
+    expect(summary.review.unresolved).toBe(19);
+    expect(summary.review.studyUnresolved).toBe(19);
     expect(summary.review.timedUnresolved).toBe(0);
     expect(summary.review.resolved).toBe(0);
   });
 
   it("distinguishes first-seen accuracy, latest accuracy, and cumulative accuracy across repeat attempts", () => {
-    const q1 = domainTwoQuestions[0]!.id; // output-accuracy-review-plan
-    const q2 = domainTwoQuestions[1]!.id; // output-accurate-but-incomplete
+    const q1 = "output-human-review-high-stakes";
+    const q2 = "output-human-review-triggers";
 
     // Attempt 1: q1 wrong, q2 unanswered
     const attempt1 = buildSubmittedStudyAttempt(domainTwoAssessment, {
@@ -309,14 +309,14 @@ describe("progress summary and breakdown selectors", () => {
     expect(summary.personal.cumulative.answered).toBe(3);
     expect(summary.personal.cumulative.percentage).toBe(66.67);
 
-    // Objective `output-evaluate-accuracy` now has 2/2 bank items correct on latest
-    const accuracyObjective = summary.personal.objectives.find(
-      (objective) => objective.objectiveId === "output-evaluate-accuracy",
+    // Objective `output-human-review` now has 2/2 bank items correct on latest
+    const humanReviewObjective = summary.personal.objectives.find(
+      (objective) => objective.objectiveId === "output-human-review",
     )!;
-    expect(accuracyObjective.latestCorrectCount).toBe(2);
-    expect(accuracyObjective.bankItemCount).toBe(2);
-    expect(accuracyObjective.signal).toBe("all-bank-items-correct");
-    expect(accuracyObjective.signalLabel).toContain("limited bank depth");
+    expect(humanReviewObjective.latestCorrectCount).toBe(2);
+    expect(humanReviewObjective.bankItemCount).toBe(2);
+    expect(humanReviewObjective.signal).toBe("all-bank-items-correct");
+    expect(humanReviewObjective.signalLabel).toContain("limited bank depth");
   });
 
   it("reports first-seen and latest accuracy as order-unavailable if identical timestamps have conflicting outcomes", () => {
@@ -1145,16 +1145,16 @@ describe("progress summary and breakdown selectors", () => {
   });
 
   it("distinguishes unpracticed vs practiced-but-unanswered items, handles the 4-question objective, partial-bank-correct, and resolved study review items", () => {
-    // Domain 2 objective `output-identify-hallucinations` has 5 bank items
+    // Domain 2 objective `output-identify-hallucinations` has 6 bank items
     const hallucinationIds = questionBankEntries
       .filter(
         (entry) => entry.examMapping.objectiveIds[0] === "output-identify-hallucinations",
       )
       .map((entry) => entry.question.id);
-    expect(hallucinationIds).toHaveLength(5);
+    expect(hallucinationIds).toHaveLength(6);
 
-    // Subset definition containing only the first 2 of the 5 hallucination items:
-    // Answer 1 correct, leave 1 unanswered, and leave the other 3 unpracticed (not in the attempt)
+    // Subset definition containing only the first 2 of the 6 hallucination items:
+    // Answer 1 correct, leave 1 unanswered, and leave the other 4 unpracticed (not in the attempt)
     const subsetDefinition: AssessmentDefinition = {
       id: "hallucination-subset",
       title: "Hallucination subset",
@@ -1180,16 +1180,16 @@ describe("progress summary and breakdown selectors", () => {
     const hallucinationObj = subsetSummary.personal.objectives.find(
       (obj) => obj.objectiveId === "output-identify-hallucinations",
     )!;
-    expect(hallucinationObj.bankItemCount).toBe(5);
+    expect(hallucinationObj.bankItemCount).toBe(6);
     expect(hallucinationObj.practicedItemCount).toBe(2);
-    expect(hallucinationObj.unpracticedItemCount).toBe(3);
+    expect(hallucinationObj.unpracticedItemCount).toBe(4);
     expect(hallucinationObj.answeredItemCount).toBe(1);
     expect(hallucinationObj.unansweredItemCount).toBe(1);
     expect(hallucinationObj.latestCorrectCount).toBe(1);
     expect(hallucinationObj.latestIncorrectCount).toBe(0);
     expect(hallucinationObj.signal).toBe("partial-bank-correct");
     expect(hallucinationObj.signalLabel).toContain(
-      "Partially practiced (1/5 bank items correct on latest)",
+      "Partially practiced (1/6 bank items correct on latest)",
     );
 
     // Resolve the 1 unanswered study review item and verify review counts update while timed review stays independent

@@ -25,7 +25,7 @@ describe("timed exam content selection", () => {
       14, 21, 12, 16, 12, 15, 10,
     ]);
     expect(timedExamEligibility.allocations.map((allocation) => allocation.available)).toEqual([
-      10, 15, 8, 12, 9, 10, 8,
+      12, 19, 10, 15, 11, 13, 10,
     ]);
     // Every domain has at least one spare reviewed item beyond its blueprint
     // allocation, and the allocator fills the exact 60-item distribution:

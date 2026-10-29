@@ -97,6 +97,12 @@ export const productSelectionLesson: Lesson = lessonSchema.parse({
       ],
     },
     {
+      kind: "diagram",
+      heading: "Ma trận tương tác: Lựa chọn Model & Bề mặt sản phẩm theo khối lượng công việc",
+      diagramId: "model-selection-matrix",
+      intro: "Trực quan hóa và thử nghiệm so sánh 3 model thế hệ Claude 3.5 (Haiku, Sonnet, Opus) dựa trên ma trận trade-off 3 chiều: Năng lực suy luận, Chi phí token và Độ trễ phản hồi (TTFT).",
+    },
+    {
       kind: "paragraphs",
       heading: "Chọn theo task, không theo cảm giác",
       paragraphs: [

@@ -15,6 +15,7 @@ import {
   optimizationExpansionQuestionBank,
   workflowExpansionQuestionBank,
 } from "./question-bank-expansion-b";
+import { expansionCQuestionBank } from "./question-bank-expansion-c";
 
 /**
  * Reviewed Domain 2 bank: Output Evaluation and Validation.
@@ -1198,4 +1199,5 @@ export const reviewedQuestionBank: QuestionBankEntry[] = [
   ...troubleshootingQuestionBank,
   ...optimizationExpansionQuestionBank,
   ...coverageDepthQuestionBank,
+  ...expansionCQuestionBank,
 ];

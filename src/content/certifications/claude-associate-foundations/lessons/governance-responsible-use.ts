@@ -86,6 +86,12 @@ export const governanceResponsibleUseLesson: Lesson = lessonSchema.parse({
       body: "Một dòng “kết quả do AI tạo” không thay thế human review ở quyết định về tín dụng, tuyển dụng, bảo hiểm, y tế hoặc pháp lý. Cần xác định ai có thẩm quyền review, bằng chứng nào được kiểm tra, ai chịu trách nhiệm và người bị ảnh hưởng có cách nào phản hồi hoặc sửa sai.",
     },
     {
+      kind: "diagram",
+      heading: "Mô phỏng trực quan: Phòng vệ Injection, Jailbreak & Trách nhiệm giải trình",
+      diagramId: "safety-guardrails-simulator",
+      intro: "Trực quan hóa và thử nghiệm cơ chế phòng vệ 3 lớp của Anthropic: phân tách dữ liệu người dùng không tin cậy bằng thẻ XML, ngăn chặn Prompt Injection / Role Hijacking, và duy trì Human-in-the-loop checkpoint.",
+    },
+    {
       kind: "paragraphs",
       heading: "Dữ liệu: phân loại, tối thiểu hóa, quyền truy cập",
       paragraphs: [
