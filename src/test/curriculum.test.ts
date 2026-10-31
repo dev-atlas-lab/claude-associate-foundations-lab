@@ -89,35 +89,36 @@ describe("curriculum registry", () => {
   it("returns no neighbour for an unknown lesson and real neighbours for a known one", () => {
     expect(getLesson("not-a-lesson")).toBeUndefined();
     expect(getLessonNeighbours("not-a-lesson")).toEqual({});
-    expect(getLessonNeighbours("context-window")).toMatchObject({
+    expect(getLessonNeighbours("prompt-structure")).toMatchObject({
+      previous: undefined,
       next: getLesson("evaluation-basics"),
     });
     expect(getLessonNeighbours("evaluation-basics")).toMatchObject({
-      previous: getLesson("context-window"),
-      next: getLesson("configuration-basics"),
-    });
-    expect(getLessonNeighbours("prompt-structure")).toMatchObject({
-      previous: getLesson("configuration-basics"),
+      previous: getLesson("prompt-structure"),
       next: getLesson("product-selection"),
     });
-    expect(getLessonNeighbours("troubleshooting-optimization")).toMatchObject({
-      previous: getLesson("governance-responsible-use"),
+    expect(getLessonNeighbours("configuration-basics")).toMatchObject({
+      previous: getLesson("workflow-design"),
+      next: getLesson("governance-responsible-use"),
+    });
+    expect(getLessonNeighbours("context-window")).toMatchObject({
+      previous: getLesson("troubleshooting-optimization"),
       plannedNext: undefined,
     });
   });
 
-  it("publishes one reviewed sample and seven domain lessons in append-only order", () => {
+  it("publishes seven domain lessons and one reviewed sample in blueprint domain order", () => {
     const ids = publishedLessons.map((lesson) => lesson.id);
 
     expect(ids).toEqual([
-      "context-window",
-      "evaluation-basics",
-      "configuration-basics",
       "prompt-structure",
+      "evaluation-basics",
       "product-selection",
       "workflow-design",
+      "configuration-basics",
       "governance-responsible-use",
       "troubleshooting-optimization",
+      "context-window",
     ]);
     expect(getLesson("configuration-basics")?.examMapping.status).toBe("verified");
     expect(getLesson("prompt-structure")?.examMapping.status).toBe("verified");

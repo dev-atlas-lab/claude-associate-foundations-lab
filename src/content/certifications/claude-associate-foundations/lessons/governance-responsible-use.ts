@@ -11,7 +11,7 @@ export const governanceResponsibleUseLesson: Lesson = lessonSchema.parse({
   id: "governance-responsible-use",
   certificationId: "claude-associate-foundations",
   blueprintId: "ccao-f-v1",
-  order: 7,
+  order: 6,
   kind: "curriculum",
   contentStatus: "published",
   title: "Governance and responsible use: use cases, data, and human accountability",

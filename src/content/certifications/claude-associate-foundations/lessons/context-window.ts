@@ -11,7 +11,7 @@ export const contextWindowLesson: Lesson = lessonSchema.parse({
   id: "context-window",
   certificationId: "claude-associate-foundations",
   blueprintId: "ccao-f-v1",
-  order: 1,
+  order: 8,
   kind: "sample",
   contentStatus: "published",
   title: "Context window and context budgeting",

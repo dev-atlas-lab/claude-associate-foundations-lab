@@ -11,7 +11,7 @@ export const productSelectionLesson: Lesson = lessonSchema.parse({
   id: "product-selection",
   certificationId: "claude-associate-foundations",
   blueprintId: "ccao-f-v1",
-  order: 5,
+  order: 3,
   kind: "curriculum",
   contentStatus: "published",
   title: "Product and model selection: surface fit, capability tiers, and context",

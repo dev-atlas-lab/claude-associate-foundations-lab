@@ -10,7 +10,7 @@ export const configurationBasicsLesson: Lesson = lessonSchema.parse({
   id: "configuration-basics",
   certificationId: "claude-associate-foundations",
   blueprintId: "ccao-f-v1",
-  order: 3,
+  order: 5,
   kind: "curriculum",
   contentStatus: "published",
   title: "Configuring Claude: projects, knowledge, connectors, and maintenance",

@@ -12,7 +12,7 @@ export const workflowDesignLesson: Lesson = lessonSchema.parse({
   id: "workflow-design",
   certificationId: "claude-associate-foundations",
   blueprintId: "ccao-f-v1",
-  order: 6,
+  order: 4,
   kind: "curriculum",
   contentStatus: "published",
   title: "Workflow design: from requirements to a checked pilot",

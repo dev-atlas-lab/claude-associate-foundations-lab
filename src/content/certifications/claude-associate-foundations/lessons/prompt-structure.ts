@@ -10,7 +10,7 @@ export const promptStructureLesson: Lesson = lessonSchema.parse({
   id: "prompt-structure",
   certificationId: "claude-associate-foundations",
   blueprintId: "ccao-f-v1",
-  order: 4,
+  order: 1,
   kind: "curriculum",
   contentStatus: "published",
   title: "Prompt structure: goal, context, constraints, and iteration",

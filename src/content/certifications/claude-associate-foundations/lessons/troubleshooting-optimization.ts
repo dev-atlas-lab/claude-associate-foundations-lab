@@ -10,7 +10,7 @@ export const troubleshootingOptimizationLesson: Lesson = lessonSchema.parse({
   id: "troubleshooting-optimization",
   certificationId: "claude-associate-foundations",
   blueprintId: "ccao-f-v1",
-  order: 8,
+  order: 7,
   kind: "curriculum",
   contentStatus: "published",
   title: "Diagnose and optimize: from weak output to a measured improvement loop",

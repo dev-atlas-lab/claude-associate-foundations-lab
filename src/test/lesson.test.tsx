@@ -100,10 +100,10 @@ describe("sample lesson", () => {
     expect(screen.getAllByText("Correct answer").length).toBeGreaterThan(0);
     expect(screen.getByText("Your answer")).toBeInTheDocument();
 
-    expect(screen.getByText("This is the first lesson")).toBeInTheDocument();
+    expect(screen.getByText("End of module")).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: /Evaluating outputs: accuracy, evidence/i }),
-    ).toHaveAttribute("href", "/learn/evaluation-basics");
+      screen.getByRole("link", { name: /Diagnose and optimize/i }),
+    ).toHaveAttribute("href", "/learn/troubleshooting-optimization");
   });
 
   it("deep-links every exam-mapped lesson directly to its single-domain practice set", async () => {

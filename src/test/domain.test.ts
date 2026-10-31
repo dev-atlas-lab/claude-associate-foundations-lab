@@ -11,6 +11,7 @@ import {
 import { contentPack, primaryBlueprint, primaryCertification, publishedLessons } from "../content";
 
 const lesson = publishedLessons[0]!;
+const sampleLesson = publishedLessons.find((item) => item.kind === "sample") ?? lesson;
 const question = lesson.questions[0]!;
 const source = contentPack.sources[0]!;
 
@@ -214,9 +215,9 @@ describe("content status consistency", () => {
   it("allows draft content to remain unverified", () => {
     expect(
       lessonSchema.safeParse({
-        ...lesson,
+        ...sampleLesson,
         contentStatus: "draft",
-        verification: { ...lesson.verification, status: "unverified", sourceIds: [] },
+        verification: { ...sampleLesson.verification, status: "unverified", sourceIds: [] },
       }).success,
     ).toBe(true);
   });
