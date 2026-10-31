@@ -114,14 +114,14 @@ describe("Domain 2 curriculum coverage", () => {
     expect(relatedObjectiveIds).toEqual(lessonObjectiveIds);
   });
 
-  it("keeps the lesson knowledge checks in English with Vietnamese feedback", () => {
+  it("keeps the lesson knowledge checks in English with English explanations", () => {
     for (const question of lesson.questions) {
       expect(question.stem).not.toMatch(vietnameseDiacriticPattern);
-      expect(question.correctExplanation).toMatch(vietnameseDiacriticPattern);
+      expect(question.correctExplanation).not.toMatch(vietnameseDiacriticPattern);
 
       for (const choice of question.choices) {
         expect(choice.text).not.toMatch(vietnameseDiacriticPattern);
-        expect(choice.explanation).toMatch(vietnameseDiacriticPattern);
+        expect(choice.explanation).not.toMatch(vietnameseDiacriticPattern);
       }
 
       for (const sourceId of question.sourceIds) {
@@ -143,13 +143,13 @@ describe("Domain 2 lesson route", () => {
     expect(
       await screen.findByRole("heading", {
         level: 1,
-        name: "Đánh giá output: accuracy, evidence và human review",
+        name: "Evaluating outputs: accuracy, evidence, and human review",
       }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: "Câu hỏi luyện tập đã rà soát" }),
+      screen.getByRole("heading", { name: "Reviewed practice questions" }),
     ).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Mở bộ Domain 2 practice" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Open Domain 2 practice set" })).toHaveAttribute(
       "href",
       "/practice?set=domain-2-output-validation-set",
     );
@@ -161,7 +161,7 @@ describe("Domain 2 lesson route", () => {
     );
     await user.click(screen.getByRole("button", { name: "Check answer" }));
 
-    expect(screen.getByRole("status")).toHaveTextContent("Chính xác");
-    expect(screen.getAllByText(/Vì sao không chọn/)).toHaveLength(3);
+    expect(screen.getByRole("status")).toHaveTextContent("Correct");
+    expect(screen.getAllByText(/Why this is incorrect/)).toHaveLength(3);
   });
 });

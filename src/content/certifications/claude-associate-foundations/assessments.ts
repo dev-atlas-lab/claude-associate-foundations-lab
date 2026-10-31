@@ -28,7 +28,7 @@ export const domainTwoOutputValidationAssessment: AssessmentDefinition =
     id: "domain-2-output-validation-set",
     title: "Domain 2: Output Evaluation and Validation",
     description:
-      "Twenty-two reviewed English practice items covering accuracy and completeness, hallucination/inconsistency and bias detection, source-based fact-checking, human-review escalation, audience editing, and output-format selection. Explanations for every option are in Vietnamese after submission. These are original practice items, not official CCAO-F questions, and this is not a mock exam.",
+      "Twenty-two reviewed English practice items covering accuracy and completeness, hallucination/inconsistency and bias detection, source-based fact-checking, human-review escalation, audience editing, and output-format selection. Detailed explanations for every option are provided after submission. These are original practice items, not official CCAO-F questions, and this is not a mock exam.",
     questionIds: [
       "output-accuracy-review-plan",
       "output-accurate-but-incomplete",
@@ -69,7 +69,7 @@ export const domainOnePromptingAssessment: AssessmentDefinition =
     id: "domain-1-prompting-set",
     title: "Domain 1: Prompting and Task Execution",
     description:
-      "Fourteen reviewed English practice items on writing specific prompts, decomposing complex requests, iterating with evidence and rubrics, and adapting prompting strategies to analysis, research, drafting, and brainstorming tasks. Explanations for every option are in Vietnamese after submission. Original practice material, not official CCAO-F content.",
+      "Fourteen reviewed English practice items on writing specific prompts, decomposing complex requests, iterating with evidence and rubrics, and adapting prompting strategies to analysis, research, drafting, and brainstorming tasks. Detailed explanations for every option are provided after submission. Original practice material, not official CCAO-F content.",
     questionIds: [
       "prompting-specific-brief",
       "prompting-decompose-steps",
@@ -94,7 +94,7 @@ export const domainThreeContextAssessment: AssessmentDefinition =
     id: "domain-3-context-set",
     title: "Domain 3: Product and Model Selection",
     description:
-      "Twelve reviewed English practice items on selecting Projects, research, chat, and artifacts; choosing a model family and matching it to cost, speed, and quality; and managing context. Explanations for every option are in Vietnamese after submission. Original practice material, not official CCAO-F content.",
+      "Twelve reviewed English practice items on selecting Projects, research, chat, and artifacts; choosing a model family and matching it to cost, speed, and quality; and managing context. Detailed explanations for every option are provided after submission. Original practice material, not official CCAO-F content.",
     questionIds: [
       "context-summarize-and-restart",
       "context-high-signal-practices",
@@ -117,7 +117,7 @@ export const domainFourWorkflowAssessment: AssessmentDefinition =
     id: "domain-4-workflow-set",
     title: "Domain 4: Workflow Integration and Solution Design",
     description:
-      "Seventeen reviewed English practice items on requirements analysis, research and planning, solution design and iteration, responsible workflow integration, and stakeholder communication. Explanations for every option are in Vietnamese after submission. Original practice material, not official CCAO-F content.",
+      "Seventeen reviewed English practice items on requirements analysis, research and planning, solution design and iteration, responsible workflow integration, and stakeholder communication. Detailed explanations for every option are provided after submission. Original practice material, not official CCAO-F content.",
     questionIds: [
       "workflow-requirements-extraction",
       "workflow-research-current-scan",
@@ -145,7 +145,7 @@ export const domainFiveConfigurationAssessment: AssessmentDefinition =
     id: "domain-5-configuration-set",
     title: "Domain 5: Configuration and Knowledge Management",
     description:
-      "Thirteen reviewed English practice items on configuring Project knowledge and instructions, managing connectors and permissions, writing effective system-level instructions, and maintaining configurations over time. Explanations for every option are in Vietnamese after submission. Original practice material, not official CCAO-F content.",
+      "Thirteen reviewed English practice items on configuring Project knowledge and instructions, managing connectors and permissions, writing effective system-level instructions, and maintaining configurations over time. Detailed explanations for every option are provided after submission. Original practice material, not official CCAO-F content.",
     questionIds: [
       "config-project-brief-setup",
       "config-project-context-scope",
@@ -169,7 +169,7 @@ export const domainSixGovernanceAssessment: AssessmentDefinition =
     id: "domain-6-governance-set",
     title: "Domain 6: Governance, Risk, and Responsible Use",
     description:
-      "Fifteen reviewed English practice items on appropriate use cases, data privacy, third-party connector governance, organizational policy, high-risk review, and human oversight. Explanations for every option are in Vietnamese after submission. These teach review principles, not legal advice. Original practice material, not official CCAO-F content.",
+      "Fifteen reviewed English practice items on appropriate use cases, data privacy, third-party connector governance, organizational policy, high-risk review, and human oversight. Detailed explanations for every option are provided after submission. These teach review principles, not legal advice. Original practice material, not official CCAO-F content.",
     questionIds: [
       "governance-human-oversight",
       "governance-customer-assistant-safeguards",
@@ -195,7 +195,7 @@ export const domainSevenTroubleshootingAssessment: AssessmentDefinition =
     id: "domain-7-troubleshooting-set",
     title: "Domain 7: Troubleshooting and Optimization",
     description:
-      "Twelve reviewed English practice items on diagnosing weak prompts, using feedback to improve them, establishing a baseline, and optimizing quality, latency, and cost. Explanations for every option are in Vietnamese after submission. Original practice material, not official CCAO-F content.",
+      "Twelve reviewed English practice items on diagnosing weak prompts, using feedback to improve them, establishing a baseline, and optimizing quality, latency, and cost. Detailed explanations for every option are provided after submission. Original practice material, not official CCAO-F content.",
     questionIds: [
       "troubleshoot-diagnose-prompt",
       "troubleshoot-feedback-loop",
@@ -221,7 +221,7 @@ export const highWeightCoreAssessment: AssessmentDefinition =
     id: "high-weight-core-set",
     title: "High-Weight Core: Domains 1, 2 & 4 (51% Blueprint)",
     description:
-      "A curated 24-item practice set focusing on the three highest-weight domains in the CCAO-F exam: Prompting and Task Execution (Domain 1, 14%), Output Evaluation and Validation (Domain 2, 21%), and Workflow Integration and Solution Design (Domain 4, 16%). Explanations are in Vietnamese after submission. Original practice material, not official exam content.",
+      "A curated 24-item practice set focusing on the three highest-weight domains in the CCAO-F exam: Prompting and Task Execution (Domain 1, 14%), Output Evaluation and Validation (Domain 2, 21%), and Workflow Integration and Solution Design (Domain 4, 16%). Detailed explanations for every option are provided after submission. Original practice material, not official exam content.",
     questionIds: [
       "prompting-specific-brief",
       "prompting-decompose-steps",
@@ -259,7 +259,7 @@ export const quickDrillAssessment: AssessmentDefinition =
     id: "quick-drill-set",
     title: "Quick Drill: 15 Core Scenarios",
     description:
-      "A fast-paced 15-item cross-domain drill covering high-frequency practical scenarios across all seven official domains. Explanations for every option are in Vietnamese after submission. Original practice material, not official exam content.",
+      "A fast-paced 15-item cross-domain drill covering high-frequency practical scenarios across all seven official domains. Detailed explanations for every option are provided after submission. Original practice material, not official exam content.",
     questionIds: [
       "prompting-specific-brief",
       "prompting-decompose-steps",
@@ -288,7 +288,7 @@ export const enterpriseScenariosAssessment: AssessmentDefinition =
     id: "enterprise-scenarios-set",
     title: "Enterprise Scenarios: Knowledge, Governance & Optimization",
     description:
-      "A specialized 20-item practice set covering enterprise operational realities: configuring Project Knowledge and connectors (Domain 5), data privacy and compliance guardrails (Domain 6), and troubleshooting latency, cost, and regressions (Domain 7). Explanations are in Vietnamese after submission. Original practice material, not official exam content.",
+      "A specialized 20-item practice set covering enterprise operational realities: configuring Project Knowledge and connectors (Domain 5), data privacy and compliance guardrails (Domain 6), and troubleshooting latency, cost, and regressions (Domain 7). Detailed explanations for every option are provided after submission. Original practice material, not official exam content.",
     questionIds: [
       "config-project-brief-setup",
       "config-project-context-scope",
@@ -324,7 +324,7 @@ export const mixedFoundationsAssessment: AssessmentDefinition =
   assessmentDefinitionSchema.parse({
     id: "mixed-foundations-set",
     title: "Mixed foundations set",
-    description: `All ${reviewedQuestionBank.length} reviewed practice items, mixed across all seven domains that currently have source-grounded content. Explanations are in Vietnamese after submission. This is a mixed practice set, not a mock exam and not a coverage claim that any domain is exhausted.`,
+    description: `All ${reviewedQuestionBank.length} reviewed practice items, mixed across all seven domains that currently have source-grounded content. Detailed explanations for every option are provided after submission. This is a mixed practice set, not a mock exam and not a coverage claim that any domain is exhausted.`,
     questionIds: reviewedQuestionBank.map((entry) => entry.question.id),
     policy: practicePolicy,
   });

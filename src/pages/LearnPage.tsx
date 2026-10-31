@@ -17,7 +17,7 @@ export function LearnPage() {
       <PageHeader
         eyebrow="Learn"
         title="Learning modules"
-        lede="Vietnamese explanations with English terminology kept intact. Only reviewed technical content appears here; every published curriculum lesson maps to verified objectives, and one Context Window lesson remains an explicitly unmapped design sample."
+        lede="Curriculum lessons mapped directly to CCAO-F exam objectives. Built with clear technical explanations in English, interactive visual models, and exam-style knowledge checks."
         meta={
           <>
             <Badge tone="ok">Blueprint v1.0 verified</Badge>
@@ -28,7 +28,7 @@ export function LearnPage() {
       />
 
       <Callout tone="note" title="How these lessons are built">
-        Every lesson follows the same core shape: objectives, a Vietnamese explanation, a worked
+        Every lesson follows the same core shape: objectives, an in-depth technical explanation, a worked
         scenario, English knowledge checks, and explanations for every option. Visual models appear
         where they improve understanding. A lesson is only published after its claims are checked
         against primary sources. Exam mapping is a separate status shown on each lesson.

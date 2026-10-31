@@ -19,30 +19,30 @@ const iterateOnEvidence: Question = questionSchema.parse({
       id: "diagnose-and-target",
       text: "Compare the draft with the success criteria, add the audience, tone examples, and must-answer questions, then rerun on the same input.",
       explanation:
-        "Đúng: xác định khoảng cách so với tiêu chí rồi bổ sung đúng thông tin còn thiếu (audience, ví dụ giọng điệu, câu hỏi bắt buộc) và chạy lại trên cùng input để so sánh.",
+        "Correct: diagnoses gaps relative to the rubric, provides missing constraints (audience, stylistic exemplars, mandatory questions), and reruns on identical input for controlled comparison.",
     },
     {
       id: "restart-randomly",
       text: "Delete the prompt and write a completely different one without checking why the first draft was weak.",
       explanation:
-        "Sai: viết lại ngẫu nhiên không cho biết thay đổi nào tạo ra cải thiện, nên khó học được điều gì hiệu quả.",
+        "Incorrect: rewriting from scratch without diagnosing the failure mode obscures causality and fails to identify what was defective.",
     },
     {
       id: "make-it-longer",
       text: "Ask for a longer answer and assume more detail will fix the tone.",
       explanation:
-        "Sai: độ dài không sửa được vấn đề về audience và giọng điệu; còn có thể làm câu trả lời khó đọc hơn.",
+        "Incorrect: output length does not resolve audience alignment or stylistic tone, and often adds unnecessary verbosity.",
     },
     {
       id: "accept-first",
       text: "Publish the first draft because it is factually accurate.",
       explanation:
-        "Sai: accuracy là điều kiện cần nhưng chưa đủ; output vẫn chưa đáp ứng tiêu chí về người đọc và giọng điệu.",
+        "Incorrect: factual accuracy is necessary but insufficient; the draft fails key audience tone and clarity criteria.",
     },
   ],
   correctChoiceIds: ["diagnose-and-target"],
   correctExplanation:
-    "Iteration hiệu quả bắt đầu bằng việc so output với tiêu chí thành công, không phải bằng cách đổi prompt ngẫu nhiên. Khi đã biết thiếu audience, tone và các câu hỏi bắt buộc, hãy bổ sung đúng các yếu tố đó rồi chạy lại trên cùng input để thấy tác động thật của thay đổi.",
+    "Effective prompt iteration compares outputs against predefined acceptance criteria rather than rewriting randomly. Once gaps in audience, tone, or mandatory questions are diagnosed, inject those specific constraints and evaluate against the same input to measure empirical progress.",
   sourceIds: [
     "anthropic-prompting-best-practices",
     "anthropic-evaluation-docs",
@@ -58,42 +58,42 @@ const systematicIteration: Question = questionSchema.parse({
       id: "baseline-same-cases",
       text: "Keep a baseline prompt and compare revisions on the same representative cases.",
       explanation:
-        "Đúng: giữ nguyên bộ test và baseline giúp tách tác động của thay đổi khỏi biến thiên ngẫu nhiên.",
+        "Correct: maintaining a stable benchmark baseline across identical test cases isolates the impact of prompt revisions from random variance.",
     },
     {
       id: "one-change",
       text: "Change one meaningful variable at a time so its effect can be attributed.",
       explanation:
-        "Đúng: thay đổi từng biến giúp biết yếu tố nào cải thiện hoặc làm hỏng kết quả.",
+        "Correct: isolating single variables ensures causal attribution, confirming whether an adjustment improved or degraded output.",
     },
     {
       id: "record-failures",
       text: "Record which cases fail and classify the failure as instruction, context, or task decomposition.",
       explanation:
-        "Đúng: phân loại lỗi dẫn đến sửa đúng chỗ thay vì thêm chỉ dẫn mơ hồ.",
+        "Correct: systematic failure classification drives targeted engineering fixes rather than vague prompt edits.",
     },
     {
       id: "change-everything",
       text: "Change the model, prompt, and output format at the same time to move faster.",
       explanation:
-        "Sai: thay nhiều biến cùng lúc khiến không thể biết thay đổi nào tạo ra kết quả.",
+        "Incorrect: altering multiple variables simultaneously destroys causal attribution, making it impossible to determine what caused shifts.",
     },
     {
       id: "judge-fluency",
       text: "Use how fluent the answer sounds as the main success measure.",
       explanation:
-        "Sai: độ trôi chảy không đo được accuracy, completeness hay mức phù hợp với yêu cầu.",
+        "Incorrect: fluency is an unreliable proxy that fails to measure factual accuracy, schema compliance, or task completeness.",
     },
     {
       id: "remove-edge-cases",
       text: "Remove the hardest test cases so the pass rate improves.",
       explanation:
-        "Sai: xóa case khó làm sai lệch đánh giá và che giấu điểm yếu thật.",
+        "Incorrect: pruning difficult edge cases creates artificial pass rates while blinding teams to production failure risks.",
     },
   ],
   correctChoiceIds: ["baseline-same-cases", "one-change", "record-failures"],
   correctExplanation:
-    "Iteration có kỷ luật dựa trên baseline, bộ case đại diện và phân loại lỗi. So sánh trên cùng input, thay đổi từng biến và ghi lại loại thất bại giúp biến phản hồi thành kiến thức có thể tái sử dụng, thay vì chỉnh prompt theo cảm giác.",
+    "Disciplined iteration relies on stable baselines, representative test suites, and structured defect taxonomies. Evaluating identical inputs, isolating single technical adjustments, and logging error archetypes transforms ad-hoc experimentation into repeatable engineering.",
   sourceIds: [
     "anthropic-prompting-best-practices",
     "anthropic-evaluation-docs",
@@ -109,30 +109,30 @@ const analysisTaskStrategy: Question = questionSchema.parse({
       id: "structured-extraction",
       text: "Ask for structured extraction of themes with supporting quotes and transcript IDs, then synthesize the extracted evidence.",
       explanation:
-        "Đúng: trích xuất có cấu trúc kèm quote và ID giữ được traceability, sau đó tổng hợp trên dữ liệu đã được đánh dấu.",
+        "Correct: structured extraction with verbatim quotes and transcript IDs preserves traceability, enabling downstream synthesis grounded in cited data.",
     },
     {
       id: "brainstorm-first",
       text: "Ask for a broad brainstorm of possible themes before reading the transcripts.",
       explanation:
-        "Sai: brainstorm trước khi đọc dữ liệu dễ tạo thiên lệch và không gắn theme với bằng chứng cụ thể.",
+        "Incorrect: brainstorming themes prior to data ingestion biases the analysis and fails to ground conclusions in empirical evidence.",
     },
     {
       id: "one-paragraph",
       text: "Ask for a single paragraph that summarizes all 40 transcripts.",
       explanation:
-        "Sai: một đoạn văn ngắn khó giữ được chi tiết, nguồn và sự khác biệt giữa các cuộc phỏng vấn.",
+        "Incorrect: a single summary paragraph loses critical granular nuance, source attribution, and conflicting participant perspectives.",
     },
     {
       id: "creative-story",
       text: "Ask Claude to write a creative narrative that makes the findings more engaging.",
       explanation:
-        "Sai: mục tiêu là phân tích có thể kiểm chứng, không phải kể chuyện; narrative sáng tạo có thể thêm chi tiết không có trong dữ liệu.",
+        "Incorrect: the research objective is auditable qualitative analysis; creative storytelling risks introducing ungrounded narrative details.",
     },
   ],
   correctChoiceIds: ["structured-extraction"],
   correctExplanation:
-    "Với phân tích nhiều tài liệu, chiến lược phù hợp là biến dữ liệu thành cấu trúc có thể kiểm tra: theme, quote hỗ trợ và ID nguồn. Tổng hợp sau khi trích xuất giúp giảm nguy cơ bỏ sót bằng chứng và cho phép người review quay lại đúng đoạn phỏng vấn.",
+    "For multi-document qualitative analysis, decompose the workflow: extract recurring themes into structured tables with supporting quotes and transcript IDs before synthesizing overarching findings. This preserves rigorous provenance and enables verification.",
   sourceIds: [
     "anthropic-prompting-best-practices",
     "anthropic-evaluation-docs",
@@ -148,42 +148,42 @@ const taskTypeAdaptation: Question = questionSchema.parse({
       id: "drafting-audience",
       text: "For drafting, specify the audience, tone, constraints, and a short example of the desired style.",
       explanation:
-        "Đúng: drafting cần audience và ví dụ phong cách để output đúng giọng điệu và mức chi tiết.",
+        "Correct: drafting requires explicit audience profiling, tone guidelines, and stylistic few-shot exemplars to hit target formatting.",
     },
     {
       id: "brainstorm-options",
       text: "For brainstorming, ask for many diverse options first and defer judgment until a later step.",
       explanation:
-        "Đúng: tách giai đoạn tạo ý tưởng khỏi giai đoạn chọn lọc giúp tăng độ đa dạng và giảm chốt sớm.",
+        "Correct: decoupling broad divergent ideation from critical filtering maximizes novelty and prevents premature convergence.",
     },
     {
       id: "analysis-criteria",
       text: "For analysis, define the comparison criteria and require evidence for each conclusion.",
       explanation:
-        "Đúng: tiêu chí rõ và yêu cầu bằng chứng giúp phân tích có thể kiểm chứng thay vì chỉ là nhận định chung.",
+        "Correct: explicit comparative criteria and mandatory empirical evidence make analytical evaluations objective and verifiable.",
     },
     {
       id: "research-memory-only",
       text: "For research, rely on the model's memory and skip source citations to save time.",
       explanation:
-        "Sai: research cần nguồn hiện hành và citation; bỏ nguồn làm tăng nguy cơ thông tin lỗi thời hoặc bịa.",
+        "Incorrect: research demands external retrieval and verifiable source citations; relying solely on parametric memory risks stale data.",
     },
     {
       id: "drafting-no-audience",
       text: "For drafting, omit the audience so Claude can decide who should read it.",
       explanation:
-        "Sai: thiếu audience khiến output khó đúng tone và mức chi tiết; đây là thông tin then chốt của task.",
+        "Incorrect: omitting target audience parameters causes mismatched tone and erratic depth; audience specification is foundational.",
     },
     {
       id: "brainstorm-one-answer",
       text: "For brainstorming, ask for one safe answer so the team can decide quickly.",
       explanation:
-        "Sai: yêu cầu một đáp án an toàn triệt tiêu mục tiêu tạo nhiều lựa chọn của brainstorming.",
+        "Incorrect: restricting ideation to a single safe option defeats the fundamental purpose of brainstorming.",
     },
   ],
   correctChoiceIds: ["drafting-audience", "brainstorm-options", "analysis-criteria"],
   correctExplanation:
-    "Mỗi loại task cần một cách đặt vấn đề khác nhau: drafting cần audience và ví dụ, brainstorming cần độ đa dạng và hoãn đánh giá, analysis cần tiêu chí và bằng chứng. Research thì cần nguồn và citation, không thể thay bằng trí nhớ của model.",
+    "Tailor prompting strategies to operational archetypes: drafting requires audience framing and few-shot exemplars; brainstorming benefits from divergent ideation and deferred judgment; analysis demands structured comparative rubrics and grounded citations.",
   sourceIds: [
     "anthropic-prompting-best-practices",
     "anthropic-evaluation-docs",
@@ -199,30 +199,30 @@ const recurringReportFeature: Question = questionSchema.parse({
       id: "project-knowledge-instructions",
       text: "A project that holds the PDFs in project knowledge and the template and house style in project instructions.",
       explanation:
-        "Đúng: công việc lặp lại với nguồn ổn định và format cố định là trường hợp điển hình của project knowledge và project instructions.",
+        "Correct: recurring workflows with stable source documentation and consistent templates represent the ideal use case for Project Knowledge and Instructions.",
     },
     {
       id: "one-off-chat",
       text: "A new standalone chat for every quarter, with the PDFs pasted in manually.",
       explanation:
-        "Sai: chat mới không giữ knowledge hay instruction dùng chung, nên mỗi quý phải lặp lại cấu hình và dễ sai format.",
+        "Incorrect: ad-hoc chats lack persistent workspace configuration, requiring redundant uploads each quarter and risking missing context.",
     },
     {
       id: "research-every-time",
       text: "Research mode every quarter, even though the source PDFs are already approved and stable.",
       explanation:
-        "Sai: research phù hợp để thu thập và tổng hợp nhiều nguồn hiện hành; dùng nó khi đã có bộ nguồn ổn định làm tăng chi phí và biến thiên không cần thiết.",
+        "Incorrect: Research is designed for open-ended multi-source external searches; using it for approved internal PDFs adds unnecessary cost and variance.",
     },
     {
       id: "artifact-only",
       text: "An artifact with no project or source documents, rebuilt from memory each quarter.",
       explanation:
-        "Sai: artifact là format output, không phải nơi lưu nguồn và instruction; thiếu knowledge khiến báo cáo không bám tài liệu.",
+        "Incorrect: Artifacts are an output container, not a persistent repository; lacking reference files leads to ungrounded reporting.",
     },
   ],
   correctChoiceIds: ["project-knowledge-instructions"],
   correctExplanation:
-    "Công việc định kỳ với nguồn ổn định và template cố định nên dùng project: knowledge giữ tài liệu nguồn, instructions giữ format và quy tắc. Research và artifact có thể hỗ trợ nhưng không thay thế cấu hình dùng chung cho quy trình lặp lại.",
+    "Recurring reporting driven by approved source PDFs and standardized formatting belongs in Claude Projects: Project Knowledge maintains persistent reference assets while Project Instructions enforce formatting conventions and house style across all chats.",
   sourceIds: [
     "anthropic-projects-overview",
     "anthropic-projects-manage",
@@ -239,42 +239,42 @@ const featureFitChoices: Question = questionSchema.parse({
       id: "research-current",
       text: "Research for a current multi-source briefing that needs citations and synthesis across the web and connected tools.",
       explanation:
-        "Đúng: research chạy nhiều lượt tìm kiếm, tổng hợp nguồn và tạo báo cáo có citation.",
+        "Correct: Research executes sequential search queries across web connectors to produce cited multi-source syntheses.",
     },
     {
       id: "artifact-reusable",
       text: "An artifact for a document or code file that will be edited, iterated on, and reused.",
       explanation:
-        "Đúng: artifact phù hợp với nội dung self-contained, dài và có nhu cầu chỉnh sửa hoặc tái sử dụng.",
+        "Correct: Artifacts are designed for substantial, self-contained deliverables (code, documents, diagrams) intended for iterative editing.",
     },
     {
       id: "project-recurring",
       text: "A project with knowledge and instructions for recurring work with stable source documents.",
       explanation:
-        "Đúng: project giữ context và quy tắc dùng chung cho nhiều chat lặp lại.",
+        "Correct: Projects provide shared knowledge and custom instructions for collaborative, recurring workflows.",
     },
     {
       id: "chat-long-workspace",
       text: "A single long chat as the permanent workspace for a client across many months.",
       explanation:
-        "Sai: chat dài dần mất tín hiệu và không có knowledge/instruction dùng chung; project phù hợp hơn cho workspace lâu dài.",
+        "Incorrect: prolonged chats suffer from context dilution, hit token limits, and lack modular configuration; Projects are the proper workspace.",
     },
     {
       id: "research-quick-fact",
       text: "Research for a single quick factual lookup that one short answer can resolve.",
       explanation:
-        "Sai: research dành cho điều tra nhiều bước; một câu hỏi đơn giản không cần và có thể tiêu tốn usage nhanh hơn.",
+        "Incorrect: simple factual lookups should use standard search or chat; initiating deep research introduces unnecessary overhead.",
     },
     {
       id: "artifact-status",
       text: "An artifact for a one-line status update in an ongoing chat.",
       explanation:
-        "Sai: status ngắn nên trả lời inline; artifact dành cho nội dung lớn, self-contained và có thể tái sử dụng.",
+        "Incorrect: concise status messages belong inline; Artifacts are reserved for substantial, standalone deliverables.",
     },
   ],
   correctChoiceIds: ["research-current", "artifact-reusable", "project-recurring"],
   correctExplanation:
-    "Chọn feature theo tính chất công việc: research cho điều tra nhiều nguồn hiện hành, artifact cho deliverable dài có thể chỉnh sửa, project cho công việc lặp lại với nguồn và quy tắc ổn định. Chat thường và câu trả lời inline vẫn là lựa chọn đúng cho tác vụ ngắn, một lần.",
+    "Align features with task structure: Research for multi-step external search with citations; Artifacts for substantial, editable deliverables; Projects for recurring team workflows with stable knowledge. Standard chat and inline replies remain optimal for concise, ephemeral queries.",
   sourceIds: [
     "anthropic-research-help",
     "anthropic-artifacts-doc",
@@ -291,30 +291,30 @@ const familySpeedCost: Question = questionSchema.parse({
       id: "efficiency-first",
       text: "Start with a faster, lower-cost model, test it on real tickets, and upgrade only if it misses the quality bar.",
       explanation:
-        "Đúng: cách tiếp cận efficiency-first bắt đầu với model nhanh, rẻ hơn, kiểm thử kỹ rồi chỉ nâng cấp khi có khoảng trống năng lực cụ thể.",
+        "Correct: the Efficiency-First approach begins with the fastest, most economical model (e.g., Haiku), benchmarked against ground truth, upgrading only when a capability deficit is demonstrated.",
     },
     {
       id: "largest-first",
       text: "Start with the largest, most expensive model and never evaluate a cheaper option.",
       explanation:
-        "Sai: bắt đầu bằng model mạnh nhất có thể vượt yêu cầu và tăng chi phí, độ trễ mà không có eval chứng minh cần thiết.",
+        "Incorrect: over-provisioning models for high-volume simple classification unnecessarily inflates costs and latency without empirical justification.",
     },
     {
       id: "newest-only",
       text: "Choose the newest model name regardless of the task or measured results.",
       explanation:
-        "Sai: tên model và thời điểm phát hành không thay thế đánh giá trên dữ liệu thật của task.",
+        "Incorrect: model recency does not guarantee fitness; empirical evaluation on representative workload data is required.",
     },
     {
       id: "random-choice",
       text: "Rotate models randomly each week to see which one feels better.",
       explanation:
-        "Sai: thay đổi ngẫu nhiên không tạo baseline hay tiêu chí so sánh, nên không thể kết luận model nào phù hợp.",
+        "Incorrect: rotating models ad-hoc eliminates stable baselines and prevents objective evaluation.",
     },
   ],
   correctChoiceIds: ["efficiency-first"],
   correctExplanation:
-    "Với tác vụ khối lượng lớn, độ trễ thấp và tương đối đơn giản, hướng efficiency-first thường hợp lý: bắt đầu bằng model nhanh, rẻ, kiểm thử trên ticket thật, rồi nâng cấp nếu chất lượng chưa đạt. Quyết định cuối cùng phải dựa trên eval, không dựa vào tên hay giá niêm yết.",
+    "For high-volume, latency-sensitive tasks like ticket triage, the Efficiency-First strategy is recommended: evaluate the fastest, most cost-effective tier on representative tickets, upgrading to higher tiers only if empirical evaluations prove a capability gap.",
   sourceIds: [
     "anthropic-choosing-model",
     "anthropic-models-overview",
@@ -330,42 +330,42 @@ const familyTradeoffs: Question = questionSchema.parse({
       id: "tradeoffs",
       text: "Families differ in the balance of capability, latency, and cost.",
       explanation:
-        "Đúng: các dòng model được định vị khác nhau về năng lực, tốc độ và giá, nên chọn theo yêu cầu task.",
+        "Correct: model families represent distinct trade-off profiles across reasoning capability, latency, and pricing.",
     },
     {
       id: "check-current",
       text: "The current lineup, prices, and limits should be checked in official documentation because they change.",
       explanation:
-        "Đúng: tên model, giá và giới hạn được cập nhật theo thời gian; tài liệu chính thức là nguồn cần kiểm tra.",
+        "Correct: model names, token pricing, rate limits, and context windows evolve over time; official documentation provides the current baseline.",
     },
     {
       id: "benchmark",
       text: "A model should be tested on real prompts and edge cases before the team standardizes on it.",
       explanation:
-        "Đúng: benchmark trên dữ liệu thật, gồm cả edge case, là cách kiểm tra mức phù hợp thay vì suy đoán.",
+        "Correct: empirical evaluation against representative enterprise prompts and edge cases is required before architectural standardization.",
     },
     {
       id: "haiku-always-best",
       text: "The smallest family is always the most accurate choice.",
       explanation:
-        "Sai: model nhỏ thường tối ưu cho tốc độ và chi phí, không phải lúc nào cũng đạt độ chính xác cao nhất cho task phức tạp.",
+        "Incorrect: smaller models prioritize speed and cost efficiency, and may lack reasoning depth on complex multi-step tasks.",
     },
     {
       id: "opus-always-cheapest",
       text: "The largest family is always the cheapest per token.",
       explanation:
-        "Sai: model mạnh hơn thường có giá cao hơn; không thể mặc định là rẻ nhất.",
+        "Incorrect: highest-tier models carry the highest token pricing due to superior reasoning capabilities.",
     },
     {
       id: "name-forever",
       text: "A model's family name guarantees its quality for every future task.",
       explanation:
-        "Sai: hiệu quả phụ thuộc task, prompt, dữ liệu và phiên bản model; tên dòng không phải bằng chứng về chất lượng.",
+        "Incorrect: quality depends on task fit, prompt structure, domain data, and model version; family labels do not guarantee performance.",
     },
   ],
   correctChoiceIds: ["tradeoffs", "check-current", "benchmark"],
   correctExplanation:
-    "Model family là một trade-off, không phải bảng xếp hạng cố định. Các dòng khác nhau về năng lực, tốc độ và chi phí; tên, giá và giới hạn thay đổi theo thời gian. Vì vậy hãy kiểm tra tài liệu chính thức và benchmark trên prompt thật, gồm cả edge case, trước khi chuẩn hóa.",
+    "Model families embody distinct trade-offs across intelligence, speed, and cost. Pricing and limits evolve over time. Technical selection must be validated through internal benchmarks using representative task prompts and edge cases rather than marketing assertions.",
   sourceIds: [
     "anthropic-models-overview",
     "anthropic-choosing-model",
@@ -381,30 +381,30 @@ const complexAnalysisModel: Question = questionSchema.parse({
       id: "capability-first",
       text: "Start with a capability-first model, evaluate it on representative contracts, then optimize cost and effort if quality allows.",
       explanation:
-        "Đúng: task phức tạp, hậu quả lớn phù hợp với capability-first; sau khi đạt chuẩn chất lượng mới tối ưu chi phí và effort.",
+        "Correct: high-stakes, multi-step reasoning workflows warrant a Capability-First approach, adopting the highest-capability tier first and optimizing cost only after quality criteria are proven.",
     },
     {
       id: "cheapest-no-eval",
       text: "Choose the cheapest model immediately and skip evaluation to save budget.",
       explanation:
-        "Sai: tiết kiệm trước khi kiểm tra chất lượng có thể dẫn đến lỗi tốn kém hơn nhiều, đặc biệt với hợp đồng và phân tích tài chính.",
+        "Incorrect: selecting the cheapest model without evaluation risks expensive downstream errors in financial and contract workflows.",
     },
     {
       id: "largest-no-eval",
       text: "Choose the largest model and never measure whether it meets the task's requirements.",
       explanation:
-        "Sai: model mạnh nhất vẫn cần eval trên task thật; không có phép đo thì không biết chất lượng hay chi phí có hợp lý.",
+        "Incorrect: even top-tier models require evaluation on real contracts to identify prompt weaknesses and verify constraint adherence.",
     },
     {
       id: "marketing",
       text: "Choose based on a vendor marketing claim rather than the team's own test set.",
       explanation:
-        "Sai: tuyên bố marketing không thay thế benchmark trên prompt, dữ liệu và edge case của chính team.",
+        "Incorrect: vendor claims cannot substitute for empirical benchmarking against the enterprise's own data and risk tolerances.",
     },
   ],
   correctChoiceIds: ["capability-first"],
   correctExplanation:
-    "Khi lỗi gây hậu quả lớn và task cần suy luận nhiều bước, nên bắt đầu từ model đủ năng lực, đánh giá trên hợp đồng đại diện, rồi mới tối ưu chi phí hoặc effort nếu chất lượng vẫn đạt. Đây là hướng capability-first được Anthropic mô tả, kết hợp với eval trước khi chuẩn hóa.",
+    "When error costs are severe and tasks demand deep multi-step reasoning, adopt a Capability-First strategy: begin with the most capable model tier, evaluate performance against representative complex contracts, and subsequently optimize latency or cost if quality comfortably exceeds thresholds.",
   sourceIds: [
     "anthropic-choosing-model",
     "anthropic-models-overview",
@@ -420,42 +420,42 @@ const modelSelectionPractices: Question = questionSchema.parse({
       id: "criteria",
       text: "Define criteria for capability, speed, cost, and acceptable quality before comparing models.",
       explanation:
-        "Đúng: tiêu chí rõ giúp so sánh có căn cứ và tránh chọn theo cảm giác.",
+        "Correct: establishing objective rubrics across intelligence, latency, and cost enables rigorous, unbiased architectural comparisons.",
     },
     {
       id: "real-benchmarks",
       text: "Benchmark candidates on real prompts, including edge cases and failure modes.",
       explanation:
-        "Đúng: dữ liệu thật và edge case cho thấy model có đáp ứng đúng môi trường sử dụng hay không.",
+        "Correct: testing on representative domain data and adversarial edge cases reveals true production reliability.",
     },
     {
       id: "quality-cost",
       text: "Compare output quality and total cost before committing to a model.",
       explanation:
-        "Đúng: quyết định cần cân bằng chất lượng với chi phí, không tối ưu một phía.",
+        "Correct: architectural decisions must balance output accuracy against total operational cost per successful outcome.",
     },
     {
       id: "always-newest",
       text: "Always select the newest model without running a local evaluation.",
       explanation:
-        "Sai: mới không đồng nghĩa phù hợp; vẫn cần eval trên task và dữ liệu của team.",
+        "Incorrect: recency does not guarantee task fit; empirical testing on your specific workload remains mandatory.",
     },
     {
       id: "cost-before-quality",
       text: "Optimize for the lowest cost first and only check quality if users complain.",
       explanation:
-        "Sai: hạ chi phí trước khi kiểm tra chất lượng có thể che giấu lỗi và gây chi phí sửa chữa lớn hơn.",
+        "Incorrect: prioritizing cost reduction before verifying quality thresholds introduces undetected production failures.",
     },
     {
       id: "ignore-edge",
       text: "Exclude edge cases from the benchmark so the results look consistent.",
       explanation:
-        "Sai: bỏ edge case làm benchmark không phản ánh rủi ro thật và dễ chọn sai model.",
+        "Incorrect: omitting edge cases distorts benchmark validity and leaves the system vulnerable to real-world failures.",
     },
   ],
   correctChoiceIds: ["criteria", "real-benchmarks", "quality-cost"],
   correctExplanation:
-    "Chọn model là một quyết định kỹ thuật có thể đo: đặt tiêu chí, benchmark trên prompt thật gồm edge case, rồi so sánh chất lượng với tổng chi phí. Không nên dựa vào độ mới, giá niêm yết hay tuyên bố chung khi chưa có eval nội bộ.",
+    "Sound model selection requires defining multidimensional criteria (capability, latency, cost), running empirical benchmarks against representative datasets including edge cases, and balancing output accuracy against total cost per successful outcome.",
   sourceIds: [
     "anthropic-choosing-model",
     "anthropic-models-overview",

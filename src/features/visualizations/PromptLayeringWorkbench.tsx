@@ -17,20 +17,20 @@ const availableLayers: LayerItem[] = [
   {
     id: "role",
     name: "1. Role & System Persona",
-    category: "Định vị vai trò",
-    description: "Xác lập góc nhìn, thẩm quyền chuyên môn và giọng điệu phản hồi của Claude.",
+    category: "Role Definition",
+    description: "Establishes perspective, domain authority, and Claude's baseline tone.",
     codeSnippet: `You are an expert enterprise compliance auditor at a tier-1 financial institution.
 Your objective is to review operational procedures against regulatory guidelines with high rigor.`,
     clarityBoost: 20,
     hallucinationReduction: 15,
     parsabilityScore: 10,
-    examNote: "System prompt xác lập bối cảnh nền tảng và nên giữ ổn định xuyên suốt các lượt gọi.",
+    examNote: "System persona establishes the baseline context and should remain stable across conversation turns.",
   },
   {
     id: "xml",
     name: "2. XML Structured Delimiters",
-    category: "Phân tách ngữ cảnh",
-    description: "Dùng các thẻ XML (<context>, <guidelines>, <documents>) để phân định ranh giới dữ liệu.",
+    category: "Context Separation",
+    description: "Employs XML tags (<context>, <guidelines>, <documents>) to clearly delineate data boundaries.",
     codeSnippet: `<context>
   <policy_document id="POL-2026-A">
     All customer data transfers outside the APAC region require prior DPO approval.
@@ -39,13 +39,13 @@ Your objective is to review operational procedures against regulatory guidelines
     clarityBoost: 25,
     hallucinationReduction: 30,
     parsabilityScore: 25,
-    examNote: "Anthropic khuyến nghị dùng XML tags để ngăn ngừa prompt injection và chống nhầm lẫn dữ liệu với chỉ dẫn.",
+    examNote: "Anthropic strongly recommends XML tags to prevent prompt injection and avoid confusing input data with instructions.",
   },
   {
     id: "rubric",
     name: "3. Acceptance Criteria & Rubric",
-    category: "Tiêu chí nghiệm thu",
-    description: "Liệt kê rõ ràng điều kiện Đạt / Không đạt và cách xử lý khi dữ liệu không đầy đủ.",
+    category: "Acceptance Criteria",
+    description: "Explicitly defines Pass/Fail conditions and guidance on handling missing or ambiguous data.",
     codeSnippet: `<acceptance_criteria>
   1. Explicitly cite the policy ID for each finding.
   2. If evidence is insufficient, state "INSUFFICIENT_EVIDENCE" — do not guess or extrapolate.
@@ -54,13 +54,13 @@ Your objective is to review operational procedures against regulatory guidelines
     clarityBoost: 25,
     hallucinationReduction: 35,
     parsabilityScore: 25,
-    examNote: "Yêu cầu Claude nói 'tôi không biết' hoặc 'không đủ dữ liệu' là kỹ thuật hàng đầu chống hallucination.",
+    examNote: "Instructing Claude to say 'I don't know' or 'insufficient evidence' is the single most effective hallucination defense.",
   },
   {
     id: "few-shot",
     name: "4. Few-Shot Exemplars",
-    category: "Ví dụ mẫu chuẩn",
-    description: "Cung cấp 1-3 cặp Input/Output mẫu đa dạng để định hình cấu trúc và phong cách trả lời.",
+    category: "Standard Examples",
+    description: "Provides 1–3 diverse input/output examples demonstrating exact reasoning and formatting.",
     codeSnippet: `<examples>
   <example>
     <input>Data transferred to US cloud without sign-off.</input>
@@ -70,13 +70,13 @@ Your objective is to review operational procedures against regulatory guidelines
     clarityBoost: 20,
     hallucinationReduction: 15,
     parsabilityScore: 25,
-    examNote: "Ví dụ mẫu là cách trực quan và ổn định nhất để model tuân thủ định dạng phức tạp.",
+    examNote: "Few-shot examples are the most reliable technique for ensuring strict compliance with complex schemas.",
   },
   {
     id: "prefill",
     name: "5. Output Prefill / Assistant Prefill",
-    category: "Khóa định dạng đầu ra",
-    description: "Khởi đầu tin nhắn của Assistant bằng ký tự mở đầu (ví dụ: { hoặc <audit_report>) để bắt buộc định dạng.",
+    category: "Output Format Lock",
+    description: "Starts the Assistant message with opening characters (e.g. { or <audit_report>) to enforce syntax.",
     codeSnippet: `// Assistant message prefill:
 {
   "audit_status": "COMPLETED",
@@ -84,7 +84,7 @@ Your objective is to review operational procedures against regulatory guidelines
     clarityBoost: 10,
     hallucinationReduction: 5,
     parsabilityScore: 15,
-    examNote: "Prefill ở tin nhắn assistant ép model tiếp tục đúng cú pháp JSON/XML mà không sinh lời mở đầu rườm rà.",
+    examNote: "Prefilling the assistant turn compels Claude to proceed immediately with valid syntax without conversational preambles.",
   },
 ];
 
@@ -145,7 +145,7 @@ export function PromptLayeringWorkbench({ intro }: { intro: string }) {
       <div className="wb-header">
         <div className="wb-title-row">
           <Layers size={18} className="wb-icon" aria-hidden="true" />
-          <h3 className="wb-title">Bàn Thử Nghiệm: Cấu Trúc Đa Lớp Prompt Chuẩn Anthropic</h3>
+          <h3 className="wb-title">Workbench: Anthropic Multi-Layer Prompt Architecture</h3>
         </div>
         <p className="wb-intro">{intro}</p>
       </div>
@@ -153,21 +153,21 @@ export function PromptLayeringWorkbench({ intro }: { intro: string }) {
       {/* Layer Toggles */}
       <div className="wb-controls" role="group" aria-label="Prompt Layers">
         <div className="wb-controls-header">
-          <span className="wb-controls-title">Bật / Tắt các lớp cấu trúc:</span>
+          <span className="wb-controls-title">Toggle structural prompt layers:</span>
           <div className="wb-actions">
             <button
               type="button"
               className="button button--secondary button--sm"
               onClick={selectAll}
             >
-              Kích hoạt tất cả (Full Stack)
+              Enable all layers (Full Stack)
             </button>
             <button
               type="button"
               className="button button--secondary button--sm"
               onClick={resetLayers}
             >
-              Khởi tạo lại
+              Reset defaults
             </button>
           </div>
         </div>
@@ -202,7 +202,7 @@ export function PromptLayeringWorkbench({ intro }: { intro: string }) {
         <div className="wb-metric-card">
           <div className="wb-metric-head">
             <Sparkles size={14} aria-hidden="true" />
-            <span>Độ Rõ Ràng & Cụ Thể</span>
+            <span>Clarity & Specificity</span>
           </div>
           <div className="wb-meter-wrap">
             <div className="wb-meter-bar" style={{ width: `${totalClarity}%` }} />
@@ -213,7 +213,7 @@ export function PromptLayeringWorkbench({ intro }: { intro: string }) {
         <div className="wb-metric-card">
           <div className="wb-metric-head">
             <ShieldCheck size={14} aria-hidden="true" />
-            <span>Khả Năng Chống Ảo Giác</span>
+            <span>Hallucination Resistance</span>
           </div>
           <div className="wb-meter-wrap">
             <div
@@ -227,7 +227,7 @@ export function PromptLayeringWorkbench({ intro }: { intro: string }) {
         <div className="wb-metric-card">
           <div className="wb-metric-head">
             <Code2 size={14} aria-hidden="true" />
-            <span>Độ Ổn Định Định Dạng (Parsable)</span>
+            <span>Structural Parsability</span>
           </div>
           <div className="wb-meter-wrap">
             <div
@@ -244,7 +244,7 @@ export function PromptLayeringWorkbench({ intro }: { intro: string }) {
         <div className="wb-preview-head">
           <div className="wb-preview-title">
             <Terminal size={14} aria-hidden="true" />
-            <span>Bản Xem Trước Prompt Kết Hợp ({activeLayerIds.length} lớp kích hoạt)</span>
+            <span>Assembled Prompt Preview ({activeLayerIds.length} layers active)</span>
           </div>
           <button
             type="button"
@@ -252,24 +252,24 @@ export function PromptLayeringWorkbench({ intro }: { intro: string }) {
             onClick={() => setShowFullCode(!showFullCode)}
           >
             <Eye size={12} aria-hidden="true" />
-            {showFullCode ? "Thu gọn code" : "Mở rộng toàn màn hình"}
+            {showFullCode ? "Collapse code" : "Expand full code"}
           </button>
         </div>
         <pre
           className={`wb-code-block ${showFullCode ? "wb-code-block--expanded" : ""}`}
           tabIndex={0}
-          aria-label="Bản xem trước prompt kết hợp"
+          aria-label="Assembled prompt preview"
         >
-          <code>{assembledPrompt || "// Chưa chọn lớp nào. Hãy bật ít nhất một lớp ở trên."}</code>
+          <code>{assembledPrompt || "// No layers selected. Enable at least one layer above."}</code>
         </pre>
       </div>
 
       {/* Exam Takeaway Note */}
       <div className="wb-takeaway">
-        <strong>Nguyên tắc cốt lõi CCAO-F (Domain 1):</strong>
+        <strong>Core Principle for CCAO-F (Domain 1):</strong>
         <p>
-          Anthropic nhấn mạnh: Prompt xuất sắc không phải là một đoạn văn dài miên man, mà là sự phân tầng cấu trúc kỷ luật.
-          Kết hợp thẻ XML với tiêu chí nghiệm thu rõ ràng và ví dụ few-shot giúp kết quả đầu ra luôn nhất quán, đáng tin cậy và có thể tích hợp trực tiếp vào hệ thống phần mềm.
+          Anthropic emphasizes that effective prompting is not about composing unstructured, winding text—it is about disciplined structural layering.
+          Combining XML delimiter tags with explicit acceptance criteria and few-shot exemplars produces consistent, trustworthy output ready for software integration.
         </p>
       </div>
     </figure>

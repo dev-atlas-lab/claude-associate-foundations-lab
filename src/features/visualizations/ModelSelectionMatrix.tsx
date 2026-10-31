@@ -21,44 +21,44 @@ const MODEL_PROFILES: ModelProfile[] = [
   {
     id: "haiku",
     name: "Claude 3.5 Haiku",
-    tagline: "Tối ưu tốc độ & chi phí (Sub-second Latency & High Volume)",
+    tagline: "Optimized for speed & cost (Sub-second Latency & High Volume)",
     inputPerMTok: 1.0,
     outputPerMTok: 5.0,
     ttftLatency: "~400ms",
-    throughput: "Cực cao (>100 tokens/s)",
+    throughput: "Very high (>100 tokens/s)",
     reasoningScore: 78,
     codingScore: 75,
     visionScore: 82,
-    bestFit: "Routing, phân loại intent, trích xuất thực thể, live chat bot",
-    examRole: "Lựa chọn mặc định cho kiến trúc Efficiency-First và các bước tiền xử lý",
+    bestFit: "Routing, intent classification, entity extraction, live chat triage",
+    examRole: "Default selection for Efficiency-First architecture and preprocessing pipelines",
   },
   {
     id: "sonnet",
     name: "Claude 3.5 Sonnet",
-    tagline: "Đầu bảng về Coding, Suy luận đa bước & Tool Use",
+    tagline: "Benchmark leader in Coding, Multi-step Reasoning & Tool Use",
     inputPerMTok: 3.0,
     outputPerMTok: 15.0,
     ttftLatency: "~800ms",
-    throughput: "Cao (~60 tokens/s)",
+    throughput: "High (~60 tokens/s)",
     reasoningScore: 96,
     codingScore: 98,
     visionScore: 95,
-    bestFit: "Coding agent, gọi tool phức tạp, phân tích báo cáo doanh nghiệp, computer use",
-    examRole: "Mô hình cân bằng tối ưu (Sweet spot) cho hầu hết các giải pháp doanh nghiệp",
+    bestFit: "Coding agents, multi-step tool calls, enterprise report synthesis, computer use",
+    examRole: "Sweet spot model for the vast majority of enterprise production solutions",
   },
   {
     id: "opus",
     name: "Claude 3 Opus",
-    tagline: "Suy luận chiều sâu & Tổng hợp tài liệu đa nguồn phức tạp",
+    tagline: "Deep Reasoning & Multi-source Complex Document Synthesis",
     inputPerMTok: 15.0,
     outputPerMTok: 75.0,
     ttftLatency: "~2.4s",
-    throughput: "Tiêu chuẩn (~30 tokens/s)",
+    throughput: "Standard (~30 tokens/s)",
     reasoningScore: 92,
     codingScore: 86,
     visionScore: 88,
-    bestFit: "Nghiên cứu học thuật, đối chiếu pháp lý đa văn bản, giả thuyết khoa học",
-    examRole: "Dành riêng cho các tác vụ đòi hỏi chiều sâu suy luận và chấp nhận chi phí cao",
+    bestFit: "Academic research, cross-document legal harmonization, novel scientific hypothesis",
+    examRole: "Reserved for rare tasks demanding maximum reasoning depth where higher cost is acceptable",
   },
 ];
 
@@ -76,43 +76,43 @@ interface WorkloadPreset {
 const WORKLOAD_PRESETS: WorkloadPreset[] = [
   {
     id: "customer-triage",
-    title: "Phân loại & Định tuyến Hỗ trợ khách hàng (Customer Triage)",
-    description: "Khối lượng 20.000 yêu cầu/ngày, yêu cầu SLA phản hồi <1.5s, nghiệp vụ bóc tách intent và chuyển tiếp phòng ban.",
+    title: "Customer Support Triage & Intent Routing",
+    description: "Volume of 20,000 requests/day, <1.5s SLA requirement, extracting intent and dispatching to departments.",
     recommendedModelId: "haiku",
     dailyRequests: 20000,
     avgInputTokens: 600,
     avgOutputTokens: 150,
-    primaryDriver: "Độ trễ thấp và chi phí tối thiểu theo nguyên tắc Efficiency-First.",
+    primaryDriver: "Sub-second latency and minimal cost following the Efficiency-First principle.",
   },
   {
     id: "coding-agent",
-    title: "AI Coding Assistant & Tự động hóa Review Code",
-    description: "Nhân viên dùng tool đọc/sửa repo đa file, chạy unit test, sửa lỗi bug phức tạp và tái cấu trúc code.",
+    title: "AI Coding Assistant & Automated Code Review",
+    description: "Multi-file repository editing, running tests, fixing nuanced bugs, and refactoring codebases.",
     recommendedModelId: "sonnet",
     dailyRequests: 2000,
     avgInputTokens: 4000,
     avgOutputTokens: 1200,
-    primaryDriver: "Đòi hỏi điểm benchmark coding cao nhất và khả năng điều phối tool use chuẩn xác.",
+    primaryDriver: "Requires the highest coding benchmark accuracy and reliable multi-turn tool orchestration.",
   },
   {
     id: "legal-audit",
-    title: "Thẩm định Hồ sơ Pháp lý & Hợp đồng Phức tạp",
-    description: "Soạn thảo phân tích rủi ro đa tài liệu hàng trăm trang, yêu cầu lập luận logic chặt chẽ và không được phép sai sót.",
+    title: "Complex Legal & Regulatory Contract Audit",
+    description: "Drafting multi-document risk assessments across hundreds of pages with strict zero-hallucination tolerance.",
     recommendedModelId: "sonnet",
     dailyRequests: 500,
     avgInputTokens: 12000,
     avgOutputTokens: 2500,
-    primaryDriver: "Cần khả năng hiểu context lớn và suy luận đa chiều; Sonnet 3.5 vượt trội và tiết kiệm hơn Opus.",
+    primaryDriver: "Requires large context comprehension and multi-hop reasoning; Sonnet 3.5 outperforms and costs 5x less than Opus.",
   },
   {
     id: "invoice-ocr",
-    title: "Trích xuất Hóa đơn & Bảng biểu Đa phương thức (Multimodal OCR)",
-    description: "Xử lý hàng loạt hình ảnh scan hóa đơn, biên nhận và xuất ra định dạng JSON chuẩn hóa.",
+    title: "Multimodal Invoice & Structured Document OCR",
+    description: "Batch processing scanned invoices, receipts, and extracting structured JSON schemas.",
     recommendedModelId: "haiku",
     dailyRequests: 10000,
     avgInputTokens: 1200,
     avgOutputTokens: 300,
-    primaryDriver: "Haiku 3.5 hỗ trợ vision chất lượng cao với chi phí cực thấp cho tác vụ có schema cố định.",
+    primaryDriver: "Haiku 3.5 provides high-fidelity vision capabilities at minimal cost for fixed-schema extraction.",
   },
 ];
 
@@ -155,17 +155,17 @@ export function ModelSelectionMatrix({ intro }: { intro?: string }) {
   }, [dailyRequests, inputTokens, outputTokens]);
 
   return (
-    <figure className="matrix-simulator" aria-label="Ma trận Lựa chọn Model & Bề mặt sản phẩm">
+    <figure className="matrix-simulator" aria-label="Model & Product Selection Matrix">
       {intro ? <p className="diagram-intro">{intro}</p> : null}
 
       <div className="matrix-container">
         {/* Step 1: Workload Preset Selector */}
         <div className="matrix-section">
           <div className="matrix-section-head">
-            <span className="matrix-badge">Bước 1</span>
-            <h3 className="matrix-title">Chọn tình huống nghiệp vụ thực tế (Enterprise Workloads)</h3>
+            <span className="matrix-badge">Step 1</span>
+            <h3 className="matrix-title">Select realistic enterprise workload</h3>
           </div>
-          <div className="matrix-preset-grid" role="group" aria-label="Tình huống khối lượng công việc">
+          <div className="matrix-preset-grid" role="group" aria-label="Workload presets">
             {WORKLOAD_PRESETS.map((preset) => {
               const isSelected = preset.id === selectedPresetId;
               return (
@@ -179,7 +179,7 @@ export function ModelSelectionMatrix({ intro }: { intro?: string }) {
                   <div className="matrix-preset-header">
                     <span className="matrix-preset-title">{preset.title}</span>
                     <Badge tone={isSelected ? "accent" : "neutral"}>
-                      Gợi ý: {preset.recommendedModelId.toUpperCase()}
+                      Recommended: {preset.recommendedModelId.toUpperCase()}
                     </Badge>
                   </div>
                   <p className="matrix-preset-desc">{preset.description}</p>
@@ -192,16 +192,16 @@ export function ModelSelectionMatrix({ intro }: { intro?: string }) {
         {/* Step 2: Fine-tune Parameters */}
         <div className="matrix-section">
           <div className="matrix-section-head">
-            <span className="matrix-badge">Bước 2</span>
-            <h3 className="matrix-title">Thông số tính toán quy mô (Volume & Token Economics)</h3>
+            <span className="matrix-badge">Step 2</span>
+            <h3 className="matrix-title">Scale parameters (Volume & Token Economics)</h3>
           </div>
           <div className="calc-controls-grid">
             <div className="calc-control-group">
               <div className="calc-control-header">
                 <label className="calc-label" htmlFor={reqId}>
-                  Số request mỗi ngày
+                  Daily requests
                 </label>
-                <span className="calc-value-pill">{dailyRequests.toLocaleString("en-US")} req/ngày</span>
+                <span className="calc-value-pill">{dailyRequests.toLocaleString("en-US")} req/day</span>
               </div>
               <input
                 id={reqId}
@@ -213,13 +213,13 @@ export function ModelSelectionMatrix({ intro }: { intro?: string }) {
                 value={dailyRequests}
                 onChange={(e) => setDailyRequests(Number(e.target.value))}
               />
-              <span className="calc-subtext">{(dailyRequests * 30).toLocaleString("en-US")} req/tháng</span>
+              <span className="calc-subtext">{(dailyRequests * 30).toLocaleString("en-US")} req/month</span>
             </div>
 
             <div className="calc-control-group">
               <div className="calc-control-header">
                 <label className="calc-label" htmlFor={inTokId}>
-                  Input tokens trung bình / request
+                  Average input tokens / request
                 </label>
                 <span className="calc-value-pill">{inputTokens.toLocaleString("en-US")} tokens</span>
               </div>
@@ -233,13 +233,13 @@ export function ModelSelectionMatrix({ intro }: { intro?: string }) {
                 value={inputTokens}
                 onChange={(e) => setInputTokens(Number(e.target.value))}
               />
-              <span className="calc-subtext">Prompt, context dữ liệu, system instructions</span>
+              <span className="calc-subtext">Prompt, data context, system instructions</span>
             </div>
 
             <div className="calc-control-group">
               <div className="calc-control-header">
                 <label className="calc-label" htmlFor={outTokId}>
-                  Output tokens trung bình / request
+                  Average output tokens / request
                 </label>
                 <span className="calc-value-pill">{outputTokens.toLocaleString("en-US")} tokens</span>
               </div>
@@ -253,7 +253,7 @@ export function ModelSelectionMatrix({ intro }: { intro?: string }) {
                 value={outputTokens}
                 onChange={(e) => setOutputTokens(Number(e.target.value))}
               />
-              <span className="calc-subtext">Độ dài câu trả lời sinh ra</span>
+              <span className="calc-subtext">Generated completion length</span>
             </div>
           </div>
         </div>
@@ -261,8 +261,8 @@ export function ModelSelectionMatrix({ intro }: { intro?: string }) {
         {/* Step 3: Comparative Analysis Across Models */}
         <div className="matrix-section">
           <div className="matrix-section-head">
-            <span className="matrix-badge">Bước 3</span>
-            <h3 className="matrix-title">So sánh 3 dòng mô hình Claude 3.5 theo bài toán hiện tại</h3>
+            <span className="matrix-badge">Step 3</span>
+            <h3 className="matrix-title">Compare Claude 3.5 model families for this workload</h3>
           </div>
 
           <div className="matrix-model-grid">
@@ -286,21 +286,21 @@ export function ModelSelectionMatrix({ intro }: { intro?: string }) {
                       <h4 className="matrix-model-name">{model.name}</h4>
                       <span className="matrix-model-tagline">{model.tagline}</span>
                     </div>
-                    {isRecommended ? <Badge tone="ok">Đề xuất tối ưu</Badge> : null}
+                    {isRecommended ? <Badge tone="ok">Optimal Choice</Badge> : null}
                   </div>
 
                   <div className="matrix-cost-box">
-                    <span className="matrix-cost-label">Ước tính chi phí / tháng (30 ngày)</span>
+                    <span className="matrix-cost-label">Estimated monthly cost (30 days)</span>
                     <span className="matrix-cost-value">${cost.toLocaleString("en-US")}</span>
                     <span className="matrix-cost-rate">
-                      ${model.inputPerMTok} in / ${model.outputPerMTok} out trên 1M tokens
+                      ${model.inputPerMTok} in / ${model.outputPerMTok} out per 1M tokens
                     </span>
                   </div>
 
                   <div className="matrix-specs-grid">
                     <div className="matrix-spec-item">
                       <span className="matrix-spec-key">
-                        <Zap size={13} strokeWidth={2} aria-hidden="true" /> Độ trễ TTFT:
+                        <Zap size={13} strokeWidth={2} aria-hidden="true" /> TTFT Latency:
                       </span>
                       <span className="matrix-spec-val">{model.ttftLatency}</span>
                     </div>
@@ -318,14 +318,14 @@ export function ModelSelectionMatrix({ intro }: { intro?: string }) {
                     </div>
                     <div className="matrix-spec-item">
                       <span className="matrix-spec-key">
-                        <Layers size={13} strokeWidth={2} aria-hidden="true" /> Khả năng Reasoning:
+                        <Layers size={13} strokeWidth={2} aria-hidden="true" /> Reasoning Power:
                       </span>
                       <span className="matrix-spec-val">{model.reasoningScore}/100</span>
                     </div>
                   </div>
 
                   <div className="matrix-fit-box">
-                    <strong>Tác vụ điển hình:</strong> {model.bestFit}
+                    <strong>Typical tasks:</strong> {model.bestFit}
                   </div>
                 </button>
               );
@@ -337,13 +337,13 @@ export function ModelSelectionMatrix({ intro }: { intro?: string }) {
         <div className="workflow-takeaway" style={{ marginTop: "var(--space-4)" }}>
           <div className="workflow-takeaway-head">
             <CheckCircle2 size={16} strokeWidth={2.2} aria-hidden="true" />
-            <span>Nguyên tắc then chốt cho kỳ thi CCAO-F (Domain 3)</span>
+            <span>Key Principle for CCAO-F (Domain 3)</span>
           </div>
           <p className="workflow-takeaway-body">
-            Trong kỳ thi CCAO-F, Anthropic luôn ưu tiên nguyên tắc <strong>Efficiency-First</strong>:
-            bắt đầu với <strong>Claude 3.5 Haiku</strong> cho các tác vụ cần tốc độ cao, phân loại hoặc khối lượng lớn.
-            Chỉ nâng cấp lên <strong>Claude 3.5 Sonnet</strong> khi bài toán đòi hỏi lập luận logic đa bước, coding hoặc gọi tool phức tạp.
-            Tránh lạm dụng Opus cho các bài toán đã được giải quyết hoàn hảo bởi Sonnet hoặc Haiku để tiết kiệm từ 5x đến 15x chi phí.
+            In the CCAO-F exam, Anthropic strongly emphasizes the <strong>Efficiency-First</strong> principle:
+            always start with <strong>Claude 3.5 Haiku</strong> for low-latency, classification, or high-volume tasks.
+            Only upgrade to <strong>Claude 3.5 Sonnet</strong> when the workflow demands multi-step reasoning, coding, or complex tool execution.
+            Avoid defaulting to Opus for tasks already solved cleanly and at 5x–15x lower cost by Sonnet or Haiku.
           </p>
         </div>
       </div>

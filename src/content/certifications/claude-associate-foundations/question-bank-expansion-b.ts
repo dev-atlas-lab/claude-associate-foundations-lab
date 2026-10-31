@@ -21,30 +21,30 @@ const currentMarketResearch: Question = questionSchema.parse({
       id: "research-and-verify",
       text: "Run research over current sources, ask for a cited synthesis, then verify the cited claims before the workshop.",
       explanation:
-        "Đúng: research phù hợp để thu thập và tổng hợp nhiều nguồn hiện hành; citation vẫn cần được kiểm tra trước khi dùng cho quyết định.",
+        "Correct: Research is engineered to retrieve and synthesize multi-source web data with citations; citations must still be audited before strategic decision-making.",
     },
     {
       id: "rely-on-memory",
       text: "Ask Claude to answer from its training knowledge and skip current sources because the market moves slowly.",
       explanation:
-        "Sai: kiến thức huấn luyện có cutoff và không bảo đảm phản ánh thị trường hiện tại; bỏ nguồn làm tăng nguy cơ lỗi thời.",
+        "Incorrect: parametric training data has a knowledge cutoff and cannot guarantee reflection of current market dynamics.",
     },
     {
       id: "one-paragraph",
       text: "Request a single paragraph without citations so the brief is easy to read.",
       explanation:
-        "Sai: một đoạn không citation khó kiểm chứng và dễ che giấu khoảng trống bằng chứng.",
+        "Incorrect: an uncited paragraph prevents factual auditing and conceals critical evidentiary gaps.",
     },
     {
       id: "confident-recommendation",
       text: "Ask for a confident recommendation and treat it as final to save review time.",
       explanation:
-        "Sai: sự tự tin không phải bằng chứng; khuyến nghị cần được kiểm tra với nguồn và người có trách nhiệm.",
+        "Incorrect: model confidence is not empirical evidence; recommendations must be verified against ground truth by accountable professionals.",
     },
   ],
   correctChoiceIds: ["research-and-verify"],
   correctExplanation:
-    "Research được thiết kế cho điều tra nhiều bước trên web và các connector, tạo báo cáo tổng hợp có citation. Tuy vậy, citation phải được kiểm tra: mục tiêu là đưa bằng chứng đáng tin vào workshop, không phải thay thế bước xác minh bằng một câu trả lời nghe tự tin.",
+    "Claude Research conducts multi-step searches across web sources and connectors to synthesize structured briefs with citations. However, human verification remains essential: the goal is to supply verified evidence to the workshop rather than substituting verification with assertive prose.",
   sourceIds: [
     "anthropic-research-help",
     "anthropic-evaluation-docs",
@@ -60,42 +60,42 @@ const researchPlanningPractices: Question = questionSchema.parse({
       id: "define-questions",
       text: "Define the research questions, source criteria, and deadline before asking for a synthesis.",
       explanation:
-        "Đúng: câu hỏi và tiêu chí nguồn rõ giúp research tập trung và giảm thu thập dữ liệu không liên quan.",
+        "Correct: clear research questions and source credibility rubrics focus the search and minimize ingestion of irrelevant data.",
     },
     {
       id: "citations-gaps",
       text: "Require citations and explicitly flag gaps, conflicting sources, and assumptions.",
       explanation:
-        "Đúng: citation và phần gap giúp người đọc biết điều gì đã được chứng minh và điều gì còn mở.",
+        "Correct: inline citations and explicit gap analysis clarify which findings are grounded and which remain unresolved.",
     },
     {
       id: "separate-facts",
       text: "Separate verified facts from recommendations, and review the assumptions behind each option.",
       explanation:
-        "Đúng: tách fact khỏi khuyến nghị giúp planning không biến giả định thành kết luận.",
+        "Correct: decoupling empirical facts from recommendations prevents unverified assumptions from masquerading as conclusions.",
     },
     {
       id: "first-answer",
       text: "Accept the first synthesized answer as the plan so the team can move quickly.",
       explanation:
-        "Sai: bản tổng hợp đầu tiên có thể bỏ sót nguồn hoặc hiểu sai yêu cầu; cần kiểm tra trước khi thành plan.",
+        "Incorrect: initial syntheses frequently miss nuances or misinterpret edge-case requirements; audit prior to adoption.",
     },
     {
       id: "single-source",
       text: "Use one source to keep the research simple and avoid conflicting information.",
       explanation:
-        "Sai: một nguồn không đủ để phát hiện mâu thuẫn hoặc đánh giá độ tin cậy.",
+        "Incorrect: relying on an isolated source prevents detection of contradictions and creates brittle analytical blind spots.",
     },
     {
       id: "skip-validation",
       text: "Skip validation because research mode already provides citations.",
       explanation:
-        "Sai: citation không tự động đúng hoặc còn hiện hành; vẫn phải kiểm tra nguồn và claim quan trọng.",
+        "Incorrect: citations can hallucinate or misquote context; human verification of cited sources remains mandatory.",
     },
   ],
   correctChoiceIds: ["define-questions", "citations-gaps", "separate-facts"],
   correctExplanation:
-    "Research và planning tốt cần đầu vào rõ, bằng chứng có thể kiểm tra và sự tách biệt giữa dữ kiện với khuyến nghị. Đặt câu hỏi và tiêu chí nguồn trước, yêu cầu citation kèm gap, rồi review giả định sẽ giúp kế hoạch đứng vững hơn một bản tổng hợp trôi chảy.",
+    "Rigorous research and planning demands structured inputs, verifiable evidence, and decoupling facts from recommendations. Formulating research questions upfront, mandating citations, and testing underlying assumptions builds far more resilient operational plans.",
   sourceIds: [
     "anthropic-research-help",
     "anthropic-evaluation-docs",
@@ -111,34 +111,35 @@ const approvalWorkflowDesign: Question = questionSchema.parse({
       id: "options-assumptions-human-decision",
       text: "Draft several workflow options with explicit assumptions, constraints, and risks, then have the accountable team choose and pilot one.",
       explanation:
-        "Đúng: Claude hỗ trợ tạo và so sánh phương án; quyết định, trách nhiệm và pilot vẫn thuộc về con người.",
+        "Correct: Claude assists in exploring architectural options and surfacing trade-offs, while human leadership retains decision-making accountability and pilot governance.",
     },
     {
       id: "auto-deploy",
       text: "Let Claude select and deploy the workflow automatically to avoid a long design review.",
       explanation:
-        "Sai: thiết kế workflow ảnh hưởng đến nhiều người và hệ thống; tự động triển khai bỏ qua review và trách nhiệm giải trình.",
+        "Incorrect: deploying operational approval workflows autonomously bypasses stakeholder consensus, compliance checks, and human accountability.",
     },
     {
       id: "final-decision",
       text: "Ask Claude for the final decision and implement it without stakeholder input.",
       explanation:
-        "Sai: Claude có thể hỗ trợ phân tích nhưng không thay thế người chịu trách nhiệm ra quyết định.",
+        "Incorrect: models assist with analysis but cannot assume organizational accountability for operational decisions.",
     },
     {
       id: "skip-stakeholders",
       text: "Skip stakeholder review because the model can infer what each team needs.",
       explanation:
-        "Sai: model không biết đầy đủ ràng buộc, chính trị tổ chức hay tác động thực tế; bỏ stakeholder dễ tạo workflow không dùng được.",
+        "Incorrect: models lack visibility into organizational politics, informal boundaries, and operational constraints; omitting stakeholders leads to failed adoption.",
     },
   ],
   correctChoiceIds: ["options-assumptions-human-decision"],
   correctExplanation:
-    "Trong solution design, Claude phù hợp để mở rộng không gian phương án, làm rõ giả định và surface rủi ro. Quyết định cuối cùng vẫn cần người có trách nhiệm, stakeholder review và pilot có đo lường trước khi triển khai rộng.",
+    "In solution design, Claude excels at expanding option spaces, articulating assumptions, and surfacing hidden failure modes. Final architectural selection, stakeholder sign-off, and pilot governance must remain with accountable human teams.",
   sourceIds: [
     "anthropic-prompting-best-practices",
     "anthropic-evaluation-docs",
     "anthropic-claude-constitution",
+    "anthropic-building-effective-agents",
   ],
 });
 
@@ -151,46 +152,47 @@ const solutionDesignIteration: Question = questionSchema.parse({
       id: "prototype-assumptions",
       text: "Prototype several options and state the assumptions and trade-offs behind each.",
       explanation:
-        "Đúng: nhiều phương án kèm giả định giúp so sánh và tránh chốt sớm vào một thiết kế.",
+        "Correct: comparing multiple prototypes with explicit assumptions prevents premature convergence on a brittle architecture.",
     },
     {
       id: "stakeholder-feedback",
       text: "Review prototypes with stakeholders and incorporate feedback into the next iteration.",
       explanation:
-        "Đúng: phản hồi từ người dùng thật phát hiện ràng buộc và tác động mà model không biết.",
+        "Correct: stakeholder reviews uncover practical constraints and failure modes that models cannot predict.",
     },
     {
       id: "test-requirements",
       text: "Test each iteration against requirements, edge cases, and failure modes.",
       explanation:
-        "Đúng: kiểm thử theo yêu cầu và edge case cho thấy thiết kế có thực sự hoạt động ngoài ví dụ đẹp.",
+        "Correct: benchmarking iterations against edge cases validates that designs perform reliably beyond happy-path examples.",
     },
     {
       id: "first-final",
       text: "Treat the first proposal as final because it sounds coherent.",
       explanation:
-        "Sai: tính mạch lạc không chứng minh thiết kế đúng; cần review và kiểm thử.",
+        "Incorrect: fluency and coherence do not prove operational viability; iterative testing is required.",
     },
     {
       id: "hide-tradeoffs",
       text: "Hide trade-offs so stakeholders can focus on the recommended option.",
       explanation:
-        "Sai: che giấu trade-off làm quyết định kém minh bạch và dễ bỏ qua rủi ro quan trọng.",
+        "Incorrect: concealing trade-offs undermines decision transparency and obscures critical technical risks.",
     },
     {
       id: "skip-pilot",
       text: "Skip the pilot and roll out to every team at once.",
       explanation:
-        "Sai: triển khai toàn bộ khi chưa pilot làm tăng phạm vi ảnh hưởng của lỗi thiết kế.",
+        "Incorrect: bypassing small-scale pilots dramatically amplifies the operational blast radius of undiscovered design flaws.",
     },
   ],
   correctChoiceIds: ["prototype-assumptions", "stakeholder-feedback", "test-requirements"],
   correctExplanation:
-    "Solution design là vòng lặp: tạo phương án có giả định rõ, review với stakeholder, kiểm thử theo yêu cầu và edge case, rồi cải tiến. Giữ trade-off minh bạch và pilot trước khi mở rộng giúp giảm rủi ro của một thiết kế nghe hợp lý nhưng chưa được chứng minh.",
+    "Solution design is an iterative loop: formulate options with clear trade-offs, gather stakeholder feedback, and evaluate prototypes against edge cases and failure modes. Maintaining transparent trade-offs and piloting before full-scale deployment mitigates operational risk.",
   sourceIds: [
     "anthropic-prompting-best-practices",
     "anthropic-evaluation-docs",
     "anthropic-claude-constitution",
+    "anthropic-building-effective-agents",
   ],
 });
 
@@ -203,30 +205,30 @@ const stakeholderBrief: Question = questionSchema.parse({
       id: "scope-evidence-limits",
       text: "Describe the tested scope, measured results, known failure modes, required human review, and a bounded next step.",
       explanation:
-        "Đúng: câu trả lời nêu rõ phạm vi đã kiểm thử, kết quả đo được, giới hạn, human review và bước tiếp theo có kiểm soát.",
+        "Correct: responsibly articulates verified scope, empirical test metrics, known failure modes, human-in-the-loop requirements, and a controlled roadmap.",
     },
     {
       id: "guarantee-replacement",
       text: "Guarantee that Claude can replace the team and cut headcount immediately.",
       explanation:
-        "Sai: không có bằng chứng cho cam kết đó; hứa thay thế toàn bộ bỏ qua giới hạn, rủi ro và trách nhiệm con người.",
+        "Incorrect: unsubstantiated claims of labor replacement ignore operational boundaries, error rates, and necessary human oversight.",
     },
     {
       id: "no-review-needed",
       text: "Say that AI removes the need for human review because the model is consistent.",
       explanation:
-        "Sai: nhất quán không đồng nghĩa đúng; các quyết định quan trọng vẫn cần người có thẩm quyền review.",
+        "Incorrect: model consistency does not equal factual correctness; high-stakes claims intake demands qualified human review.",
     },
     {
       id: "demo-only",
       text: "Show an impressive demo and avoid discussing failure cases or operating constraints.",
       explanation:
-        "Sai: demo chọn lọc không đại diện cho vận hành thật; bỏ qua failure case là truyền đạt thiếu trung thực.",
+        "Incorrect: cherry-picked demos misrepresent production reliability; omitting known failure modes is deceptive.",
     },
   ],
   correctChoiceIds: ["scope-evidence-limits"],
   correctExplanation:
-    "Truyền đạt giá trị của Claude cần đi kèm phạm vi và giới hạn: đã test gì, kết quả đo ra sao, lỗi nào đã biết, ai review và bước tiếp theo là gì. Cam kết thay thế toàn bộ hoặc bỏ human review là những tuyên bố không có bằng chứng và làm xói mòn niềm tin.",
+    "Communicating Claude's enterprise value requires transparent articulation of scope and boundaries: what was evaluated, measured accuracy, discovered error modes, mandatory human checkpoints, and phased rollout steps. Promising full automation or dismissing human review violates ethical and engineering standards.",
   sourceIds: [
     "anthropic-evaluation-docs",
     "anthropic-claude-constitution",
@@ -243,42 +245,42 @@ const stakeholderEvidence: Question = questionSchema.parse({
       id: "measured-outcomes",
       text: "Quantify only outcomes the team actually measured, and state the test conditions.",
       explanation:
-        "Đúng: chỉ nêu số liệu đã đo, kèm điều kiện test, để người nghe hiểu phạm vi áp dụng.",
+        "Correct: reporting only empirically measured outcomes under defined test parameters prevents misleading overgeneralization.",
     },
     {
       id: "review-accountability",
       text: "Disclose where verification, escalation, and human accountability remain necessary.",
       explanation:
-        "Đúng: nêu rõ điểm cần con người kiểm tra và chịu trách nhiệm giúp mô tả đúng vai trò của AI.",
+        "Correct: explicitly identifying required human review gates and escalation pathways preserves institutional accountability.",
     },
     {
       id: "scope-failures",
       text: "State the scope, assumptions, and known failure modes alongside the benefits.",
       explanation:
-        "Đúng: giới hạn và failure mode là một phần của mô tả trung thực về năng lực.",
+        "Correct: presenting known failure modes and boundary assumptions alongside benefits provides an honest technical assessment.",
     },
     {
       id: "perfect-accuracy",
       text: "Claim 100% accuracy because the demo produced no errors.",
       explanation:
-        "Sai: một demo không chứng minh độ chính xác tuyệt đối; tuyên bố như vậy là phóng đại.",
+        "Incorrect: a flaw-free demo does not establish perfect accuracy; asserting zero errors is an ungrounded exaggeration.",
     },
     {
       id: "hide-failures",
       text: "Hide pilot failures so stakeholders stay enthusiastic.",
       explanation:
-        "Sai: che giấu thất bại ngăn người ra quyết định thấy rủi ro thật.",
+        "Incorrect: concealing pilot failures blinds leadership to operational risks and breaches governance ethics.",
     },
     {
       id: "promise-headcount",
       text: "Promise headcount reduction before measuring productivity or quality.",
       explanation:
-        "Sai: cam kết cắt giảm nhân sự khi chưa có dữ liệu là tuyên bố không có căn cứ.",
+        "Incorrect: promising labor cuts prior to empirical pilot measurement is speculative and ungrounded.",
     },
   ],
   correctChoiceIds: ["measured-outcomes", "review-accountability", "scope-failures"],
   correctExplanation:
-    "Giao tiếp có trách nhiệm dựa trên bằng chứng đo được, phạm vi và failure mode, đồng thời nói rõ human review và trách nhiệm. Tránh các tuyên bố tuyệt đối, che giấu lỗi hoặc hứa kết quả kinh doanh khi chưa có dữ liệu.",
+    "Responsible stakeholder communication centers on empirical evidence, explicit operational boundaries, and disclosed failure modes while clarifying the ongoing necessity of human review. Reject absolute accuracy claims or speculative business promises lacking baseline data.",
   sourceIds: [
     "anthropic-evaluation-docs",
     "anthropic-claude-constitution",
@@ -295,30 +297,30 @@ const confidentialContract: Question = questionSchema.parse({
       id: "policy-approved-minimize",
       text: "Follow the organization's data policy, use an approved workspace or project, and minimize or redact unnecessary sensitive details before uploading.",
       explanation:
-        "Đúng: cần kiểm tra chính sách, dùng môi trường được phê duyệt và chỉ đưa dữ liệu cần thiết; đây là cách giảm rủi ro pháp lý và bảo mật.",
+        "Correct: requires consulting enterprise data policy, utilizing approved corporate workspaces, and redacting unnecessary sensitive PII or commercial terms.",
     },
     {
       id: "paste-anyway",
       text: "Paste the full contract because summarization is a legitimate business task.",
       explanation:
-        "Sai: mục đích hợp pháp không thay thế quyền truy cập, chính sách dữ liệu hay nghĩa vụ bảo mật với khách hàng.",
+        "Incorrect: legitimate business intent does not supersede client confidentiality obligations or organizational data governance policies.",
     },
     {
       id: "redact-names",
       text: "Remove the client's name only and assume the rest of the contract is safe to upload.",
       explanation:
-        "Sai: hợp đồng có thể chứa điều khoản, giá, thông tin cá nhân và dữ liệu nhận diện khác; chỉ xóa tên chưa đủ.",
+        "Incorrect: contracts contain pricing terms, proprietary covenants, and identifiable context; redacting names alone is insufficient sanitization.",
     },
     {
       id: "personal-account",
       text: "Use a personal account so the organization's retention settings do not apply.",
       explanation:
-        "Sai: dùng tài khoản cá nhân có thể đưa dữ liệu công ty ra ngoài kiểm soát và vi phạm chính sách tổ chức.",
+        "Incorrect: processing enterprise client data in personal accounts constitutes unauthorized exfiltration and breaches compliance agreements.",
     },
   ],
   correctChoiceIds: ["policy-approved-minimize"],
   correctExplanation:
-    "Dữ liệu mật cần được xử lý theo chính sách của tổ chức, không chỉ theo khả năng kỹ thuật của công cụ. Dùng tài khoản và workspace được phê duyệt, giảm thiểu hoặc che dữ liệu không cần thiết, và kiểm tra retention/training settings là các bước cơ bản trước khi upload.",
+    "Confidential data handling must strictly follow organizational governance rather than individual discretion. Utilizing approved enterprise workspaces with appropriate training opt-out guarantees, practicing data minimization, and redacting unnecessary PII are mandatory safeguards.",
   sourceIds: [
     "anthropic-privacy-policy",
     "anthropic-google-workspace-connectors",
@@ -335,42 +337,42 @@ const privacyControls: Question = questionSchema.parse({
       id: "classify",
       text: "Classify the sensitivity of data before deciding whether and where to upload it.",
       explanation:
-        "Đúng: phân loại dữ liệu giúp áp đúng mức bảo vệ và tránh đưa dữ liệu mật vào môi trường không phù hợp.",
+        "Correct: data classification determines applicable protective controls and prevents ingesting restricted data into unapproved workspaces.",
     },
     {
       id: "least-privilege",
       text: "Use approved accounts and grant connectors the least access needed for the task.",
       explanation:
-        "Đúng: tài khoản được phê duyệt và quyền tối thiểu giảm phạm vi dữ liệu có thể bị lộ.",
+        "Correct: approved corporate accounts and least-privilege connector permissions restrict the blast radius of data exposure.",
     },
     {
       id: "minimize-retention",
       text: "Minimize or redact unnecessary details and check retention and training settings.",
       explanation:
-        "Đúng: giảm dữ liệu đầu vào và hiểu retention/training giúp kiểm soát vòng đời thông tin.",
+        "Correct: minimizing input data and verifying enterprise training/retention configurations preserves lifecycle data privacy.",
     },
     {
       id: "delete-assumption",
       text: "Assume deleting a chat immediately removes every copy from all systems and third parties.",
       explanation:
-        "Sai: xóa chat không tự động xóa mọi bản sao ở hệ thống khác hoặc dịch vụ bên thứ ba; cần kiểm tra chính sách lưu trữ.",
+        "Incorrect: deleting chats removes user-facing history, but enterprise archival backups and third-party connector systems follow separate retention policies.",
     },
     {
       id: "personal-drive",
       text: "Connect a personal Drive account to a work project to make files easier to find.",
       explanation:
-        "Sai: kết nối tài khoản cá nhân có thể vượt kiểm soát của tổ chức và trộn dữ liệu ngoài phạm vi.",
+        "Incorrect: connecting personal storage to corporate workspaces bypasses organizational security governance.",
     },
     {
       id: "upload-everything",
       text: "Upload the full dataset by default so Claude never lacks context.",
       explanation:
-        "Sai: tải toàn bộ dữ liệu làm tăng phạm vi rủi ro và vi phạm nguyên tắc tối thiểu hóa.",
+        "Incorrect: uploading full datasets violates data minimization principles and increases context rot and exposure risk.",
     },
   ],
   correctChoiceIds: ["classify", "least-privilege", "minimize-retention"],
   correctExplanation:
-    "Giảm rủi ro riêng tư là kết hợp phân loại dữ liệu, quyền tối thiểu và tối thiểu hóa nội dung. Cần hiểu retention/training settings và giới hạn của việc xóa chat; không nên giả định mọi bản sao biến mất ngay hoặc dùng tài khoản cá nhân cho dữ liệu công việc.",
+    "Privacy risk mitigation combines formal data classification, least-privilege connector permissions, and proactive data minimization. Understand enterprise training settings and retention lifecycles rather than assuming instantaneous deletion across all integrated services.",
   sourceIds: [
     "anthropic-privacy-policy",
     "anthropic-google-workspace-connectors",
@@ -387,30 +389,30 @@ const thirdPartyConnectorGovernance: Question = questionSchema.parse({
       id: "verify-rights-permissions-and-terms",
       text: "Confirm the team has permission to use the transcripts, verify workspace retention and training settings, account for the third-party service's own privacy terms, and restrict connector write actions to least privilege.",
       explanation:
-        "Đúng: người dùng phải có quyền đối với dữ liệu, kiểm tra retention/training settings, lưu ý rằng tích hợp bên thứ ba xử lý dữ liệu theo chính sách riêng của họ, và giới hạn quyền connector theo nguyên tắc least privilege.",
+        "Correct: users must hold legal authorization to process the data, audit enterprise retention/training terms, account for third-party privacy policies, and restrict connector actions under least privilege.",
     },
     {
       id: "provider-policy-overrides-drive",
       text: "Enable the connector immediately because Anthropic's Privacy Policy automatically overrides Google Drive's terms and restricts folder access to read-only.",
       explanation:
-        "Sai: tích hợp bên thứ ba vẫn chịu sự điều chỉnh của chính sách riêng bên đó, và connector thừa hưởng quyền của người dùng trừ khi được giới hạn rõ ràng.",
+        "Incorrect: Anthropic's policies cannot override third-party service terms, and connectors inherit user permissions unless explicitly constrained.",
     },
     {
       id: "connector-grants-extra-access",
       text: "Use the connector so team members without Drive access can read restricted transcripts inside the Project.",
       explanation:
-        "Sai: connector thừa hưởng quyền của tài khoản kết nối trong hệ thống nguồn và không phải cơ chế để vượt qua kiểm soát truy cập của tổ chức.",
+        "Incorrect: connectors inherit native source permissions and must never be used to circumvent organizational access control boundaries.",
     },
     {
       id: "skip-classification-for-internal-drive",
       text: "Skip data classification and redaction because files stored in a company Drive folder are already approved for any AI workflow.",
       explanation:
-        "Sai: dữ liệu lưu nội bộ vẫn có thể chứa thông tin cá nhân hoặc nhạy cảm và cần được phân loại, tối thiểu hóa trước khi đưa vào AI workflow.",
+        "Incorrect: internal storage files may contain sensitive PII or restricted customer data requiring classification and minimization before AI ingestion.",
     },
   ],
   correctChoiceIds: ["verify-rights-permissions-and-terms"],
   correctExplanation:
-    "Theo Privacy Policy và tài liệu connector của Anthropic, người dùng chịu trách nhiệm bảo đảm có quyền sử dụng dữ liệu trước khi tải lên hoặc kết nối dịch vụ bên thứ ba; các tích hợp bên thứ ba xử lý dữ liệu theo chính sách riêng của họ; và connector thừa hưởng quyền từ hệ thống nguồn trong khi Owner có thể giới hạn các hành động như write. Vì vậy cần kiểm tra quyền dữ liệu, retention/training settings và áp dụng least privilege trước khi bật tích hợp.",
+    "Under Anthropic's Privacy Policy and connector documentation, customers are responsible for holding proper authorization prior to uploading or integrating data; third-party integrations process data under their respective privacy terms; and connectors inherit native source ACLs while allowing administrators to restrict write actions under least privilege.",
   sourceIds: [
     "anthropic-privacy-policy",
     "anthropic-connectors-help",
@@ -427,30 +429,30 @@ const hiringScreeningPolicy: Question = questionSchema.parse({
       id: "policy-high-risk-review",
       text: "Check the organization's policy and the provider's high-risk use requirements, including qualified human review and disclosure, before any use.",
       explanation:
-        "Đúng: tuyển dụng là high-risk area; cần kiểm tra chính sách, yêu cầu human review, disclosure và quy trình phê duyệt trước khi dùng.",
+        "Correct: employment screening is explicitly classified as a High-Risk Decision; verifying organizational policy, qualified human oversight, and AI disclosure is mandatory.",
     },
     {
       id: "proceed-accuracy",
       text: "Proceed because the model is accurate and the ranking saves time.",
       explanation:
-        "Sai: độ chính xác không thay thế yêu cầu pháp lý, chính sách và trách nhiệm con người trong quyết định tuyển dụng.",
+        "Incorrect: perceived accuracy and time savings do not waive legal, regulatory, and human accountability requirements in high-stakes hiring.",
     },
     {
       id: "add-disclaimer",
       text: "Add a disclaimer to the rejection email and let the model decide the ranking.",
       explanation:
-        "Sai: disclaimer không đủ; cần người có năng lực review và chịu trách nhiệm, cùng với kiểm tra chính sách.",
+        "Incorrect: disclaimers are insufficient; high-risk employment decisions require qualified human oversight and auditable review gates.",
     },
     {
       id: "ask-claude-policy",
       text: "Ask Claude whether the use is allowed and follow its answer as legal advice.",
       explanation:
-        "Sai: Claude không phải cố vấn pháp lý và không thể thay thế chính sách tổ chức hay đánh giá tuân thủ.",
+        "Incorrect: Claude cannot provide legal counsel or authoritatively determine organizational compliance.",
     },
   ],
   correctChoiceIds: ["policy-high-risk-review"],
   correctExplanation:
-    "Tuyển dụng và sàng lọc ứng viên thuộc nhóm high-risk. Trước khi dùng, cần đối chiếu chính sách tổ chức và yêu cầu của nhà cung cấp, bảo đảm người có năng lực review, minh bạch việc dùng AI và có quy trình phê duyệt. Đây là nguyên tắc quản trị, không phải tư vấn pháp lý.",
+    "Employment screening and candidate evaluation represent High-Risk Decisions under Anthropic's Usage Policy. Prior to implementation, organizations must verify compliance policies, establish qualified human oversight, ensure AI transparency, and provide formal review channels. This constitutes operational governance, not legal advice.",
   sourceIds: [
     "anthropic-usage-policy",
     "anthropic-claude-constitution",
@@ -467,42 +469,42 @@ const governanceOperations: Question = questionSchema.parse({
       id: "map-policy",
       text: "Map each use case to the organization's policy and required approval before launch.",
       explanation:
-        "Đúng: ánh xạ use case với chính sách và cấp phê duyệt giúp phát hiện rủi ro trước khi triển khai.",
+        "Correct: mapping use cases to organizational policy and formal approval gates identifies legal and operational risks prior to deployment.",
     },
     {
       id: "document-review",
       text: "Document human review, escalation paths, and the evidence used for important decisions.",
       explanation:
-        "Đúng: hồ sơ review và escalation tạo khả năng giải trình và cải thiện khi có sự cố.",
+        "Correct: documenting review gates and escalation trails ensures institutional accountability and enables post-incident audits.",
     },
     {
       id: "review-updates",
       text: "Review policy and vendor changes on a schedule and train users on the current rules.",
       explanation:
-        "Đúng: chính sách và sản phẩm thay đổi; review định kỳ và đào tạo giữ người dùng cập nhật.",
+        "Correct: policies and model capabilities evolve; scheduled reviews and user training maintain compliance over time.",
     },
     {
       id: "vendor-only",
       text: "Rely only on the vendor's usage policy and ignore the organization's own standards.",
       explanation:
-        "Sai: chính sách nhà cung cấp là mức tối thiểu, không thay thế yêu cầu và trách nhiệm của tổ chức.",
+        "Incorrect: vendor usage policies establish a regulatory baseline; they do not replace enterprise-specific compliance standards.",
     },
     {
       id: "self-approve",
       text: "Let individual users approve their own exceptions to move faster.",
       explanation:
-        "Sai: tự phê duyệt ngoại lệ làm mất kiểm soát và trách nhiệm giải trình.",
+        "Incorrect: self-approving exceptions eliminates governance controls and destroys institutional accountability.",
     },
     {
       id: "no-audit",
       text: "Skip audit trails because the model's answers are not official records.",
       explanation:
-        "Sai: audit trail vẫn cần cho quyết định quan trọng, điều tra sự cố và chứng minh tuân thủ.",
+        "Incorrect: audit trails are essential for investigating errors, validating compliance, and reviewing high-stakes decisions.",
     },
   ],
   correctChoiceIds: ["map-policy", "document-review", "review-updates"],
   correctExplanation:
-    "Quản trị tốt nối use case với chính sách, ghi lại review và escalation, đồng thời cập nhật khi chính sách hoặc sản phẩm thay đổi. Chính sách của nhà cung cấp không thay thế tiêu chuẩn nội bộ; người dùng cũng không nên tự phê duyệt ngoại lệ.",
+    "Effective AI governance aligns use cases with corporate policy, documents human review and escalation trails, and schedules recurring audits as provider guidelines evolve. Vendor policies represent a baseline and cannot substitute for internal enterprise standards.",
   sourceIds: [
     "anthropic-usage-policy",
     "anthropic-privacy-policy",
@@ -519,30 +521,30 @@ const optimizeBaseline: Question = questionSchema.parse({
       id: "measure-baseline",
       text: "Measure the current quality, latency, and cost on representative cases, then identify the largest bottleneck before changing anything.",
       explanation:
-        "Đúng: baseline và bottleneck giúp chọn thay đổi có tác động thật thay vì tối ưu theo cảm giác.",
+        "Correct: establishing empirical baseline metrics across quality, latency, and cost isolates the true bottleneck, enabling targeted technical interventions.",
     },
     {
       id: "cut-context",
       text: "Cut most of the context immediately to reduce tokens.",
       explanation:
-        "Sai: cắt context có thể làm mất thông tin cần thiết và giảm chất lượng trước khi biết đâu là nút thắt.",
+        "Incorrect: arbitrarily truncating context risks removing essential grounding data and inducing hallucinations before diagnosing bottlenecks.",
     },
     {
       id: "largest-model",
       text: "Switch to the largest model and assume it will make the workflow cheaper.",
       explanation:
-        "Sai: model lớn hơn thường tăng chi phí và độ trễ; không giải quyết nguyên nhân chậm hay đắt.",
+        "Incorrect: escalating to larger model tiers increases per-token costs and latency without resolving underlying pipeline inefficiencies.",
     },
     {
       id: "remove-qa",
       text: "Remove quality checks to shorten the process.",
       explanation:
-        "Sai: bỏ QA có thể giảm thời gian trước mắt nhưng tăng lỗi và chi phí sửa chữa về sau.",
+        "Incorrect: eliminating quality assurance checks may reduce latency temporarily, but amplifies production defects and costly remediation.",
     },
   ],
   correctChoiceIds: ["measure-baseline"],
   correctExplanation:
-    "Tối ưu hóa phải bắt đầu bằng đo lường: chất lượng, độ trễ và chi phí trên các case đại diện. Khi biết nút thắt lớn nhất, mới chọn thay đổi phù hợp như giảm context dư thừa, điều chỉnh model/effort, hoặc dùng batch/caching. Cắt bừa hoặc đổi model mà không đo dễ làm hỏng chất lượng.",
+    "Workflow optimization begins with empirical measurement: quantify baseline quality, latency, and token expenditure across representative test cases. Pinpointing whether the true bottleneck is bloated context, over-provisioned models, or un-cached prefixes drives targeted optimization rather than blind trial and error.",
   sourceIds: [
     "anthropic-evaluation-docs",
     "anthropic-models-overview",
@@ -559,42 +561,42 @@ const optimizePractices: Question = questionSchema.parse({
       id: "baseline-metrics",
       text: "Establish baseline metrics for quality, latency, and cost before changing the workflow.",
       explanation:
-        "Đúng: baseline là mốc để biết thay đổi có thực sự cải thiện hay chỉ dịch chuyển chi phí.",
+        "Correct: baselines provide the comparative benchmark required to verify whether technical adjustments delivered true net improvements.",
     },
     {
       id: "reduce-repetition",
       text: "Remove repeated or low-value context and use caching or batch processing where the workload fits.",
       explanation:
-        "Đúng: giảm token lặp lại và dùng caching/batch đúng chỗ có thể giảm chi phí và độ trễ.",
+        "Correct: pruning redundant context and applying prompt caching or batch APIs directly minimizes token expenditures and latency.",
     },
     {
       id: "right-size",
       text: "Right-size the model and effort level for each task instead of using the largest setting everywhere.",
       explanation:
-        "Đúng: chọn model và effort phù hợp giúp cân bằng chất lượng với chi phí, độ trễ.",
+        "Correct: assigning smaller models (Haiku) to routine classification and reserving top tiers (Sonnet) for synthesis optimizes cost-efficiency.",
     },
     {
       id: "remove-human-review",
       text: "Remove human review to shorten the workflow.",
       explanation:
-        "Sai: bỏ human review có thể làm giảm chất lượng và tăng rủi ro, đặc biệt với quyết định quan trọng.",
+        "Incorrect: removing human review on high-stakes tasks introduces unacceptable compliance and error risks.",
     },
     {
       id: "optimize-before-measure",
       text: "Optimize before measuring so the team can move faster.",
       explanation:
-        "Sai: tối ưu không có baseline không xác định được cải thiện hay regression.",
+        "Incorrect: optimizing without baseline measurements prevents teams from detecting regressions or quantifying actual gains.",
     },
     {
       id: "silent-quality-loss",
       text: "Accept a large quality drop as long as the workflow becomes cheaper.",
       explanation:
-        "Sai: giảm chi phí bằng cách hạ chất lượng âm thầm là đánh đổi không được đo và có thể gây hậu quả lớn hơn.",
+        "Incorrect: silently degrading quality to reduce token costs represents an unapproved operational failure.",
     },
   ],
   correctChoiceIds: ["baseline-metrics", "reduce-repetition", "right-size"],
   correctExplanation:
-    "Tối ưu hiệu quả dựa trên baseline và đánh đổi có ý thức: giảm context lặp, dùng caching/batch khi phù hợp, và chọn model/effort theo task. Không nên cắt human review hoặc chấp nhận mất chất lượng mà không đo, vì tiết kiệm trước mắt có thể che giấu chi phí và rủi ro lớn hơn.",
+    "Effective workflow optimization balances quality, latency, and cost using empirical baselines: eliminate repetitive context, leverage prompt caching and batch APIs, and right-size model tiers per task. Never sacrifice non-negotiable quality thresholds or eliminate human checkpoints to cut costs.",
   sourceIds: [
     "anthropic-evaluation-docs",
     "anthropic-models-overview",

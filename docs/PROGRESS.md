@@ -10,6 +10,7 @@
 - [x] Dependencies installed and scaffold validated (2026-10-26).
 - [x] GitHub remote configured and commits pushed (2026-10-26).
 - [ ] Organization renamed/created as `DevAtlasLab` and repository visibility set to private.
+- [x] Full English platform migration completed (Phase C2.12, 2026-10-31): All 8 curriculum lessons, 105 question bank items, 7 interactive visualizations, practice sets, timed exam runners, and UI migrated to professional English for direct CCAO-F exam readiness, with bilingual Vietnamese lookup preserved in Glossary and key terms.
 - [x] Official exam guide researched and verified (2026-10-26).
 - [x] Learning UI shell and design system implemented (Phase B).
 - [x] First lesson vertical slice implemented (sample lesson, not mapped to an official objective).

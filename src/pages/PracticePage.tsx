@@ -316,7 +316,7 @@ export function PracticePage() {
         <Link to="/progress">Progress</Link>.
       </Callout>
 
-      <div className="study-filters" role="group" aria-label="Chế độ thực hành" style={{ marginBottom: "var(--space-4)" }}>
+      <div className="study-filters" role="group" aria-label="Practice mode" style={{ marginBottom: "var(--space-4)" }}>
         <button
           type="button"
           className="study-filter"
@@ -324,7 +324,7 @@ export function PracticePage() {
           onClick={() => setMode("sets")}
         >
           <BookOpen size={14} strokeWidth={2} aria-hidden="true" />
-          <span>Bộ đề theo chủ đề ({practiceSets.length} bộ đề)</span>
+          <span>Topic-based sets ({practiceSets.length} sets)</span>
         </button>
         <button
           type="button"
@@ -333,7 +333,7 @@ export function PracticePage() {
           onClick={() => setMode("drill")}
         >
           <Sparkles size={14} strokeWidth={2} aria-hidden="true" />
-          <span>Ôn tập toàn diện — Tức thì ({questionBankEntries.length} câu hỏi)</span>
+          <span>Comprehensive Drill — Instant check ({questionBankEntries.length} items)</span>
         </button>
       </div>
 
@@ -351,15 +351,15 @@ export function PracticePage() {
               </span>
             </div>
 
-            <div className="practice-toolbar" role="region" aria-label="Bộ lọc và tìm kiếm bài thực hành">
-              <div className="study-filters" role="group" aria-label="Lọc theo phân loại bộ đề">
+            <div className="practice-toolbar" role="region" aria-label="Practice filters and search">
+              <div className="study-filters" role="group" aria-label="Filter by practice category">
                 <button
                   className="study-filter"
                   type="button"
                   aria-pressed={categoryFilter === "all"}
                   onClick={() => setCategoryFilter("all")}
                 >
-                  Tất cả bộ đề ({categoryCounts.all})
+                  All sets ({categoryCounts.all})
                 </button>
                 <button
                   className="study-filter"
@@ -367,7 +367,7 @@ export function PracticePage() {
                   aria-pressed={categoryFilter === "domains"}
                   onClick={() => setCategoryFilter("domains")}
                 >
-                  Theo từng Domain ({categoryCounts.domains})
+                  By domain ({categoryCounts.domains})
                 </button>
                 <button
                   className="study-filter"
@@ -375,7 +375,7 @@ export function PracticePage() {
                   aria-pressed={categoryFilter === "specialized"}
                   onClick={() => setCategoryFilter("specialized")}
                 >
-                  Chuyên sâu & Ôn nhanh ({categoryCounts.specialized})
+                  Specialized & Quick drills ({categoryCounts.specialized})
                 </button>
               </div>
 
@@ -385,17 +385,17 @@ export function PracticePage() {
                   <input
                     className="practice-search-input"
                     type="search"
-                    placeholder="Tìm theo tên bộ đề, domain, từ khóa..."
+                    placeholder="Search set title, domain, keywords..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    aria-label="Tìm kiếm bộ đề thực hành"
+                    aria-label="Search practice sets"
                   />
                   {searchQuery ? (
                     <button
                       className="practice-search-clear"
                       type="button"
                       onClick={() => setSearchQuery("")}
-                      aria-label="Xóa nội dung tìm kiếm"
+                      aria-label="Clear search input"
                     >
                       <X size={14} strokeWidth={2} aria-hidden="true" />
                     </button>
@@ -404,7 +404,7 @@ export function PracticePage() {
 
                 <div className="practice-status-wrap">
                   <label className="practice-status-label" htmlFor="practice-status-filter">
-                    Trạng thái:
+                    Status:
                   </label>
                   <select
                     className="practice-status-select"
@@ -412,17 +412,17 @@ export function PracticePage() {
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value as PracticeStatusFilter)}
                   >
-                    <option value="all">Mọi trạng thái</option>
-                    <option value="not-started">Chưa làm</option>
-                    <option value="in-progress">Đang làm dở</option>
-                    <option value="completed">Đã hoàn thành</option>
+                    <option value="all">All statuses</option>
+                    <option value="not-started">Not started</option>
+                    <option value="in-progress">In progress</option>
+                    <option value="completed">Completed</option>
                   </select>
                 </div>
               </div>
 
               <div className="practice-counts-summary">
                 <span>
-                  Hiển thị {filteredSets.length} / {practiceSets.length} bộ đề
+                  Showing {filteredSets.length} of {practiceSets.length} sets
                 </span>
                 {categoryFilter !== "all" || statusFilter !== "all" || searchQuery ? (
                   <button
@@ -435,7 +435,7 @@ export function PracticePage() {
                     }}
                   >
                     <RotateCcw size={12} strokeWidth={2} aria-hidden="true" />
-                    Xóa bộ lọc
+                    Clear filters
                   </button>
                 ) : null}
               </div>
@@ -475,7 +475,7 @@ export function PracticePage() {
             ) : (
               <EmptyState
                 icon={Search}
-                title="Không tìm thấy bộ đề phù hợp"
+                title="No matching practice sets found"
                 actions={
                   <button
                     className="button button--secondary"
@@ -487,11 +487,11 @@ export function PracticePage() {
                     }}
                   >
                     <RotateCcw size={14} strokeWidth={2} aria-hidden="true" />
-                    Đặt lại bộ lọc
+                    Reset filters
                   </button>
                 }
               >
-                Không có bộ đề thực hành nào thỏa mãn tiêu chí tìm kiếm và lọc hiện tại. Hãy thử chọn danh mục khác hoặc xóa từ khóa tìm kiếm.
+                No practice sets match the current filter and search criteria. Try selecting another category or clearing your search.
               </EmptyState>
             )}
           </section>

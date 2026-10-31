@@ -111,20 +111,20 @@ export function TimedExamResultView({
   const avgSec = avgSecPerQuestion % 60;
 
   let pacingTone: "ok" | "warn" | "neutral" | "accent" = "accent";
-  let pacingTitle = "Tốc độ chuẩn mực (~2 phút/câu)";
+  let pacingTitle = "Target pace (~2 min/item)";
   let pacingAdvice =
-    "Bạn duy trì nhịp độ làm bài rất cân đối, bám sát hạn ngạch 120 phút cho 60 câu của kỳ thi CCAO-F.";
+    "You maintained a very balanced pace, closely matching the 120-minute allowance for 60 questions on the CCAO-F exam.";
 
   if (avgSecPerQuestion > 0 && avgSecPerQuestion < 105) {
     pacingTone = "ok";
-    pacingTitle = "Tốc độ nhanh (<1m45s/câu)";
+    pacingTitle = "Fast pace (<1m45s/item)";
     pacingAdvice =
-      "Bạn hoàn thành bài thi với tốc độ nhanh. Hãy tận dụng lượng thời gian dư này để rà soát kỹ các câu kịch bản nhiều bước (Multi-step scenarios).";
+      "You finished at a fast pace. Use extra time to thoroughly review multi-step scenario questions.";
   } else if (avgSecPerQuestion > 135) {
     pacingTone = "warn";
-    pacingTitle = "Nhịp độ chậm (>2m15s/câu) — Nguy cơ thiếu giờ";
+    pacingTitle = "Slow pace (>2m15s/item) — Time risk";
     pacingAdvice =
-      "Trong phòng thi thật, hãy giải quyết nhanh các câu lý thuyết ngắn (1–1.5 phút) và gắn cờ (Flag) câu phức tạp để quay lại sau, tránh bị áp lực thời gian ở cuối bài.";
+      "In the real exam, solve quick concept questions rapidly (1–1.5 min) and flag complex scenarios to revisit later, avoiding late-exam time pressure.";
   }
 
   // ── Review Filter Indices ───────────────────────────────────────────────────
@@ -199,23 +199,23 @@ export function TimedExamResultView({
               tabIndex={-1}
               ref={resultHeadingRef}
             >
-              Kết quả bài thi thử
+              Timed exam results
             </h2>
             <p className="timed-submission" data-reason={submissionReason}>
               {submissionReason === "time-expired" ? (
                 <>
                   <Clock size={13} strokeWidth={2} aria-hidden="true" />
                   <span className="badge badge--warn">Automatic expiry</span>
-                  Hết giờ — bài được nộp tự động tại hạn chót.
+                  Time expired — exam automatically submitted at the deadline.
                 </>
               ) : (
                 <>
                   <span className="badge badge--ok">Manual submission</span>
-                  Bạn đã nộp bài thủ công trước khi hết giờ.
+                  You manually submitted your exam before the time limit.
                 </>
               )}
               <span className="timed-submission-time">
-                Nộp lúc <time dateTime={result.submittedAt}>{formatLocalTimestamp(result.submittedAt)}</time>
+                Submitted at <time dateTime={result.submittedAt}>{formatLocalTimestamp(result.submittedAt)}</time>
               </span>
             </p>
           </div>
@@ -224,27 +224,27 @@ export function TimedExamResultView({
 
         <dl className="stat-grid assessment-stats">
           <div className="stat">
-            <dt className="stat-label">Tổng số câu</dt>
+            <dt className="stat-label">Total questions</dt>
             <dd className="stat-value">{result.totalQuestions}</dd>
           </div>
           <div className="stat">
-            <dt className="stat-label">Đã trả lời</dt>
+            <dt className="stat-label">Answered</dt>
             <dd className="stat-value">{result.answeredQuestions}</dd>
           </div>
           <div className="stat">
-            <dt className="stat-label">Đúng</dt>
+            <dt className="stat-label">Correct</dt>
             <dd className="stat-value">{result.correctAnswers}</dd>
           </div>
           <div className="stat">
-            <dt className="stat-label">Sai</dt>
+            <dt className="stat-label">Incorrect</dt>
             <dd className="stat-value">{result.incorrectAnswers}</dd>
           </div>
           <div className="stat">
-            <dt className="stat-label">Chưa trả lời</dt>
+            <dt className="stat-label">Unanswered</dt>
             <dd className="stat-value">{result.unansweredQuestions}</dd>
           </div>
           <div className="stat">
-            <dt className="stat-label">Đã đánh dấu</dt>
+            <dt className="stat-label">Flagged</dt>
             <dd className="stat-value">{counts.flagged}</dd>
           </div>
           <div className="stat">
@@ -254,10 +254,7 @@ export function TimedExamResultView({
         </dl>
 
         <p className="assessment-disclaimer">
-          Đây là kết quả thô (raw performance) của bài luyện tập có giờ, không phải điểm scaled chính
-          thức trên thang 100–1.000 và không phải dự đoán đậu/rớt. Mỗi câu được chấm theo exact set
-          với chế độ all-or-nothing; câu chưa trả lời được tính là sai và được báo riêng. Không có
-          partial credit.
+          This is a raw performance score from a timed simulation, not an official scaled score on the 100–1,000 scale and not a pass/fail prediction. Each question is scored on the exact set with all-or-nothing grading; unanswered items count as incorrect and are reported separately. No partial credit.
         </p>
 
         {/* ── Pacing / Time Analysis Section ─────────────────────────────────── */}
@@ -265,34 +262,34 @@ export function TimedExamResultView({
           <div className="timed-pacing-head">
             <div className="timed-pacing-title-wrap">
               <Gauge size={16} className="text-accent" aria-hidden="true" />
-              <h3 className="timed-pacing-title">Phân tích nhịp độ & thời gian (Pacing Analysis)</h3>
+              <h3 className="timed-pacing-title">Pacing analysis</h3>
             </div>
             <Badge tone={pacingTone}>{pacingTitle}</Badge>
           </div>
 
           <div className="timed-pacing-grid">
             <div className="timed-pacing-stat">
-              <span className="timed-pacing-stat-label">Thời gian làm bài</span>
+              <span className="timed-pacing-stat-label">Elapsed time</span>
               <span className="timed-pacing-stat-value">
                 {totalMinutes}m {remainingSec}s / 120m
               </span>
               <span className="timed-pacing-stat-hint">
-                {Math.round((totalElapsedSec / (120 * 60)) * 100)}% thời lượng cho phép
+                {Math.round((totalElapsedSec / (120 * 60)) * 100)}% of total allowed time
               </span>
             </div>
 
             <div className="timed-pacing-stat">
-              <span className="timed-pacing-stat-label">Tốc độ trung bình / câu</span>
+              <span className="timed-pacing-stat-label">Average pace per item</span>
               <span className="timed-pacing-stat-value">
-                {avgMin}m {avgSec}s / câu
+                {avgMin}m {avgSec}s / item
               </span>
               <span className="timed-pacing-stat-hint">
-                Mục tiêu SLA chuẩn: 2m 00s / câu
+                Target benchmark: 2m 00s / item
               </span>
             </div>
 
             <div className="timed-pacing-stat">
-              <span className="timed-pacing-stat-label">Đánh giá nhịp độ</span>
+              <span className="timed-pacing-stat-label">Pacing evaluation</span>
               <span className="timed-pacing-stat-value">{pacingTitle}</span>
               <span className="timed-pacing-stat-hint">{pacingAdvice}</span>
             </div>
@@ -301,7 +298,7 @@ export function TimedExamResultView({
 
         {domainBreakdown.length > 0 ? (
           <div className="assessment-breakdown">
-            <h3 className="assessment-breakdown-title">Phân tích theo official domain</h3>
+            <h3 className="assessment-breakdown-title">Breakdown by official domain</h3>
             <div className="table-wrap">
               <table className="data-table">
                 <caption className="sr-only">Timed exam performance by official domain</caption>
@@ -324,7 +321,7 @@ export function TimedExamResultView({
                           <div className="table-remediation">
                             {row.lessonId && row.lessonTitle ? (
                               <Link className="inline-link" to={`/learn/${row.lessonId}`}>
-                                Bài học: {row.lessonTitle}
+                                Lesson: {row.lessonTitle}
                               </Link>
                             ) : null}
                             {row.practiceSetId ? (
@@ -332,7 +329,7 @@ export function TimedExamResultView({
                                 className="inline-link"
                                 to={`/practice?set=${encodeURIComponent(row.practiceSetId)}`}
                               >
-                                Luyện tập Domain {row.code}
+                                Practice Domain {row.code}
                               </Link>
                             ) : null}
                           </div>
@@ -357,22 +354,22 @@ export function TimedExamResultView({
       <section className="section timed-review" aria-labelledby="timed-review-title">
         <div className="section-heading-row">
           <h3 className="section-title" id="timed-review-title">
-            Xem lại từng câu
+            Review questions
           </h3>
           <span className="section-note">
-            Đáp án đã chọn, đáp án đúng, giải thích và nguồn tham chiếu
+            Your answers, correct answers, detailed explanations, and reference sources
           </span>
         </div>
 
         {/* ── Review Mode Filter Bar ────────────────────────────────────────── */}
-        <div className="timed-review-filters" role="group" aria-label="Bộ lọc câu hỏi xem lại">
+        <div className="timed-review-filters" role="group" aria-label="Review question filters">
           <button
             type="button"
             className={`timed-filter-btn ${reviewFilter === "all" ? "timed-filter-btn--active" : ""}`}
             aria-pressed={reviewFilter === "all"}
             onClick={() => setReviewFilter("all")}
           >
-            Tất cả <span className="timed-filter-count">{result.totalQuestions}</span>
+            All <span className="timed-filter-count">{result.totalQuestions}</span>
           </button>
           <button
             type="button"
@@ -386,7 +383,7 @@ export function TimedExamResultView({
               if (first !== -1) setIndex(first);
             }}
           >
-            Câu sai <span className="timed-filter-count">{result.incorrectAnswers}</span>
+            Incorrect <span className="timed-filter-count">{result.incorrectAnswers}</span>
           </button>
           <button
             type="button"
@@ -400,7 +397,7 @@ export function TimedExamResultView({
               if (first !== -1) setIndex(first);
             }}
           >
-            Chưa trả lời <span className="timed-filter-count">{result.unansweredQuestions}</span>
+            Unanswered <span className="timed-filter-count">{result.unansweredQuestions}</span>
           </button>
           <button
             type="button"
@@ -414,7 +411,7 @@ export function TimedExamResultView({
               if (first !== -1) setIndex(first);
             }}
           >
-            Đã đánh dấu <span className="timed-filter-count">{counts.flagged}</span>
+            Flagged <span className="timed-filter-count">{counts.flagged}</span>
           </button>
           <button
             type="button"
@@ -428,7 +425,7 @@ export function TimedExamResultView({
               if (first !== -1) setIndex(first);
             }}
           >
-            Câu đúng <span className="timed-filter-count">{result.correctAnswers}</span>
+            Correct <span className="timed-filter-count">{result.correctAnswers}</span>
           </button>
         </div>
 

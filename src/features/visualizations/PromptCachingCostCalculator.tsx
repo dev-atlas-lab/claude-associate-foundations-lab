@@ -19,7 +19,7 @@ interface ModelPricing {
 const modelProfiles: Record<ModelKey, ModelPricing> = {
   haiku: {
     name: "Claude 3.5 Haiku",
-    badge: "Tốc độ cao & Chi phí thấp nhất",
+    badge: "Highest Speed & Lowest Cost",
     inputPerMillion: 1.0,
     cacheReadPerMillion: 0.1, // 90% discount
     cacheWritePerMillion: 1.25, // 1.25x initial write
@@ -27,11 +27,11 @@ const modelProfiles: Record<ModelKey, ModelPricing> = {
     minCacheTokens: 2048,
     typicalTtftUncachedMs: 450,
     typicalTtftCachedMs: 150,
-    roleDescription: "Rất phù hợp cho phân loại ý định, trích xuất dữ liệu, gắn thẻ nhanh và các bước trung gian.",
+    roleDescription: "Ideal for intent classification, data extraction, fast tagging, and intermediate workflow steps.",
   },
   sonnet: {
     name: "Claude 3.5 Sonnet",
-    badge: "Tiêu chuẩn vàng cho Doanh nghiệp",
+    badge: "Enterprise Standard Balance",
     inputPerMillion: 3.0,
     cacheReadPerMillion: 0.3, // 90% discount
     cacheWritePerMillion: 3.75, // 1.25x
@@ -39,11 +39,11 @@ const modelProfiles: Record<ModelKey, ModelPricing> = {
     minCacheTokens: 1024,
     typicalTtftUncachedMs: 1200,
     typicalTtftCachedMs: 350,
-    roleDescription: "Cân bằng tối ưu giữa năng lực suy luận sâu sắc, phân tích đa bước và hiệu quả kinh tế.",
+    roleDescription: "Optimal balance between deep multi-step reasoning, coding, and economics.",
   },
   opus: {
     name: "Claude 3 Opus",
-    badge: "Suy luận Phức tạp Chuyên sâu",
+    badge: "Deep Complex Reasoning",
     inputPerMillion: 15.0,
     cacheReadPerMillion: 1.5, // 90% discount
     cacheWritePerMillion: 18.75, // 1.25x
@@ -51,7 +51,7 @@ const modelProfiles: Record<ModelKey, ModelPricing> = {
     minCacheTokens: 1024,
     typicalTtftUncachedMs: 2800,
     typicalTtftCachedMs: 800,
-    roleDescription: "Phù hợp cho lập luận đa tầng, phân tích pháp lý chuyên sâu và giải quyết vấn đề toán học/chiến lược mở.",
+    roleDescription: "Suited for multi-layered argumentation, nuanced legal synthesis, and open-ended strategic analysis.",
   },
 };
 
@@ -100,7 +100,7 @@ export function PromptCachingCostCalculator({ intro }: { intro: string }) {
       <div className="calc-header">
         <div className="calc-title-row">
           <Calculator size={18} className="calc-icon" aria-hidden="true" />
-          <h3 className="calc-title">Công cụ Tương tác: Tính Toán Chi Phí & Lợi Ích Prompt Caching</h3>
+          <h3 className="calc-title">Interactive Tool: Prompt Caching Cost & Economics Calculator</h3>
         </div>
         <p className="calc-intro">{intro}</p>
       </div>
@@ -129,14 +129,14 @@ export function PromptCachingCostCalculator({ intro }: { intro: string }) {
       </div>
 
       <div className="calc-role-note">
-        <strong>Vai trò kiến trúc đề xuất:</strong> {model.roleDescription}
+        <strong>Recommended architectural role:</strong> {model.roleDescription}
       </div>
 
       {/* Interactive Controls */}
       <div className="calc-controls-grid">
         <div className="calc-control-group">
           <label htmlFor="context-slider" className="calc-label">
-            <span>Độ dài Ngữ cảnh Cố định (Project Knowledge / System Docs / RAG):</span>
+            <span>Static Prefix Context Length (Project Knowledge / System Prompt / Docs):</span>
             <strong className="mono">{contextTokens.toLocaleString()} tokens</strong>
           </label>
           <input
@@ -150,16 +150,16 @@ export function PromptCachingCostCalculator({ intro }: { intro: string }) {
             className="calc-slider"
           />
           <div className="calc-slider-hints">
-            <span>1k (Tài liệu ngắn)</span>
-            <span>25k (Sổ tay nhân sự)</span>
-            <span>100k (Toàn bộ codebase/hợp đồng)</span>
+            <span>1k (Brief doc)</span>
+            <span>25k (Employee handbook)</span>
+            <span>100k (Full codebase / Legal agreement)</span>
           </div>
         </div>
 
         <div className="calc-control-group">
           <label htmlFor="turns-slider" className="calc-label">
-            <span>Số lượt truy vấn trong phiên làm việc 5 phút (Cache TTL):</span>
-            <strong className="mono">{turnCount} lượt gọi API</strong>
+            <span>Number of query turns in a 5-minute session (Cache TTL window):</span>
+            <strong className="mono">{turnCount} API calls</strong>
           </label>
           <input
             id="turns-slider"
@@ -172,9 +172,9 @@ export function PromptCachingCostCalculator({ intro }: { intro: string }) {
             className="calc-slider"
           />
           <div className="calc-slider-hints">
-            <span>1 lượt (Chưa tận dụng cache)</span>
-            <span>10 lượt (Hội thoại chuẩn)</span>
-            <span>50 lượt (Batch / Support Desk)</span>
+            <span>1 call (No cache reuse)</span>
+            <span>10 calls (Standard chat)</span>
+            <span>50 calls (Batch / Support Desk)</span>
           </div>
         </div>
       </div>
@@ -185,17 +185,17 @@ export function PromptCachingCostCalculator({ intro }: { intro: string }) {
           <div className="calc-status calc-status--ok">
             <CheckCircle2 size={16} aria-hidden="true" />
             <span>
-              Ngữ cảnh <strong>{contextTokens.toLocaleString()} tokens</strong> vượt mốc tối thiểu{" "}
-              <strong>{model.minCacheTokens.toLocaleString()} tokens</strong> của {model.name}. Prompt
-              Caching được kích hoạt tự động với <strong>90% chiết khấu đọc token</strong>!
+              Context of <strong>{contextTokens.toLocaleString()} tokens</strong> exceeds the minimum threshold of{" "}
+              <strong>{model.minCacheTokens.toLocaleString()} tokens</strong> for {model.name}. Prompt
+              Caching is automatically activated with a <strong>90% discount on cache reads</strong>!
             </span>
           </div>
         ) : (
           <div className="calc-status calc-status--warn">
             <Clock size={16} aria-hidden="true" />
             <span>
-              Chưa đủ điều kiện cache: {model.name} yêu cầu tối thiểu {model.minCacheTokens.toLocaleString()}{" "}
-              tokens trong prefix tĩnh để tạo cache breakpoint.
+              Not eligible for caching: {model.name} requires a minimum of {model.minCacheTokens.toLocaleString()}{" "}
+              tokens in the static prefix to establish a cache breakpoint.
             </span>
           </div>
         )}
@@ -204,37 +204,37 @@ export function PromptCachingCostCalculator({ intro }: { intro: string }) {
       {/* Comparison Metrics Cards */}
       <div className="calc-results-grid" aria-live="polite">
         <div className="calc-card calc-card--standard">
-          <span className="calc-card-eyebrow">Chi phí Không dùng Cache</span>
+          <span className="calc-card-eyebrow">Cost Without Prompt Caching</span>
           <div className="calc-card-amount">
             <DollarSign size={20} aria-hidden="true" />
             <span>{totalCostWithoutCaching.toFixed(4)}</span>
           </div>
           <p className="calc-card-detail">
-            Mỗi lượt đều nạp lại toàn bộ {contextTokens.toLocaleString()} tokens với giá gốc.
+            Every turn re-processes all {contextTokens.toLocaleString()} tokens at standard base input rate.
           </p>
           <div className="calc-card-metric">
             <Clock size={14} aria-hidden="true" />
             <span>
-              Độ trễ TTFT: ~<strong>{model.typicalTtftUncachedMs}ms</strong>
+              Estimated TTFT: ~<strong>{model.typicalTtftUncachedMs}ms</strong>
             </span>
           </div>
         </div>
 
         <div className="calc-card calc-card--cached">
           <span className="calc-card-eyebrow">
-            <Sparkles size={14} aria-hidden="true" /> Chi phí Khi Dùng Prompt Caching
+            <Sparkles size={14} aria-hidden="true" /> Cost With Prompt Caching
           </span>
           <div className="calc-card-amount text-ok">
             <DollarSign size={20} aria-hidden="true" />
             <span>{totalCostWithCaching.toFixed(4)}</span>
           </div>
           <p className="calc-card-detail">
-            Lượt 1 nạp cache (1.25x), các lượt sau chỉ trả 10% giá đọc (${model.cacheReadPerMillion}/M).
+            Turn 1 writes cache (1.25x), subsequent turns pay only 10% read price (${model.cacheReadPerMillion}/M).
           </p>
           <div className="calc-card-metric text-ok">
             <Zap size={14} aria-hidden="true" />
             <span>
-              Độ trễ TTFT: ~<strong>{model.typicalTtftCachedMs}ms</strong> (giảm ~
+              Estimated TTFT: ~<strong>{model.typicalTtftCachedMs}ms</strong> (reduced by ~
               {(
                 ((model.typicalTtftUncachedMs - model.typicalTtftCachedMs) /
                   model.typicalTtftUncachedMs) *
@@ -246,33 +246,33 @@ export function PromptCachingCostCalculator({ intro }: { intro: string }) {
         </div>
 
         <div className="calc-card calc-card--savings">
-          <span className="calc-card-eyebrow">Tổng Khoản Tiết Kiệm</span>
+          <span className="calc-card-eyebrow">Total Net Savings</span>
           <div className="calc-card-amount text-accent">
             <ArrowDownRight size={22} aria-hidden="true" />
             <span>{percentSaved.toFixed(1)}%</span>
           </div>
           <p className="calc-card-detail">
-            Tiết kiệm được <strong>${moneySaved.toFixed(4)}</strong> cho phiên {turnCount} lượt gọi này.
+            Saved <strong>${moneySaved.toFixed(4)}</strong> over this {turnCount}-turn session.
           </p>
           <div className="calc-card-badge-row">
-            <span className="badge badge--ok">90% Giảm giá Read Cache</span>
-            <span className="badge badge--sm">TTL 5 Phút</span>
+            <span className="badge badge--ok">90% Cache Read Discount</span>
+            <span className="badge badge--sm">5-Min TTL</span>
           </div>
         </div>
       </div>
 
       {/* Key Associate Exam Facts */}
       <div className="calc-takeaway">
-        <div className="calc-takeaway-title">3 Điểm Cốt Lõi cho Kỳ Thi CCAO-F (Domain 7)</div>
+        <div className="calc-takeaway-title">3 Key Principles for CCAO-F (Domain 7)</div>
         <ul className="calc-takeaway-list">
           <li>
-            <strong>Ngưỡng tối thiểu & TTL:</strong> Ngưỡng tạo cache là <strong>1,024 tokens</strong> (Sonnet/Opus) và <strong>2,048 tokens</strong> (Haiku). Cache tồn tại trong <strong>5 phút</strong> và được gia hạn tự động sau mỗi lượt đọc.
+            <strong>Minimum Threshold & TTL:</strong> Minimum cacheable prompt length is <strong>1,024 tokens</strong> (Sonnet/Opus) and <strong>2,048 tokens</strong> (Haiku). Cache lifetime is <strong>5 minutes</strong>, refreshed automatically on each cache read.
           </li>
           <li>
-            <strong>Cấu trúc Cache Breakpoint:</strong> Hãy gom tất cả tài liệu tham khảo, system prompt và hướng dẫn tĩnh lên phía trên cùng của prompt để tận dụng cache prefix dài nhất.
+            <strong>Cache Breakpoint Placement:</strong> Cluster all static reference material, system prompts, and tool schemas at the top of the prompt to maximize the cached prefix length.
           </li>
           <li>
-            <strong>Prompt Caching vs. Batch Processing:</strong> Caching giảm 90% cho tương tác hội thoại thời gian thực có tiền tố lặp lại. Batch API giảm 50% cho các tác vụ bất đồng bộ cho phép trả kết quả trong 24 giờ.
+            <strong>Prompt Caching vs. Batch API:</strong> Prompt Caching gives up to 90% savings for real-time conversational turns sharing identical prefixes. Batch Processing offers 50% savings for asynchronous workloads with a 24-hour SLA.
           </li>
         </ul>
       </div>

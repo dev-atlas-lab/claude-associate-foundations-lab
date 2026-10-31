@@ -20,8 +20,8 @@ const segments: Segment[] = [
     percent: 15,
     color: "var(--accent)",
     detail:
-      "Vai trò, quy tắc và mô tả tool được gửi ở mọi lượt. Đây là phần nên giữ ổn định vì nó chứa ràng buộc quan trọng nhất.",
-    tip: "Giữ system prompt ngắn nhưng đủ chặt; đừng lặp lại cùng một quy tắc ở mọi message.",
+      "Roles, rules, and tool schemas sent on every turn. This should remain stable across calls as it holds core system boundaries and constraints.",
+    tip: "Keep system instructions concise and unambiguous; avoid repeating the same rule across multiple user messages.",
   },
   {
     id: "documents",
@@ -29,8 +29,8 @@ const segments: Segment[] = [
     percent: 35,
     color: "var(--info)",
     detail:
-      "Tài liệu, PDF, ảnh hoặc kết quả truy xuất. Đây thường là phần phình to nhanh nhất khi nhồi cả kho tài liệu vào request.",
-    tip: "Chỉ đưa những đoạn liên quan; đánh số hoặc gắn nhãn nguồn để model trích dẫn đúng.",
+      "Reference documents, PDFs, data tables, or retrieval payloads. This section expands rapidly when dumping uncurated sources into the request.",
+    tip: "Inject only relevant excerpted chunks; label or number sources so Claude can cite them directly.",
   },
   {
     id: "history",
@@ -38,8 +38,8 @@ const segments: Segment[] = [
     percent: 20,
     color: "var(--ok)",
     detail:
-      "Các lượt trước được giữ lại đầy đủ và cộng dồn qua từng lượt. Lịch sử dài vừa tốn token vừa làm loãng instruction.",
-    tip: "Tóm tắt các lượt cũ thành ghi chú ngắn, hoặc dùng compaction khi hội thoại kéo dài.",
+      "Cumulative prior messages in the conversation thread. Excessive history inflates token costs and can dilute attention away from core rules.",
+    tip: "Summarize previous discussion turns or trigger compaction when sessions become prolonged.",
   },
   {
     id: "question",
@@ -47,8 +47,8 @@ const segments: Segment[] = [
     percent: 5,
     color: "var(--warn)",
     detail:
-      "Câu hỏi hiện tại thường rất nhỏ so với phần còn lại. Nếu nó bị chôn giữa tài liệu dài, model dễ trả lời lệch trọng tâm.",
-    tip: "Đặt câu hỏi rõ ràng ở cuối, ngay trước khi yêu cầu model trả lời.",
+      "The current query or task instruction. If buried in the middle of sprawling reference text, the model may drift or miss key nuances.",
+    tip: "Place the specific question or prompt command at the bottom of the prompt, right before Claude's turn.",
   },
   {
     id: "output",
@@ -56,8 +56,8 @@ const segments: Segment[] = [
     percent: 25,
     color: "var(--accent-strong)",
     detail:
-      "Input và output chia sẻ cùng một cửa sổ. Phần dự phòng này quyết định model còn bao nhiêu chỗ để trả lời hoặc suy luận.",
-    tip: "Chừa chỗ cho output trước khi thêm tài liệu; đặt max_tokens lớn không tạo thêm ngân sách.",
+      "Input and output share the single unified context window. Reserving sufficient headroom determines how much space Claude has to reason and complete the answer.",
+    tip: "Budget for output generation before packing documents; setting a high max_tokens does not expand total window capacity.",
   },
 ];
 

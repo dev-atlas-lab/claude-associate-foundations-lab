@@ -74,7 +74,7 @@ export function MockExamPage() {
         </Link>
       </section>
 
-      <div className="study-filters" role="group" aria-label="Chọn bộ đề thi thử">
+      <div className="study-filters" role="group" aria-label="Select mock exam preset">
         {mockExamPresets.map((preset) => (
           <button
             key={preset.id}

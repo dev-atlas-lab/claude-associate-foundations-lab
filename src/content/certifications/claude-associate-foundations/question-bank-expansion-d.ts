@@ -19,30 +19,30 @@ const promptingFewShotDistributionalDiversity: Question = questionSchema.parse({
       id: "add-all-critical",
       text: "Provide ten consecutive examples of 'Critical' tickets so Claude learns all edge cases of urgent issues.",
       explanation:
-        "Sai: Cung cấp toàn ví dụ Critical sẽ làm lệch phân phối (distributional skew), khiến Claude càng thiên vị nhãn Critical hơn.",
+        "Incorrect: providing exclusively Critical examples introduces severe distributional skew, exacerbating the model's bias toward the Critical label.",
     },
     {
       id: "balanced-representative-distribution",
       text: "Ensure the few-shot set has a balanced, representative distribution across all four categories, including subtle boundary cases and negative examples.",
       explanation:
-        "Đúng: Anthropic khuyến nghị các ví dụ few-shot phải phản ánh đúng tỷ lệ phân phối kỳ vọng và cung cấp các ca cận biên (boundary/edge cases) để mô hình phân biệt ranh giới chính xác.",
+        "Correct: Anthropic recommends that few-shot exemplars reflect the expected real-world distribution and include subtle boundary edge cases to teach precise classification boundaries.",
     },
     {
       id: "remove-all-few-shots",
       text: "Remove all few-shot examples and rely entirely on increasing the model temperature to 1.0.",
       explanation:
-        "Sai: Tăng temperature lên 1.0 làm tăng tính ngẫu nhiên, không giải quyết được lỗi phân loại sai nhãn.",
+        "Incorrect: increasing temperature increases output randomness and instability; it cannot resolve systemic classification bias.",
     },
     {
       id: "caps-instruction-only",
       text: "Write 'DO NOT OVERUSE CRITICAL' in capital letters in the user prompt.",
       explanation:
-        "Sai: Chỉ thị cảm tính viết hoa không cung cấp căn cứ mẫu hành vi chuẩn xác bằng việc cân bằng tập few-shot.",
+        "Incorrect: capitalized negative directives provide far weaker behavioral conditioning than balanced, representative few-shot demonstration pairs.",
     },
   ],
   correctChoiceIds: ["balanced-representative-distribution"],
   correctExplanation:
-    "Anthropic tài liệu hướng dẫn nêu rõ rằng mô hình học quy nạp từ các ví dụ few-shot; nếu tập ví dụ thiên vị một nhãn, mô hình sẽ bị skewed. Bộ few-shot chuẩn phải cân bằng số lượng giữa các nhãn và chứa cả các ca ranh giới tế nhị (subtle boundary cases).",
+    "Models learn inductively from few-shot exemplars; an exemplar set disproportionately skewed toward one category induces systemic labeling bias. A production few-shot suite must balance representation across all target classes and include subtle boundary examples to calibrate decision thresholds.",
   sourceIds: ["anthropic-prompting-best-practices"],
 });
 
@@ -58,30 +58,30 @@ const promptingCotXmlThinkingSeparation: Question = questionSchema.parse({
       id: "separate-thinking-tags",
       text: "Instruct Claude to execute its step-by-step mathematical reasoning inside `<thinking>` tags before delivering the JSON inside `<output>` tags.",
       explanation:
-        "Đúng: Tách riêng phần suy luận từng bước (Chain-of-Thought) trong thẻ `<thinking>` và kết quả cuối trong `<output>` giúp hệ thống downstream dễ dàng bóc tách (regex/parse) mà không làm mất chất lượng tính toán.",
+        "Correct: isolating chain-of-thought reasoning inside designated `<thinking>` tags enables downstream parsers to extract pure JSON from `<output>` without sacrificing multi-step mathematical accuracy.",
     },
     {
       id: "disable-cot-completely",
       text: "Forbid Claude from reasoning step-by-step and force immediate raw JSON generation.",
       explanation:
-        "Sai: Ép mô hình bỏ qua reasoning đối với bài toán tính thuế nhiều bước phức tạp sẽ làm suy giảm nghiêm trọng độ chính xác tính toán.",
+        "Incorrect: forcing the model to omit step-by-step reasoning on complex multi-step financial calculations significantly degrades calculation accuracy.",
     },
     {
       id: "prefill-output-opening-tag",
       text: "Prefill the assistant response with `<output>` or `{` to guide the model directly into structured output syntax.",
       explanation:
-        "Đúng: Kỹ thuật Prefill Assistant Message giúp mô hình tuân thủ tuyệt đối định dạng mở đầu mong muốn, ngăn chặn các câu chào hỏi mở đầu làm hỏng JSON parser.",
+        "Correct: prefilling the assistant turn anchors output generation directly into the required schema syntax, eliminating conversational conversational filler that breaks parsers.",
     },
     {
       id: "switch-to-unstructured-markdown",
       text: "Abandon JSON and request freeform narrative markdown instead.",
       explanation:
-        "Sai: Hệ thống downstream cần API parsing tự động nên không thể thay thế JSON bằng văn xuôi tự do.",
+        "Incorrect: downstream API integrations require deterministic machine-readable schemas and cannot parse freeform prose.",
     },
   ],
   correctChoiceIds: ["separate-thinking-tags", "prefill-output-opening-tag"],
   correctExplanation:
-    "Anthropic khuyến nghị hai kỹ thuật mạnh mẽ khi cần cả suy luận phức tạp lẫn output có cấu trúc: (1) Yêu cầu mô hình suy luận bên trong thẻ `<thinking>` trước khi đóng gói JSON trong thẻ chuyên biệt, và (2) Dùng kỹ thuật Prefill Assistant Response để bảo đảm tính hợp lệ của cấu trúc trả về.",
+    "Anthropic advocates two key techniques when combining deep reasoning with rigid machine schemas: (1) encapsulate chain-of-thought scratchpads within `<thinking>` tags decoupled from designated `<output>` envelopes, and (2) prefill the assistant turn with opening syntax (`<output>` or `{`) to guarantee clean parsing.",
   sourceIds: [
     "anthropic-prompting-best-practices",
     "anthropic-structured-outputs-doc",
@@ -102,30 +102,30 @@ const outputAutomatedVsHumanEvalTradeoff: Question = questionSchema.parse({
       id: "pure-automated-metrics",
       text: "Rely solely on automated keyword matching and latency metrics to evaluate 10,000 queries per day without human review.",
       explanation:
-        "Sai: Keyword matching không thể đánh giá được tính đúng đắn lâm sàng và an toàn trong lĩnh vực y tế rủi ro cao.",
+        "Incorrect: keyword matching cannot evaluate clinical safety, medical nuances, or lethal dosage hallucinations in high-stakes healthcare.",
     },
     {
       id: "hybrid-automated-screening-expert-sampling",
       text: "Use automated model-graded rubrics to screen high-volume traffic, and mandate expert human review (clinicians) for all borderline scores and high-risk flagged cases.",
       explanation:
-        "Đúng: Kết hợp đánh giá tự động diện rộng bằng rubric với quy trình Human-in-the-loop (chuyên gia y tế) đối với các ca ranh giới hoặc rủi ro cao là phương pháp tiếp cận tối ưu của Anthropic.",
+        "Correct: a layered evaluation architecture combines automated model-graded rubrics for scalable triage with mandatory expert clinician review on high-risk or borderline cases.",
     },
     {
       id: "manual-review-all-queries",
       text: "Hire clinicians to manually inspect every single trivial query such as clinic address lookups.",
       explanation:
-        "Sai: Kiểm duyệt thủ công 100% mọi truy vấn tầm thường gây quá tải chi phí và không tận dụng được tự động hóa.",
+        "Incorrect: manually inspecting 100% of routine informational queries creates an unsustainable operational bottleneck and fails to utilize automated screening.",
     },
     {
       id: "user-thumbs-up-only",
       text: "Rely exclusively on end-user thumbs-up/thumbs-down ratings collected on the mobile interface.",
       explanation:
-        "Sai: Đánh giá từ người dùng phổ thông không bảo đảm tính chính xác chuyên môn y khoa.",
+        "Incorrect: lay patient feedback cannot reliably audit clinical accuracy or regulatory medical compliance.",
     },
   ],
   correctChoiceIds: ["hybrid-automated-screening-expert-sampling"],
   correctExplanation:
-    "Anthropic Evaluation Best Practices nêu rõ kiến trúc đánh giá phân tầng (layered eval): dùng automated LLM rubrics để sàng lọc quy mô lớn, đồng thời thiết lập trạm kiểm duyệt con người chuyên môn (Expert Human Review) đối với các tình huống rủi ro cao hoặc điểm số ranh giới.",
+    "Anthropic's evaluation architecture advocates layered screening: automate high-volume evaluation using deterministic rubrics and model-graded evaluators, while routing high-stakes, safety-sensitive, or borderline cases to qualified human domain experts (clinicians).",
   sourceIds: ["anthropic-evaluation-docs", "anthropic-reduce-hallucinations-doc"],
 });
 
@@ -141,25 +141,25 @@ const outputAdversarialCounterfactualProbe: Question = questionSchema.parse({
       id: "negative-constraint-probing",
       text: "Submit questions with false premises (e.g., 'Summarize our 2025 Mars relocation policy') and verify that Claude explicitly acknowledges that no such policy exists rather than fabricating details.",
       explanation:
-        "Đúng: Kỹ thuật kiểm thử tiền đề sai (counterfactual / negative probing) giúp xác minh mô hình có biết từ chối chân thực khi thiếu thông tin thay vì bịa đặt.",
+        "Correct: counterfactual and negative probing tests whether the model truthfully acknowledges missing context rather than inventing plausible fabrications.",
     },
     {
       id: "evaluate-groundedness-citation-matching",
       text: "Provide an authentic handbook and test whether Claude invents clause numbers or non-existent section titles when answering specific compliance questions.",
       explanation:
-        "Đúng: Kiểm tra độ bám sát nguồn (groundedness) và phát hiện trích dẫn giả mạo (fabricated citations) là trọng tâm của kiểm thử hallucination.",
+        "Correct: auditing citation provenance and detecting fabricated authority/statutory clauses is a primary vector in hallucination evaluation.",
     },
     {
       id: "test-only-with-existing-faqs",
       text: "Test exclusively with questions taken verbatim from existing published FAQs that Claude has seen repeatedly.",
       explanation:
-        "Sai: Chỉ kiểm thử bằng câu hỏi quen thuộc sẽ không phát hiện được xu hướng hallucination khi gặp dữ liệu lạ hoặc tiền đề sai.",
+        "Incorrect: testing solely with familiar published FAQs fails to evaluate model behavior when encountering unknown data or false premises.",
     },
     {
       id: "benchmark-only-by-output-length",
       text: "Measure only the total token count and consider any answer above 500 words as hallucination-free.",
       explanation:
-        "Sai: Độ dài văn bản không đồng nghĩa với tính chính xác; câu trả lời dài dòng vẫn có thể chứa toàn thông tin bịa đặt.",
+        "Incorrect: token length has no correlation with factual accuracy; lengthy prose can easily be entirely fabricated.",
     },
   ],
   correctChoiceIds: [
@@ -167,7 +167,7 @@ const outputAdversarialCounterfactualProbe: Question = questionSchema.parse({
     "evaluate-groundedness-citation-matching",
   ],
   correctExplanation:
-    "Đánh giá hallucination bài bản đòi hỏi: (1) Kiểm thử các tiền đề giả định không tồn tại (Negative constraint / false premise probing) để bảo đảm Claude biết nói 'Tôi không tìm thấy thông tin', và (2) Kiểm tra đối chiếu trích dẫn để phát hiện số điều khoản hoặc quy định bịa đặt.",
+    "Rigorous hallucination evaluation requires: (1) false premise probing to verify that Claude appropriately admits absence of information, and (2) citation verification to identify fabricated statutory sections, clause numbers, or external authorities.",
   sourceIds: ["anthropic-evaluation-docs", "anthropic-reduce-hallucinations-doc"],
 });
 
@@ -183,30 +183,30 @@ const outputMarkdownTableSchemaFidelity: Question = questionSchema.parse({
       id: "ask-for-pretty-table",
       text: "Ask Claude to 'make a nice clean table with whatever columns look good'.",
       explanation:
-        "Sai: Yêu cầu chung chung không nêu rõ tên cột sẽ khiến Claude tự suy diễn và tạo ra cấu trúc không nhất quán giữa các lần chạy.",
+        "Incorrect: open-ended requests lacking explicit column schemas cause Claude to guess field names, leading to inconsistent tabular structures across runs.",
     },
     {
       id: "explicit-columns-and-null-handling",
       text: "Define the exact column headers required, specify markdown table format, and instruct Claude on how to handle missing data (e.g., write 'N/A' rather than omitting cells or inventing values).",
       explanation:
-        "Đúng: Xác định rõ ràng schema bảng (tên cột cụ thể), định dạng Markdown chuẩn, và quy tắc xử lý dữ liệu khuyết thiếu (viết 'N/A' thay vì bỏ trống hoặc bịa số) bảo đảm độ tin cậy cấu trúc cao nhất.",
+        "Correct: specifying explicit column names, required table syntax, and deterministic null-handling rules (e.g., emit 'N/A') prevents schema misalignment and hallucinated values.",
     },
     {
       id: "request-latex-matrix-only",
       text: "Require output in raw LaTeX matrix notation for executive reporting.",
       explanation:
-        "Sai: Ma trận LaTeX khó đọc trực tiếp trong báo cáo quản trị và không phù hợp với nhu cầu đọc của lãnh đạo.",
+        "Incorrect: LaTeX matrices are unsuitable for business executive reporting and add unnecessary parsing friction.",
     },
     {
       id: "post-process-with-regex-only",
       text: "Let Claude write paragraphs and instruct downstream human analysts to parse the numbers manually.",
       explanation:
-        "Sai: Đây là hành vi thủ công, không tận dụng năng lực định dạng cấu trúc của Claude theo yêu cầu đề bài.",
+        "Incorrect: shifts structural extraction entirely to manual labor, failing to utilize Claude's formatting capabilities.",
     },
   ],
   correctChoiceIds: ["explicit-columns-and-null-handling"],
   correctExplanation:
-    "Anthropic hướng dẫn khi yêu cầu định dạng bảng (Markdown Table) cần nêu cụ thể tiêu đề các cột, quy tắc căn chỉnh và đặc biệt là chỉ dẫn tường minh về việc xử lý ô trống (ví dụ: ghi 'N/A') để tránh làm xô lệch cấu trúc cột hoặc tự ý bịa số liệu.",
+    "Anthropic guidelines indicate that generating reliable tabular data requires explicit schema definitions: mandate exact column headers, dictate formatting conventions, and specify null-handling rules (e.g., write 'N/A' for missing cells) to avoid dropped columns or invented values.",
   sourceIds: ["anthropic-prompting-best-practices"],
 });
 
@@ -224,30 +224,30 @@ const productModelHybridRoutingCostLatency: Question = questionSchema.parse({
       id: "route-all-to-opus",
       text: "Route 100% of all queries to Claude 3 Opus to ensure maximum possible intelligence for every request.",
       explanation:
-        "Sai: Tuyến đường này gây lãng phí ngân sách khổng lồ cho 85% truy vấn FAQ đơn giản và tăng độ trễ không cần thiết.",
+        "Incorrect: routing routine FAQs to top-tier reasoning models creates massive financial waste and unacceptable latency overhead.",
     },
     {
       id: "route-all-to-haiku",
       text: "Route 100% of all queries to Claude 3.5 Haiku to minimize latency and token expenditure across the board.",
       explanation:
-        "Sai: Haiku khó giải quyết tối ưu các bài toán kỹ thuật phức tạp về phân tích kiến trúc đám mây phân tán ở 15% ca khó.",
+        "Incorrect: Haiku may struggle to resolve the deep multi-step distributed system debugging required in the complex 15% cohort.",
     },
     {
       id: "intelligent-router-haiku-sonnet",
       text: "Implement a lightweight classifier using Claude 3.5 Haiku to route routine FAQ requests to Haiku, and escalate complex technical debugging to Claude 3.5 Sonnet.",
       explanation:
-        "Đúng: Mẫu kiến trúc Router Pattern phân tầng: dùng Haiku cho 85% tác vụ đơn giản tốc độ cao, và chuyển 15% tác vụ phức tạp cho Sonnet là chuẩn mực tối ưu chi phí và năng lực của Anthropic.",
+        "Correct: the Router Pattern leverages Claude 3.5 Haiku for sub-second, low-cost triage on 85% of traffic, escalating the 15% complex technical workload to Claude 3.5 Sonnet.",
     },
     {
       id: "manual-triage-queue",
       text: "Hold all incoming requests in a manual human review queue before sending any prompt to Claude.",
       explanation:
-        "Sai: 2.000.000 truy vấn/ngày không thể kiểm duyệt thủ công trước khi gọi API.",
+        "Incorrect: manual human triage is physically infeasible at 2,000,000 requests per day.",
     },
   ],
   correctChoiceIds: ["intelligent-router-haiku-sonnet"],
   correctExplanation:
-    "Anthropic khuyến nghị Router Pattern để tối ưu hóa sự đánh đổi giữa hiệu năng và chi phí: Dùng Claude 3.5 Haiku cho các tác vụ phân loại, phản hồi nhanh và chi phí thấp, kết hợp định tuyến các bài toán phân tích kiến trúc sâu sang Claude 3.5 Sonnet.",
+    "Anthropic advocates the Router Pattern to balance capability, latency, and cost: deploy Claude 3.5 Haiku as an ultra-fast, low-cost classifier dispatching high-volume routine queries to Haiku while escalating complex technical workloads to Claude 3.5 Sonnet.",
   sourceIds: ["anthropic-choosing-model", "anthropic-building-effective-agents"],
 });
 
@@ -263,25 +263,25 @@ const contextMemoryLongContextRetrievalNeedle: Question = questionSchema.parse({
       id: "place-question-at-the-end",
       text: "Place the core query and instruction at the very end of the prompt, after the full repository context.",
       explanation:
-        "Đúng: Anthropic chứng minh trong tài liệu Long Context rằng việc đặt câu hỏi/chỉ thị ở cuối prompt giúp mô hình tập trung chú ý (attention recency) tốt nhất vào mục tiêu truy vấn.",
+        "Correct: Anthropic long-context research demonstrates that placing specific instructions and queries at the end of the prompt maximizes attention recency on the retrieval objective.",
     },
     {
       id: "structure-with-xml-metadata",
       text: "Structure each document inside individual `<document id='...'>` tags with explicit title and section metadata.",
       explanation:
-        "Đúng: Đóng gói tài liệu vào các thẻ XML có thuộc tính metadata giúp mô hình dễ dàng định vị vị trí và trích dẫn nguồn chuẩn xác trong ngữ cảnh dài 200K token.",
+        "Correct: encapsulating documents inside labeled XML tags with explicit metadata enables precise referencing and prevents boundary confusion across massive context spans.",
     },
     {
       id: "place-question-at-the-start-only",
       text: "Put the question only at the top of the prompt and leave the end with raw unformatted text.",
       explanation:
-        "Sai: Đặt câu hỏi ở đầu và không nhắc lại ở cuối ngữ cảnh 180K token dễ khiến mô hình bị suy giảm chú ý (primacy fade).",
+        "Incorrect: placing queries solely at the top of a 180,000-token prompt increases the risk of attention fade across massive context spans.",
     },
     {
       id: "shuffle-chunks-randomly",
       text: "Randomly split and shuffle document paragraphs to prevent Claude from developing positional bias.",
       explanation:
-        "Sai: Xáo trộn ngẫu nhiên văn bản pháp lý làm phá vỡ mạch logic và ngữ cảnh điều khoản, gây giảm sút nghiêm trọng chất lượng phân tích.",
+        "Incorrect: randomly shuffling legal text destroys semantic coherence and cross-clause legal dependencies, severely degrading analysis.",
     },
   ],
   correctChoiceIds: [
@@ -289,7 +289,7 @@ const contextMemoryLongContextRetrievalNeedle: Question = questionSchema.parse({
     "structure-with-xml-metadata",
   ],
   correctExplanation:
-    "Anthropic Long Context Best Practices hướng dẫn rõ: (1) Cấu trúc tài liệu bằng các thẻ `<document id='...'>` rõ ràng, và (2) Luôn đặt câu hỏi và yêu cầu truy xuất ở cuối prompt sau toàn bộ ngữ cảnh để tối ưu hóa trọng số chú ý.",
+    "Anthropic Long Context Best Practices establish two fundamental rules: (1) encapsulate documents within structured XML envelopes (`<document id='...'>`) with metadata attributes, and (2) place the operational query and execution instructions at the bottom of the prompt following the context.",
   sourceIds: ["anthropic-context-windows-doc", "anthropic-prompting-best-practices"],
 });
 
@@ -307,30 +307,30 @@ const workflowToolUseErrorHandlingFallback: Question = questionSchema.parse({
       id: "crash-and-terminate-session",
       text: "Crash the entire application immediately and display an unhandled exception stack trace to the user.",
       explanation:
-        "Sai: Làm sập ứng dụng mang lại trải nghiệm tiêu cực và vi phạm nguyên tắc thiết kế hệ thống kiên cường (resilient design).",
+        "Incorrect: crashing the application damages user experience and violates basic principles of resilient system design.",
     },
     {
       id: "feed-error-back-to-claude-with-retry",
       text: "Return a structured tool error response back into the conversation context (e.g., status 503, retry-after), allowing Claude to inform the user gracefully or try an alternate data source.",
       explanation:
-        "Đúng: Theo hướng dẫn Tool Use của Anthropic, khi công cụ gặp sự cố, hệ thống nên gửi kết quả lỗi có cấu trúc (`is_error: true` hoặc thông báo lỗi tường minh) trở lại vào conversation để Claude diễn giải và tìm phương án dự phòng (graceful fallback).",
+        "Correct: Anthropic Tool Use guidelines specify returning structured error payloads (`is_error: true` or descriptive status messages) into the conversation, enabling Claude to gracefully explain issues or execute fallback tools.",
     },
     {
       id: "invent-synthetic-weather-data",
       text: "Instruct the tool executor to invent realistic-looking sunny weather data so Claude does not notice the downtime.",
       explanation:
-        "Sai: Tự ý bịa đặt số liệu thời tiết vi phạm tính trung thực của dữ liệu và nguyên tắc an toàn.",
+        "Incorrect: fabricating synthetic data violates factual integrity and introduces severe safety hazards.",
     },
     {
       id: "infinite-blocking-loop",
       text: "Freeze the user thread in an infinite blocking sleep loop until the third-party server recovers.",
       explanation:
-        "Sai: Vòng lặp vô hạn làm treo tiến trình và làm cạn kiệt tài nguyên hệ thống.",
+        "Incorrect: blocking threads indefinitely exhausts system resources and violates application timeouts.",
     },
   ],
   correctChoiceIds: ["feed-error-back-to-claude-with-retry"],
   correctExplanation:
-    "Anthropic tài liệu Building Effective Agents nhấn mạnh nguyên lý xử lý lỗi trong Tool Use: Khi tool thất bại, chuyển thông tin lỗi có cấu trúc về cho Claude để mô hình chủ động xử lý, xin lỗi người dùng một cách lịch thiệp, hoặc kích hoạt fallback tool thay vì để ứng dụng crash.",
+    "Under Anthropic's 'Building Effective Agents' framework, tool execution failures should return structured error objects back into the conversation turn. This equips Claude to interpret the failure, provide an informative response to the user, or invoke alternate fallback tools.",
   sourceIds: ["anthropic-building-effective-agents"],
 });
 
@@ -346,25 +346,25 @@ const workflowEvaluatorOptimizerStoppingCriterion: Question = questionSchema.par
       id: "maximum-iteration-ceiling",
       text: "Enforce a strict maximum iteration limit (e.g., max 3 or 4 revision cycles) that triggers escalation if the rubric threshold is not met.",
       explanation:
-        "Đúng: Luôn phải có giới hạn số vòng lặp tối đa (hard iteration ceiling) để tránh lặp vô tận và kiểm soát chi phí API.",
+        "Correct: a hard iteration ceiling is mandatory to bound recursion, prevent infinite execution loops, and control API expenditures.",
     },
     {
       id: "quantitative-satisfaction-threshold",
       text: "Define explicit, measurable rubric criteria (e.g., all unit tests pass, zero security vulnerabilities) as the deterministic exit condition.",
       explanation:
-        "Đúng: Tiêu chí dừng phải rõ ràng và định lượng được, giúp vòng lặp thoát ngay khi output đạt chuẩn mà không cần chạy thừa vòng lặp.",
+        "Correct: objective, measurable satisfaction criteria provide a deterministic stopping condition, exiting the loop the instant output meets quality bars.",
     },
     {
       id: "run-forever-until-perfection",
       text: "Allow the loop to run indefinitely until the code achieves 100% aesthetic perfection according to arbitrary subjective criteria.",
       explanation:
-        "Sai: Chạy không giới hạn với tiêu chí chủ quan sẽ dẫn tới hiện tượng dao động (oscillation) và cạn kiệt ngân sách token.",
+        "Incorrect: unconstrained loops governed by subjective standards cause oscillation and exhaust token budgets.",
     },
     {
       id: "disable-evaluator-feedback-context",
       text: "Omit previous critique history so the generator LLM starts from scratch on each loop.",
       explanation:
-        "Sai: Xóa lịch sử góp ý khiến mô hình lặp lại chính những lỗi trước đó thay vì cải tiến từng bước.",
+        "Incorrect: omitting prior critique history prevents progressive refinement, causing the generator to repeat previous mistakes.",
     },
   ],
   correctChoiceIds: [
@@ -372,7 +372,7 @@ const workflowEvaluatorOptimizerStoppingCriterion: Question = questionSchema.par
     "quantitative-satisfaction-threshold",
   ],
   correctExplanation:
-    "Anthropic trong bài viết 'Building Effective Agents' chỉ ra rằng mẫu thiết kế Evaluator-Optimizer bắt buộc phải có hai thành phần kiểm soát: (1) Tiêu chí đạt chuẩn rõ ràng (clear stopping criteria) và (2) Giới hạn số lần lặp tối đa (max iteration limit) để bảo vệ chi phí và thời gian xử lý.",
+    "Anthropic specifies that Evaluator-Optimizer architectures must incorporate two core guardrails: (1) deterministic stopping conditions defined by quantitative rubrics, and (2) a strict maximum iteration ceiling to prevent runaway costs and infinite loops.",
   sourceIds: ["anthropic-building-effective-agents"],
 });
 
@@ -390,30 +390,30 @@ const configWorkspaceSharingConflictResolution: Question = questionSchema.parse(
       id: "leave-both-and-let-claude-guess",
       text: "Keep both sets of instructions in the project brief and let Claude guess which style to use based on the user's name.",
       explanation:
-        "Sai: Chỉ thị mâu thuẫn trực tiếp trong Project Instructions khiến mô hình dao động và tạo ra kết quả thiếu nhất quán.",
+        "Incorrect: conflicting directives within Project Instructions create attention interference and unpredictable outputs.",
     },
     {
       id: "split-into-dedicated-projects",
       text: "Split the workspace into two dedicated Projects ('Product Design Studio' and 'Engineering Specs'), each with focused Project Knowledge and aligned custom instructions.",
       explanation:
-        "Đúng: Anthropic khuyến nghị chia tách thành các Project riêng biệt theo từng miền nghiệp vụ/mục tiêu khi các yêu cầu về văn phong, vai trò hoặc tài liệu đối lập nhau.",
+        "Correct: Anthropic recommends separating workspaces into dedicated Projects when functional teams hold divergent personas, conflicting style rules, or distinct knowledge assets.",
     },
     {
       id: "write-5000-word-compromise",
       text: "Write a 5,000-word instruction attempting to blend emotive prose with strict technical syntax in every single sentence.",
       explanation:
-        "Sai: Cố gắng dung hòa hai phong cách đối nghịch trong một câu khiến output trở nên gượng gạo và khó hiểu.",
+        "Incorrect: attempting to force antithetical writing styles into a single prompt creates unnatural, confusing outputs.",
     },
     {
       id: "disable-project-instructions-completely",
       text: "Delete all Project instructions and require every user to type full company context from scratch in every chat.",
       explanation:
-        "Sai: Bỏ Project instructions làm mất đi lợi ích cốt lõi của tính năng Claude Projects trong việc lưu trữ ngữ cảnh dùng chung.",
+        "Incorrect: removing Project Instructions forfeits the primary value of shared workspace configuration.",
     },
   ],
   correctChoiceIds: ["split-into-dedicated-projects"],
   correctExplanation:
-    "Tài liệu quản lý Claude Projects của Anthropic nêu rõ: Project Instructions nên tập trung vào một vai trò và mục tiêu nhất quán. Khi hai bộ phận có yêu cầu phong cách đối nghịch nhau, giải pháp kiến trúc chuẩn là phân tách thành hai Project chuyên biệt với tài liệu và chỉ dẫn phù hợp cho từng nhóm.",
+    "Claude Project Instructions should maintain a coherent, unified persona and objective. When separate teams demand mutually exclusive writing styles and constraints, the correct architectural remedy is decomposing into dedicated Projects tailored to each group's domain.",
   sourceIds: ["anthropic-projects-overview", "anthropic-projects-manage"],
 });
 
@@ -429,30 +429,30 @@ const configConnectorSyncStalenessAlert: Question = questionSchema.parse({
       id: "sync-latency-or-interval",
       text: "The connector index operates on a periodic sync schedule or sync queue, meaning updates to the remote drive are not instantaneous.",
       explanation:
-        "Đúng: Các Knowledge Connectors lập chỉ mục theo chu kỳ đồng bộ (sync interval/pipeline); thay đổi tức thời trên nguồn từ xa có thể cần thời gian để index hoàn tất.",
+        "Correct: Knowledge Connectors synchronize indices on periodic schedules; updates to remote storage require indexing cycles to complete before appearing in context.",
     },
     {
       id: "duplicate-unarchived-files",
       text: "The superseded document remains in the shared Drive folder and was not archived or removed from the connector's indexing scope.",
       explanation:
-        "Đúng: Nếu tài liệu cũ vẫn nằm trong thư mục nguồn mà không được dọn dẹp hoặc gắn nhãn lưu trữ, bộ tìm kiếm sẽ vẫn truy xuất được văn bản hết hạn đó.",
+        "Correct: if outdated documents remain in the indexed folder, vector search will continue retrieving them alongside new files.",
     },
     {
       id: "claude-memorizes-forever",
       text: "Claude permanently bakes all indexed files into its neural network weights, making deletion impossible.",
       explanation:
-        "Sai: Knowledge Connectors dùng cơ chế RAG (truy xuất ngữ cảnh tại runtime), không huấn luyện (fine-tune/train) lại trọng số mô hình.",
+        "Incorrect: Knowledge Connectors leverage runtime RAG retrieval; they do not fine-tune or bake documents into model weights.",
     },
     {
       id: "google-drive-unsupported",
       text: "Google Drive is unsupported by Claude connectors.",
       explanation:
-        "Sai: Google Workspace / Google Drive là connector chính thức được hỗ trợ trong hệ sinh thái Claude Enterprise.",
+        "Incorrect: Google Workspace/Drive is an officially supported connector in Claude Enterprise workspaces.",
     },
   ],
   correctChoiceIds: ["sync-latency-or-interval", "duplicate-unarchived-files"],
   correctExplanation:
-    "Vấn đề dữ liệu cũ (staleness) trong Knowledge Connectors thường bắt nguồn từ hai yếu tố: (1) Độ trễ chu kỳ đồng bộ hóa (sync schedule latency) và (2) Việc quản trị tài nguyên kém, để sót tài liệu cũ song song với tài liệu mới mà không lưu trữ/xóa.",
+    "Data staleness in Knowledge Connectors typically stems from: (1) periodic synchronization latency where new remote revisions are pending index queues, and (2) poor document lifecycle hygiene where superseded files remain in indexed folders without archiving.",
   sourceIds: [
     "anthropic-connectors-help",
     "anthropic-google-workspace-connectors",
@@ -474,30 +474,30 @@ const governancePiiRedactionPreProcessingGuardrail: Question = questionSchema.pa
       id: "prompt-only-please-do-not-read",
       text: "Include a system prompt asking Claude: 'Please ignore any National ID numbers or CVVs you happen to see in the prompt'.",
       explanation:
-        "Sai: Yêu cầu mô hình 'bỏ qua' vẫn khiến dữ liệu nhạy cảm được gửi qua đường truyền tới API, vi phạm quy định cấm dữ liệu nhạy cảm rời khỏi hạ tầng nội bộ.",
+        "Incorrect: instructing the model to ignore PII still transmits sensitive data across the network to external APIs, violating banking secrecy mandates.",
     },
     {
       id: "client-side-pii-tokenization-scrubber",
       text: "Implement a deterministic, automated PII redaction/tokenization scrubber in the local pre-processing pipeline before the payload is sent to the Claude API.",
       explanation:
-        "Đúng: Kiến trúc bảo mật phòng vệ theo chiều sâu (Defense-in-depth) đòi hỏi khử định danh (PII redaction/tokenization) ngay tại hạ tầng nội bộ của doanh nghiệp trước khi payload rời khỏi ranh giới mạng.",
+        "Correct: defense-in-depth architecture requires redacting or tokenizing PII on local on-premise infrastructure before payloads cross network boundaries to third-party APIs.",
     },
     {
       id: "encrypt-prompt-with-aes",
       text: "Encrypt the entire prompt with AES-256 and ask Claude to decrypt it in its neural activations without the key.",
       explanation:
-        "Sai: Mô hình ngôn ngữ không thể giải mã văn bản mã hóa nếu không có khóa giải mã, dẫn đến vô nghĩa.",
+        "Incorrect: language models cannot process raw ciphertext without cryptographic keys; the resulting text is unreadable.",
     },
     {
       id: "trust-post-processing-only",
       text: "Send the raw data to Claude and redact the PII only from the final generated output.",
       explanation:
-        "Sai: Redact ở đầu ra không ngăn được việc dữ liệu nhạy cảm đã bị truyền lên API ở đầu vào.",
+        "Incorrect: post-processing output redaction does not prevent restricted data from being transmitted in prompt inputs.",
     },
   ],
   correctChoiceIds: ["client-side-pii-tokenization-scrubber"],
   correctExplanation:
-    "Theo hướng dẫn Quản trị và Bảo mật Dữ liệu của Anthropic, việc bảo vệ thông tin nhận dạng cá nhân (PII) trong các ngành tài chính/y tế nghiêm ngặt phải thực hiện bằng giải pháp khử định danh tiền xử lý (pre-processing scrubber) trên hạ tầng an toàn trước khi gọi LLM.",
+    "Under Anthropic Data Governance guidelines, safeguarding highly regulated identifiers (National IDs, CVVs) requires client-side pre-processing scrubbers that redact or tokenize sensitive data on local infrastructure prior to transmitting payloads to external LLM APIs.",
   sourceIds: ["anthropic-privacy-policy", "anthropic-claude-constitution"],
 });
 
@@ -513,30 +513,30 @@ const governanceJailbreakRefusalNeutrality: Question = questionSchema.parse({
       id: "objective-neutral-tone",
       text: "The refusal is delivered in an objective, neutral, and matter-of-fact tone without moralizing, lecturing, or scolding the user.",
       explanation:
-        "Đúng: Hiến pháp Claude (Constitutional AI) nhấn mạnh việc từ chối các yêu cầu gây hại phải luôn giữ thái độ trung tính, điềm tĩnh, không phán xét đạo đức hay giảng giải.",
+        "Correct: Claude's Constitution emphasizes that safety refusals must maintain an objective, dispassionate tone, avoiding moralizing lectures or preachy rebukes.",
     },
     {
       id: "clear-transparent-boundary",
       text: "The refusal clearly states what Claude cannot do (e.g., cannot generate malware or exploit code) while offering safe, educational alternatives if applicable.",
       explanation:
-        "Đúng: Từ chối chuẩn mực nêu rõ ranh giới khả năng (không tạo mã độc) và có thể gợi ý hướng nghiên cứu bảo mật hợp pháp (defensive cybersecurity).",
+        "Correct: compliant refusals articulate clear technical boundaries (cannot generate exploit payloads) while offering safe defensive cybersecurity alternatives where appropriate.",
     },
     {
       id: "aggressive-user-shaming",
       text: "Claude berates the user for violating ethical standards and threatens to report them to law enforcement.",
       explanation:
-        "Sai: Claude tuyệt đối không đe dọa hay chỉ trích gay gắt người dùng; điều này vi phạm nguyên tắc 'non-preachy refusal'.",
+        "Incorrect: Claude is trained to avoid scolding, shaming, or threatening users; anti-preachiness is a core Constitutional tenet.",
     },
     {
       id: "silent-infinite-hang",
       text: "The model returns an empty HTTP 200 response without explaining why the request was not fulfilled.",
       explanation:
-        "Sai: Trả về rỗng không giải thích gây khó hiểu cho hệ thống tích hợp và người dùng.",
+        "Incorrect: returning silent empty responses obscures system state and degrades integration observability.",
     },
   ],
   correctChoiceIds: ["objective-neutral-tone", "clear-transparent-boundary"],
   correctExplanation:
-    "Claude's Constitution quy định cách xử lý từ chối chuẩn mực (principled refusal): (1) Giữ thái độ khách quan, trung tính, không giảng đạo lý (anti-preachiness), và (2) Nêu rõ ràng lý do từ chối về mặt kỹ thuật/chính sách và đề xuất giải pháp an toàn thay thế.",
+    "Claude's Constitution governs principled refusals: (1) maintain a neutral, objective, non-preachy tone without lecturing users, and (2) state technical/policy boundaries transparently while offering safe educational alternatives where appropriate.",
   sourceIds: ["anthropic-claude-constitution", "anthropic-usage-policy"],
 });
 
@@ -554,30 +554,30 @@ const troubleshootStreamingTimeToFirstTokenBottleneck: Question = questionSchema
       id: "enable-prompt-caching-on-static-history",
       text: "Enable Prompt Caching on the static conversation history and trim unnecessary CoT requirements for simple customer conversational turns.",
       explanation:
-        "Đúng: Prompt Caching giúp hạ giảm thời gian xử lý prefill của 12.000 token lịch sử xuống gần như tức thì, kết hợp tinh gọn chuỗi suy luận cho các câu thoại đơn giản sẽ giảm mạnh TTFT.",
+        "Correct: Prompt Caching reduces input prefill latency by over 80% on long static history (>1,024 tokens), while pruning excessive chain-of-thought scratchpads allows immediate response streaming.",
     },
     {
       id: "switch-from-streaming-to-blocking",
       text: "Disable streaming and wait for the entire 1,000-word response to finish before sending it to the client.",
       explanation:
-        "Sai: Chuyển sang blocking sẽ làm người dùng phải chờ lâu hơn nữa (10-15 giây) trước khi nhìn thấy bất kỳ phản hồi nào.",
+        "Incorrect: disabling streaming forces users to wait for the entire completion, dramatically worsening perceived latency.",
     },
     {
       id: "increase-max-tokens-to-8192",
       text: "Increase `max_tokens` parameter from 1000 to 8192.",
       explanation:
-        "Sai: Tăng max_tokens không làm tăng tốc độ xử lý TTFT mà còn có thể làm tăng thời gian chờ.",
+        "Incorrect: increasing `max_tokens` alters the generation ceiling; it does not accelerate Time to First Token.",
     },
     {
       id: "compress-client-browser-font",
       text: "Compress the CSS font family loaded on the user's web browser.",
       explanation:
-        "Sai: Font chữ trình duyệt không liên quan đến thời gian tính toán LLM token latency trên máy chủ.",
+        "Incorrect: client-side web fonts have no relation to backend LLM prefill and generation latency.",
     },
   ],
   correctChoiceIds: ["enable-prompt-caching-on-static-history"],
   correctExplanation:
-    "Theo tài liệu Tối ưu hóa Độ trễ của Anthropic, Time to First Token (TTFT) bị ảnh hưởng chủ yếu bởi thời gian prefill của context đầu vào. Sử dụng Prompt Caching cho đoạn lịch sử dài (>1024 tokens) giảm thời gian prefill tới 80%+, đồng thời lược bỏ các bước suy luận thừa giúp phản hồi đầu tiên xuất hiện gần như lập tức.",
+    "Under Anthropic latency optimization guidelines, TTFT is primarily driven by input context prefill time. Caching static history prefixes (>1,024 tokens) slashes prefill processing times by up to 80%+, while eliminating verbose internal reasoning on routine conversational turns ensures immediate output generation.",
   sourceIds: ["anthropic-context-windows-doc", "anthropic-choosing-model"],
 });
 
@@ -593,25 +593,25 @@ const troubleshootPromptCachingBreakInvestigation: Question = questionSchema.par
       id: "dynamic-timestamp-in-system-prompt",
       text: "Injecting the current dynamic timestamp (e.g., `Current time: 2026-10-29 14:02:11`) at the very top of the system prompt prefix.",
       explanation:
-        "Đúng: Prompt Caching hoạt động theo nguyên tắc tiền tố giống hệt từng byte (exact byte-for-byte prefix match). Đưa timestamp động vào đầu system prompt sẽ làm thay đổi hash của toàn bộ phần phía sau, khiến cache bị trượt 100%.",
+        "Correct: Prompt Caching requires exact byte-for-byte prefix matching. Inserting dynamic timestamps at the beginning of the prefix invalidates the cache hash for all subsequent tokens.",
     },
     {
       id: "random-unique-session-id-prefix",
       text: "Inserting a newly generated UUID tracking id before the static system guidelines.",
       explanation:
-        "Đúng: Chèn UUID ngẫu nhiên vào trước khối tĩnh phá vỡ tính tương đồng tiền tố, dẫn đến cache miss hoàn toàn.",
+        "Correct: prepending unique request UUIDs destroys prefix continuity, guaranteeing a 0% cache hit rate.",
     },
     {
       id: "keeping-system-prompt-identical",
       text: "Keeping the system prompt completely byte-identical across calls.",
       explanation:
-        "Sai: Giữ nguyên văn bản từng byte sẽ giúp cache hit, không phải nguyên nhân gây drop về 0%.",
+        "Incorrect: maintaining byte-identical prefixes promotes cache hits rather than invalidating them.",
     },
     {
       id: "placing-dynamic-user-input-at-the-end",
       text: "Placing dynamic user queries after the cached system breakpoint.",
       explanation:
-        "Sai: Đặt dữ liệu biến đổi ở cuối sau điểm breakpoint cache là cách làm đúng chuẩn để duy trì cache hit.",
+        "Incorrect: placing dynamic variables after the cache breakpoint is the correct design pattern for preserving cache hits.",
     },
   ],
   correctChoiceIds: [
@@ -619,7 +619,7 @@ const troubleshootPromptCachingBreakInvestigation: Question = questionSchema.par
     "random-unique-session-id-prefix",
   ],
   correctExplanation:
-    "Anthropic Prompt Caching dựa trên so khớp tiền tố chính xác (exact prefix matching). Bất kỳ dữ liệu biến thiên nào (như dynamic timestamp, request UUID, ngẫu nhiên hóa) đặt ở phần đầu của payload sẽ làm vô hiệu hóa toàn bộ cache block phía sau. Dữ liệu động phải luôn được đặt ở phần đuôi sau cache breakpoint.",
+    "Anthropic Prompt Caching operates on strict prefix equality. Any dynamic variables (timestamps, session UUIDs, randomized headers) placed prior to static instructions invalidate all subsequent cached tokens. Dynamic inputs must always be appended after the cache breakpoint.",
   sourceIds: ["anthropic-context-windows-doc", "anthropic-prompting-best-practices"],
 });
 

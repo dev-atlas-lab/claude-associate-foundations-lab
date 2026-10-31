@@ -126,7 +126,7 @@ export function DashboardPage() {
       <PageHeader
         eyebrow={`Workspace · ${primaryCertification.code}`}
         title="Your study desk"
-        lede="The CCAO-F blueprint is verified for exams before 2026-11-17. Lessons explain the thinking in Vietnamese, knowledge checks ask you to decide in English, and nothing here needs an account."
+        lede="The CCAO-F blueprint is verified for exams before 2026-11-17. Lessons develop deep conceptual reasoning in English, knowledge checks simulate exam questions, and all progress is saved locally in your browser."
         meta={
           <>
             <Badge tone="ok">Blueprint v{primaryBlueprint.version} verified</Badge>

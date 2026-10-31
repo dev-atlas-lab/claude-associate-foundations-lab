@@ -157,31 +157,31 @@ describe("timed exam page", () => {
 
     await user.click(screen.getByRole("button", { name: "Submit exam now" }));
 
-    const resultHeading = screen.getByRole("heading", { name: "Kết quả bài thi thử" });
+    const resultHeading = screen.getByRole("heading", { name: "Timed exam results" });
     expect(resultHeading).toHaveFocus();
     expect(screen.getByText("Manual submission")).toBeInTheDocument();
     expect(screen.getAllByText("1.67%").length).toBeGreaterThan(0);
-    expect(screen.getAllByText("Chưa trả lời")[0]?.nextElementSibling).toHaveTextContent("59");
+    expect(screen.getAllByText("Unanswered")[0]?.nextElementSibling).toHaveTextContent("59");
     expect(
       screen.getByRole("heading", {
-        name: "Phân tích nhịp độ & thời gian (Pacing Analysis)",
+        name: "Pacing analysis",
       }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("group", { name: "Bộ lọc câu hỏi xem lại" }),
+      screen.getByRole("group", { name: "Review question filters" }),
     ).toBeInTheDocument();
-    expect(screen.getByText("Nguồn tham chiếu")).toBeInTheDocument();
-    expect(screen.getByText(/không phải dự đoán đậu\/rớt/i)).toBeInTheDocument();
+    expect(screen.getByText("Reference sources")).toBeInTheDocument();
+    expect(screen.getByText(/not a pass\/fail prediction/i)).toBeInTheDocument();
 
     const breakdownTable = screen.getByRole("table", {
       name: "Timed exam performance by official domain",
     });
     expect(within(breakdownTable).getAllByRole("row")).toHaveLength(8);
     expect(
-      within(breakdownTable).getByRole("link", { name: "Luyện tập Domain 5" }),
+      within(breakdownTable).getByRole("link", { name: "Practice Domain 5" }),
     ).toHaveAttribute("href", "/practice?set=domain-5-configuration-set");
     expect(
-      screen.getByRole("heading", { name: "Mục tiêu & bài học liên quan" }),
+      screen.getByRole("heading", { name: "Related objective & lesson" }),
     ).toBeInTheDocument();
 
     for (const checkbox of screen.getAllByRole(inputRole)) {

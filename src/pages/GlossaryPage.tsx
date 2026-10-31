@@ -50,7 +50,7 @@ export function GlossaryPage() {
       <PageHeader
         eyebrow="Reference"
         title="Technical glossary"
-        lede="English terms kept intact, with a Vietnamese explanation of what each one actually changes in practice. Definitions are general study notes, not official exam wording."
+        lede="Key exam terms defined in clear English, with Vietnamese reference labels for quick conceptual lookup. Definitions are study notes, not official exam wording."
         meta={<Badge tone="info">General study notes</Badge>}
       />
 
@@ -136,7 +136,7 @@ export function GlossaryPage() {
                   ) : null}
                   <Badge>{entry.category}</Badge>
                 </div>
-                <p className="glossary-vi">{entry.vi}</p>
+                <p className="glossary-vi"><span className="section-note" style={{ marginRight: "var(--space-2)" }}>🇻🇳 Reference:</span>{entry.vi}</p>
                 <p className="glossary-definition">{entry.definition}</p>
               </li>
             ))}

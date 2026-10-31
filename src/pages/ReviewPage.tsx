@@ -38,9 +38,9 @@ const reasonLabels: Record<ReviewReason, string> = {
 };
 
 const reasonDescriptions: Record<ReviewReason, string> = {
-  incorrect: "Bạn đã chọn một tập đáp án chưa đúng.",
-  unanswered: "Bạn chưa trả lời câu này khi submit.",
-  flagged: "Bạn đã đánh dấu câu này để xem lại.",
+  incorrect: "You selected an incorrect set of answers.",
+  unanswered: "You left this question unanswered when submitting.",
+  flagged: "You flagged this question for review.",
 };
 
 type ReasonFilter = ReviewReason | "all";
@@ -415,10 +415,10 @@ export function ReviewPage() {
           >
             <p className="quiz-feedback-title">
               {detail.score.isCorrect
-                ? "Chính xác"
+                ? "Correct"
                 : detail.score.outcome === "unanswered"
-                  ? "Chưa trả lời"
-                  : "Chưa đúng"}
+                  ? "Unanswered"
+                  : "Incorrect"}
             </p>
             <p className="quiz-feedback-text">{detail.question.correctExplanation}</p>
             <ul className="quiz-explanations">
@@ -427,8 +427,8 @@ export function ReviewPage() {
                   <span className="quiz-explanation-key">
                     {String.fromCharCode(65 + index)}.{" "}
                     {detail.question.correctChoiceIds.includes(choice.id)
-                      ? "Đáp án đúng"
-                      : "Vì sao không chọn"}
+                      ? "Correct answer"
+                      : "Why this is incorrect"}
                   </span>
                   <span className="quiz-explanation-text">{choice.explanation}</span>
                 </li>
@@ -447,7 +447,7 @@ export function ReviewPage() {
 
           {detail.domainCode && detail.domainTitle && detail.objectiveStatement ? (
             <div className="question-curriculum-context">
-              <h3 className="question-context-title">Mục tiêu & bài học liên quan</h3>
+              <h3 className="question-context-title">Related objective & lesson</h3>
               <p className="question-context-meta">
                 <span className="data-table-code">D{detail.domainCode}</span>{" "}
                 <strong>
@@ -457,14 +457,13 @@ export function ReviewPage() {
               </p>
               {detail.repeatMissCount > 1 ? (
                 <p className="question-context-note">
-                  Repeated mistake: câu hỏi này đã trả lời sai trong {detail.repeatMissCount} lần nộp
-                  bài.
+                  Repeated mistake: this question was answered incorrectly in {detail.repeatMissCount} submitted attempts.
                 </p>
               ) : null}
               <div className="question-context-links">
                 {detail.lessonId && detail.lessonTitle ? (
                   <Link className="inline-link" to={`/learn/${detail.lessonId}`}>
-                    Ôn lại bài học: {detail.lessonTitle}
+                    Review lesson: {detail.lessonTitle}
                   </Link>
                 ) : null}
                 {detail.practiceSetId ? (
@@ -472,7 +471,7 @@ export function ReviewPage() {
                     className="inline-link"
                     to={`/practice?set=${encodeURIComponent(detail.practiceSetId)}`}
                   >
-                    Luyện tập Domain {detail.domainCode}
+                    Practice Domain {detail.domainCode}
                   </Link>
                 ) : null}
               </div>
@@ -481,7 +480,7 @@ export function ReviewPage() {
 
           {detailSources.length > 0 ? (
             <div className="timed-sources">
-              <h3 className="timed-sources-title">Nguồn tham chiếu</h3>
+              <h3 className="timed-sources-title">Reference sources</h3>
               <ul className="timed-source-list">
                 {detailSources.map((source) => (
                   <li className="timed-source" key={source.id}>
@@ -489,7 +488,7 @@ export function ReviewPage() {
                       {source.title}
                     </a>
                     <span className="timed-source-meta">
-                      {source.publisher} · truy cập {source.accessedAt}
+                      {source.publisher} · accessed {source.accessedAt}
                     </span>
                   </li>
                 ))}

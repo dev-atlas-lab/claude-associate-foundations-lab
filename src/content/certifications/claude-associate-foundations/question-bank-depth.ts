@@ -25,42 +25,42 @@ const effectivePromptAdditions: Question = questionSchema.parse({
       id: "audience-and-environment",
       text: "State the audience, the target environment, and the deployment prerequisites.",
       explanation:
-        "Đúng: audience và môi trường quyết định mức chi tiết, thuật ngữ và các bước cần có.",
+        "Correct: specifying audience profile, deployment environment, and prerequisites establishes operational context and required depth.",
     },
     {
       id: "success-and-format",
       text: "Define the required sections, command format, and what counts as a successful deployment.",
       explanation:
-        "Đúng: format và tiêu chí thành công biến yêu cầu mơ hồ thành đầu ra kiểm tra được.",
+        "Correct: defining section schemas, command line formats, and objective verification criteria transforms vague prompts into auditable instructions.",
     },
     {
       id: "approved-example",
       text: "Include a short approved example and the constraints the runbook must respect.",
       explanation:
-        "Đúng: ví dụ chuẩn và ràng buộc giúp Claude bám cấu trúc và tránh bịa bước.",
+        "Correct: supplying approved few-shot exemplars and explicit operational constraints guides structural formatting and prevents hallucinated steps.",
     },
     {
       id: "role-only",
       text: "Tell Claude to act as a senior engineer without providing system details.",
       explanation:
-        "Sai: role không thay thế thông tin về hệ thống, môi trường và quy trình.",
+        "Incorrect: role declarations alone cannot substitute for missing technical specifications, environment details, or deployment procedures.",
     },
     {
       id: "longer-answer",
       text: "Ask for a longer answer so that no step is missed.",
       explanation:
-        "Sai: độ dài không bảo đảm đúng nội dung; có thể làm tăng thông tin thừa và lỗi.",
+        "Incorrect: requesting greater token length does not guarantee missing technical steps are correctly populated and risks adding verbose filler.",
     },
     {
       id: "more-randomness",
       text: "Increase randomness so the runbook covers unusual cases.",
       explanation:
-        "Sai: tăng randomness làm output kém ổn định, không bổ sung kiến thức còn thiếu.",
+        "Incorrect: increasing randomness destabilizes output reliability and does not supply unstated infrastructure context.",
     },
   ],
   correctChoiceIds: ["audience-and-environment", "success-and-format", "approved-example"],
   correctExplanation:
-    "Một prompt kỹ thuật tốt cung cấp audience, môi trường, prerequisite, format, tiêu chí thành công, ví dụ chuẩn và ràng buộc. Role, độ dài hay randomness không thay thế các dữ kiện đó. Đây là cùng nguyên tắc với prompt rõ ràng và context đủ trong tài liệu prompting của Anthropic.",
+    "Production-grade technical prompts articulate target audience, operating environment, prerequisites, schema format, success criteria, and approved few-shot exemplars. Vague role declarations or increased randomness cannot compensate for absent architectural context.",
   sourceIds: ["anthropic-prompting-best-practices"],
 });
 
@@ -73,30 +73,30 @@ const decompositionDecision: Question = questionSchema.parse({
       id: "extract-compare-summarize",
       text: "Extract liability terms per contract into a structured table, compare the extracted terms, then draft and verify the board summary.",
       explanation:
-        "Đúng: tách thành trích xuất, so sánh và tổng hợp; mỗi bước có output trung gian kiểm tra được.",
+        "Correct: decomposes the workflow into extraction, structured comparison, and executive synthesis; each sub-stage produces verifiable intermediate artifacts.",
     },
     {
       id: "summary-first",
       text: "Ask for the board summary first, then ask Claude to explain how it reached its conclusions.",
       explanation:
-        "Sai: tổng hợp trước khi trích xuất dễ tạo kết luận không dựa trên bằng chứng và khó kiểm tra.",
+        "Incorrect: attempting synthesis before structured extraction encourages ungrounded hallucinations and makes auditing individual contract terms difficult.",
     },
     {
       id: "one-pass",
       text: "Put all 30 contracts in one prompt and ask for the best possible answer in one pass.",
       explanation:
-        "Sai: gộp quá nhiều tài liệu và nhiều mục tiêu làm tăng nguy cơ bỏ sót, quá context và trộn lẫn bước.",
+        "Incorrect: ingesting 30 complex legal contracts in a single turn risks attention dilution, context rot, and dropped legal clauses.",
     },
     {
       id: "rank-before-reading",
       text: "Ask Claude to rank the contracts by risk before reading any contract text.",
       explanation:
-        "Sai: xếp hạng trước khi đọc không có bằng chứng; đây là suy đoán chứ không phải phân tích.",
+        "Incorrect: ranking contracts before ingesting their text forces ungrounded speculation.",
     },
   ],
   correctChoiceIds: ["extract-compare-summarize"],
   correctExplanation:
-    "Task có nhiều tài liệu và nhiều bước nên được chia thành các bước có đầu ra kiểm tra được: trích xuất từng hợp đồng, so sánh các trường đã trích xuất, rồi tổng hợp và kiểm tra. Cách này giảm tải context, giúp phát hiện thiếu sót và tránh để bản tổng hợp che mất lỗi ở bước trích xuất.",
+    "Complex multi-document workflows demand task decomposition: extract clauses into structured tables with contract IDs, compare extracted terms across standardized dimensions, and synthesize findings into an executive brief. This preserves provenance and prevents attention loss.",
   sourceIds: [
     "anthropic-prompting-best-practices",
     "anthropic-evaluation-docs",
@@ -115,42 +115,42 @@ const requirementsArtifacts: Question = questionSchema.parse({
       id: "traceable-requirements",
       text: "A traceable list of actors, goals, constraints, exceptions, and open questions, each linked to the notes.",
       explanation:
-        "Đúng: đây là đầu ra cốt lõi của phân tích yêu cầu, có thể kiểm tra và truy vết.",
+        "Correct: core requirements artifact articulating testable actors, goals, boundaries, and exceptions with source traceability.",
     },
     {
       id: "conflicts-and-gaps",
       text: "A list of conflicts and ambiguities that stakeholders must resolve.",
       explanation:
-        "Đúng: nêu rõ điều chưa biết hoặc mâu thuẫn giúp tránh thiết kế dựa trên giả định.",
+        "Correct: surfacing conflicting stakeholder expectations and data gaps prevents designing architectures on unverified assumptions.",
     },
     {
       id: "requirements-vs-solutions",
       text: "A clear separation between confirmed requirements and proposed solution ideas.",
       explanation:
-        "Đúng: tách yêu cầu khỏi giải pháp ngăn việc biến một ý tưởng thành yêu cầu không được xác nhận.",
+        "Correct: decoupling confirmed business requirements from tentative technical solutions ensures problems are fully understood before committing to design.",
     },
     {
       id: "complete-final-design",
       text: "A complete final workflow design with no open questions.",
       explanation:
-        "Sai: thiết kế cuối trước khi xác nhận yêu cầu là quá sớm; che giấu câu hỏi mở làm tăng rủi ro.",
+        "Incorrect: locking in a final architecture prior to resolving stakeholder ambiguities represents premature convergence.",
     },
     {
       id: "invented-requirements",
       text: "Invented requirements that fill gaps so the document looks complete.",
       explanation:
-        "Sai: bịa yêu cầu là hallucination và có thể dẫn đến thiết kế sai.",
+        "Incorrect: fabricating requirements to cover data gaps represents hallucination and invalidates engineering assumptions.",
     },
     {
       id: "senior-only-summary",
       text: "A summary of only the most senior stakeholder's requests.",
       explanation:
-        "Sai: bỏ qua actor khác làm mất ràng buộc, ngoại lệ và tác động đến người bị ảnh hưởng.",
+        "Incorrect: ignoring front-line operators and compliance officers omits critical edge cases and operational constraints.",
     },
   ],
   correctChoiceIds: ["traceable-requirements", "conflicts-and-gaps", "requirements-vs-solutions"],
   correctExplanation:
-    "Trước khi thiết kế giải pháp, Claude nên giúp tạo danh sách yêu cầu có thể truy vết, các mâu thuẫn và câu hỏi mở, và sự tách biệt giữa yêu cầu đã xác nhận với ý tưởng giải pháp. Không nên bịa yêu cầu, chốt thiết kế quá sớm hoặc chỉ nghe một stakeholder.",
+    "Prior to solution design, Claude should assist in structuring requirements into traceable actors/goals/constraints, cataloging stakeholder ambiguities, and rigorously decoupling confirmed requirements from tentative solution ideas.",
   sourceIds: ["anthropic-evaluation-docs", "anthropic-prompting-best-practices"],
 });
 
@@ -163,30 +163,30 @@ const firstIntegrationPoint: Question = questionSchema.parse({
       id: "bounded-review-step",
       text: "A bounded, reversible review step with clear acceptance criteria, a human checkpoint, and a baseline for quality and cycle time.",
       explanation:
-        "Đúng: phạm vi hẹp, có thể đảo ngược, có tiêu chí và baseline giúp đo hiệu quả và giới hạn rủi ro.",
+        "Correct: a bounded, reversible sub-task with pre-existing baselines and human review minimizes operational risk while validating empirical accuracy.",
     },
     {
       id: "final-payment-approval",
       text: "The final payment-approval decision, because it offers the largest time saving.",
       explanation:
-        "Sai: đây là bước có hậu quả tài chính lớn và khó đảo ngược; không phù hợp làm pilot đầu tiên.",
+        "Incorrect: final payment authorization carries irreversible financial liability; piloting on irreversible high-stakes gates without prior validation is unsafe.",
     },
     {
       id: "all-steps",
       text: "Every step at once so the team can learn quickly.",
       explanation:
-        "Sai: tự động hóa toàn bộ ngay lập tức khuếch đại lỗi và khó xác định nguyên nhân.",
+        "Incorrect: full-workflow automation without component validation amplifies errors and obscures root causes.",
     },
     {
       id: "visible-step-no-baseline",
       text: "The most visible customer-facing step, without measuring the current process.",
       explanation:
-        "Sai: thiếu baseline thì không thể biết thay đổi có cải thiện chất lượng hoặc thời gian hay không.",
+        "Incorrect: deploying customer-facing changes without baseline metrics prevents objective assessment of whether quality improved or degraded.",
     },
   ],
   correctChoiceIds: ["bounded-review-step"],
   correctExplanation:
-    "Pilot đầu tiên nên là một bước hẹp, dễ đảo ngược, có tiêu chí chấp nhận, human checkpoint và baseline. Bước quyết định cuối hoặc toàn bộ quy trình có phạm vi quá lớn và rủi ro cao. Cách tiếp cận này phù hợp với khuyến nghị bắt đầu đơn giản, đo lường và chỉ tăng độ phức tạp khi có cải thiện rõ ràng.",
+    "Initial pilot integrations must be bounded, reversible, and governed by explicit acceptance criteria and qualified human checkpoints. Pre-existing baselines are required to evaluate performance. Anthropic recommends starting with simple, measurable workflows and escalating complexity only as empirical improvements are proven.",
   sourceIds: [
     "anthropic-building-effective-agents",
     "anthropic-evaluation-docs",
@@ -205,30 +205,30 @@ const highRiskUseCase: Question = questionSchema.parse({
       id: "pause-and-control",
       text: "Do not launch as proposed; treat it as a high-risk use that requires policy review, a qualified human in the loop, and disclosure.",
       explanation:
-        "Đúng: bảo hiểm là lĩnh vực high-risk; quyết định có hậu quả lớn cần chính sách, human review và minh bạch.",
+        "Correct: insurance claim determinations represent High-Risk Decisions under Anthropic's Usage Policy, requiring qualified human review and AI transparency.",
     },
     {
       id: "launch-for-speed",
       text: "Launch it because Claude can process claims faster and more consistently.",
       explanation:
-        "Sai: tốc độ và tính nhất quán không thay thế yêu cầu kiểm soát đối với quyết định high-risk.",
+        "Incorrect: operational velocity and consistency cannot waive safety policies or eliminate human accountability in consequential insurance denials.",
     },
     {
       id: "disclaimer-only",
       text: "Launch it with a disclaimer in the denial letter.",
       explanation:
-        "Sai: một disclaimer không tương đương với qualified human review và kiểm soát chính sách.",
+        "Incorrect: passive disclaimers do not substitute for mandatory qualified human review on consequential legal and financial determinations.",
     },
     {
       id: "logging-only",
       text: "Launch it if every decision is logged, even without human review.",
       explanation:
-        "Sai: logging giúp truy vết nhưng không thay thế con người có thẩm quyền review quyết định.",
+        "Incorrect: audit logging provides traceability, but does not fulfill the requirement of qualified human sign-off on high-risk outcomes.",
     },
   ],
   correctChoiceIds: ["pause-and-control"],
   correctExplanation:
-    "Bảo hiểm nằm trong danh sách high-risk của Usage Policy. Quyết định tự động từ chối yêu cầu bồi thường có hậu quả lớn đối với người bị ảnh hưởng, nên cần rà soát chính sách, qualified human in the loop và disclosure. Disclaimer hoặc logging một mình không đủ thay thế human review.",
+    "Insurance adjudication is classified as a High-Risk Decision under Anthropic's Usage Policy. Fully autonomous claim denials directly impact policyholder rights, necessitating formal compliance reviews, transparent AI disclosure, and mandatory qualified human sign-off. Logging and disclaimers alone cannot replace human oversight.",
   sourceIds: ["anthropic-usage-policy", "anthropic-claude-constitution"],
 });
 
@@ -241,42 +241,42 @@ const ethicsSafeguards: Question = questionSchema.parse({
       id: "disclose-and-accountable",
       text: "Disclose how AI is used and keep a human accountable for the final decision.",
       explanation:
-        "Đúng: minh bạch và trách nhiệm con người là nền tảng của sử dụng có trách nhiệm.",
+        "Correct: ethical AI governance mandates transparency regarding AI involvement and retains ultimate human accountability for employment evaluations.",
     },
     {
       id: "check-unequal-treatment",
       text: "Check for unequal treatment and avoid decisions based on protected characteristics.",
       explanation:
-        "Đúng: cần kiểm tra thiên lệch và đối xử công bằng, đặc biệt trong quyết định về việc làm.",
+        "Correct: systems must actively prevent disparate impact, bias, or discriminatory criteria across protected demographic classes.",
     },
     {
       id: "job-relevant-traceable",
       text: "Use job-relevant evidence and keep the reasoning traceable for human review.",
       explanation:
-        "Đúng: bằng chứng liên quan đến công việc và khả năng review giúp quyết định có thể giải thích.",
+        "Correct: employment decisions must rely on verifiable, job-relevant performance data with auditable reasoning trails.",
     },
     {
       id: "hide-ai",
       text: "Maximize engagement by hiding that AI contributed to the review.",
       explanation:
-        "Sai: che giấu vai trò của AI làm giảm minh bạch và có thể gây hiểu nhầm.",
+        "Incorrect: concealing AI involvement in consequential employment evaluations breaches transparency ethics and provider policies.",
     },
     {
       id: "speed-over-transparency",
       text: "Optimize for speed even if the employee cannot see the evidence.",
       explanation:
-        "Sai: tốc độ không biện minh cho việc thiếu minh bạch hoặc không thể giải thích quyết định.",
+        "Incorrect: prioritizing evaluation speed over evidence transparency undermines procedural fairness and employee rights.",
     },
     {
       id: "remove-human-review",
       text: "Remove human review because the model is consistent.",
       explanation:
-        "Sai: tính nhất quán của model không thay thế trách nhiệm và phán đoán của con người.",
+        "Incorrect: model consistency does not guarantee fairness or correctness; human management must own final performance determinations.",
     },
   ],
   correctChoiceIds: ["disclose-and-accountable", "check-unequal-treatment", "job-relevant-traceable"],
   correctExplanation:
-    "Đánh giá nhân viên là use case high-risk về việc làm. Các yêu cầu đạo đức gồm minh bạch về việc dùng AI, giữ con người chịu trách nhiệm, kiểm tra đối xử công bằng và thiên lệch, dùng bằng chứng liên quan đến công việc và giữ khả năng review. Che giấu AI, đặt tốc độ lên trên minh bạch hoặc bỏ human review đều đi ngược các nguyên tắc này.",
+    "Employee performance evaluation is a high-risk employment workflow. Ethical governance demands: AI transparency, designated human accountability, active audits for disparate treatment, and job-relevant evidence traceability. Concealing AI or eliminating human review violates Anthropic's ethical framework.",
   sourceIds: [
     "anthropic-claude-constitution",
     "anthropic-usage-policy",
@@ -295,42 +295,42 @@ const diagnosticEvidence: Question = questionSchema.parse({
       id: "systematic-missing-field",
       text: "The same field is missing across repeated runs and different inputs.",
       explanation:
-        "Đúng: lỗi lặp lại có hệ thống thường chỉ ra yêu cầu hoặc định nghĩa trường bị thiếu.",
+        "Correct: consistent, systematic omissions indicate missing prompt specifications or absent schema constraints rather than random variance.",
     },
     {
       id: "undefined-field",
       text: "The prompt never defines the field, its format, or an example.",
       explanation:
-        "Đúng: không có định nghĩa, format hay ví dụ thì model không có cơ sở để tạo đúng trường.",
+        "Correct: omitting field definitions, formatting instructions, or exemplars directly prevents the model from generating the required output.",
     },
     {
       id: "outdated-example",
       text: "The supplied example shows an older format that omits the field.",
       explanation:
-        "Đúng: ví dụ lỗi thời trong context dạy model bỏ qua trường bắt buộc.",
+        "Correct: providing conflicting or outdated few-shot exemplars conditions the model to omit the required field.",
     },
     {
       id: "latency-changed",
       text: "Latency increased after the last deployment.",
       explanation:
-        "Sai: độ trễ không giải thích vì sao một trường bắt buộc bị thiếu.",
+        "Incorrect: network or server latency does not explain why a specific semantic field was omitted in the completion.",
     },
     {
       id: "price-changed",
       text: "The model's price changed.",
       explanation:
-        "Sai: giá không phải bằng chứng về chất lượng nội dung hoặc nguyên nhân thiếu trường.",
+        "Incorrect: model API pricing changes have no correlation with output completeness or prompt defects.",
     },
     {
       id: "one-off-wording",
       text: "One unusual input produced different wording in an unrelated section.",
       explanation:
-        "Sai: thay đổi nhỏ ở một input hiếm không chứng minh lỗi hệ thống ở trường bắt buộc.",
+        "Incorrect: isolated stylistic variation in an unrelated section does not indicate systemic field omission.",
     },
   ],
   correctChoiceIds: ["systematic-missing-field", "undefined-field", "outdated-example"],
   correctExplanation:
-    "Lỗi lặp lại trên nhiều input, thiếu định nghĩa/format/ví dụ, và ví dụ cũ trong context đều chỉ về vấn đề prompt hoặc context. Độ trễ, giá và một thay đổi nhỏ ở input hiếm không giải thích được việc trường bắt buộc bị bỏ sót. Hãy sửa yêu cầu và context trước khi thử model khác.",
+    "Systematic field omission across inputs, absent schema definitions, and outdated few-shot exemplars strongly point to prompt and context defects. Latency, pricing, and isolated stylistic variations do not account for missing structural fields. Refine prompt instructions and exemplars first.",
   sourceIds: ["anthropic-prompting-best-practices", "anthropic-evaluation-docs"],
 });
 
@@ -343,30 +343,30 @@ const regressionAdjustment: Question = questionSchema.parse({
       id: "inspect-and-rerun",
       text: "Keep the baseline, inspect the regression, refine or revert the change, and rerun the full test set including the edge case.",
       explanation:
-        "Đúng: điểm trung bình có thể che regression; cần xem case cụ thể và chạy lại toàn bộ bộ test.",
+        "Correct: aggregate averages can mask critical regressions; engineers must inspect the failing edge case, adjust constraints, and rerun the complete evaluation suite.",
     },
     {
       id: "ship-average",
       text: "Ship the revision because the average score improved.",
       explanation:
-        "Sai: cải thiện trung bình không bù được việc một case quan trọng bị hỏng.",
+        "Incorrect: deploying regressions on mission-critical edge cases compromises production safety regardless of average score gains.",
     },
     {
       id: "remove-edge-case",
       text: "Remove the failing edge case from the test set so the average stays high.",
       explanation:
-        "Sai: xóa case khó làm chỉ số đẹp hơn nhưng che mất rủi ro thật.",
+        "Incorrect: deleting difficult edge cases creates artificial scores while concealing real-world vulnerabilities.",
     },
     {
       id: "larger-model-same-prompt",
       text: "Switch to a larger model and keep the same prompt and test set.",
       explanation:
-        "Sai: đổi model không giải quyết nguyên nhân regression và có thể làm tăng chi phí.",
+        "Incorrect: escalating model tiers does not resolve underlying constraint conflicts and increases operating costs.",
     },
   ],
   correctChoiceIds: ["inspect-and-rerun"],
   correctExplanation:
-    "Một thay đổi làm tăng điểm trung bình nhưng hỏng case quan trọng là regression. Cần giữ baseline, xem case nào bị ảnh hưởng, tinh chỉnh hoặc revert, rồi chạy lại toàn bộ bộ test gồm cả edge case. Chỉ mở rộng khi các case quan trọng đều đạt.",
+    "An intervention that raises aggregate average scores while breaking a critical edge case represents an active regression. Retain the stable baseline, analyze the regression diff, refine the prompt constraint, and rerun the full benchmark suite.",
   sourceIds: ["anthropic-evaluation-docs", "anthropic-prompting-best-practices"],
 });
 
@@ -379,30 +379,30 @@ const rubricCalibration: Question = questionSchema.parse({
       id: "explicit-rubric-and-test-set",
       text: "Define an explicit grading rubric with representative test cases and score both the baseline and revised outputs against the same criteria.",
       explanation:
-        "Đúng: rubric rõ ràng trên cùng bộ test giúp hai reviewer chấm nhất quán và biết thay đổi có thực sự cải thiện chất lượng hay không.",
+        "Correct: establishing objective rubrics and scoring baseline vs. revised outputs across identical representative test sets resolves reviewer disagreement with empirical evidence.",
     },
     {
       id: "prefer-longer-draft",
       text: "Adopt whichever prompt produces the longer summary on the most recent ticket.",
       explanation:
-        "Sai: độ dài trên một ticket đơn lẻ không phản ánh độ chính xác, tính đầy đủ hay khả năng tổng quát hóa.",
+        "Incorrect: token length on an isolated ticket does not correlate with factual accuracy, conciseness, or generalization.",
     },
     {
       id: "rewrite-until-both-like-style",
       text: "Keep rewriting the prompt informally until both reviewers like the tone of a single sample.",
       explanation:
-        "Sai: chỉnh theo cảm tính trên một mẫu dễ gây vòng lặp thử-sai và bỏ sót các tiêu chí nghiệp vụ quan trọng.",
+        "Incorrect: unguided informal revisions based on subjective aesthetic impressions lead to endless trial-and-error cycles.",
     },
     {
       id: "average-two-models",
       text: "Switch models immediately so the team does not need to agree on evaluation criteria.",
       explanation:
-        "Sai: đổi model không thay thế được tiêu chí đánh giá; nếu không có rubric thì vẫn không biết output nào đạt yêu cầu.",
+        "Incorrect: switching model tiers cannot resolve absent evaluation criteria; clear rubrics remain mandatory.",
     },
   ],
   correctChoiceIds: ["explicit-rubric-and-test-set"],
   correctExplanation:
-    "Khi các reviewer bất đồng về chất lượng giữa hai phiên bản prompt, nguyên nhân thường là thiếu tiêu chí chấm rõ ràng. Thiết lập grading rubric cụ thể và chấm cả baseline lẫn phiên bản mới trên cùng bộ representative test cases giúp việc iterate dựa trên bằng chứng thay vì cảm tính.",
+    "When evaluators disagree on whether a prompt revision represents progress, the root cause is absent evaluation rubrics. Defining explicit scoring criteria and benchmarking both versions against the same representative test suite grounds iteration in evidence rather than subjective impression.",
   sourceIds: ["anthropic-prompting-best-practices", "anthropic-evaluation-docs"],
 });
 
@@ -415,37 +415,37 @@ const solutionHandoffControls: Question = questionSchema.parse({
       id: "structured-intermediate-outputs",
       text: "Define structured intermediate outputs between classification and routing-note drafting so each stage can be inspected.",
       explanation:
-        "Đúng: đầu ra trung gian có cấu trúc giúp kiểm tra từng bước và xác định nhanh lỗi nằm ở phân loại hay ở bước soạn ghi chú.",
+        "Correct: inspectable intermediate data structures enable verification of whether an error originated during classification or during draft synthesis.",
     },
     {
       id: "ambiguous-case-escalation",
       text: "Route low-confidence or ambiguous requests to a human review queue with the supporting source excerpts attached.",
       explanation:
-        "Đúng: chuyển các trường hợp mơ hồ kèm trích dẫn nguồn cho con người kiểm tra giúp giảm rủi ro phân luồng sai.",
+        "Correct: escalating ambiguous tickets with grounding excerpts to human review queues mitigates misrouting risks.",
     },
     {
       id: "edge-case-validation",
       text: "Test the workflow against edge cases and malformed inputs before expanding beyond the initial pilot.",
       explanation:
-        "Đúng: kiểm thử trên edge case và input lỗi trước khi mở rộng giúp phát hiện điểm gãy của thiết kế.",
+        "Correct: evaluating pipelines against adversarial edge cases and malformed inputs prior to rollout uncovers structural failure points.",
     },
     {
       id: "hide-intermediate-classification",
       text: "Hide intermediate classification fields so coordinators only see the final routing recommendation.",
       explanation:
-        "Sai: ẩn bước trung gian làm giảm khả năng audit và khiến điều phối viên khó phát hiện phân loại sai.",
+        "Incorrect: concealing intermediate steps degrades observability and prevents coordinators from identifying classification errors.",
     },
     {
       id: "auto-close-unclassified",
       text: "Automatically close requests that do not match a standard category.",
       explanation:
-        "Sai: tự động đóng các yêu cầu ngoại lệ không qua rà soát con người có thể làm mất yêu cầu quan trọng hoặc nhạy cảm.",
+        "Incorrect: auto-closing unclassified exceptions without human review drops critical, sensitive, or novel customer requests.",
     },
     {
       id: "skip-pilot-metrics",
       text: "Roll out to all request types immediately and define success metrics after full deployment.",
       explanation:
-        "Sai: triển khai toàn bộ trước khi có tiêu chí và kết quả pilot làm tăng rủi ro vận hành và không có baseline để so sánh.",
+        "Incorrect: full rollout without baseline metrics and pilot validation amplifies operational error risks.",
     },
   ],
   correctChoiceIds: [
@@ -454,7 +454,7 @@ const solutionHandoffControls: Question = questionSchema.parse({
     "edge-case-validation",
   ],
   correctExplanation:
-    "Một giải pháp workflow nhiều bước đáng tin cậy cần đầu ra trung gian có cấu trúc để dễ kiểm tra, cơ chế chuyển các case mơ hồ kèm bằng chứng sang human review, và kiểm thử kỹ trên edge case trước khi mở rộng. Ẩn dữ liệu trung gian, tự động đóng case lạ hoặc bỏ qua pilot đều làm giảm tính an toàn và khả năng giải trình.",
+    "Reliable multi-step workflows feature inspectable intermediate schemas, human escalation queues for ambiguous cases with supporting excerpts, and thorough pre-deployment edge-case testing. Concealing intermediate data or auto-closing unclassified exceptions undermines auditability.",
   sourceIds: [
     "anthropic-building-effective-agents",
     "anthropic-evaluation-docs",
@@ -471,30 +471,30 @@ const policyExceptionEscalation: Question = questionSchema.parse({
       id: "pause-and-submit-governance-review",
       text: "Pause deployment on the unapproved dataset, submit the use case and data classification through the organization's governance review process, and proceed only after approval and required controls are documented.",
       explanation:
-        "Đúng: khi dữ liệu và use case chưa nằm trong phạm vi phê duyệt, cần phân loại dữ liệu, xin phê duyệt theo quy trình quản trị và áp dụng đủ biện pháp kiểm soát trước khi chạy.",
+        "Correct: when datasets fall outside pre-approved registers, teams must pause, conduct formal data classification, submit for governance review, and implement required controls prior to processing.",
     },
     {
       id: "run-in-personal-chat",
       text: "Test the dataset in a personal account first so the organization's workspace logs stay clean.",
       explanation:
-        "Sai: đưa dữ liệu nội bộ sang tài khoản cá nhân vi phạm nguyên tắc kiểm soát truy cập, bảo mật và quản trị dữ liệu.",
+        "Incorrect: ingesting enterprise data into personal accounts breaches access controls, confidentiality policies, and data security standards.",
     },
     {
       id: "proceed-and-notify-later",
       text: "Process the dataset immediately to meet the deadline and notify the governance team after the report is delivered.",
       explanation:
-        "Sai: xử lý dữ liệu chưa được phê duyệt trước rồi báo cáo sau có thể gây lộ dữ liệu nhạy cảm không thể thu hồi.",
+        "Incorrect: processing unauthorized data before review risks irreversible exposure of sensitive or regulated records.",
     },
     {
       id: "strip-headers-only",
       text: "Remove column headers from the file and upload it without checking data sensitivity or policy scope.",
       explanation:
-        "Sai: xóa tiêu đề cột không thay thế việc phân loại dữ liệu và không làm cho nội dung nhạy cảm trở nên được phép sử dụng.",
+        "Incorrect: removing column headers does not anonymize sensitive record data or waive compliance review mandates.",
     },
   ],
   correctChoiceIds: ["pause-and-submit-governance-review"],
   correctExplanation:
-    "Theo nguyên tắc quản trị AI trong tổ chức, khi một tập dữ liệu hoặc use case chưa được phê duyệt trong danh mục cho phép, nhóm phải tạm dừng việc đưa dữ liệu vào công cụ, thực hiện phân loại mức độ nhạy cảm và trình duyệt qua quy trình governance/compliance. Không được dùng tài khoản cá nhân hoặc tự ý chạy trước rồi xin phép sau.",
+    "Under organizational AI governance, ingesting unvetted datasets requires pausing deployment, classifying data sensitivity, and securing formal approval through established compliance channels. Teams must never use personal accounts or bypass governance reviews.",
   sourceIds: [
     "anthropic-usage-policy",
     "anthropic-claude-constitution",
@@ -511,37 +511,37 @@ const workflowCostLatencyControls: Question = questionSchema.parse({
       id: "trim-redundant-context",
       text: "Trim redundant instructions and stale reference text so only high-signal context is sent on each run.",
       explanation:
-        "Đúng: loại bỏ hướng dẫn trùng lặp và tài liệu lỗi thời giúp giảm token đầu vào, giảm độ trễ và giữ tín hiệu rõ hơn.",
+        "Correct: eliminating redundant instructions and outdated reference files reduces prompt tokens, lowers latency, and preserves attention focus.",
     },
     {
       id: "benchmark-faster-tier",
       text: "Benchmark a faster, lower-cost model tier on the same representative evaluation set before switching production traffic.",
       explanation:
-        "Đúng: thử nghiệm tier nhanh/rẻ hơn trên chính bộ evaluation baseline giúp xác nhận chất lượng vẫn đạt trước khi chuyển lưu lượng thật.",
+        "Correct: benchmarking faster model tiers on the established evaluation set verifies that quality thresholds remain satisfied before migrating traffic.",
     },
     {
       id: "track-per-case-regressions",
       text: "Track per-case quality alongside latency and cost after each change so critical edge-case regressions are caught immediately.",
       explanation:
-        "Đúng: theo dõi chất lượng từng case song song với độ trễ và chi phí ngăn việc tối ưu tốc độ làm hỏng các case tuân thủ quan trọng.",
+        "Correct: monitoring per-case quality metrics prevents cost or latency optimizations from silently damaging compliance-critical edge cases.",
     },
     {
       id: "drop-source-grounding",
       text: "Remove source excerpts from the prompt so the model generates summaries from general memory.",
       explanation:
-        "Sai: bỏ nguồn tham chiếu trong tác vụ tuân thủ làm tăng mạnh nguy cơ hallucination và sai lệch dữ kiện.",
+        "Incorrect: removing reference context in compliance workflows directly induces hallucinations and factual errors.",
     },
     {
       id: "skip-regression-checks",
       text: "Stop running the evaluation suite once latency drops below the target threshold.",
       explanation:
-        "Sai: chỉ nhìn độ trễ mà bỏ kiểm thử chất lượng dễ làm lọt lỗi nghiêm trọng ra môi trường vận hành.",
+        "Incorrect: optimizing solely for latency while abandoning quality evaluations allows critical errors to escape into production.",
     },
     {
       id: "change-all-variables-together",
       text: "Change the prompt structure, context window contents, and model tier simultaneously without intermediate measurement.",
       explanation:
-        "Sai: thay đổi mọi biến cùng lúc mà không đo từng bước khiến nhóm không biết thay đổi nào giúp ích hay gây lỗi.",
+        "Incorrect: modifying multiple variables simultaneously destroys causal attribution, making it impossible to diagnose what caused gains or regressions.",
     },
   ],
   correctChoiceIds: [
@@ -550,7 +550,7 @@ const workflowCostLatencyControls: Question = questionSchema.parse({
     "track-per-case-regressions",
   ],
   correctExplanation:
-    "Tối ưu hóa chi phí và độ trễ có kỷ luật đòi hỏi giữ nguyên baseline đánh giá: rút gọn context thừa để chỉ gửi thông tin high-signal, benchmark model tier nhanh/tiết kiệm hơn trên cùng bộ test đại diện, và giám sát chất lượng per-case cùng với latency/cost để không đánh đổi độ chính xác ở các case quan trọng.",
+    "Disciplined cost and latency optimization maintains evaluation baselines: eliminate low-value context, benchmark faster model tiers against identical evaluation suites, and monitor per-case quality to prevent speed optimizations from compromising accuracy.",
   sourceIds: [
     "anthropic-evaluation-docs",
     "anthropic-prompting-best-practices",
@@ -567,30 +567,30 @@ const multilingualNuanceControl: Question = questionSchema.parse({
       id: "glossary-and-examples",
       text: "Provide an approved regulatory glossary in structured XML tags, define the formal executive audience and tone constraints in the system prompt, and supply two vetted few-shot examples.",
       explanation:
-        "Đúng: kết hợp bảng thuật ngữ chuẩn hóa trong thẻ XML, ràng buộc văn phong trang trọng cho ban lãnh đạo và vài ví dụ mẫu chuẩn (few-shot) giúp model định hình chính xác cả thuật ngữ lẫn văn phong.",
+        "Correct: providing a standardized glossary inside XML tags, defining formal executive audience constraints, and including vetted few-shot exemplars anchors terminology and tone consistently.",
     },
     {
       id: "raise-temperature",
       text: "Raise temperature to 0.9 so Claude invents culturally engaging phrasings for legal clauses.",
       explanation:
-        "Sai: tăng temperature làm tăng độ ngẫu nhiên và biến thiên văn bản, hoàn toàn không phù hợp với văn bản tuân thủ pháp lý vốn cần tính nhất quán cao.",
+        "Incorrect: raising temperature increases randomness and output variance, which is unacceptable for technical compliance translations.",
     },
     {
       id: "open-ended-instruction",
       text: "Add an instruction saying “translate as naturally as possible” without supplying canonical bilingual term definitions.",
       explanation:
-        "Sai: chỉ dẫn chung chung không giải quyết được vấn đề thuật ngữ kỹ thuật bị dịch sai hoặc thiếu đồng bộ qua các tài liệu.",
+        "Incorrect: open-ended directives fail to standardize specialized technical vocabulary or enforce formal corporate hierarchy.",
     },
     {
       id: "split-isolated-prompts",
       text: "Translate each sentence in separate isolated requests without sharing previously approved definitions.",
       explanation:
-        "Sai: dịch từng câu cô lập làm mất mạch ngữ cảnh tổng thể và làm trầm trọng thêm tình trạng không đồng nhất thuật ngữ.",
+        "Incorrect: isolated sentence-by-sentence translation loses contextual cohesion and exacerbates terminology inconsistency.",
     },
   ],
   correctChoiceIds: ["glossary-and-examples"],
   correctExplanation:
-    "Để kiểm soát chất lượng dịch thuật và bản địa hóa chuyên ngành, cách hiệu quả nhất theo Anthropic Best Practices là: cung cấp bảng thuật ngữ chuẩn (glossary) trong thẻ XML tường minh, quy định rõ đối tượng độc giả/văn phong mong muốn, và cung cấp vài ví dụ đối chiếu chuẩn chỉnh (few-shot examples).",
+    "Under Anthropic Prompting Best Practices, technical translation and localization quality is controlled by: (1) supplying canonical terminology glossaries inside structured XML tags, (2) explicitly defining audience and register, and (3) providing high-quality bilingual few-shot exemplars.",
   sourceIds: ["anthropic-prompting-best-practices"],
 });
 
@@ -603,37 +603,37 @@ const hallucinationAuditPlan: Question = questionSchema.parse({
       id: "isolate-verifiable-claims",
       text: "Isolate all quantitative metrics, dates, and causal conclusions into an audit table and require direct word-for-word citations from the transcripts.",
       explanation:
-        "Đúng: bóc tách các nhận định định lượng, mốc thời gian và quan hệ nhân quả để đối chiếu trích dẫn trực tiếp là cách chắc chắn nhất để kiểm chứng tính xác thực.",
+        "Correct: decomposing quantitative claims and causal statements into audit tables with verbatim transcript citations provides rigorous empirical verification.",
     },
     {
       id: "flag-unsupported-claims",
       text: "Explicitly qualify or delete any claim that cannot be corroborated by evidence in the provided source transcripts.",
       explanation:
-        "Đúng: nguyên tắc cốt lõi của fact-checking là hạ mức độ khẳng định hoặc lược bỏ dứt điểm các luận điểm không có bằng chứng chứng minh.",
+        "Correct: core fact-checking methodology mandates retracting or downgrading confidence on claims lacking ground-truth evidence.",
     },
     {
       id: "cross-check-inconsistencies",
       text: "Cross-check for internal contradictions between different sections of the report analyzing related operational incidents.",
       explanation:
-        "Đúng: kiểm tra chéo các mâu thuẫn nội tại giữa các phần là tín hiệu quan trọng để phát hiện những đoạn model suy diễn thiếu nhất quán.",
+        "Correct: cross-checking related sections surfaces internal inconsistencies where the model made contradictory deductions.",
     },
     {
       id: "rely-on-fluency",
       text: "Accept statements that sound highly confident and use polished corporate prose as inherently verified.",
       explanation:
-        "Sai: văn phong tự tin và mượt mà không chứng minh được tính xác thực; hallucination thường xuất hiện dưới dạng câu văn rất trôi chảy.",
+        "Incorrect: confidence and polished fluency are common characteristics of persuasive hallucinations; they do not indicate truth.",
     },
     {
       id: "re-prompt-multiple-times",
       text: "Re-run the prompt five times and accept the majority response as ground truth without consulting source transcripts.",
       explanation:
-        "Sai: kiểm tra chéo giữa các lần chạy (Best-of-N) có thể phát hiện sự thiếu nhất quán nhưng không thay thế được việc đối chiếu với tài liệu gốc.",
+        "Incorrect: majority sampling (Best-of-N) identifies inconsistency, but cannot detect shared hallucinations without consulting ground-truth source text.",
     },
     {
       id: "remove-source-constraints",
       text: "Remove source document boundaries so Claude can fill informational gaps from broad internet training memory.",
       explanation:
-        "Sai: bỏ giới hạn tài liệu nguồn sẽ khiến model tự do suy diễn và làm tăng vọt nguy cơ hallucination trong báo cáo rủi ro.",
+        "Incorrect: removing source boundaries encourages open-ended speculation and sharply increases hallucination rates in technical risk reports.",
     },
   ],
   correctChoiceIds: [
@@ -642,7 +642,7 @@ const hallucinationAuditPlan: Question = questionSchema.parse({
     "cross-check-inconsistencies",
   ],
   correctExplanation:
-    "Quy trình kiểm soát hallucination bài bản đòi hỏi bóc tách các claim cụ thể để kiểm chứng bằng trích dẫn nguyên văn từ nguồn gốc, kiên quyết loại bỏ các khẳng định thiếu căn cứ, và rà soát mâu thuẫn nội bộ giữa các phần trong văn bản. Không được dựa vào văn phong tự tin hay kết quả đa số mà bỏ qua tài liệu đối soát.",
+    "Rigorous hallucination auditing isolates discrete claims for word-for-word source verification, actively deletes or qualifies uncorroborated assertions, and audits cross-section internal consistency. Never rely on superficial fluency, majority sampling, or unconstrained parametric memory.",
   sourceIds: [
     "anthropic-reduce-hallucinations-doc",
     "anthropic-evaluation-docs",
@@ -658,30 +658,30 @@ const routingIntentClassification: Question = questionSchema.parse({
       id: "routing-tier-pattern",
       text: "Implement an upfront routing classifier using a fast, low-cost model to fulfill status lookups directly and escalate complex dispute requests to a higher-capability model tier.",
       explanation:
-        "Đúng: mô hình phân luồng (routing) dùng model nhanh/rẻ (như Haiku) xử lý khối lượng lớn tác vụ đơn giản và chỉ chuyển 20% ca phức tạp cho model chuyên sâu (như Sonnet) là giải pháp tối ưu chi phí và độ trễ.",
+        "Correct: the Routing Pattern assigns low-cost, fast models (Haiku) to high-volume simple lookups, reserving capable reasoning tiers (Sonnet) for complex contractual disputes.",
     },
     {
       id: "all-opus-chain",
       text: "Route 100% of incoming inquiries through a multi-agent chain powered exclusively by the largest model tier.",
       explanation:
-        "Sai: dùng model lớn nhất cho toàn bộ 100,000 yêu cầu mỗi ngày sẽ gây lãng phí chi phí token khổng lồ và độ trễ không cần thiết cho 80% tác vụ tra cứu đơn giản.",
+        "Incorrect: routing all 100,000 daily requests to top-tier reasoning models introduces massive unnecessary token expenses and high latency.",
     },
     {
       id: "single-haiku-only",
       text: "Enforce a single fast model across all requests without any escalation path for multi-step contractual analysis.",
       explanation:
-        "Sai: model nhỏ khó đảm bảo chiều sâu lập luận và độ chính xác cho các tranh chấp pháp lý/hợp đồng phức tạp.",
+        "Incorrect: smaller models lack the analytical reasoning depth required to resolve complex legal and contractual disputes accurately.",
     },
     {
       id: "unsupervised-agent",
       text: "Deploy an unconstrained autonomous agent that browses internal databases indefinitely for every inquiry without a stopping condition.",
       explanation:
-        "Sai: thiếu điều kiện dừng và cơ chế kiểm soát sẽ dẫn đến vòng lặp vô tận, bùng nổ chi phí và tiềm ẩn rủi ro sai sót.",
+        "Incorrect: unconstrained autonomous loops without stopping criteria risk runaway token costs and infinite recursion.",
     },
   ],
   correctChoiceIds: ["routing-tier-pattern"],
   correctExplanation:
-    "Theo hướng dẫn 'Building effective agents' của Anthropic, mô hình định tuyến (Routing) là mẫu kiến trúc cơ bản và hiệu quả nhất khi có sự phân hóa rõ rệt giữa các luồng tác vụ. Nó giúp chuyển hướng chính xác tác vụ đơn giản tới model tối ưu tốc độ/chi phí, và chỉ dành tài nguyên model cao cấp cho bài toán đòi hỏi suy luận phức tạp.",
+    "Anthropic's 'Building Effective Agents' documentation identifies the Routing pattern as fundamental for heterogeneous workloads: a lightweight classifier triages routine queries to fast, economical models while routing complex reasoning requests to capable tiers.",
   sourceIds: [
     "anthropic-building-effective-agents",
     "anthropic-choosing-model",
@@ -697,30 +697,30 @@ const projectPermissionRevocation: Question = questionSchema.parse({
       id: "remove-member-audit-knowledge",
       text: "Remove the consultant from the Project and organization workspace, rotate any shared connector credentials they handled, and audit Project knowledge files to ensure access is fully terminated.",
       explanation:
-        "Đúng: phải thu hồi quyền ở cấp thành viên workspace/project và xoay vòng (rotate) credential của các connector ngoài để đảm bảo chấm dứt hoàn toàn quyền truy cập dữ liệu nhạy cảm.",
+        "Correct: access revocation must occur at the workspace and Project membership levels, paired with rotating credentials on shared connectors to prevent unauthorized access.",
     },
     {
       id: "archive-project-only",
       text: "Archive the Project, assuming that archiving automatically revokes member permissions and disconnects shared tools.",
       explanation:
-        "Sai: việc archive Project chỉ ẩn project khỏi giao diện hoạt động nhưng vẫn bảo lưu danh sách thành viên và cấu hình; nó không thay thế cho việc thu hồi quyền.",
+        "Incorrect: archiving a Project hides it from active views but preserves member rosters, permissions, and tool connections; it does not revoke access.",
     },
     {
       id: "prompt-ignore-contractor",
       text: "Add a Project instruction telling Claude to decline questions submitted by that specific consultant's name.",
       explanation:
-        "Sai: prompt instruction không thể làm công cụ kiểm soát truy cập (access control) và không ngăn chặn được việc người đó đọc kho tài liệu Project knowledge.",
+        "Incorrect: prompt instructions cannot enforce access control and do not prevent the consultant from reading uploaded Project Knowledge files.",
     },
     {
       id: "delete-single-file-only",
       text: "Delete one financial strategy document from Project knowledge while leaving the consultant's Project membership active.",
       explanation:
-        "Sai: chỉ xóa một file không ngăn được người đó xem các tài liệu còn lại, các cuộc trò chuyện chia sẻ hoặc tiếp tục sử dụng Project.",
+        "Incorrect: deleting an isolated file leaves all other confidential assets, shared chats, and connectors accessible to the former consultant.",
     },
   ],
   correctChoiceIds: ["remove-member-audit-knowledge"],
   correctExplanation:
-    "Quản trị Project theo nguyên tắc bảo mật và quyền tối thiểu đòi hỏi phải thu hồi quyền thành viên ở cấp độ tài khoản/workspace và cập nhật credential của các connector liên quan. Không thể dựa vào tính năng Archive hay prompt instruction để thay thế cho cơ chế phân quyền bảo mật thực tế.",
+    "Securing enterprise workspaces requires formal identity access management: remove departed members from the organization and Project workspace, rotate shared connector credentials, and audit Knowledge assets. Archiving projects or adding prompt directives does not enforce access control.",
   sourceIds: [
     "anthropic-projects-manage",
     "anthropic-usage-policy",
@@ -736,37 +736,37 @@ const regressionPromptPinning: Question = questionSchema.parse({
       id: "run-baseline-eval-suite",
       text: "Evaluate the modified prompt against the entire regression test suite representing both legacy warranty cases and new return scenarios.",
       explanation:
-        "Đúng: chạy lại bộ kiểm thử toàn diện trên cả trường hợp cũ lẫn trường hợp mới giúp đo lường chính xác phạm vi và mức độ nghiêm trọng của lỗi thoái lui (regression).",
+        "Correct: rerunning the comprehensive evaluation suite across both legacy and new scenarios quantifies the exact scope and severity of the regression.",
     },
     {
       id: "diff-prompt-changes",
       text: "Inspect the diff between the previous baseline prompt and the updated version to locate overlapping or conflicting constraints.",
       explanation:
-        "Đúng: so sánh chi tiết các thay đổi trong câu chữ và ràng buộc của prompt giúp phát hiện chính xác chỗ quy định mới lấn át hoặc mâu thuẫn với quy định cũ.",
+        "Correct: inspecting prompt diffs pinpoints where newly added constraints conflict with or supersede legacy warranty rules.",
     },
     {
       id: "categorize-failure-modes",
       text: "Categorize the failed legacy test cases to determine whether errors stem from ambiguous instructions, missing context, or overly restrictive return rules.",
       explanation:
-        "Đúng: phân loại cụ thể các ca bị lỗi giúp nhóm xác định đúng căn nguyên lỗi thay vì sửa mò không có định hướng.",
+        "Correct: classifying root-cause error modes enables targeted prompt engineering rather than random trial-and-error editing.",
     },
     {
       id: "switch-models-immediately",
       text: "Immediately migrate to a different model family in production without investigating the prompt wording differences.",
       explanation:
-        "Sai: đổi model đột ngột làm thay đổi quá nhiều biến số cùng lúc và không giải quyết được căn nguyên mâu thuẫn logic trong prompt.",
+        "Incorrect: switching models changes multiple variables at once and fails to resolve logical instruction conflicts in the prompt.",
     },
     {
       id: "delete-legacy-eval-cases",
       text: "Delete legacy warranty cases from the evaluation dataset so the pass rate reflects only the new return policy.",
       explanation:
-        "Sai: xóa test case để làm đẹp số liệu là hành vi che giấu lỗi thoái lui trong sản phẩm thực tế.",
+        "Incorrect: deleting difficult test cases distorts metrics and blinds the team to production regressions.",
     },
     {
       id: "double-max-tokens",
       text: "Double max_tokens in production in hopes that generating longer answers will naturally reconcile conflicting warranty rules.",
       explanation:
-        "Sai: tăng max_tokens chỉ kéo dài câu trả lời chứ không sửa được xung đột về mặt chỉ dẫn logic trong prompt.",
+        "Incorrect: increasing `max_tokens` lengthens completions without resolving conflicting behavioral constraints in the prompt.",
     },
   ],
   correctChoiceIds: [
@@ -775,7 +775,7 @@ const regressionPromptPinning: Question = questionSchema.parse({
     "categorize-failure-modes",
   ],
   correctExplanation:
-    "Xử lý lỗi hồi quy (regression) có phương pháp đòi hỏi: chạy lại toàn bộ bộ kiểm thử đại diện (gồm cả case cũ và mới), soi diff để định vị xung đột câu chữ giữa các phiên bản prompt, và phân loại bản chất các ca bị lỗi để tinh chỉnh có mục tiêu. Tuyệt đối không xóa test case, đổi model vội vã hay tăng token một cách mù quáng.",
+    "Systematic regression diagnosis requires rerunning the full evaluation suite across legacy and new scenarios, analyzing prompt diffs for conflicting constraints, and categorizing failure modes. Never delete evaluation cases, escalate models prematurely, or expand token ceilings blindly.",
   sourceIds: [
     "anthropic-prompting-best-practices",
     "anthropic-evaluation-docs",

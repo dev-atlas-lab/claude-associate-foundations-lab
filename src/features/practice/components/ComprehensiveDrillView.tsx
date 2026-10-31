@@ -263,62 +263,62 @@ export function ComprehensiveDrillView() {
   };
 
   return (
-    <div className="comprehensive-drill" role="region" aria-label="Chế độ ôn tập toàn diện tức thì">
+    <div className="comprehensive-drill" role="region" aria-label="Comprehensive instant drill mode">
       {/* Overview Statistics Banner */}
-      <section className="drill-stats-banner" aria-label="Thống kê tiến độ ôn tập toàn diện">
+      <section className="drill-stats-banner" aria-label="Comprehensive drill statistics">
         <div className="drill-stats-head">
           <div className="drill-stats-title-group">
             <h3 className="drill-stats-title">
               <Sparkles size={16} strokeWidth={2.2} aria-hidden="true" />
-              Tiến độ ôn tập tức thì (Instant Feedback Drill)
+              Instant feedback drill
             </h3>
             <p className="drill-stats-desc">
-              Chế độ luyện tập mở trên toàn bộ 105 câu hỏi có đáp án và giải thích chi tiết tiếng Việt tức thì sau mỗi lần chọn.
+              Open practice across all 105 reviewed questions with immediate answers and option-by-option explanations.
             </p>
           </div>
           <button
             type="button"
             className="button button--ghost button--sm"
             onClick={() => setShowResetConfirm(true)}
-            title="Đặt lại toàn bộ tiến độ làm bài"
+            title="Reset all drill progress"
           >
             <RotateCcw size={13} strokeWidth={2} aria-hidden="true" />
-            Làm lại từ đầu
+            Reset drill
           </button>
         </div>
 
         <div className="stat-grid drill-stat-grid">
           <div className="stat">
-            <dt className="stat-label">Tổng số câu</dt>
+            <dt className="stat-label">Total questions</dt>
             <dd className="stat-value">{stats.total}</dd>
           </div>
           <div className="stat">
-            <dt className="stat-label">Đã làm</dt>
+            <dt className="stat-label">Attempted</dt>
             <dd className="stat-value">
               {stats.answered} <span className="stat-sub">({Math.round((stats.answered / stats.total) * 100)}%)</span>
             </dd>
           </div>
           <div className="stat">
-            <dt className="stat-label">Đúng</dt>
+            <dt className="stat-label">Correct</dt>
             <dd className="stat-value text-ok">{stats.correct}</dd>
           </div>
           <div className="stat">
-            <dt className="stat-label">Sai</dt>
+            <dt className="stat-label">Incorrect</dt>
             <dd className="stat-value text-danger">{stats.incorrect}</dd>
           </div>
           <div className="stat">
-            <dt className="stat-label">Tỉ lệ đúng</dt>
+            <dt className="stat-label">Accuracy</dt>
             <dd className="stat-value">{stats.accuracy}%</dd>
           </div>
           <div className="stat">
-            <dt className="stat-label">Đã gắn cờ</dt>
+            <dt className="stat-label">Flagged</dt>
             <dd className="stat-value text-warn">{stats.flagged}</dd>
           </div>
         </div>
 
         {showResetConfirm ? (
           <div className="drill-reset-confirm" role="alert">
-            <span>Bạn có chắc chắn muốn xóa toàn bộ lịch sử đáp án đã làm trong chế độ ôn tập này không?</span>
+            <span>Are you sure you want to clear all your answers in this drill mode?</span>
             <div className="drill-reset-actions">
               <button
                 type="button"
@@ -328,14 +328,14 @@ export function ComprehensiveDrillView() {
                   setShowResetConfirm(false);
                 }}
               >
-                Xác nhận xóa
+                Confirm reset
               </button>
               <button
                 type="button"
                 className="button button--secondary button--sm"
                 onClick={() => setShowResetConfirm(false)}
               >
-                Hủy bỏ
+                Cancel
               </button>
             </div>
           </div>
@@ -343,16 +343,16 @@ export function ComprehensiveDrillView() {
       </section>
 
       {/* Filter and Search Controls */}
-      <section className="drill-controls" aria-label="Bộ lọc câu hỏi">
+      <section className="drill-controls" aria-label="Question filters">
         <div className="drill-filter-row">
-          <div className="study-filters" role="group" aria-label="Lọc theo Domain">
+          <div className="study-filters" role="group" aria-label="Filter by Domain">
             <button
               type="button"
               className="study-filter"
               aria-pressed={selectedDomain === "all"}
               onClick={() => setSelectedDomain("all")}
             >
-              Tất cả Domain (105)
+              All Domains (105)
             </button>
             {primaryBlueprint.domains.map((d) => {
               const count = bankQuestions.filter(
@@ -378,17 +378,17 @@ export function ComprehensiveDrillView() {
               id={searchInputId}
               type="search"
               className="drill-search-input"
-              placeholder="Tìm kiếm nội dung câu hỏi..."
+              placeholder="Search question stem or keyword..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              aria-label="Tìm kiếm câu hỏi"
+              aria-label="Search questions"
             />
             {searchQuery ? (
               <button
                 type="button"
                 className="drill-search-clear"
                 onClick={() => setSearchQuery("")}
-                aria-label="Xóa từ khóa tìm kiếm"
+                aria-label="Clear search input"
               >
                 <X size={13} aria-hidden="true" />
               </button>
@@ -397,14 +397,14 @@ export function ComprehensiveDrillView() {
         </div>
 
         <div className="drill-status-filter-row">
-          <div className="drill-status-group" role="group" aria-label="Lọc theo trạng thái làm bài">
+          <div className="drill-status-group" role="group" aria-label="Filter by status">
             <button
               type="button"
               className={`drill-status-btn ${selectedStatus === "all" ? "drill-status-btn--active" : ""}`}
               aria-pressed={selectedStatus === "all"}
               onClick={() => setSelectedStatus("all")}
             >
-              Tất cả trạng thái
+              All statuses
             </button>
             <button
               type="button"
@@ -412,7 +412,7 @@ export function ComprehensiveDrillView() {
               aria-pressed={selectedStatus === "unattempted"}
               onClick={() => setSelectedStatus("unattempted")}
             >
-              Chưa làm
+              Unattempted
             </button>
             <button
               type="button"
@@ -420,7 +420,7 @@ export function ComprehensiveDrillView() {
               aria-pressed={selectedStatus === "correct"}
               onClick={() => setSelectedStatus("correct")}
             >
-              Đúng ({stats.correct})
+              Correct ({stats.correct})
             </button>
             <button
               type="button"
@@ -428,7 +428,7 @@ export function ComprehensiveDrillView() {
               aria-pressed={selectedStatus === "incorrect"}
               onClick={() => setSelectedStatus("incorrect")}
             >
-              Sai ({stats.incorrect})
+              Incorrect ({stats.incorrect})
             </button>
             <button
               type="button"
@@ -436,19 +436,19 @@ export function ComprehensiveDrillView() {
               aria-pressed={selectedStatus === "flagged"}
               onClick={() => setSelectedStatus("flagged")}
             >
-              Đã gắn cờ ({stats.flagged})
+              Flagged ({stats.flagged})
             </button>
           </div>
 
           <span className="drill-match-count">
-            Hiển thị <strong>{filteredQuestions.length}</strong> / {bankQuestions.length} câu
+            Showing <strong>{filteredQuestions.length}</strong> of {bankQuestions.length} questions
           </span>
         </div>
       </section>
 
       {/* Fast Question Navigator Matrix */}
-      <section className="drill-nav-matrix" aria-label="Bảng số câu hỏi">
-        <div className="drill-nav-grid" role="group" aria-label="Danh sách câu hỏi ôn tập">
+      <section className="drill-nav-matrix" aria-label="Question matrix">
+        <div className="drill-nav-grid" role="group" aria-label="Question matrix grid">
           {filteredQuestions.map((q) => {
             const indexInFullBank = bankQuestions.findIndex((item) => item.id === q.id);
             const userAns = drillState.answers[q.id] ?? [];
@@ -472,7 +472,7 @@ export function ComprehensiveDrillView() {
                 type="button"
                 className={`drill-matrix-btn ${stateClass} ${isActive ? "drill-matrix-btn--active" : ""}`}
                 aria-pressed={isActive}
-                aria-label={`Câu ${indexInFullBank + 1}${flagged ? " (Đã gắn cờ)" : ""}${isAns ? (exact ? " (Đúng)" : " (Sai)") : " (Chưa làm)"}`}
+                aria-label={`Question ${indexInFullBank + 1}${flagged ? " (Flagged)" : ""}${isAns ? (exact ? " (Correct)" : " (Incorrect)") : " (Unattempted)"}`}
                 onClick={() => {
                   setActiveQuestionId(q.id);
                   comprehensiveDrillStore.setLastActiveQuestionId(q.id);
@@ -495,7 +495,7 @@ export function ComprehensiveDrillView() {
               <Badge tone="accent">{currentMeta?.domainTitle ?? "Domain"}</Badge>
               <Badge>{isMultipleResponse ? "Multiple response" : "Single choice"}</Badge>
               <span className="drill-counter">
-                Câu <strong>{currentIndex + 1}</strong> / {bankQuestions.length}
+                Question <strong>{currentIndex + 1}</strong> of {bankQuestions.length}
               </span>
             </div>
 
@@ -504,10 +504,10 @@ export function ComprehensiveDrillView() {
               className={`button button--ghost button--sm ${isFlagged ? "drill-flag-active" : ""}`}
               onClick={handleToggleFlag}
               aria-pressed={isFlagged}
-              title={isFlagged ? "Bỏ gắn cờ câu này" : "Gắn cờ để ôn lại sau"}
+              title={isFlagged ? "Unflag this question" : "Flag question for later"}
             >
               <Flag size={14} strokeWidth={2} aria-hidden="true" />
-              {isFlagged ? "Đã gắn cờ" : "Gắn cờ"}
+              {isFlagged ? "Flagged" : "Flag question"}
             </button>
           </div>
 
@@ -587,10 +587,10 @@ export function ComprehensiveDrillView() {
                   disabled={userAnswers.length === 0}
                 >
                   <Check size={14} strokeWidth={2.2} aria-hidden="true" />
-                  Kiểm tra đáp án & Xem giải thích
+                  Check answer & Show explanation
                 </button>
                 <span className="assessment-hint">
-                  Chọn các đáp án đúng rồi ấn nút để kiểm tra kết quả ngay lập tức.
+                  Select all correct options and click the button to verify immediately.
                 </span>
               </div>
             ) : null}
@@ -607,12 +607,12 @@ export function ComprehensiveDrillView() {
                     {isCorrect ? (
                       <>
                         <CheckCircle2 size={18} strokeWidth={2.4} aria-hidden="true" />
-                        Chính xác! (Correct)
+                        Correct
                       </>
                     ) : (
                       <>
                         <XCircle size={18} strokeWidth={2.4} aria-hidden="true" />
-                        Chưa chính xác (Incorrect)
+                        Incorrect
                       </>
                     )}
                   </p>
@@ -622,17 +622,17 @@ export function ComprehensiveDrillView() {
                     onClick={handleRetry}
                   >
                     <RotateCcw size={13} strokeWidth={2} aria-hidden="true" />
-                    Làm lại câu này
+                    Try again
                   </button>
                 </div>
 
                 <div className="drill-takeaway-box">
-                  <strong>Giải thích cốt lõi (Key Takeaway):</strong>
+                  <strong>Key takeaway:</strong>
                   <p className="quiz-feedback-text">{currentQuestion.correctExplanation}</p>
                 </div>
 
                 <div className="drill-explanations-wrap">
-                  <h4 className="drill-explanations-title">Phân tích chi tiết từng phương án:</h4>
+                  <h4 className="drill-explanations-title">Detailed option analysis:</h4>
                   <ul className="quiz-explanations">
                     {currentQuestion.choices.map((choice, idx) => {
                       const isChoiceCorrect = currentQuestion.correctChoiceIds.includes(choice.id);
@@ -641,9 +641,9 @@ export function ComprehensiveDrillView() {
                           <span className="quiz-explanation-key">
                             <strong>{optionLetter(idx)}.</strong>{" "}
                             {isChoiceCorrect ? (
-                              <span className="text-ok">✓ ĐÚNG:</span>
+                              <span className="text-ok">✓ Correct:</span>
                             ) : (
-                              <span className="text-muted">– SAI:</span>
+                              <span className="text-muted">– Incorrect:</span>
                             )}
                           </span>
                           <span className="quiz-explanation-text">{choice.explanation}</span>
@@ -655,7 +655,7 @@ export function ComprehensiveDrillView() {
 
                 <div className="drill-objective-ref">
                   <HelpCircle size={13} aria-hidden="true" />
-                  <span>Ánh xạ Official Objective: <code>{currentMeta?.objectiveId}</code></span>
+                  <span>Mapped official objective: <code>{currentMeta?.objectiveId}</code></span>
                 </div>
               </div>
             ) : null}
@@ -669,12 +669,12 @@ export function ComprehensiveDrillView() {
                 disabled={filteredQuestions.findIndex((q) => q.id === currentQuestion.id) <= 0}
               >
                 <ArrowLeft size={14} strokeWidth={2} aria-hidden="true" />
-                Câu trước
+                Previous question
               </button>
 
               <div className="drill-quick-jumper">
                 <span className="section-note">
-                  {filteredQuestions.findIndex((q) => q.id === currentQuestion.id) + 1} / {filteredQuestions.length} câu trong danh sách lọc
+                  {filteredQuestions.findIndex((q) => q.id === currentQuestion.id) + 1} of {filteredQuestions.length} filtered items
                 </span>
               </div>
 
@@ -687,7 +687,7 @@ export function ComprehensiveDrillView() {
                   filteredQuestions.length - 1
                 }
               >
-                Câu tiếp theo
+                Next question
                 <ArrowRight size={14} strokeWidth={2} aria-hidden="true" />
               </button>
             </div>
@@ -695,7 +695,7 @@ export function ComprehensiveDrillView() {
         </article>
       ) : (
         <div className="empty-state">
-          <p>Không tìm thấy câu hỏi nào phù hợp với bộ lọc đã chọn.</p>
+          <p>No questions match the current filter selection.</p>
           <button
             type="button"
             className="button button--secondary"
@@ -705,7 +705,7 @@ export function ComprehensiveDrillView() {
               setSearchQuery("");
             }}
           >
-            Xóa bộ lọc
+            Clear filters
           </button>
         </div>
       )}

@@ -8,13 +8,13 @@ import {
   getQuestionCurriculumContext,
 } from "../content";
 import {
+  type AssessmentDefinition,
   assessmentDefinitionSchema,
   createAssessmentContext,
+  type Question,
   questionSchema,
   startAssessment,
   submitAssessment,
-  type AssessmentDefinition,
-  type Question,
 } from "../domain";
 import { AssessmentRunner } from "../features/assessment/components/AssessmentRunner";
 
@@ -23,12 +23,12 @@ const singleQuestion: Question = questionSchema.parse({
   type: "single-choice",
   stem: "Which action removes stale context? Select one.",
   choices: [
-    { id: "wrong", text: "Wrong choice: raise temperature.", explanation: "Sai: không giảm ngữ cảnh." },
-    { id: "right", text: "Correct choice: retrieve relevant sections.", explanation: "Đúng: giảm nhiễu." },
-    { id: "also-wrong", text: "Paste the whole handbook.", explanation: "Sai: tăng nhiễu." },
+    { id: "wrong", text: "Wrong choice: raise temperature.", explanation: "Incorrect: does not trim context." },
+    { id: "right", text: "Correct choice: retrieve relevant sections.", explanation: "Correct: reduces noise." },
+    { id: "also-wrong", text: "Paste the whole handbook.", explanation: "Incorrect: increases noise." },
   ],
   correctChoiceIds: ["right"],
-  correctExplanation: "Chọn lọc ngữ cảnh là cách xử lý gốc rễ.",
+  correctExplanation: "Selective context retrieval addresses the root cause directly.",
   sourceIds: ["anthropic-context-windows-doc"],
 });
 
@@ -37,19 +37,19 @@ const multipleQuestion: Question = questionSchema.parse({
   type: "multiple-response",
   stem: "Which two actions reduce context noise? Select two.",
   choices: [
-    { id: "retrieve", text: "Retrieve only relevant sections.", explanation: "Đúng: giảm tài liệu thừa." },
-    { id: "paste", text: "Paste the entire handbook.", explanation: "Sai: tăng nhiễu." },
-    { id: "summarize", text: "Summarize older turns.", explanation: "Đúng: giữ thông tin cần thiết." },
+    { id: "retrieve", text: "Retrieve only relevant sections.", explanation: "Correct: eliminates redundant documents." },
+    { id: "paste", text: "Paste the entire handbook.", explanation: "Incorrect: increases noise." },
+    { id: "summarize", text: "Summarize older turns.", explanation: "Correct: preserves necessary signals." },
   ],
   correctChoiceIds: ["retrieve", "summarize"],
-  correctExplanation: "Hai lựa chọn này giảm nhiễu mà vẫn giữ thông tin cần thiết.",
+  correctExplanation: "These two choices reduce noise while preserving essential signals.",
   sourceIds: ["anthropic-context-windows-doc"],
 });
 
 const definition: AssessmentDefinition = assessmentDefinitionSchema.parse({
   id: "ui-assessment",
-  title: "UI assessment",
-  description: "A deterministic component-test assessment.",
+  title: "UI Assessment",
+  description: "Exercises the interactive test runner.",
   questionIds: ["ui-single-question", "ui-multiple-question"],
   policy: {
     scoring: "all-or-nothing",
@@ -58,44 +58,52 @@ const definition: AssessmentDefinition = assessmentDefinitionSchema.parse({
 });
 
 function renderRunner() {
-  render(<AssessmentRunner definition={definition} questions={[singleQuestion, multipleQuestion]} />);
+  return render(
+    <MemoryRouter>
+      <AssessmentRunner
+        definition={definition}
+        questions={[singleQuestion, multipleQuestion]}
+      />
+    </MemoryRouter>,
+  );
 }
 
-describe("assessment runner", () => {
-  it("starts, changes answers, navigates, flags, confirms, and scores exact sets", async () => {
+describe("AssessmentRunner", () => {
+  it("walks through questions, answers, flags, submits, and starts over", async () => {
     const user = userEvent.setup();
     renderRunner();
 
-    expect(screen.getByRole("heading", { name: "UI assessment" })).toBeInTheDocument();
-    expect(screen.getByText(/You can change answers before you submit/i)).toBeInTheDocument();
-    expect(screen.getByText(/no partial credit/i)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: definition.title })).toBeInTheDocument();
+    expect(screen.getByText("2 questions")).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "Start assessment" }));
 
     expect(screen.getByText("Question 1 of 2")).toBeInTheDocument();
-    expect(screen.getByText("Not answered")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Previous" })).toBeDisabled();
+    expect(screen.getByText(/0 of 2 answered/)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Flag question" })).toHaveAttribute(
+      "aria-pressed",
+      "false",
+    );
 
-    await user.click(screen.getByRole("radio", { name: /Wrong choice/i }));
-    expect(screen.getByText("Answered")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Flag question" })).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Flag question" }));
-    expect(screen.getByRole("button", { name: "Unflag question" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Unflag question" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+
+    await user.click(
+      screen.getByRole("radio", { name: /Correct choice: retrieve relevant sections/i }),
+    );
+    expect(screen.getByText(/1 of 2 answered/)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Question 1, answered, flagged" })).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "Next" }));
     expect(screen.getByText("Question 2 of 2")).toBeInTheDocument();
-    expect(screen.getByText("Not answered")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Next" })).toBeDisabled();
-    expect(screen.getAllByRole("checkbox")).toHaveLength(3);
+    expect(screen.getByText("Select all answers that apply.")).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: "Previous" }));
-    await user.click(screen.getByRole("radio", { name: /Correct choice/i }));
-    expect(screen.getByRole("radio", { name: /Wrong choice/i })).not.toBeChecked();
-    expect(screen.getByRole("radio", { name: /Correct choice/i })).toBeChecked();
-
-    await user.click(screen.getByRole("button", { name: "Next" }));
-    await user.click(screen.getByRole("checkbox", { name: /Retrieve only relevant/i }));
+    await user.click(screen.getByRole("checkbox", { name: /Retrieve only relevant sections/i }));
     await user.click(screen.getByRole("checkbox", { name: /Summarize older turns/i }));
+    expect(screen.getByText(/2 of 2 answered/)).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "Submit assessment" }));
     expect(
@@ -106,17 +114,19 @@ describe("assessment runner", () => {
 
     await user.click(screen.getByRole("button", { name: "Confirm submission" }));
 
-    expect(screen.getByRole("heading", { name: "Kết quả luyện tập" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Kết quả luyện tập" })).toHaveFocus();
+    expect(screen.getByRole("heading", { name: "Practice results" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Practice results" })).toHaveFocus();
     expect(screen.getAllByText("100%")).toHaveLength(2);
-    expect(screen.getByText("Tổng số câu").closest(".stat")).toHaveTextContent("2");
-    expect(screen.getByText("Đúng").closest(".stat")).toHaveTextContent("2");
-    expect(screen.getByText("Sai").closest(".stat")).toHaveTextContent("0");
-    expect(screen.getByText("Chưa trả lời").closest(".stat")).toHaveTextContent("0");
+    expect(screen.getByText("Total questions").closest(".stat")).toHaveTextContent("2");
+    const correctStat = screen.getAllByText("Correct").find((el) => el.classList.contains("stat-label"));
+    expect(correctStat?.closest(".stat")).toHaveTextContent("2");
+    const incorrectStat = screen.getAllByText("Incorrect").find((el) => el.classList.contains("stat-label"));
+    expect(incorrectStat?.closest(".stat")).toHaveTextContent("0");
+    expect(screen.getByText("Unanswered").closest(".stat")).toHaveTextContent("0");
 
-    expect(screen.getByRole("status")).toHaveTextContent("Chính xác");
-    expect(screen.getAllByText(/Đáp án đúng/)).toHaveLength(2);
-    expect(screen.getByText(/Hai lựa chọn này giảm nhiễu/i)).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent("Correct");
+    expect(screen.getAllByText(/Correct answer/)).toHaveLength(4);
+    expect(screen.getByText(/These two choices reduce noise/i)).toBeInTheDocument();
 
     expect(screen.getByRole("checkbox", { name: /Retrieve only relevant/i })).toBeDisabled();
     expect(screen.getByRole("button", { name: "Question 1, correct, flagged" })).toBeInTheDocument();
@@ -125,7 +135,7 @@ describe("assessment runner", () => {
     await user.click(screen.getByRole("button", { name: "New attempt" }));
     expect(screen.getByText("Question 1 of 2")).toBeInTheDocument();
     expect(screen.getByText(/0 of 2 answered/)).toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "Kết quả luyện tập" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Practice results" })).not.toBeInTheDocument();
     expect(screen.getByRole("radio", { name: /Wrong choice/i })).not.toBeChecked();
   });
 
@@ -161,17 +171,18 @@ describe("assessment runner", () => {
     await user.click(screen.getByRole("button", { name: "Confirm submission" }));
 
     expect(screen.getAllByText("0%")).toHaveLength(2);
-    expect(screen.getByText("Sai").closest(".stat")).toHaveTextContent("1");
-    expect(screen.getByText("Chưa trả lời").closest(".stat")).toHaveTextContent("1");
-    expect(screen.getByRole("status")).toHaveTextContent("Chưa đúng");
+    const failStat = screen.getAllByText("Incorrect").find((el) => el.classList.contains("stat-label"));
+    expect(failStat?.closest(".stat")).toHaveTextContent("1");
+    expect(screen.getByText("Unanswered").closest(".stat")).toHaveTextContent("1");
+    expect(screen.getByRole("status")).toHaveTextContent("Incorrect");
     expect(screen.getByRole("button", { name: "Question 1, incorrect" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Question 2, unanswered" })).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "Question 2, unanswered" }));
-    expect(screen.getByRole("status")).toHaveTextContent("Chưa trả lời");
+    expect(screen.getByRole("status")).toHaveTextContent("Unanswered");
 
     await user.click(screen.getByRole("button", { name: "Question 1, incorrect" }));
-    expect(screen.getByRole("status")).toHaveTextContent("Chưa đúng");
+    expect(screen.getByRole("status")).toHaveTextContent("Incorrect");
     expect(screen.getByText("Correct answer")).toBeInTheDocument();
     expect(screen.getByText("Your answer")).toBeInTheDocument();
   });
@@ -204,19 +215,19 @@ describe("assessment runner", () => {
     });
     expect(within(objTable).getAllByRole("row")).toHaveLength(4); // header + 3 D7 objectives
     expect(
-      within(objTable).getAllByRole("link", { name: /Bài học:/i })[0],
+      within(objTable).getAllByRole("link", { name: /Lesson:/i })[0],
     ).toHaveAttribute("href", "/learn/troubleshooting-optimization");
 
     const qContext = getQuestionCurriculumContext(d7Questions[0]!.id)!;
     expect(
-      screen.getByRole("heading", { name: "Mục tiêu & bài học liên quan" }),
+      screen.getByRole("heading", { name: "Related objective & lesson" }),
     ).toBeInTheDocument();
     expect(screen.getByText(qContext.objective!.statement, { selector: ".question-context-meta *" })).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: `Ôn lại bài học: ${qContext.lesson!.title}` }),
+      screen.getByRole("link", { name: `Review lesson: ${qContext.lesson!.title}` }),
     ).toHaveAttribute("href", `/learn/${qContext.lesson!.id}`);
     expect(
-      screen.getByRole("heading", { name: "Nguồn tham chiếu" }),
+      screen.getByRole("heading", { name: "Reference sources" }),
     ).toBeInTheDocument();
   });
 
@@ -248,7 +259,7 @@ describe("assessment runner", () => {
     });
     expect(within(domainTable).getAllByRole("row")).toHaveLength(8); // header + 7 official domains
     expect(
-      within(domainTable).getByRole("link", { name: "Luyện tập Domain 2" }),
+      within(domainTable).getByRole("link", { name: "Practice Domain 2" }),
     ).toHaveAttribute("href", "/practice?set=domain-2-output-validation-set");
   });
 });

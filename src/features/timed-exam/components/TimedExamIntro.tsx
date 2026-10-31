@@ -95,8 +95,7 @@ export function TimedExamIntro({
             scaled score on the 100–1,000 range and does not predict pass or fail.
           </li>
           <li>
-            Questions and instructions are in English. Explanations after submission are in
-            Vietnamese.
+            Questions, instructions, and full option-by-option explanations are provided in English.
           </li>
         </ul>
       </div>
@@ -122,9 +121,9 @@ export function TimedExamIntro({
         </Callout>
       ) : null}
 
-      <div className="timed-preset-section" role="region" aria-label="Chọn bộ đề thi mô phỏng">
-        <h3 className="timed-preset-heading">Chọn bộ đề thi mô phỏng:</h3>
-        <div className="timed-preset-cards" role="radiogroup" aria-label="Danh sách bộ đề">
+      <div className="timed-preset-section" role="region" aria-label="Select simulation preset">
+        <h3 className="timed-preset-heading">Select simulation preset:</h3>
+        <div className="timed-preset-cards" role="radiogroup" aria-label="Preset options">
           <label className={`timed-preset-card ${selectedPreset === "set-1" ? "timed-preset-card--active" : ""}`}>
             <input
               type="radio"
@@ -135,11 +134,11 @@ export function TimedExamIntro({
             />
             <div className="timed-preset-body">
               <div className="timed-preset-head">
-                <span className="timed-preset-title">Bộ đề chuẩn #1 (Mock Exam Set 1)</span>
+                <span className="timed-preset-title">Standard Simulation #1 (Mock Exam Set 1)</span>
                 <Badge tone="accent">Set 1</Badge>
               </div>
               <p className="timed-preset-desc">
-                Bộ đề chuẩn phân bổ chính xác theo trọng số 7 Domain CCAO-F (14% D1, 21% D2, 12% D3, 16% D4, 12% D5, 15% D6, 10% D7).
+                Standard form strictly allocated by official 7 Domain CCAO-F weights (14% D1, 21% D2, 12% D3, 16% D4, 12% D5, 15% D6, 10% D7).
               </p>
             </div>
           </label>
@@ -154,11 +153,11 @@ export function TimedExamIntro({
             />
             <div className="timed-preset-body">
               <div className="timed-preset-head">
-                <span className="timed-preset-title">Bộ đề chuẩn #2 (Mock Exam Set 2)</span>
+                <span className="timed-preset-title">Alternative Simulation #2 (Mock Exam Set 2)</span>
                 <Badge tone="ok">Set 2</Badge>
               </div>
               <p className="timed-preset-desc">
-                Bộ đề hoán vị thứ hai rút các câu hỏi dự phòng từ ngân hàng 105 câu, bảo đảm độ phủ kiến thức phong phú và độc lập.
+                Second distinct permutation drawing backup items from the 105-question bank for comprehensive coverage.
               </p>
             </div>
           </label>
@@ -173,11 +172,11 @@ export function TimedExamIntro({
             />
             <div className="timed-preset-body">
               <div className="timed-preset-head">
-                <span className="timed-preset-title">Bộ đề ngẫu nhiên (Randomized)</span>
+                <span className="timed-preset-title">Randomized Simulation</span>
                 <Badge tone="neutral">Dynamic</Badge>
               </div>
               <p className="timed-preset-desc">
-                Sinh một tổ hợp 60 câu hoàn toàn ngẫu nhiên bám sát trọng số 7 Domain cho mỗi lượt thi.
+                Generates a fresh 60-item combination strictly respecting the 7 Domain blueprint weights for each attempt.
               </p>
             </div>
           </label>

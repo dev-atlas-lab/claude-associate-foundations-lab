@@ -117,7 +117,7 @@ export function ProgressPage() {
             onClick={() => window.print()}
           >
             <Printer size={14} strokeWidth={2} aria-hidden="true" />
-            In / Xuất Báo cáo (PDF)
+            Print / Export Report (PDF)
           </button>
         }
       />
@@ -214,15 +214,15 @@ export function ProgressPage() {
                   </span>
                   <div>
                     <h3 className="readiness-title">
-                      Chỉ số Sẵn sàng Thi & Cân bằng Blueprint (Diagnostic Index)
+                      Exam Readiness & Blueprint Balance (Diagnostic Index)
                     </h3>
                     <span className="readiness-subtitle">
-                      Dựa trên phân bổ trọng số kỳ thi chính thức và kết quả lần làm gần nhất trên ngân hàng câu hỏi
+                      Based on official exam domain weights and your most recent performance across the question bank
                     </span>
                   </div>
                 </div>
                 <Badge tone={readinessIndex >= 70 ? "ok" : readinessIndex >= 40 ? "accent" : "warn"}>
-                  {readinessIndex >= 70 ? "Tốt · Sẵn sàng cao" : readinessIndex >= 40 ? "Đang tiến bộ" : "Cần củng cố thêm"}
+                  {readinessIndex >= 70 ? "Strong · High readiness" : readinessIndex >= 40 ? "Progressing" : "Needs reinforcement"}
                 </Badge>
               </div>
 
@@ -231,7 +231,7 @@ export function ProgressPage() {
                   <span className="readiness-metric-label">Blueprint Practiced Coverage</span>
                   <span className="readiness-metric-value">{practicedBlueprintWeight}%</span>
                   <span className="readiness-metric-hint">
-                    Tổng trọng số các Domain bạn đã làm ít nhất 1 bài
+                    Total weight of domains with at least 1 attempted set
                   </span>
                 </div>
 
@@ -241,7 +241,7 @@ export function ProgressPage() {
                     {weightedAccuracy !== undefined ? `${weightedAccuracy}%` : "—"}
                   </span>
                   <span className="readiness-metric-hint">
-                    Độ chính xác trung bình theo trọng số đề thi
+                    Average accuracy weighted by official blueprint percentage
                   </span>
                 </div>
 
@@ -249,7 +249,7 @@ export function ProgressPage() {
                   <span className="readiness-metric-label">Overall Readiness Index</span>
                   <span className="readiness-metric-value">{readinessIndex}%</span>
                   <span className="readiness-metric-hint">
-                    Tích hợp độ bao phủ Blueprint và tỷ lệ làm đúng
+                    Combined metric of blueprint coverage and accurate answers
                   </span>
                 </div>
               </div>
@@ -258,10 +258,10 @@ export function ProgressPage() {
                 <div className="remediation-section">
                   <div className="section-heading-row">
                     <h4 className="section-subtitle" style={{ fontSize: "var(--text-sm)", fontWeight: 600 }}>
-                      Mục tiêu ưu tiên cần củng cố (Top Focus Areas)
+                      Priority focus areas
                     </h4>
                     <span className="section-note">
-                      Dựa trên câu làm sai gần đây hoặc chưa luyện tập
+                      Based on recent incorrect answers or unpracticed objectives
                     </span>
                   </div>
                   <div className="remediation-grid">
@@ -281,7 +281,7 @@ export function ProgressPage() {
                         <div className="remediation-actions">
                           {obj.lessonId && obj.lessonTitle ? (
                             <Link className="inline-link" to={`/learn/${obj.lessonId}`}>
-                              Bài học: {obj.lessonTitle}
+                              Lesson: {obj.lessonTitle}
                             </Link>
                           ) : null}
                           {obj.practiceSetId ? (
@@ -289,7 +289,7 @@ export function ProgressPage() {
                               className="inline-link"
                               to={`/practice?set=${encodeURIComponent(obj.practiceSetId)}`}
                             >
-                              Luyện tập Domain {obj.domainCode}
+                              Practice Domain {obj.domainCode}
                             </Link>
                           ) : null}
                         </div>
@@ -391,7 +391,7 @@ export function ProgressPage() {
                           <div className="table-remediation">
                             {domain.lessonId && domain.lessonTitle ? (
                               <Link className="inline-link" to={`/learn/${domain.lessonId}`}>
-                                Bài học: {domain.lessonTitle}
+                                Lesson: {domain.lessonTitle}
                               </Link>
                             ) : null}
                             {domain.practiceSetId ? (
@@ -399,7 +399,7 @@ export function ProgressPage() {
                                 className="inline-link"
                                 to={`/practice?set=${encodeURIComponent(domain.practiceSetId)}`}
                               >
-                                Luyện tập Domain {domain.code}
+                                Practice Domain {domain.code}
                               </Link>
                             ) : null}
                           </div>
@@ -486,7 +486,7 @@ export function ProgressPage() {
                         <div className="table-remediation">
                           {objective.lessonId && objective.lessonTitle ? (
                             <Link className="inline-link" to={`/learn/${objective.lessonId}`}>
-                              Bài học: {objective.lessonTitle}
+                              Lesson: {objective.lessonTitle}
                             </Link>
                           ) : null}
                           {objective.practiceSetId ? (
@@ -494,7 +494,7 @@ export function ProgressPage() {
                               className="inline-link"
                               to={`/practice?set=${encodeURIComponent(objective.practiceSetId)}`}
                             >
-                              Luyện tập Domain {objective.domainCode}
+                              Practice Domain {objective.domainCode}
                             </Link>
                           ) : null}
                         </div>

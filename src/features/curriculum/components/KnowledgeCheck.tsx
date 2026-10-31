@@ -154,12 +154,12 @@ export function KnowledgeCheck({ question }: { question: Question }) {
             {isCorrect ? (
               <>
                 <Check size={16} strokeWidth={2.2} aria-hidden="true" />
-                Chính xác
+                Correct
               </>
             ) : (
               <>
                 <X size={16} strokeWidth={2.2} aria-hidden="true" />
-                Chưa đúng
+                Incorrect
               </>
             )}
           </p>
@@ -170,8 +170,8 @@ export function KnowledgeCheck({ question }: { question: Question }) {
                 <span className="quiz-explanation-key">
                   {String.fromCharCode(65 + index)}.{" "}
                   {question.correctChoiceIds.includes(choice.id)
-                    ? "Đáp án đúng"
-                    : "Vì sao không chọn"}
+                    ? "Correct answer"
+                    : "Why this is incorrect"}
                 </span>
                 <span className="quiz-explanation-text">{choice.explanation}</span>
               </li>

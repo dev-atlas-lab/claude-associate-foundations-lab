@@ -86,8 +86,8 @@ export const mockExamSet2Selection: MockExamSelection = selectTimedExamQuestions
 
 export const mockExamSet2Definition: AssessmentDefinition = assessmentDefinitionSchema.parse({
   id: "mock-exam-preview-set-2",
-  title: "CCAO-F mock exam preview (Bộ đề #2)",
-  description: `Bộ đề thi thử số 2 gồm 60 câu hỏi theo đúng trọng số chính thức của 7 Domain CCAO-F, khai thác các câu hỏi hoán vị và ngân hàng dự phòng 105 câu để tạo bài thi độc lập.`,
+  title: "CCAO-F mock exam preview (Set 2)",
+  description: `Mock exam set 2 comprising 60 questions strictly distributed by official CCAO-F 7-domain weights, utilizing permutation items and backup questions from the 105-question bank for an independent full run.`,
   questionIds: mockExamSet2Selection.selectedQuestionIds,
   policy: {
     scoring: "all-or-nothing",
@@ -125,9 +125,9 @@ export interface MockExamPresetInfo {
 export const mockExamPresets: readonly MockExamPresetInfo[] = [
   {
     id: "set-1",
-    title: "Bộ đề thi thử #1 (Mock Exam Set 1)",
+    title: "Standard Mock Exam #1 (Set 1)",
     badge: "Set 1",
-    description: "Bộ đề tiêu chuẩn phân bổ chính xác theo trọng số 7 Domain CCAO-F.",
+    description: "Standard simulation accurately balanced by the official CCAO-F 7 Domain weights.",
     seed: "ccao-f-mock-set-1",
     definition: mockExamDefinition,
     selection: mockExamSelection,
@@ -136,9 +136,9 @@ export const mockExamPresets: readonly MockExamPresetInfo[] = [
   },
   {
     id: "set-2",
-    title: "Bộ đề thi thử #2 (Mock Exam Set 2)",
+    title: "Alternative Mock Exam #2 (Set 2)",
     badge: "Set 2",
-    description: "Bộ đề hoán vị thứ hai rút các câu hỏi dự phòng từ ngân hàng 105 câu, bảo đảm độ phủ kiến thức.",
+    description: "Second distinct permutation drawing backup items from the 105-item bank for comprehensive domain coverage.",
     seed: "ccao-f-mock-set-2",
     definition: mockExamSet2Definition,
     selection: mockExamSet2Selection,

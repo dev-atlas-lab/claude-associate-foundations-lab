@@ -14,16 +14,16 @@ export const contextWindowLesson: Lesson = lessonSchema.parse({
   order: 1,
   kind: "sample",
   contentStatus: "published",
-  title: "Context window và ngân sách ngữ cảnh",
+  title: "Context window and context budgeting",
   englishTitle: "Context window and context budgeting",
   summary:
-    "Hiểu context window như bộ nhớ làm việc (working memory) của Claude trong cả giao diện chat/Projects lẫn workflow API tích hợp, nắm rõ các thành phần chiếm dung lượng token, và chủ động tinh gọn ngữ cảnh thay vì nhồi nhét tài liệu.",
+    "Understand the context window as Claude's working memory across chat interfaces, Projects, and API workflows. Identify components that consume token capacity and proactively budget context rather than overloading documents.",
   level: "foundation",
   estimatedMinutes: 11,
   verification: {
     status: "verified",
     checkedAt: "2026-10-29",
-    note: "Nội dung kỹ thuật được đối chiếu với tài liệu Anthropic về context window, token counting, compaction, context engineering và quản lý Claude Projects (rà soát 29/10/2026 cho đối tượng Associate). Đây là bài mẫu nền tảng, giữ trạng thái unmapped để tách biệt với 7 bài học toàn domain đã ánh xạ vào blueprint CCAO-F.",
+    note: "Technical content aligned with Anthropic documentation on context windows, token counting, compaction, context engineering, and Claude Projects management (reviewed for Associate audience). Unmapped sample lesson.",
     sourceIds: [
       "anthropic-context-windows-doc",
       "anthropic-token-counting-doc",
@@ -35,101 +35,101 @@ export const contextWindowLesson: Lesson = lessonSchema.parse({
   examMapping: {
     status: "unmapped",
     objectiveIds: [],
-    note: "Bài mẫu nền tảng đã biên tập cho đối tượng Associate để minh hoạ cơ chế context window trước khi học Domain 3 (`product-selection`), giữ trạng thái unmapped để không làm lệch thống kê 7 bài học theo domain.",
+    note: "Foundation sample lesson for Associate candidates illustrating context window mechanics prior to Domain 3 (product-selection).",
   },
   objectives: [
-    "Giải thích context window là gì và vì sao nó giới hạn lượng thông tin Claude xử lý trong một lượt hội thoại hoặc request.",
-    "Nhận diện các thành phần cùng chia sẻ dung lượng context window trong Claude chat, Projects và workflow tích hợp (system instructions, lịch sử hội thoại, file tài liệu đính kèm/retrieval và nội dung phản hồi).",
-    "Chọn chiến lược tối ưu ngữ cảnh (tóm tắt sang chat mới, chọn lọc tài liệu đưa vào Project, hoặc áp dụng compaction) khi luồng trao đổi bắt đầu kéo dài và phân mảnh.",
+    "Explain what a context window is and why it bounds the amount of information Claude can process in a single conversation turn or API request.",
+    "Identify components sharing context window capacity across Claude chat, Projects, and API workflows (system instructions, conversation history, attachments/retrieved docs, and generated output).",
+    "Select appropriate context optimization strategies (starting fresh chats, curating Project knowledge, or applying compaction) when discussions become long and fragmented.",
   ],
   sections: [
     {
       kind: "paragraphs",
-      heading: "Context window là gì?",
+      heading: "What is a context window?",
       paragraphs: [
-        "Context window là toàn bộ phạm vi văn bản mà model có thể tham chiếu khi tạo câu trả lời — bao gồm cả phần nội dung đang sinh ra. Anthropic mô tả nó như “working memory” (bộ nhớ làm việc tạm thời) của model: không phải kho tri thức huấn luyện vĩnh viễn, mà là không gian ngữ cảnh của riêng phiên làm việc hoặc request hiện tại.",
-        "Dù bạn dùng Claude qua giao diện chat/Projects hay qua workflow tích hợp API, mọi thông tin đi kèm lượt gọi đều cùng chia sẻ một bộ nhớ làm việc: system prompt hoặc Project instructions, toàn bộ lịch sử messages trong cuộc hội thoại (kể cả tool result, hình ảnh và file đính kèm), các đoạn tài liệu được nạp từ Project knowledge, và cả output mà Claude sinh ra. Token dùng cho extended thinking cũng tính vào context window này.",
-        "Ở cấp độ tích hợp API, mỗi response trả về trường usage cho biết request đã tiêu tốn bao nhiêu token và token counting API cho phép đo lường chính xác trước khi gửi. Ở góc độ người dùng Claude hằng ngày, điều đó có nghĩa là một cuộc chat kéo dài qua quá nhiều chủ đề hoặc đính kèm nguyên file tài liệu lớn sẽ nhanh chóng làm đầy ngân sách token.",
+        "The context window is the entire span of text that the model can reference when generating a response — including the output being produced. Anthropic describes it as the model's “working memory”: not a permanent store of trained knowledge, but the active context space reserved for the current request or session.",
+        "Whether using Claude through chat/Projects or an integrated API workflow, all information provided in a call shares this working memory: system prompts or Project instructions, full conversation message history (including tool results, images, and attachments), retrieved excerpts from Project knowledge, and the generated response. Extended thinking tokens also count against this context window.",
+        "At the API level, every response returns a usage object detailing prompt tokens and completion tokens, while the token counting API allows exact measurement prior to dispatch. For day-to-day users, prolonged chats covering too many disparate topics or containing massive raw documents rapidly exhaust available context budget.",
       ],
     },
     {
       kind: "callout",
       tone: "caution",
-      title: "Nhiều context hơn không đồng nghĩa với câu trả lời tốt hơn",
-      body: "Khi số lượng token tăng quá cao, độ chuẩn xác và khả năng hồi tưởng các ràng buộc cốt lõi có thể suy giảm — Anthropic gọi hiện tượng này là context rot. Việc chắt lọc tài liệu đúng trọng tâm hoặc tóm tắt các quyết định quan trọng sang một phiên chat mới luôn đem lại hiệu quả cao hơn là cố nhồi thêm tài liệu vào một luồng trò chuyện đã loãng.",
+      title: "More context does not guarantee better answers",
+      body: "As token volume increases substantially, model attention and adherence to core constraints can degrade — a phenomenon Anthropic terms context rot. Curating concise, highly relevant excerpts or summarizing key decisions into a fresh conversation yields higher accuracy than stuffing additional documents into a diluted thread.",
     },
     {
       kind: "paragraphs",
-      heading: "Token không phải là từ (words)",
+      heading: "Tokens are not words",
       paragraphs: [
-        "Token là đơn vị xử lý văn bản cơ bản của model, không tương ứng 1-1 với từ. Cùng một câu văn, tiếng Việt thường tiêu tốn nhiều token hơn tiếng Anh; các bảng biểu dữ liệu lớn, mã nguồn (code), JSON và chuỗi số dài cũng tốn nhiều token hơn văn xuôi thông thường.",
-        "Vì vậy, đừng ước tính ngân sách chỉ dựa trên số trang hay số từ. Khi làm việc trong Claude Projects hoặc chat, hãy ưu tiên đưa vào các tài liệu chuẩn hóa, súc tích và giàu tín hiệu (high-signal) thay vì tải lên các bản nháp trùng lặp; khi xây dựng workflow tự động, hãy đo lường thực tế bằng token counting API.",
+        "Tokens are the fundamental units of text processed by language models, not a 1:1 mapping with words. Non-English text, structured tabular data, code, JSON, and long numeric sequences typically consume more tokens per character than plain English prose.",
+        "Consequently, never estimate context budget purely based on page count or word count. In Claude Projects or chat, prioritize clean, high-signal reference materials over redundant drafts; in automated workflows, measure exact payload size with the token counting API.",
       ],
     },
     {
       kind: "list",
-      heading: "Chiến lược giữ ngữ cảnh tinh gọn và giàu thông tin",
+      heading: "Strategies for lean, high-signal context",
       items: [
-        "Đặt quy tắc và vai trò cố định trong Project instructions hoặc system prompt thay vì gõ lặp lại ở mỗi lượt chat.",
-        "Khi cuộc hội thoại chuyển sang nhiệm vụ mới hoặc đã qua nhiều vòng thử-sai, hãy tóm tắt các quyết định đã chốt thành ghi chú ngắn rồi mở một cuộc chat mới.",
-        "Chỉ đưa những tài liệu hoặc đoạn trích thực sự liên quan (retrieval / curated Project knowledge) thay vì đính kèm toàn bộ kho lưu trữ vào mỗi lượt.",
-        "Với các luồng hội thoại hoặc agent chạy dài, áp dụng tóm tắt có cấu trúc, compaction hoặc context editing để tinh giản lịch sử cũ.",
-        "Luôn dự trù ngân sách cho output: input và output cùng chia sẻ một context window, nên nếu input quá nặng hoặc đặt max_tokens quá sát trần sẽ làm bó hẹp không gian phản hồi của model.",
+        "Define persistent rules and persona in Project instructions or system prompts instead of repeating them across user turns.",
+        "When shifting to a new task or after extensive trial-and-error, summarize established decisions and open a fresh chat.",
+        "Provide only strictly relevant documents or passages (retrieval / curated Project knowledge) rather than attaching entire repositories to each turn.",
+        "For long-running agents or conversational flows, employ structured summarization, compaction, or context editing to prune obsolete history.",
+        "Always budget for output: input and output share the same context window, so overly large inputs or excessive max_tokens limits constrain available response room.",
       ],
     },
     {
       kind: "diagram",
-      heading: "Ngân sách context trong một request",
+      heading: "Context budget allocation within a request",
       diagramId: "context-budget",
       intro:
-        "Một request điển hình chia sẻ một context window duy nhất cho cả input và output. Chọn từng phần để xem nó chiếm dung lượng vì lý do gì và nên xử lý ra sao. Tỉ lệ dưới đây là ví dụ minh hoạ, không phải quy định cứng của Anthropic.",
+        "A typical request shares a single context window across input and output. Select each segment to inspect why it consumes capacity and how to optimize it. Percentages shown are illustrative benchmarks, not fixed Anthropic constraints.",
     },
   ],
   keyTerms: [
     {
       en: "Context window",
       vi: "Context window (vùng ngữ cảnh làm việc)",
-      note: "Toàn bộ lượng token model có thể tham chiếu trong một request, bao gồm cả phần output được sinh ra.",
+      note: "Total token capacity the model can reference in a single request, including generated output.",
     },
     {
       en: "Token",
       vi: "Token (đơn vị xử lý văn bản)",
-      note: "Mảnh ký tự/văn bản mà model phân tích. Không tương ứng 1-1 với từ và tiêu hao khác nhau giữa các ngôn ngữ.",
+      note: "Fundamental text chunk processed by LLMs. Does not map 1:1 to words and varies by language and syntax.",
     },
     {
       en: "System prompt",
       vi: "System prompt (chỉ dẫn hệ thống)",
-      note: "Phần hướng dẫn đặt ở đầu phiên: định hình vai trò, phạm vi kiến thức và các quy tắc bất biến.",
+      note: "Instructions positioned at the session start: defining role, knowledge boundaries, and invariant behavioral rules.",
     },
     {
       en: "Prompt caching",
       vi: "Prompt caching (bộ nhớ đệm prompt)",
-      note: "Tái sử dụng phần prefix đã xử lý trước đó để giảm chi phí và độ trễ; lưu ý token đã cache vẫn chiếm dung lượng context window.",
+      note: "Reusing previously processed prefix tokens to reduce cost and latency; cached tokens still occupy context window capacity.",
     },
     {
       en: "Compaction",
       vi: "Compaction (cơ chế nén ngữ cảnh)",
-      note: "Tự động tóm tắt phần hội thoại cũ để cuộc trò chuyện tiếp tục diễn ra liền mạch khi sắp chạm giới hạn context window.",
+      note: "Automated summarization of historical turns enabling continuous conversation as the context window approaches its ceiling.",
     },
     {
       en: "Context rot",
       vi: "Context rot (suy giảm độ tập trung do ngữ cảnh quá dài)",
-      note: "Hiện tượng độ chính xác và khả năng hồi tưởng các chỉ dẫn quan trọng bị giảm sút khi ngữ cảnh bị phình to và lẫn nhiều thông tin nhiễu.",
+      note: "Degradation in accuracy and instruction recall when the context becomes bloated with irrelevant or conflicting information.",
     },
   ],
   scenario: {
-    title: "Tình huống: trợ lý hỗ trợ khách hàng",
+    title: "Scenario: Customer Support Assistant",
     setup:
-      "Một trợ lý nội bộ trả lời câu hỏi về chính sách công ty. Mỗi lượt, nó nhận toàn bộ 60 trang tài liệu chính sách, lịch sử chat ba ngày và system prompt. Gần đây câu trả lời chậm hơn và đôi khi bỏ qua ràng buộc “không cam kết thời hạn hoàn tiền”.",
+      "An internal assistant answers employee policy inquiries. On every turn, it receives the complete 60-page handbook, three days of conversation history, and the system prompt. Recently, responses have slowed down and occasionally violate the rule 'never promise a refund timeline'.",
     steps: [
-      "Đo token của từng phần: system prompt, lịch sử, tài liệu và câu hỏi hiện tại.",
-      "Nhận ra tài liệu chiếm phần lớn ngân sách, trong khi mỗi lượt chỉ cần vài đoạn liên quan.",
-      "Thay vì gửi cả kho, truy xuất hai hoặc ba đoạn khớp với câu hỏi (retrieval).",
-      "Tóm tắt lịch sử cũ thành ghi chú ngắn, giữ nguyên system prompt và ràng buộc.",
-      "Chừa chỗ cho output, rồi kiểm tra lại độ dài bằng token counting trước khi gửi.",
+      "Measure token consumption per component: system prompt, history, policy docs, and current query.",
+      "Identify that raw policy documentation consumes the majority of the token budget, even though each query only requires a few paragraphs.",
+      "Replace full handbook loading with targeted retrieval of 2–3 relevant sections matching the user's inquiry.",
+      "Summarize past conversation history into concise notes while keeping system instructions intact.",
+      "Reserve sufficient headroom for output and verify length using the token counting API prior to dispatch.",
     ],
     takeaway:
-      "Khi câu trả lời bắt đầu bỏ qua instruction cũ, nguyên nhân thường là ngữ cảnh bị nhiễu chứ không phải model “quên” ngẫu nhiên.",
+      "When model responses begin ignoring longstanding instructions, the root cause is usually context pollution rather than random failure.",
   },
   questions: [
     {
@@ -141,30 +141,30 @@ export const contextWindowLesson: Lesson = lessonSchema.parse({
           id: "a",
           text: "Raise the temperature so the assistant explores more phrasings.",
           explanation:
-            "Temperature điều chỉnh độ ngẫu nhiên của output, không làm input gọn hơn và không khôi phục instruction bị chìm trong ngữ cảnh.",
+            "Temperature modulates output randomness; it does not reduce input token size nor restore instructions drowned in excess context.",
         },
         {
           id: "b",
           text: "Retrieve only the relevant policy sections and summarize older turns, keeping the system prompt intact.",
           explanation:
-            "Đúng hướng: giảm nhiễu trong context window, giữ instruction quan trọng ổn định, và chừa ngân sách cho output.",
+            "Correct: directly mitigates context pollution, stabilizes critical instructions, and frees headroom for output.",
         },
         {
           id: "c",
           text: "Move the system prompt to the end of every user message so it appears last.",
           explanation:
-            "Lặp lại system prompt ở mỗi message làm tăng token và dễ tạo mâu thuẫn. Instruction nên nằm trong system prompt ổn định, không phải chèn lặp.",
+            "Duplicating instructions across user messages inflates tokens and risks contradiction. System rules belong in a stable system prompt.",
         },
         {
           id: "d",
           text: "Increase max_tokens so the model has more room to answer.",
           explanation:
-            "Tăng max_tokens chỉ mở rộng phần output; nó không làm input gọn hơn mà còn ăn thêm ngân sách của cùng một cửa sổ.",
+            "Increasing max_tokens only raises the upper ceiling for output length; it does not trim bloated inputs.",
         },
       ],
       correctChoiceIds: ["b"],
       correctExplanation:
-        "Gốc rễ là input quá lớn và nhiều nhiễu: instruction quan trọng bị pha loãng, còn ngân sách bị tài liệu không liên quan chiếm mất. Thu gọn input và giữ system prompt ổn định xử lý đúng nguyên nhân, thay vì chỉ đổi tham số sinh câu trả lời.",
+        "The root cause is an oversized, polluted input: critical instructions are diluted, and token budget is monopolized by irrelevant documentation. Trimming input via retrieval and maintaining a stable system prompt targets the fundamental issue.",
       sourceIds: [
         "anthropic-context-windows-doc",
         "anthropic-context-engineering-blog",
@@ -172,9 +172,9 @@ export const contextWindowLesson: Lesson = lessonSchema.parse({
     },
   ],
   takeaways: [
-    "Context window là bộ nhớ làm việc: system prompt, messages, tool, tài liệu và output đều tính chung một ngân sách.",
-    "Đo token trước khi gửi; đừng ước lượng bằng số từ hoặc số trang.",
-    "Thu gọn và chọn lọc ngữ cảnh thường tốt hơn nhồi thêm tài liệu.",
+    "The context window is working memory: system prompts, messages, tools, documents, and output all draw from a single token budget.",
+    "Measure tokens before sending payloads; never estimate based on page or word count.",
+    "Curating concise, high-signal context consistently outperforms brute-force document stuffing.",
   ],
   sourceIds: [
     "anthropic-context-windows-doc",

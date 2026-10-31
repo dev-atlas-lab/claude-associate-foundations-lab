@@ -432,30 +432,30 @@ export function AssessmentRunner({
         <section className="assessment-result" aria-labelledby="assessment-result-title">
           <div className="assessment-result-head">
             <h3 className="assessment-result-title" id="assessment-result-title" tabIndex={-1} ref={resultHeadingRef}>
-              Kết quả luyện tập
+              Practice results
             </h3>
             <span className="assessment-result-score">{result.rawPercentage}%</span>
           </div>
 
           <dl className="stat-grid assessment-stats">
             <div className="stat">
-              <dt className="stat-label">Tổng số câu</dt>
+              <dt className="stat-label">Total questions</dt>
               <dd className="stat-value">{result.totalQuestions}</dd>
             </div>
             <div className="stat">
-              <dt className="stat-label">Đã trả lời</dt>
+              <dt className="stat-label">Answered</dt>
               <dd className="stat-value">{result.answeredQuestions}</dd>
             </div>
             <div className="stat">
-              <dt className="stat-label">Đúng</dt>
+              <dt className="stat-label">Correct</dt>
               <dd className="stat-value">{result.correctAnswers}</dd>
             </div>
             <div className="stat">
-              <dt className="stat-label">Sai</dt>
+              <dt className="stat-label">Incorrect</dt>
               <dd className="stat-value">{result.incorrectAnswers}</dd>
             </div>
             <div className="stat">
-              <dt className="stat-label">Chưa trả lời</dt>
+              <dt className="stat-label">Unanswered</dt>
               <dd className="stat-value">{result.unansweredQuestions}</dd>
             </div>
             <div className="stat">
@@ -465,14 +465,12 @@ export function AssessmentRunner({
           </dl>
 
           <p className="assessment-disclaimer">
-            Raw percentage chỉ là chỉ số luyện tập. Đây không phải điểm scaled chính thức trên thang
-            100–1.000 và không dự đoán kết quả thi. Mỗi câu được chấm all-or-nothing; câu chưa trả
-            lời tính là sai.
+            Raw percentage is a practice metric only. This is not an official scaled score on the 100–1,000 scale and does not predict exam pass/fail. Each item is scored all-or-nothing; unanswered items count as incorrect.
           </p>
 
           {domainBreakdown.length > 1 ? (
             <div className="assessment-breakdown">
-              <h4 className="assessment-breakdown-title">Phân tích theo official domain</h4>
+              <h4 className="assessment-breakdown-title">Breakdown by official domain</h4>
               <div className="table-wrap">
                 <table className="data-table">
                   <caption className="sr-only">Attempt breakdown by official domain</caption>
@@ -495,7 +493,7 @@ export function AssessmentRunner({
                             <div className="table-remediation">
                               {row.lessonId && row.lessonTitle ? (
                                 <SafeLink className="inline-link" to={`/learn/${row.lessonId}`}>
-                                  Bài học: {row.lessonTitle}
+                                  Lesson: {row.lessonTitle}
                                 </SafeLink>
                               ) : null}
                               {row.practiceSetId && row.practiceSetId !== definition.id ? (
@@ -503,7 +501,7 @@ export function AssessmentRunner({
                                   className="inline-link"
                                   to={`/practice?set=${encodeURIComponent(row.practiceSetId)}`}
                                 >
-                                  Luyện tập Domain {row.code}
+                                  Practice Domain {row.code}
                                 </SafeLink>
                               ) : null}
                             </div>
@@ -524,7 +522,7 @@ export function AssessmentRunner({
             </div>
           ) : domainBreakdown.length === 1 && objectiveBreakdown.length > 0 ? (
             <div className="assessment-breakdown">
-              <h4 className="assessment-breakdown-title">Phân tích theo official objective</h4>
+              <h4 className="assessment-breakdown-title">Breakdown by official objective</h4>
               <div className="table-wrap">
                 <table className="data-table">
                   <caption className="sr-only">Attempt breakdown by official objective</caption>
@@ -545,7 +543,7 @@ export function AssessmentRunner({
                           {row.lessonId && row.lessonTitle ? (
                             <div className="table-remediation">
                               <SafeLink className="inline-link" to={`/learn/${row.lessonId}`}>
-                                Bài học: {row.lessonTitle}
+                                Lesson: {row.lessonTitle}
                               </SafeLink>
                             </div>
                           ) : null}
@@ -659,15 +657,15 @@ export function AssessmentRunner({
               <p className="quiz-feedback-title">
                 {currentScore.isCorrect ? (
                   <>
-                    <span aria-hidden="true">✓</span> Chính xác
+                    <span aria-hidden="true">✓</span> Correct
                   </>
                 ) : currentScore.outcome === "unanswered" ? (
                   <>
-                    <span aria-hidden="true">–</span> Chưa trả lời
+                    <span aria-hidden="true">–</span> Unanswered
                   </>
                 ) : (
                   <>
-                    <X size={16} strokeWidth={2.2} aria-hidden="true" /> Chưa đúng
+                    <X size={16} strokeWidth={2.2} aria-hidden="true" /> Incorrect
                   </>
                 )}
               </p>
@@ -678,8 +676,8 @@ export function AssessmentRunner({
                     <span className="quiz-explanation-key">
                       {optionLetters(index)}.{" "}
                       {currentQuestion.correctChoiceIds.includes(choice.id)
-                        ? "Đáp án đúng"
-                        : "Vì sao không chọn"}
+                        ? "Correct answer"
+                        : "Why this is incorrect"}
                     </span>
                     <span className="quiz-explanation-text">{choice.explanation}</span>
                   </li>
@@ -693,7 +691,7 @@ export function AssessmentRunner({
         currentQuestionContext?.domain &&
         currentQuestionContext?.objective ? (
           <div className="question-curriculum-context">
-            <h4 className="question-context-title">Mục tiêu & bài học liên quan</h4>
+            <h4 className="question-context-title">Related objective & lesson</h4>
             <p className="question-context-meta">
               <span className="data-table-code">D{currentQuestionContext.domain.code}</span>{" "}
               <strong>
@@ -707,7 +705,7 @@ export function AssessmentRunner({
                   className="inline-link"
                   to={`/learn/${currentQuestionContext.lesson.id}`}
                 >
-                  Ôn lại bài học: {currentQuestionContext.lesson.title}
+                  Review lesson: {currentQuestionContext.lesson.title}
                 </SafeLink>
               ) : null}
               {currentQuestionContext.practiceSet &&
@@ -716,7 +714,7 @@ export function AssessmentRunner({
                   className="inline-link"
                   to={`/practice?set=${encodeURIComponent(currentQuestionContext.practiceSet.assessment.id)}`}
                 >
-                  Luyện tập Domain {currentQuestionContext.domain.code}
+                  Practice Domain {currentQuestionContext.domain.code}
                 </SafeLink>
               ) : null}
             </div>
@@ -725,7 +723,7 @@ export function AssessmentRunner({
 
         {currentScore !== undefined && currentQuestionSources.length > 0 ? (
           <div className="timed-sources">
-            <h4 className="timed-sources-title">Nguồn tham chiếu</h4>
+            <h4 className="timed-sources-title">Reference sources</h4>
             <ul className="timed-source-list">
               {currentQuestionSources.map((source) => (
                 <li className="timed-source" key={source.id}>
@@ -733,7 +731,7 @@ export function AssessmentRunner({
                     {source.title}
                   </a>
                   <span className="timed-source-meta">
-                    {source.publisher} · truy cập {source.accessedAt}
+                    {source.publisher} · accessed {source.accessedAt}
                   </span>
                 </li>
               ))}

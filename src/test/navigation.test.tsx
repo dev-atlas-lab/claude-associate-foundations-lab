@@ -70,11 +70,11 @@ describe("application shell navigation", () => {
     ).toBeInTheDocument();
 
     await user.click(
-      screen.getByRole("link", { name: /Context window và ngân sách ngữ cảnh/i }),
+      screen.getByRole("link", { name: /Context window and context budgeting/i }),
     );
 
     expect(
-      await screen.findByRole("heading", { level: 1, name: "Context window và ngân sách ngữ cảnh" }),
+      await screen.findByRole("heading", { level: 1, name: "Context window and context budgeting" }),
     ).toBeInTheDocument();
     expect(within(primaryNav()).getByRole("link", { name: "Learn" })).toHaveAttribute(
       "aria-current",

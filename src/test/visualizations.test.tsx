@@ -12,7 +12,7 @@ describe("WorkflowPatternsSimulator", () => {
     render(<WorkflowPatternsSimulator intro="Test intro for workflow simulator" />);
 
     expect(
-      screen.getByRole("heading", { name: "Mô phỏng Trực quan: Các Mẫu Thiết kế Workflow" })
+      screen.getByRole("heading", { name: "Visual Simulation: Workflow Design Patterns" })
     ).toBeInTheDocument();
     expect(screen.getByText("Test intro for workflow simulator")).toBeInTheDocument();
 
@@ -28,37 +28,37 @@ describe("WorkflowPatternsSimulator", () => {
     fireEvent.click(loopTab);
     expect(loopTab).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByText("Generator LLM")).toBeInTheDocument();
-    expect(screen.getByText(/Chạy Kiểm định Lần 1/i)).toBeInTheDocument();
+    expect(screen.getByText(/Run Evaluation #1/i)).toBeInTheDocument();
 
     // Advance Evaluator step
-    const advanceBtn = screen.getByRole("button", { name: /Chạy Kiểm định Lần 1/i });
+    const advanceBtn = screen.getByRole("button", { name: /Run Evaluation #1/i });
     fireEvent.click(advanceBtn);
-    expect(screen.getByText(/Đạt tiêu chuẩn/i)).toBeInTheDocument();
+    expect(screen.getByText(/Meets Criteria/i)).toBeInTheDocument();
 
     // Switch to Parallelization
     fireEvent.click(parallelTab);
-    expect(screen.getByText(/Rà soát Pháp lý/i)).toBeInTheDocument();
-    expect(screen.getByText(/Thẩm định Tài chính/i)).toBeInTheDocument();
+    expect(screen.getByText(/Branch 1: Legal Review/i)).toBeInTheDocument();
+    expect(screen.getByText(/Branch 2: Financial Audit/i)).toBeInTheDocument();
 
     // Switch to Orchestrator
     fireEvent.click(orchTab);
-    expect(screen.getByText("Lead Orchestrator")).toBeInTheDocument();
+    expect(screen.getByText(/Lead Orchestrator/i)).toBeInTheDocument();
   });
 
   it("switches routing queries and renders corresponding targets", () => {
     render(<WorkflowPatternsSimulator intro="Routing test" />);
 
-    const sample2Btn = screen.getByRole("button", { name: /Mẫu 2: Sự cố Kỹ thuật/i });
+    const sample2Btn = screen.getByRole("button", { name: /Sample 2: Architecture Incident Diagnostic/i });
     fireEvent.click(sample2Btn);
 
     expect(screen.getByText(/Senior Tech Diagnostic/i)).toBeInTheDocument();
-    expect(screen.getByText("Sự cố Kỹ thuật Kiến trúc")).toBeInTheDocument();
+    expect(screen.getByText("Architecture Incident Diagnostic")).toBeInTheDocument();
 
-    const sample3Btn = screen.getByRole("button", { name: /Mẫu 3: Pháp chế/i });
+    const sample3Btn = screen.getByRole("button", { name: /Sample 3: Legal & High-Risk Compliance/i });
     fireEvent.click(sample3Btn);
 
     expect(screen.getByText(/Human Legal Checkpoint/i)).toBeInTheDocument();
-    expect(screen.getByText("Pháp chế & Rủi ro Cao")).toBeInTheDocument();
+    expect(screen.getByText("Legal & High-Risk Compliance")).toBeInTheDocument();
   });
 });
 
@@ -67,7 +67,7 @@ describe("PromptCachingCostCalculator", () => {
     render(<PromptCachingCostCalculator intro="Cost calculator intro" />);
 
     expect(
-      screen.getByRole("heading", { name: "Công cụ Tương tác: Tính Toán Chi Phí & Lợi Ích Prompt Caching" })
+      screen.getByRole("heading", { name: "Interactive Tool: Prompt Caching Cost & Economics Calculator" })
     ).toBeInTheDocument();
 
     // Default is Sonnet 3.5
@@ -75,8 +75,8 @@ describe("PromptCachingCostCalculator", () => {
     expect(sonnetBtn).toHaveAttribute("aria-pressed", "true");
 
     // Cache eligibility is active for default 25,000 tokens
-    expect(screen.getByText(/Prompt Caching được kích hoạt tự động/i)).toBeInTheDocument();
-    expect(screen.getByText(/Chi phí Khi Dùng Prompt Caching/i)).toBeInTheDocument();
+    expect(screen.getByText(/Prompt Caching is automatically activated/i)).toBeInTheDocument();
+    expect(screen.getByText(/Cost with Prompt Caching/i)).toBeInTheDocument();
 
     // Switch to Haiku
     const haikuBtn = screen.getByRole("button", { name: /Claude 3.5 Haiku/i });
@@ -84,9 +84,9 @@ describe("PromptCachingCostCalculator", () => {
     expect(haikuBtn).toHaveAttribute("aria-pressed", "true");
 
     // Adjust turns slider
-    const turnsSlider = screen.getByLabelText(/Số lượt truy vấn trong phiên làm việc 5 phút/i);
+    const turnsSlider = screen.getByLabelText(/Number of query turns in a 5-minute session/i);
     fireEvent.change(turnsSlider, { target: { value: "30" } });
-    expect(screen.getByText("30 lượt gọi API")).toBeInTheDocument();
+    expect(screen.getByText("30 API calls")).toBeInTheDocument();
 
     // Switch to Opus
     const opusBtn = screen.getByRole("button", { name: /Claude 3 Opus/i });
@@ -100,7 +100,7 @@ describe("PromptLayeringWorkbench", () => {
     render(<PromptLayeringWorkbench intro="Workbench intro" />);
 
     expect(
-      screen.getByRole("heading", { name: "Bàn Thử Nghiệm: Cấu Trúc Đa Lớp Prompt Chuẩn Anthropic" })
+      screen.getByRole("heading", { name: "Workbench: Anthropic Multi-Layer Prompt Architecture" })
     ).toBeInTheDocument();
 
     // Toggle few-shot layer on
@@ -109,19 +109,19 @@ describe("PromptLayeringWorkbench", () => {
     expect(fewShotBtn).toHaveAttribute("aria-pressed", "true");
 
     // Toggle code view expansion
-    const toggleCodeBtn = screen.getByRole("button", { name: /Mở rộng toàn màn hình/i });
+    const toggleCodeBtn = screen.getByRole("button", { name: /Expand full code/i });
     fireEvent.click(toggleCodeBtn);
-    expect(screen.getByRole("button", { name: /Thu gọn code/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Collapse code/i })).toBeInTheDocument();
 
     // Select all layers
-    const selectAllBtn = screen.getByRole("button", { name: /Kích hoạt tất cả/i });
+    const selectAllBtn = screen.getByRole("button", { name: /Enable all layers/i });
     fireEvent.click(selectAllBtn);
-    expect(screen.getByText(/5 lớp kích hoạt/i)).toBeInTheDocument();
+    expect(screen.getByText(/5 layers active/i)).toBeInTheDocument();
 
     // Reset layers
-    const resetBtn = screen.getByRole("button", { name: /Khởi tạo lại/i });
+    const resetBtn = screen.getByRole("button", { name: /Reset defaults/i });
     fireEvent.click(resetBtn);
-    expect(screen.getByText(/1 lớp kích hoạt/i)).toBeInTheDocument();
+    expect(screen.getByText(/1 layers active/i)).toBeInTheDocument();
   });
 });
 
@@ -132,11 +132,11 @@ describe("ModelSelectionMatrix", () => {
     expect(screen.getByText("Model matrix intro")).toBeInTheDocument();
 
     // Default preset is customer-triage with Haiku recommended
-    expect(screen.getAllByText(/Gợi ý: HAIKU/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/Recommended: HAIKU/i).length).toBeGreaterThanOrEqual(1);
 
     // Switch to coding-agent preset
     const codingPresetBtn = screen.getByRole("button", {
-      name: /AI Coding Assistant & Tự động hóa Review Code/i,
+      name: /AI Coding Assistant & Automated Code Review/i,
     });
     fireEvent.click(codingPresetBtn);
     expect(codingPresetBtn).toHaveAttribute("aria-pressed", "true");
@@ -159,20 +159,20 @@ describe("SafetyGuardrailsSimulator", () => {
 
     // Default scenario is indirect injection in guarded mode
     expect(
-      screen.getByText(/Indirect Prompt Injection qua Dữ liệu ngoài/i),
+      screen.getByText(/Indirect Prompt Injection via External Data/i),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/Phòng vệ thành công nhờ Thẻ XML & System Prompt tối thượng/i),
+      screen.getByText(/Defense successful via XML Delimiters & Sovereign System Prompt/i),
     ).toBeInTheDocument();
 
     // Switch to Unprotected mode
     const unprotectedBtn = screen.getByRole("button", {
-      name: /Chưa bảo vệ \(Nối chuỗi thô - Raw String Concatenation\)/i,
+      name: /Unprotected \(Raw String Concatenation\)/i,
     });
     fireEvent.click(unprotectedBtn);
     expect(unprotectedBtn).toHaveAttribute("aria-pressed", "true");
     expect(
-      screen.getByText(/Bị tấn công thành công \(Prompt Injection Exploit\)/i),
+      screen.getByText(/Prompt Injection Exploit successful/i),
     ).toBeInTheDocument();
 
     // Switch to Jailbreak scenario
@@ -187,11 +187,11 @@ describe("SafetyGuardrailsSimulator", () => {
 
     // Toggle back to Guarded mode
     const guardedBtn = screen.getByRole("button", {
-      name: /Chuẩn Anthropic Guardrails/i,
+      name: /Anthropic Guardrails Standard/i,
     });
     fireEvent.click(guardedBtn);
     expect(
-      screen.getByText(/Constitutional AI kích hoạt từ chối an toàn/i),
+      screen.getByText(/Constitutional AI safe refusal activated/i),
     ).toBeInTheDocument();
   });
 
@@ -199,12 +199,12 @@ describe("SafetyGuardrailsSimulator", () => {
     render(<SafetyGuardrailsSimulator />);
 
     const customTab = screen.getByRole("button", {
-      name: /Thử nghiệm Tấn công & Phòng vệ Tùy chỉnh/i,
+      name: /Custom Attack & Defense Lab/i,
     });
     fireEvent.click(customTab);
 
     expect(screen.getByText(/Prompt Attack Payload/i)).toBeInTheDocument();
-    expect(screen.getByText(/Điểm bảo mật 100\/100/i)).toBeInTheDocument();
+    expect(screen.getByText(/Security score 100\/100/i)).toBeInTheDocument();
 
     // Select Markdown Exfiltration template
     const mdTemplateBtn = screen.getByRole("button", {
@@ -219,7 +219,7 @@ describe("SafetyGuardrailsSimulator", () => {
     const xmlCheckbox = screen.getAllByRole("checkbox")[0];
     if (xmlCheckbox) {
       fireEvent.click(xmlCheckbox);
-      expect(screen.getByText(/Điểm bảo mật 60\/100/i)).toBeInTheDocument();
+      expect(screen.getByText(/Security score 60\/100/i)).toBeInTheDocument();
     }
   });
 });
@@ -231,35 +231,35 @@ describe("HallucinationEvaluationSandbox", () => {
     expect(screen.getByText("Evaluation sandbox intro")).toBeInTheDocument();
     expect(
       screen.getByRole("heading", {
-        name: /Bàn Thử Nghiệm Tương Tác: Nhận Diện Hallucination & Thẩm Định Output/i,
+        name: /Interactive Sandbox: Hallucination Detection & Output Verification/i,
       }),
     ).toBeInTheDocument();
 
     // Default scenario is Finance Q3
     expect(
-      screen.getByRole("button", { name: /Tình huống 1: Báo cáo Tài chính Q3/i }),
+      screen.getByRole("button", { name: /Scenario 1: Q3 Financial Report/i }),
     ).toHaveAttribute("aria-pressed", "true");
     expect(
-      screen.getByRole("heading", { name: /Tài liệu Nguồn Xác thực/i }),
+      screen.getByRole("heading", { name: /Ground Truth Context/i }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: /Văn bản do Claude tạo ra/i }),
+      screen.getByRole("heading", { name: /Claude Generated Output/i }),
     ).toBeInTheDocument();
 
     // Switch to Legal NDA scenario
-    const legalBtn = screen.getByRole("button", { name: /Tình huống 2: Thỏa thuận Bảo mật NDA/i });
+    const legalBtn = screen.getByRole("button", { name: /Scenario 2: Non-Disclosure Agreement/i });
     fireEvent.click(legalBtn);
     expect(legalBtn).toHaveAttribute("aria-pressed", "true");
     expect(
-      screen.getByText(/Hợp đồng Bảo mật Thông tin NDA-2026/i),
+      screen.getByText(/Confidentiality Agreement NDA-2026/i),
     ).toBeInTheDocument();
 
     // Switch to Healthcare Dosage scenario
-    const healthBtn = screen.getByRole("button", { name: /Tình huống 3: Hướng dẫn Kê đơn/i });
+    const healthBtn = screen.getByRole("button", { name: /Scenario 3: Clinical Prescribing/i });
     fireEvent.click(healthBtn);
     expect(healthBtn).toHaveAttribute("aria-pressed", "true");
     expect(
-      screen.getByText(/Dược thư Quốc gia: Hướng dẫn Kê đơn/i),
+      screen.getByText(/National Formulary: Prescribing Guidelines/i),
     ).toBeInTheDocument();
   });
 
@@ -268,7 +268,7 @@ describe("HallucinationEvaluationSandbox", () => {
 
     // In Finance scenario:
     // Claim 1 (claim-1): Internal Inconsistency
-    const claim1Group = screen.getByRole("group", { name: "Phân loại claim-1" });
+    const claim1Group = screen.getByRole("group", { name: "Classify claim-1" });
     const claim1Btns = claim1Group.querySelectorAll("button");
     const inconsistencyBtn1 = Array.from(claim1Btns).find((b) =>
       b.textContent?.includes("Internal Inconsistency"),
@@ -277,7 +277,7 @@ describe("HallucinationEvaluationSandbox", () => {
     fireEvent.click(inconsistencyBtn1!);
 
     // Claim 2 (claim-2): Verified Accurate
-    const claim2Group = screen.getByRole("group", { name: "Phân loại claim-2" });
+    const claim2Group = screen.getByRole("group", { name: "Classify claim-2" });
     const claim2Btns = claim2Group.querySelectorAll("button");
     const verifiedBtn2 = Array.from(claim2Btns).find((b) =>
       b.textContent?.includes("Verified Accurate"),
@@ -286,7 +286,7 @@ describe("HallucinationEvaluationSandbox", () => {
     fireEvent.click(verifiedBtn2!);
 
     // Claim 3 (claim-3): Factual Hallucination
-    const claim3Group = screen.getByRole("group", { name: "Phân loại claim-3" });
+    const claim3Group = screen.getByRole("group", { name: "Classify claim-3" });
     const claim3Btns = claim3Group.querySelectorAll("button");
     const factualBtn3 = Array.from(claim3Btns).find((b) =>
       b.textContent?.includes("Factual Hallucination"),
@@ -296,19 +296,19 @@ describe("HallucinationEvaluationSandbox", () => {
 
     // Verification button should now be enabled
     const verifyBtn = screen.getByRole("button", {
-      name: /Kiểm định & Đối chiếu Rubric Anthropic/i,
+      name: /Verify & Evaluate against Anthropic Rubric/i,
     });
     expect(verifyBtn).not.toBeDisabled();
     fireEvent.click(verifyBtn);
 
     // Score summary is displayed
-    expect(screen.getByText(/Kết quả thẩm định của bạn/i)).toBeInTheDocument();
-    expect(screen.getByText(/claims chính xác/i)).toBeInTheDocument();
+    expect(screen.getByText(/Your audit result/i)).toBeInTheDocument();
+    expect(screen.getByText(/claims correct/i)).toBeInTheDocument();
 
     // Reset button returns to interactive state
-    const resetBtn = screen.getByRole("button", { name: /Thử lại kịch bản này/i });
+    const resetBtn = screen.getByRole("button", { name: /Retry this scenario/i });
     fireEvent.click(resetBtn);
 
-    expect(screen.queryByText(/Kết quả thẩm định của bạn/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Your audit result/i)).not.toBeInTheDocument();
   });
 });

@@ -52,7 +52,7 @@ export function LessonContent({
             00
           </span>
           <h2 className="lesson-section-title" id="lesson-objectives-title">
-            Mục tiêu bài học
+            Lesson objectives
           </h2>
         </div>
         <ul className="objective-list">
@@ -142,7 +142,7 @@ export function LessonContent({
       <section className="lesson-section" id="lesson-terms" aria-labelledby="lesson-terms-title">
         <div className="lesson-section-head">
           <h2 className="lesson-section-title" id="lesson-terms-title">
-            Thuật ngữ chính
+            Key terms
           </h2>
         </div>
         <dl className="term-list">
@@ -152,7 +152,7 @@ export function LessonContent({
                 {term.en}
               </dt>
               <dd className="term-body">
-                <span className="term-vi">{term.vi}</span>
+                {term.vi ? <span className="term-vi">🇻🇳 {term.vi}</span> : null}
                 {term.note}
               </dd>
             </div>
@@ -191,13 +191,13 @@ export function LessonContent({
         >
           <div className="lesson-section-head">
             <h2 className="lesson-section-title" id="lesson-related-practice-title">
-              Câu hỏi luyện tập đã rà soát
+              Reviewed practice questions
             </h2>
           </div>
           <p className="lesson-prose">
-            Bộ {practiceDomainLabel} practice có {relatedPractice.length} câu liên kết trực tiếp với
-            bài học này. Các câu hỏi dùng đúng format của kỳ thi: stem và lựa chọn bằng tiếng Anh,
-            giải thích bằng tiếng Việt sau khi nộp.
+            The {practiceDomainLabel} practice set contains {relatedPractice.length} questions directly
+            linked to this lesson. Questions follow the verified exam format: English stems and options,
+            with detailed explanations provided after submission.
           </p>
           {relatedObjectives.length > 0 ? (
             <ul className="bullet-list" lang="en">
@@ -208,7 +208,7 @@ export function LessonContent({
           ) : null}
           <p className="lesson-prose">
             <Link className="inline-link" to={practiceHref}>
-              Mở bộ {practiceDomainLabel} practice
+              Open {practiceDomainLabel} practice set
             </Link>
           </p>
         </section>
@@ -234,7 +234,7 @@ export function LessonContent({
       >
         <div className="lesson-section-head">
           <h2 className="lesson-section-title" id="lesson-summary-title">
-            Tóm tắt
+            Summary
           </h2>
         </div>
         <ul className="bullet-list">
@@ -244,7 +244,7 @@ export function LessonContent({
         </ul>
         <div className="lesson-sources">
           <p className="section-note lesson-sources-title">
-            Nguồn tham khảo
+            Reference sources
           </p>
           <ul className="source-list">
             {sources.map((source) => (

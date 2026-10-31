@@ -77,7 +77,7 @@ describe("progress page readiness and study report", () => {
     const card = screen.getByRole("article", { name: "Exam Readiness & Blueprint Balance" });
     expect(card).toBeInTheDocument();
     expect(
-      screen.getByText(/Chỉ số Sẵn sàng Thi & Cân bằng Blueprint/i),
+      screen.getByText(/Exam Readiness & Blueprint Balance/i),
     ).toBeInTheDocument();
 
     // 2. Blueprint coverage reflects Domain 1 weight (10%)
@@ -85,7 +85,7 @@ describe("progress page readiness and study report", () => {
 
     // 3. Remediation section is displayed
     expect(
-      screen.getByText("Mục tiêu ưu tiên cần củng cố (Top Focus Areas)"),
+      screen.getByText("Priority focus areas"),
     ).toBeInTheDocument();
   });
 
@@ -94,7 +94,7 @@ describe("progress page readiness and study report", () => {
     renderProgress();
 
     const printButton = screen.getByRole("button", {
-      name: /In \/ Xuất Báo cáo/i,
+      name: /Print \/ Export Report/i,
     });
     expect(printButton).toBeInTheDocument();
 

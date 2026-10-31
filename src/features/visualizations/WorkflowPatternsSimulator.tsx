@@ -16,66 +16,66 @@ const patterns: PatternMeta[] = [
   {
     id: "routing",
     name: "1. Routing (Intent Classification)",
-    badge: "Phổ biến & Chi phí thấp",
+    badge: "Common & Cost-Effective",
     summary:
-      "Một model nhẹ (ví dụ Claude 3.5 Haiku) phân loại yêu cầu đầu vào theo ý định (intent) rồi điều hướng đến prompt chuyên biệt hoặc model chuyên sâu.",
-    bestFor: "Hệ thống hỗ trợ khách hàng đa chủ đề, phân luồng yêu cầu phức tạp sang chuyên gia hoặc model mạnh hơn.",
+      "A fast, lightweight model (such as Claude 3.5 Haiku) classifies incoming user intent and dispatches to specialized prompts or specialized models.",
+    bestFor: "Multi-intent customer support systems, triaging complex queries to specialist models or human agents.",
     examTakeaway:
-      "Tối ưu chi phí và độ trễ bằng cách chỉ dùng model lớn (Sonnet/Opus) cho các nhánh thực sự cần suy luận phức tạp.",
+      "Optimizes cost and latency by reserving larger reasoning models (Sonnet/Opus) only for paths that genuinely require complex logic.",
   },
   {
     id: "evaluator-optimizer",
     name: "2. Evaluator-Optimizer Loop",
-    badge: "Chất lượng cao có Guardrail",
+    badge: "High Quality with Guardrails",
     summary:
-      "Model 1 tạo bản nháp (Generator), Model 2 đóng vai trò kiểm định độc lập (Evaluator) chấm điểm theo Rubric rõ ràng. Lặp lại cho đến khi đạt hoặc chạm mốc giới hạn, có trạm kiểm soát người duyệt (Human checkpoint).",
-    bestFor: "Viết báo cáo chuyên sâu, dịch thuật hợp đồng pháp lý, sinh mã nguồn có bộ kiểm thử (test suite).",
+      "One model generates a draft (Generator), while a second model acts as an independent auditor (Evaluator) grading against a clear rubric. The loop repeats until acceptance criteria are met or max iterations are reached, with a human review checkpoint.",
+    bestFor: "High-stakes report drafting, legal contract translation, and code generation with verified test suites.",
     examTakeaway:
-      "Chỉ hiệu quả khi tiêu chí nghiệm thu (rubric) đo lường được rõ ràng; luôn cần stopping condition để tránh vòng lặp vô tận tốn token.",
+      "Only effective when evaluation criteria (rubrics) are unambiguously measurable; always requires an explicit stopping condition to prevent unbounded token loops.",
   },
   {
     id: "parallelization",
     name: "3. Parallelization (Sectioning / Voting)",
-    badge: "Giảm độ trễ tổng thể",
+    badge: "Minimizes End-to-End Latency",
     summary:
-      "Chia một tác vụ lớn thành các nhánh độc lập chạy song song cùng lúc, sau đó dùng một bước tổng hợp (Aggregator) để gom kết quả.",
-    bestFor: "Duyệt qua 10 tài liệu độc lập, phân tích rủi ro từ 3 góc nhìn (tài chính, pháp lý, kỹ thuật) cùng lúc.",
+      "Decomposes a large task into independent concurrent branches running in parallel, synthesized by a final aggregator step.",
+    bestFor: "Reviewing multiple independent documents, multi-perspective risk auditing (financial, legal, technical) simultaneously.",
     examTakeaway:
-      "Thời gian hoàn thành bằng nhánh chạy lâu nhất thay vì tổng thời gian tuần tự; đòi hỏi các bước con không phụ thuộc lẫn nhau.",
+      "Total latency equals the longest running branch rather than the sum of sequential calls; requires subtasks to be strictly independent.",
   },
   {
     id: "orchestrator-workers",
     name: "4. Orchestrator-Workers",
-    badge: "Linh hoạt cho bài toán mở",
+    badge: "Flexible for Open-Ended Tasks",
     summary:
-      "Model trung tâm phân tích mục tiêu của người dùng, tự động phân rã thành danh sách công việc cần làm, giao cho các Worker LLM xử lý, rồi tổng hợp báo cáo.",
-    bestFor: "Nghiên cứu thị trường phức tạp, phân tích đối thủ cạnh tranh hoặc tổng hợp tài liệu nhiều bước.",
+      "A central orchestrator analyzes complex high-level goals, dynamically breaks them down into subtasks, delegates them to specialized worker LLMs, and synthesizes the findings.",
+    bestFor: "In-depth competitive intelligence, market research, or multi-source documentation synthesis.",
     examTakeaway:
-      "Phức tạp hơn workflow tuần tự; cần giám sát giới hạn số lượt gọi worker và ngân sách token dự phòng.",
+      "More dynamic than hardcoded sequential workflows; requires strict worker invocation limits and token budget guardrails.",
   },
 ];
 
 const routingExamples = [
   {
-    query: "“Tài khoản của tôi bị trừ tiền 2 lần vào ngày 15/10, xin hoàn lại.”",
-    intent: "Khiếu nại Thanh toán & Hóa đơn",
+    query: "“My credit card was charged twice on October 15th, please refund the duplicate.”",
+    intent: "Billing & Invoice Dispute",
     target: "Billing Sub-Agent (Claude 3.5 Haiku)",
-    risk: "Thấp",
-    cost: "Rất thấp (0.001$)",
+    risk: "Low",
+    cost: "Very low ($0.001)",
   },
   {
-    query: "“Hệ thống microservices bị nghẽn thread pool khi nhận 50,000 req/s, cần phân tích log.”",
-    intent: "Sự cố Kỹ thuật Kiến trúc",
+    query: "“Our microservices thread pool is bottlenecked at 50,000 req/s, analyze thread dump logs.”",
+    intent: "Architecture Incident Diagnostic",
     target: "Senior Tech Diagnostic (Claude 3.5 Sonnet)",
-    risk: "Trung bình",
-    cost: "Trung bình (0.015$)",
+    risk: "Medium",
+    cost: "Moderate ($0.015)",
   },
   {
-    query: "“Đề xuất chuyển giao quyền sở hữu trí tuệ của thuật toán cho đối tác nước ngoài.”",
-    intent: "Pháp chế & Rủi ro Cao",
-    target: "Human Legal Checkpoint (Bàn giao Luật sư)",
-    risk: "Rất cao",
-    cost: "Thẩm định thủ công",
+    query: "“Proposal to assign exclusive intellectual property rights of core algorithms to foreign partner.”",
+    intent: "Legal & High-Risk Compliance",
+    target: "Human Legal Checkpoint (Escalate to Counsel)",
+    risk: "Very high",
+    cost: "Manual human review",
   },
 ];
 
@@ -107,7 +107,7 @@ export function WorkflowPatternsSimulator({ intro }: { intro: string }) {
       <div className="workflow-header">
         <div className="workflow-title-row">
           <GitBranch size={18} className="workflow-icon" aria-hidden="true" />
-          <h3 className="workflow-title">Mô phỏng Trực quan: Các Mẫu Thiết kế Workflow</h3>
+          <h3 className="workflow-title">Visual Simulation: Workflow Design Patterns</h3>
         </div>
         <p className="workflow-intro">{intro}</p>
       </div>
@@ -136,7 +136,7 @@ export function WorkflowPatternsSimulator({ intro }: { intro: string }) {
         <div className="workflow-pattern-header">
           <span className="badge badge--ok">{active.badge}</span>
           <span className="workflow-best-for">
-            <strong>Phù hợp nhất:</strong> {active.bestFor}
+            <strong>Best for:</strong> {active.bestFor}
           </span>
         </div>
         <p className="workflow-summary">{active.summary}</p>
@@ -147,7 +147,7 @@ export function WorkflowPatternsSimulator({ intro }: { intro: string }) {
         {selectedPattern === "routing" && (
           <div className="workflow-stage workflow-stage--routing">
             <div className="workflow-interactive-bar">
-              <span className="workflow-interactive-label">Chọn câu hỏi người dùng mẫu:</span>
+              <span className="workflow-interactive-label">Select sample user prompt:</span>
               <div className="workflow-btn-group" role="group" aria-label="Routing query examples">
                 {routingExamples.map((ex, idx) => (
                   <button
@@ -157,7 +157,7 @@ export function WorkflowPatternsSimulator({ intro }: { intro: string }) {
                     onClick={() => setRoutingIndex(idx)}
                     aria-pressed={routingIndex === idx}
                   >
-                    Mẫu {idx + 1}: {ex.intent}
+                    Sample {idx + 1}: {ex.intent}
                   </button>
                 ))}
               </div>
@@ -175,9 +175,9 @@ export function WorkflowPatternsSimulator({ intro }: { intro: string }) {
               </div>
 
               <div className="flow-node flow-node--decision">
-                <span className="flow-node-badge">Intent Phân loại</span>
+                <span className="flow-node-badge">Classified Intent</span>
                 <strong>{activeRoute.intent}</strong>
-                <span className="flow-node-sub">Mức độ rủi ro: {activeRoute.risk}</span>
+                <span className="flow-node-sub">Risk level: {activeRoute.risk}</span>
               </div>
 
               <div className="flow-arrow" aria-hidden="true">
@@ -187,12 +187,12 @@ export function WorkflowPatternsSimulator({ intro }: { intro: string }) {
 
               <div
                 className={`flow-node flow-node--target ${
-                  activeRoute.risk === "Rất cao" ? "flow-node--checkpoint" : ""
+                  activeRoute.risk === "Very high" ? "flow-node--checkpoint" : ""
                 }`}
               >
-                <span className="flow-node-badge">Handler Thực thi</span>
+                <span className="flow-node-badge">Handler Destination</span>
                 <strong>{activeRoute.target}</strong>
-                <span className="flow-node-sub">Ước tính chi phí: {activeRoute.cost}</span>
+                <span className="flow-node-sub">Estimated cost: {activeRoute.cost}</span>
               </div>
             </div>
           </div>
@@ -202,7 +202,7 @@ export function WorkflowPatternsSimulator({ intro }: { intro: string }) {
           <div className="workflow-stage workflow-stage--loop">
             <div className="workflow-interactive-bar">
               <span className="workflow-interactive-label">
-                Vòng lặp hiện tại: <strong>Lượt {evalStep} / 3</strong>
+                Current cycle: <strong>Iteration {evalStep} / 3</strong>
               </span>
               <button
                 type="button"
@@ -211,10 +211,10 @@ export function WorkflowPatternsSimulator({ intro }: { intro: string }) {
               >
                 <RefreshCw size={14} className={evalStep === 1 ? "" : "spin-subtle"} aria-hidden="true" />
                 {evalStep === 1
-                  ? "Chạy Kiểm định Lần 1 (Fail rubric)"
+                  ? "Run Evaluation #1 (Fail rubric)"
                   : evalStep === 2
-                    ? "Tối ưu & Chạy Lần 2 (Pass rubric)"
-                    : "Khởi động lại mô phỏng"}
+                    ? "Optimize & Run #2 (Pass rubric)"
+                    : "Reset simulator"}
               </button>
             </div>
 
@@ -223,15 +223,15 @@ export function WorkflowPatternsSimulator({ intro }: { intro: string }) {
                 <span className="flow-node-badge">Generator LLM</span>
                 <strong>
                   {evalStep === 1
-                    ? "Bản nháp 1 (Chưa có citation nguồn)"
-                    : "Bản nháp 2 (Đã bổ sung đầy đủ dẫn chứng và trích dẫn)"}
+                    ? "Draft 1 (Missing source citations)"
+                    : "Draft 2 (Includes grounded citations and figures)"}
                 </strong>
-                <span className="flow-node-sub">Sinh bởi Claude 3.5 Sonnet</span>
+                <span className="flow-node-sub">Generated by Claude 3.5 Sonnet</span>
               </div>
 
               <div className="flow-arrow" aria-hidden="true">
                 <ArrowRight size={20} />
-                <span className="flow-arrow-text">Gửi bản nháp</span>
+                <span className="flow-arrow-text">Submit draft</span>
               </div>
 
               <div
@@ -242,13 +242,13 @@ export function WorkflowPatternsSimulator({ intro }: { intro: string }) {
                 <span className="flow-node-badge">Evaluator Rubric</span>
                 {evalStep === 1 ? (
                   <>
-                    <strong className="text-warn">Không đạt (5/10)</strong>
-                    <span className="flow-node-sub">Lỗi: Thiếu số liệu quý 3 và citation</span>
+                    <strong className="text-warn">Needs Revision (5/10)</strong>
+                    <span className="flow-node-sub">Issue: Missing Q3 metric citations</span>
                   </>
                 ) : (
                   <>
-                    <strong className="text-ok">Đạt tiêu chuẩn (9.5/10)</strong>
-                    <span className="flow-node-sub">Tất cả tiêu chí nghiệm thu được thỏa mãn</span>
+                    <strong className="text-ok">Meets Criteria (9.5/10)</strong>
+                    <span className="flow-node-sub">All acceptance criteria satisfied</span>
                   </>
                 )}
               </div>
@@ -256,7 +256,7 @@ export function WorkflowPatternsSimulator({ intro }: { intro: string }) {
               <div className="flow-arrow" aria-hidden="true">
                 <ArrowRight size={20} />
                 <span className="flow-arrow-text">
-                  {evalStep === 1 ? "Yêu cầu sửa" : "Bàn giao kiểm duyệt"}
+                  {evalStep === 1 ? "Request revision" : "Handoff to review"}
                 </span>
               </div>
 
@@ -271,14 +271,14 @@ export function WorkflowPatternsSimulator({ intro }: { intro: string }) {
                 {isApproved ? (
                   <>
                     <strong className="text-ok">
-                      <CheckCircle2 size={16} aria-hidden="true" /> Đã Phê Duyệt Phát Hành
+                      <CheckCircle2 size={16} aria-hidden="true" /> Approved for Release
                     </strong>
-                    <span className="flow-node-sub">Chuyên viên đã ký duyệt xuất bản</span>
+                    <span className="flow-node-sub">Reviewer approved publish</span>
                   </>
                 ) : (
                   <>
-                    <strong>Chờ thẩm định</strong>
-                    <span className="flow-node-sub">Con người giữ quyết định phát hành cuối</span>
+                    <strong>Pending Review</strong>
+                    <span className="flow-node-sub">Human retains final decision</span>
                   </>
                 )}
               </div>
@@ -290,33 +290,33 @@ export function WorkflowPatternsSimulator({ intro }: { intro: string }) {
           <div className="workflow-stage workflow-stage--parallel">
             <div className="flow-parallel-container">
               <div className="flow-node flow-node--input">
-                <span className="flow-node-badge">Input Hợp Đồng</span>
-                <strong>Hợp đồng sáp nhập doanh nghiệp (120 trang)</strong>
+                <span className="flow-node-badge">Input Contract</span>
+                <strong>Corporate Merger Agreement (120 pages)</strong>
               </div>
 
               <div className="flow-parallel-branches">
                 <div className="flow-branch-node">
-                  <span className="flow-node-badge">Nhánh 1: Rà soát Pháp lý</span>
-                  <span>Claude 3.5 Sonnet (Kiểm tra điều khoản cam kết)</span>
-                  <span className="badge badge--sm">Độ trễ: 3.2s</span>
+                  <span className="flow-node-badge">Branch 1: Legal Review</span>
+                  <span>Claude 3.5 Sonnet (Indemnity clauses)</span>
+                  <span className="badge badge--sm">Latency: 3.2s</span>
                 </div>
                 <div className="flow-branch-node">
-                  <span className="flow-node-badge">Nhánh 2: Thẩm định Tài chính</span>
-                  <span>Claude 3.5 Sonnet (Kiểm tra nợ tồn đọng & định giá)</span>
-                  <span className="badge badge--sm">Độ trễ: 2.8s</span>
+                  <span className="flow-node-badge">Branch 2: Financial Audit</span>
+                  <span>Claude 3.5 Sonnet (Debt covenants & valuation)</span>
+                  <span className="badge badge--sm">Latency: 2.8s</span>
                 </div>
                 <div className="flow-branch-node">
-                  <span className="flow-node-badge">Nhánh 3: Đảm bảo Bảo mật</span>
-                  <span>Claude 3.5 Haiku (Kiểm tra dữ liệu cá nhân GDPR)</span>
-                  <span className="badge badge--sm">Độ trễ: 1.1s</span>
+                  <span className="flow-node-badge">Branch 3: Privacy & Security</span>
+                  <span>Claude 3.5 Haiku (GDPR personal data transfer)</span>
+                  <span className="badge badge--sm">Latency: 1.1s</span>
                 </div>
               </div>
 
               <div className="flow-node flow-node--aggregator">
-                <span className="flow-node-badge">Aggregator (Tổng hợp)</span>
-                <strong>Báo cáo rủi ro hợp nhất toàn diện</strong>
+                <span className="flow-node-badge">Aggregator</span>
+                <strong>Consolidated Risk Audit Report</strong>
                 <span className="flow-node-sub">
-                  Tổng thời gian: <strong>3.2s</strong> (chạy song song) thay vì <strong>7.1s</strong> (nếu chạy tuần tự)
+                  Total latency: <strong>3.2s</strong> (parallel execution) instead of <strong>7.1s</strong> (sequential)
                 </span>
               </div>
             </div>
@@ -330,31 +330,31 @@ export function WorkflowPatternsSimulator({ intro }: { intro: string }) {
                 <span className="flow-node-badge">
                   <Sparkles size={12} aria-hidden="true" /> Lead Orchestrator
                 </span>
-                <strong>Phân rã mục tiêu: Phân tích chiến lược đối thủ 2026</strong>
-                <span className="flow-node-sub">Tự động sinh 3 nhiệm vụ độc lập cho các Worker</span>
+                <strong>Goal Breakdown: 2026 Competitive Intelligence Analysis</strong>
+                <span className="flow-node-sub">Dynamically provisions 3 independent worker tasks</span>
               </div>
 
               <div className="flow-workers-grid">
                 <div className="flow-worker-card">
                   <span className="flow-node-badge">Worker A</span>
                   <strong>Web Search Connector</strong>
-                  <p>Thu thập thông cáo báo chí và sản phẩm mới vừa ra mắt</p>
+                  <p>Fetches recent press releases and new product announcements</p>
                 </div>
                 <div className="flow-worker-card">
                   <span className="flow-node-badge">Worker B</span>
                   <strong>Financial Doc Parser</strong>
-                  <p>Trích xuất báo cáo tài chính quý gần nhất từ SEC EDGAR</p>
+                  <p>Extracts latest SEC 10-Q filing figures</p>
                 </div>
                 <div className="flow-worker-card">
                   <span className="flow-node-badge">Worker C</span>
                   <strong>Patent Database Query</strong>
-                  <p>Tra cứu các bằng sáng chế AI mới được nộp trong 6 tháng qua</p>
+                  <p>Analyzes newly filed patent claims over past 6 months</p>
                 </div>
               </div>
 
               <div className="flow-node flow-node--target">
                 <span className="flow-node-badge">Synthesis & Review</span>
-                <strong>Bản báo cáo tình báo cạnh tranh tổng hợp kèm trích dẫn nguồn</strong>
+                <strong>Comprehensive Intelligence Brief with Grounded Citations</strong>
               </div>
             </div>
           </div>
@@ -365,7 +365,7 @@ export function WorkflowPatternsSimulator({ intro }: { intro: string }) {
       <div className="workflow-takeaway">
         <div className="workflow-takeaway-head">
           <ShieldAlert size={14} aria-hidden="true" />
-          <strong>Ghi nhớ cốt lõi cho kỳ thi CCAO-F (Domain 4)</strong>
+          <strong>Exam Takeaway for CCAO-F (Domain 4)</strong>
         </div>
         <p>{active.examTakeaway}</p>
       </div>

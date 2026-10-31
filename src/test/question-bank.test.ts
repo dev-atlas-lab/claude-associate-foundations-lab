@@ -208,13 +208,13 @@ describe("reviewed question bank", () => {
     }
   });
 
-  it("provides a Vietnamese explanation for the answer and every distractor", () => {
+  it("provides an English explanation for the answer and every distractor", () => {
     for (const question of questionBank) {
-      expect(question.correctExplanation).toMatch(vietnameseDiacriticPattern);
+      expect(question.correctExplanation).not.toMatch(vietnameseDiacriticPattern);
       expect(question.choices).toHaveLength(new Set(question.choices.map((choice) => choice.id)).size);
 
       for (const choice of question.choices) {
-        expect(choice.explanation).toMatch(vietnameseDiacriticPattern);
+        expect(choice.explanation).not.toMatch(vietnameseDiacriticPattern);
       }
 
       if (question.type === "single-choice") {

@@ -29,12 +29,12 @@ describe("sample lesson", () => {
     renderLesson();
 
     expect(
-      await screen.findByRole("heading", { level: 1, name: "Context window và ngân sách ngữ cảnh" }),
+      await screen.findByRole("heading", { level: 1, name: "Context window and context budgeting" }),
     ).toBeInTheDocument();
-    expect(screen.getAllByText("Chưa gắn với objective chính thức").length).toBeGreaterThan(0);
-    expect(screen.getByRole("heading", { level: 2, name: "Mục tiêu bài học" })).toBeInTheDocument();
+    expect(screen.getAllByText("Not mapped to an official objective").length).toBeGreaterThan(0);
+    expect(screen.getByRole("heading", { level: 2, name: "Lesson objectives" })).toBeInTheDocument();
 
-    const termList = screen.getByRole("heading", { level: 2, name: "Thuật ngữ chính" }).closest("section");
+    const termList = screen.getByRole("heading", { level: 2, name: "Key terms" }).closest("section");
     expect(termList).not.toBeNull();
     expect(screen.getByText("Context window", { selector: "dt" })).toBeInTheDocument();
 
@@ -48,21 +48,21 @@ describe("sample lesson", () => {
     const user = userEvent.setup();
     renderLesson();
 
-    await screen.findByRole("heading", { level: 1, name: "Context window và ngân sách ngữ cảnh" });
+    await screen.findByRole("heading", { level: 1, name: "Context window and context budgeting" });
     const outputButton = screen.getByRole("button", { name: /Reserved for output/i });
     expect(outputButton).toHaveAttribute("aria-pressed", "false");
 
     await user.click(outputButton);
 
     expect(outputButton).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByText(/Input và output chia sẻ cùng một cửa sổ/i)).toBeInTheDocument();
+    expect(screen.getByText(/Input and output share the single unified context window/i)).toBeInTheDocument();
   });
 
   it("scores a correct answer and explains every option", async () => {
     const user = userEvent.setup();
     renderLesson();
 
-    await screen.findByRole("heading", { level: 1, name: "Context window và ngân sách ngữ cảnh" });
+    await screen.findByRole("heading", { level: 1, name: "Context window and context budgeting" });
     const submit = screen.getByRole("button", { name: "Check answer" });
     expect(submit).toBeDisabled();
 
@@ -74,10 +74,10 @@ describe("sample lesson", () => {
     await user.click(submit);
 
     const feedback = screen.getByRole("status");
-    expect(feedback).toHaveTextContent("Chính xác");
+    expect(feedback).toHaveTextContent("Correct");
     expect(feedback).toHaveFocus();
-    expect(screen.getByText(/Đáp án đúng/)).toBeInTheDocument();
-    expect(screen.getAllByText(/Vì sao không chọn/)).toHaveLength(3);
+    expect(screen.getAllByText(/Correct answer/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Why this is incorrect/)).toHaveLength(3);
 
     await user.click(screen.getByRole("button", { name: /Try again/i }));
 
@@ -92,17 +92,17 @@ describe("sample lesson", () => {
     const user = userEvent.setup();
     renderLesson();
 
-    await screen.findByRole("heading", { level: 1, name: "Context window và ngân sách ngữ cảnh" });
+    await screen.findByRole("heading", { level: 1, name: "Context window and context budgeting" });
     await user.click(screen.getByRole("radio", { name: /Raise the temperature/i }));
     await user.click(screen.getByRole("button", { name: "Check answer" }));
 
-    expect(screen.getByRole("status")).toHaveTextContent("Chưa đúng");
-    expect(screen.getByText("Correct answer")).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent("Incorrect");
+    expect(screen.getAllByText("Correct answer").length).toBeGreaterThan(0);
     expect(screen.getByText("Your answer")).toBeInTheDocument();
 
     expect(screen.getByText("This is the first lesson")).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: /Đánh giá output: accuracy, evidence/i }),
+      screen.getByRole("link", { name: /Evaluating outputs: accuracy, evidence/i }),
     ).toHaveAttribute("href", "/learn/evaluation-basics");
   });
 
@@ -122,7 +122,7 @@ describe("sample lesson", () => {
 
       await screen.findByRole("heading", { level: 1, name: lesson.title });
       const cta = screen.getByRole("link", {
-        name: `Mở bộ Domain ${domain.code} practice`,
+        name: `Open Domain ${domain.code} practice set`,
       });
       expect(cta).toHaveAttribute(
         "href",
@@ -142,21 +142,21 @@ describe("multiple-response knowledge check", () => {
       {
         id: "retrieve",
         text: "Retrieve only relevant policy sections.",
-        explanation: "Đúng: giảm tài liệu không liên quan.",
+        explanation: "Correct: reduces irrelevant background documents.",
       },
       {
         id: "paste",
         text: "Paste the entire handbook.",
-        explanation: "Sai: tăng nhiễu và chiếm ngân sách.",
+        explanation: "Incorrect: increases noise and exhausts context budget.",
       },
       {
         id: "summarize",
         text: "Summarize older turns.",
-        explanation: "Đúng: giữ lại thông tin cần thiết.",
+        explanation: "Correct: preserves necessary decisions and constraints.",
       },
     ],
     correctChoiceIds: ["retrieve", "summarize"],
-    correctExplanation: "Hai lựa chọn này giảm nhiễu mà vẫn giữ thông tin cần thiết.",
+    correctExplanation: "These two choices reduce noise while preserving essential signals.",
     sourceIds: ["anthropic-context-windows-doc"],
   });
 
@@ -169,14 +169,14 @@ describe("multiple-response knowledge check", () => {
 
     await user.click(screen.getByRole("checkbox", { name: /Retrieve only relevant/i }));
     await user.click(screen.getByRole("button", { name: "Check answer" }));
-    expect(screen.getByRole("status")).toHaveTextContent("Chưa đúng");
+    expect(screen.getByRole("status")).toHaveTextContent("Incorrect");
 
     await user.click(screen.getByRole("button", { name: /Try again/i }));
     await user.click(screen.getByRole("checkbox", { name: /Retrieve only relevant/i }));
     await user.click(screen.getByRole("checkbox", { name: /Summarize older turns/i }));
     await user.click(screen.getByRole("button", { name: "Check answer" }));
 
-    expect(screen.getByRole("status")).toHaveTextContent("Chính xác");
-    expect(screen.getAllByText(/Đáp án đúng/)).toHaveLength(2);
+    expect(screen.getByRole("status")).toHaveTextContent("Correct");
+    expect(screen.getAllByText(/Correct answer/)).toHaveLength(4);
   });
 });

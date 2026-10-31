@@ -211,21 +211,21 @@ describe("practice page", () => {
     renderPractice();
 
     // 1. Initial render shows all 11 sets
-    expect(screen.getByText(/Hiển thị 11 \/ 11 bộ đề/i)).toBeInTheDocument();
+    expect(screen.getByText(/Showing 11 of 11 sets/i)).toBeInTheDocument();
 
-    // 2. Filter by "Theo từng Domain (7)"
-    const domainTab = screen.getByRole("button", { name: /Theo từng Domain/i });
+    // 2. Filter by "By domain (7)"
+    const domainTab = screen.getByRole("button", { name: /By domain/i });
     fireEvent.click(domainTab);
     expect(domainTab).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByText(/Hiển thị 7 \/ 11 bộ đề/i)).toBeInTheDocument();
+    expect(screen.getByText(/Showing 7 of 11 sets/i)).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /High-Weight Core/i })).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Domain 1: Prompting/i })).toBeInTheDocument();
 
-    // 3. Filter by "Chuyên sâu & Ôn nhanh (4)"
-    const specTab = screen.getByRole("button", { name: /Chuyên sâu & Ôn nhanh/i });
+    // 3. Filter by "Specialized & Quick drills (4)"
+    const specTab = screen.getByRole("button", { name: /Specialized & Quick drills/i });
     fireEvent.click(specTab);
     expect(specTab).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByText(/Hiển thị 4 \/ 11 bộ đề/i)).toBeInTheDocument();
+    expect(screen.getByText(/Showing 4 of 11 sets/i)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /High-Weight Core/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Quick Drill/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Enterprise Scenarios/i })).toBeInTheDocument();
@@ -233,16 +233,16 @@ describe("practice page", () => {
     expect(screen.queryByRole("link", { name: /Domain 1: Prompting/i })).not.toBeInTheDocument();
 
     // 4. Search query
-    const searchInput = screen.getByLabelText(/Tìm kiếm bộ đề thực hành/i);
+    const searchInput = screen.getByLabelText(/Search practice sets/i);
     fireEvent.change(searchInput, { target: { value: "drill" } });
-    expect(screen.getByText(/Hiển thị 1 \/ 11 bộ đề/i)).toBeInTheDocument();
+    expect(screen.getByText(/Showing 1 of 11 sets/i)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Quick Drill/i })).toBeInTheDocument();
 
     // 5. Empty search result and reset
     fireEvent.change(searchInput, { target: { value: "non-existent-query-xyz" } });
-    expect(screen.getByText("Không tìm thấy bộ đề phù hợp")).toBeInTheDocument();
-    const resetBtn = screen.getByRole("button", { name: "Đặt lại bộ lọc" });
+    expect(screen.getByText("No matching practice sets found")).toBeInTheDocument();
+    const resetBtn = screen.getByRole("button", { name: "Reset filters" });
     fireEvent.click(resetBtn);
-    expect(screen.getByText(/Hiển thị 11 \/ 11 bộ đề/i)).toBeInTheDocument();
+    expect(screen.getByText(/Showing 11 of 11 sets/i)).toBeInTheDocument();
   });
 });

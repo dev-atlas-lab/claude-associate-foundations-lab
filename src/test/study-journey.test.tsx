@@ -78,7 +78,7 @@ describe("persisted study journey", () => {
   it("writes a submitted attempt, restores it, and starts a new attempt", async () => {
     const { user, view } = await submitEmptyAttempt();
 
-    expect(screen.getByRole("heading", { name: "Kết quả luyện tập" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Practice results" })).toBeInTheDocument();
     expect(screen.getAllByText("0%").length).toBeGreaterThan(0);
 
     const envelope = readEnvelope();
@@ -91,7 +91,7 @@ describe("persisted study journey", () => {
     reloadStudyStore();
     renderPractice();
 
-    expect(await screen.findByRole("heading", { name: "Kết quả luyện tập" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Practice results" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "New attempt" })).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "New attempt" }));
@@ -213,17 +213,17 @@ describe("persisted study journey", () => {
     await user.click(studyItemLink);
 
     expect(
-      screen.getByRole("heading", { name: "Mục tiêu & bài học liên quan" }),
+      screen.getByRole("heading", { name: "Related objective & lesson" }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/Repeated mistake: câu hỏi này đã trả lời sai trong 2 lần nộp bài/i)).toBeInTheDocument();
+    expect(screen.getByText(/Repeated mistake: this question was answered incorrectly in 2 submitted attempts/i)).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: /Ôn lại bài học:/i }),
+      screen.getByRole("link", { name: /Review lesson:/i }),
     ).toHaveAttribute("href", "/learn/evaluation-basics");
     expect(
-      screen.getByRole("link", { name: "Luyện tập Domain 2" }),
+      screen.getByRole("link", { name: "Practice Domain 2" }),
     ).toHaveAttribute("href", "/practice?set=domain-2-output-validation-set");
     expect(
-      screen.getByRole("heading", { name: "Nguồn tham chiếu" }),
+      screen.getByRole("heading", { name: "Reference sources" }),
     ).toBeInTheDocument();
   });
 

@@ -114,14 +114,14 @@ describe("Domain 5 curriculum coverage", () => {
     }
   });
 
-  it("keeps Domain 5 stems and choices in English with Vietnamese feedback", () => {
+  it("keeps Domain 5 stems and choices in English with English explanations", () => {
     for (const question of questions) {
       expect(question.stem).not.toMatch(vietnameseDiacriticPattern);
-      expect(question.correctExplanation).toMatch(vietnameseDiacriticPattern);
+      expect(question.correctExplanation).not.toMatch(vietnameseDiacriticPattern);
 
       for (const choice of question.choices) {
         expect(choice.text).not.toMatch(vietnameseDiacriticPattern);
-        expect(choice.explanation).toMatch(vietnameseDiacriticPattern);
+        expect(choice.explanation).not.toMatch(vietnameseDiacriticPattern);
       }
     }
   });
@@ -201,13 +201,13 @@ describe("Domain 5 lesson route", () => {
     expect(
       await screen.findByRole("heading", {
         level: 1,
-        name: "Cấu hình Claude: project, knowledge, connector và bảo trì",
+        name: lesson.title,
       }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: "Câu hỏi luyện tập đã rà soát" }),
+      screen.getByRole("heading", { name: "Reviewed practice questions" }),
     ).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Mở bộ Domain 5 practice" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Open Domain 5 practice set" })).toHaveAttribute(
       "href",
       "/practice?set=domain-5-configuration-set",
     );
@@ -219,8 +219,8 @@ describe("Domain 5 lesson route", () => {
     );
     await user.click(screen.getByRole("button", { name: "Check answer" }));
 
-    expect(screen.getByRole("status")).toHaveTextContent("Chính xác");
-    expect(screen.getAllByText(/Vì sao không chọn/)).toHaveLength(3);
+    expect(screen.getByRole("status")).toHaveTextContent("Correct");
+    expect(screen.getAllByText(/Why this is incorrect/)).toHaveLength(3);
   });
 
   it("links every related practice question to a verified bank entry", () => {

@@ -18,11 +18,11 @@ describe("ComprehensiveDrillView & comprehensiveDrillStore", () => {
 
     expect(
       screen.getByRole("heading", {
-        name: /Tiến độ ôn tập tức thì \(Instant Feedback Drill\)/i,
+        name: /Instant feedback drill/i,
       }),
     ).toBeInTheDocument();
 
-    expect(screen.getByText("Tổng số câu")).toBeInTheDocument();
+    expect(screen.getByText("Total questions")).toBeInTheDocument();
     expect(screen.getAllByText("105").length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText(/0%/).length).toBeGreaterThanOrEqual(1);
   });
@@ -36,7 +36,7 @@ describe("ComprehensiveDrillView & comprehensiveDrillStore", () => {
     expect(d1Btn).toHaveAttribute("aria-pressed", "true");
 
     // Check match count
-    expect(screen.getByText(/Hiển thị/i)).toBeInTheDocument();
+    expect(screen.getByText(/Showing/i)).toBeInTheDocument();
     expect(screen.getByText("14")).toBeInTheDocument();
   });
 
@@ -55,36 +55,36 @@ describe("ComprehensiveDrillView & comprehensiveDrillStore", () => {
 
     // Instant feedback panel should be revealed
     expect(
-      screen.getByText(/Giải thích cốt lõi \(Key Takeaway\):/i),
+      screen.getByText(/Key takeaway:/i),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/Phân tích chi tiết từng phương án:/i),
+      screen.getByText(/Detailed option analysis:/i),
     ).toBeInTheDocument();
 
-    // "Làm lại câu này" button is present
-    const retryBtn = screen.getByRole("button", { name: /Làm lại câu này/i });
+    // "Try again" button is present
+    const retryBtn = screen.getByRole("button", { name: /Try again/i });
     expect(retryBtn).toBeInTheDocument();
 
     // Clicking retry clears the reveal
     fireEvent.click(retryBtn);
     expect(
-      screen.queryByText(/Giải thích cốt lõi \(Key Takeaway\):/i),
+      screen.queryByText(/Key takeaway:/i),
     ).not.toBeInTheDocument();
   });
 
   it("toggles flag status and updates the stat counter", () => {
     render(<ComprehensiveDrillView />);
 
-    const flagBtn = screen.getByRole("button", { name: "Gắn cờ" });
+    const flagBtn = screen.getByRole("button", { name: "Flag question" });
     expect(flagBtn).toHaveAttribute("aria-pressed", "false");
 
     fireEvent.click(flagBtn);
-    const unflagBtn = screen.getByRole("button", { name: "Đã gắn cờ" });
+    const unflagBtn = screen.getByRole("button", { name: "Flagged" });
     expect(unflagBtn).toHaveAttribute("aria-pressed", "true");
 
     // Un-flag
     fireEvent.click(unflagBtn);
-    expect(screen.getByRole("button", { name: "Gắn cờ" })).toHaveAttribute(
+    expect(screen.getByRole("button", { name: "Flag question" })).toHaveAttribute(
       "aria-pressed",
       "false",
     );
@@ -95,16 +95,16 @@ describe("ComprehensiveDrillView & comprehensiveDrillStore", () => {
 
     expect(
       screen.getByText(
-        (_, el) => el?.className === "drill-counter" && el.textContent === "Câu 1 / 105",
+        (_, el) => el?.className === "drill-counter" && el.textContent === "Question 1 of 105",
       ),
     ).toBeInTheDocument();
 
-    const nextBtn = screen.getByRole("button", { name: "Câu tiếp theo" });
+    const nextBtn = screen.getByRole("button", { name: "Next question" });
     fireEvent.click(nextBtn);
 
     expect(
       screen.getByText(
-        (_, el) => el?.className === "drill-counter" && el.textContent === "Câu 2 / 105",
+        (_, el) => el?.className === "drill-counter" && el.textContent === "Question 2 of 105",
       ),
     ).toBeInTheDocument();
   });

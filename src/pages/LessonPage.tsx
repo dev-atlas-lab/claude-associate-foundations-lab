@@ -101,10 +101,10 @@ export function LessonPage() {
   const isMapped = lesson.examMapping.status !== "unmapped";
   const mappingTitle =
     lesson.examMapping.status === "verified"
-      ? "Đã gắn với objective chính thức"
+      ? "Mapped to verified exam objective"
       : lesson.examMapping.status === "candidate"
-        ? "Objective đề xuất, chưa xác minh"
-        : "Chưa gắn với objective chính thức";
+        ? "Proposed objective, not yet verified"
+        : "Not mapped to an official objective";
 
   return (
     <div className="page">

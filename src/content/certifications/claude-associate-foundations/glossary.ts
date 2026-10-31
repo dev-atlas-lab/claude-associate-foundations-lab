@@ -13,7 +13,7 @@ export const glossaryEntries: GlossaryEntry[] = z
       term: "Token",
       vi: "Token (đơn vị từ tố)",
       definition:
-        "Mảnh văn bản mà model xử lý. Token không tương ứng 1-1 với từ và số token cho cùng một nội dung khác nhau giữa các ngôn ngữ.",
+        "The atomic unit of text that a model processes. Tokens do not map 1:1 with words, and token counts vary across languages and formats.",
       category: "Core concepts",
     },
     {
@@ -21,7 +21,7 @@ export const glossaryEntries: GlossaryEntry[] = z
       term: "Context window",
       vi: "Context window (vùng ngữ cảnh làm việc)",
       definition:
-        "Toàn bộ token model có thể tham chiếu trong một request, gồm system prompt, messages, tài liệu, tool và cả output được sinh ra.",
+        "The total token budget a model can reference in a single request, including system instructions, message history, retrieved documents, tool schemas, and generated output.",
       category: "Core concepts",
     },
     {
@@ -29,7 +29,7 @@ export const glossaryEntries: GlossaryEntry[] = z
       term: "Context rot",
       vi: "Context rot (suy giảm độ tập trung ngữ cảnh)",
       definition:
-        "Hiện tượng độ chính xác và khả năng hồi tưởng giảm khi số token trong ngữ cảnh tăng; thông tin dài hoặc không liên quan có thể làm vấn đề nặng hơn.",
+        "The degradation in accuracy, recall, and attention as token volume in the context window increases. Distracting or irrelevant tokens amplify this degradation.",
       category: "Core concepts",
     },
     {
@@ -37,7 +37,7 @@ export const glossaryEntries: GlossaryEntry[] = z
       term: "Prompt",
       vi: "Prompt (câu lệnh / chỉ dẫn)",
       definition:
-        "Nội dung người dùng gửi cho model: câu hỏi, hướng dẫn, dữ liệu kèm theo và định dạng mong muốn của câu trả lời.",
+        "The input provided to the model: goals, context, constraints, reference material, and expected output format.",
       category: "Core concepts",
     },
     {
@@ -45,7 +45,7 @@ export const glossaryEntries: GlossaryEntry[] = z
       term: "System prompt",
       vi: "System prompt (chỉ dẫn hệ thống)",
       definition:
-        "Phần hướng dẫn đặt trước hội thoại, thường mô tả vai trò, ràng buộc và quy tắc cần giữ ổn định qua các lượt.",
+        "Top-level instructions set before conversation turns, establishing Claude's role, behavioral boundaries, and persistent operational rules.",
       category: "Prompting",
     },
     {
@@ -53,7 +53,7 @@ export const glossaryEntries: GlossaryEntry[] = z
       term: "Temperature",
       vi: "Temperature (tham số độ ngẫu nhiên)",
       definition:
-        "Tham số điều chỉnh mức độ biến thiên của output. Giá trị thấp cho kết quả ổn định hơn; giá trị cao cho nhiều biến thể hơn.",
+        "A parameter controlling sampling randomness in output generation. Lower values yield more deterministic, repeatable answers; higher values produce greater variation.",
       category: "Prompting",
     },
     {
@@ -61,7 +61,7 @@ export const glossaryEntries: GlossaryEntry[] = z
       term: "Few-shot examples",
       vi: "Ví dụ mẫu",
       definition:
-        "Đưa một vài cặp đầu vào – đầu ra mẫu trong prompt để model bắt chước định dạng và cách xử lý mong muốn.",
+        "Providing sample input-output pairs in the prompt to demonstrate expected formatting, reasoning style, and edge-case handling.",
       category: "Prompting",
     },
     {
@@ -69,7 +69,7 @@ export const glossaryEntries: GlossaryEntry[] = z
       term: "Hallucination",
       vi: "Ảo giác",
       definition:
-        "Output sai về sự thật hoặc không nhất quán với nguồn/ngữ cảnh được cung cấp, dù có thể trông hợp lý. Cần kiểm chứng bằng nguồn, công cụ hoặc bước review trước khi dùng.",
+        "Factual inaccuracies, fabricated details, or claims ungrounded in the provided context, often presented with high confidence. Must be mitigated with grounding, citations, and human review.",
       category: "Safety",
     },
     {
@@ -77,7 +77,7 @@ export const glossaryEntries: GlossaryEntry[] = z
       term: "Prompt injection",
       vi: "Chèn lệnh vào prompt",
       definition:
-        "Tấn công đưa instruction độc hại vào nội dung model đọc, nhằm lấn át instruction của hệ thống. Cần tách dữ liệu khỏi chỉ dẫn và giới hạn quyền của tool.",
+        "An adversarial attack attempting to override system instructions by embedding malicious directives inside user-supplied or retrieved content. Mitigated by separating data from instructions.",
       category: "Safety",
     },
     {
@@ -85,7 +85,7 @@ export const glossaryEntries: GlossaryEntry[] = z
       term: "Grounding",
       vi: "Neo thông tin vào nguồn",
       definition:
-        "Buộc câu trả lời dựa trên tài liệu hoặc dữ liệu được cung cấp, kèm dẫn chứng, thay vì chỉ dựa vào kiến thức sẵn có của model.",
+        "Restricting model responses to verify and cite explicitly provided source material rather than relying on ungrounded pretraining memory.",
       category: "Safety",
     },
     {
@@ -94,7 +94,7 @@ export const glossaryEntries: GlossaryEntry[] = z
       expansion: "Retrieval-Augmented Generation",
       vi: "RAG (sinh văn bản kèm truy xuất)",
       definition:
-        "Kỹ thuật truy xuất các đoạn tài liệu liên quan nhất rồi đưa vào context window trước khi sinh câu trả lời, giúp hạn chế hallucination và tiết kiệm token.",
+        "Retrieval-Augmented Generation: retrieving relevant document chunks from external knowledge sources into the context window before generation, minimizing hallucinations and saving tokens.",
       category: "Operations",
     },
     {
@@ -103,7 +103,7 @@ export const glossaryEntries: GlossaryEntry[] = z
       expansion: "eval",
       vi: "Đánh giá",
       definition:
-        "Bộ kiểm thử có tiêu chí rõ ràng để đo chất lượng output. Eval tốt có ví dụ đại diện, tiêu chí chấm và kết quả lặp lại được.",
+        "Systematic testing against structured rubrics and representative test cases to measure output quality, accuracy, and latency reliably.",
       category: "Operations",
     },
     {
@@ -111,7 +111,7 @@ export const glossaryEntries: GlossaryEntry[] = z
       term: "Tool use",
       vi: "Sử dụng công cụ",
       definition:
-        "Cho model gọi hàm hoặc dịch vụ bên ngoài (tìm kiếm, tính toán, đọc dữ liệu) và nhận kết quả trả về để hoàn thành tác vụ.",
+        "Enabling the model to invoke external APIs, databases, or functions and consume structured return payloads to complete real-world tasks.",
       category: "Operations",
     },
     {
@@ -119,7 +119,7 @@ export const glossaryEntries: GlossaryEntry[] = z
       term: "Compaction",
       vi: "Compaction (nén ngữ cảnh hội thoại)",
       definition:
-        "Cơ chế tự động tóm tắt phần hội thoại cũ để cuộc trò chuyện tiếp tục được duy trì khi gần chạm giới hạn context window.",
+        "An automated or structured technique that summarizes earlier turns in a conversation to maintain task continuity when approaching context limits.",
       category: "Operations",
     },
     {
@@ -127,7 +127,7 @@ export const glossaryEntries: GlossaryEntry[] = z
       term: "Latency",
       vi: "Độ trễ",
       definition:
-        "Thời gian từ lúc gửi request đến khi nhận được phản hồi. Prompt dài, output dài và nhiều vòng tool thường làm tăng độ trễ.",
+        "The end-to-end turnaround time from request dispatch to final response completion, influenced by prompt length, generation tokens, and sequential tool round-trips.",
       category: "Operations",
     },
   ]);

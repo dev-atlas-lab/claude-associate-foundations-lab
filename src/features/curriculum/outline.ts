@@ -11,14 +11,14 @@ export function lessonOutline(lesson: Lesson): OutlineItem[] {
   );
 
   return [
-    { id: "lesson-objectives", label: "Mục tiêu bài học" },
+    { id: "lesson-objectives", label: "Lesson objectives" },
     ...sectionItems,
-    { id: "lesson-terms", label: "Thuật ngữ chính" },
-    { id: "lesson-scenario", label: "Tình huống thực tế" },
+    { id: "lesson-terms", label: "Key terms" },
+    { id: "lesson-scenario", label: "Real-world scenario" },
     ...(lesson.relatedQuestionIds.length > 0
-      ? [{ id: "lesson-related-practice", label: "Câu hỏi luyện tập" }]
+      ? [{ id: "lesson-related-practice", label: "Practice questions" }]
       : []),
     { id: "lesson-check", label: "Knowledge check" },
-    { id: "lesson-summary", label: "Tóm tắt" },
+    { id: "lesson-summary", label: "Summary" },
   ];
 }

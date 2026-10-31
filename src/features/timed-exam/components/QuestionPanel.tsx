@@ -199,21 +199,21 @@ export function QuestionPanel({
             <p className="quiz-feedback-title">
               {outcome === "correct" ? (
                 <>
-                  <span aria-hidden="true">✓</span> Chính xác
+                  <span aria-hidden="true">✓</span> Correct
                 </>
               ) : outcome === "unanswered" ? (
                 <>
-                  <span aria-hidden="true">–</span> Chưa trả lời
+                  <span aria-hidden="true">–</span> Unanswered
                 </>
               ) : (
                 <>
-                  <X size={16} strokeWidth={2.2} aria-hidden="true" /> Chưa đúng
+                  <X size={16} strokeWidth={2.2} aria-hidden="true" /> Incorrect
                 </>
               )}
             </p>
             <p className="quiz-feedback-text">
               {outcome === "unanswered"
-                ? "Bạn không chọn đáp án nào cho câu này. Đáp án đúng được đánh dấu bên trên và câu này được tính là sai."
+                ? "No answer was selected for this question. The correct option is highlighted above and the question counts as incorrect."
                 : question.correctExplanation}
             </p>
             <ul className="quiz-explanations">
@@ -222,8 +222,8 @@ export function QuestionPanel({
                   <span className="quiz-explanation-key">
                     {optionLetters(choiceIndex)}.{" "}
                     {question.correctChoiceIds.includes(choice.id)
-                      ? "Đáp án đúng"
-                      : "Vì sao không chọn"}
+                      ? "Correct answer"
+                      : "Why this is incorrect"}
                   </span>
                   <span className="quiz-explanation-text">{choice.explanation}</span>
                 </li>
@@ -235,7 +235,7 @@ export function QuestionPanel({
 
       {review && curriculumContext ? (
         <div className="question-curriculum-context">
-          <h4 className="question-context-title">Mục tiêu & bài học liên quan</h4>
+          <h4 className="question-context-title">Related objective & lesson</h4>
           <p className="question-context-meta">
             <span className="data-table-code">D{curriculumContext.domainCode}</span>{" "}
             <strong>
@@ -246,7 +246,7 @@ export function QuestionPanel({
           <div className="question-context-links">
             {curriculumContext.lessonId && curriculumContext.lessonTitle ? (
               <Link className="inline-link" to={`/learn/${curriculumContext.lessonId}`}>
-                Ôn lại bài học: {curriculumContext.lessonTitle}
+                Review lesson: {curriculumContext.lessonTitle}
               </Link>
             ) : null}
             {curriculumContext.practiceSetId ? (
@@ -254,7 +254,7 @@ export function QuestionPanel({
                 className="inline-link"
                 to={`/practice?set=${encodeURIComponent(curriculumContext.practiceSetId)}`}
               >
-                Luyện tập Domain {curriculumContext.domainCode}
+                Practice Domain {curriculumContext.domainCode}
               </Link>
             ) : null}
           </div>
@@ -263,7 +263,7 @@ export function QuestionPanel({
 
       {review && sources.length > 0 ? (
         <div className="timed-sources">
-          <h4 className="timed-sources-title">Nguồn tham chiếu</h4>
+          <h4 className="timed-sources-title">Reference sources</h4>
           <ul className="timed-source-list">
             {sources.map((source) => (
               <li className="timed-source" key={source.id}>
@@ -271,7 +271,7 @@ export function QuestionPanel({
                   {source.title}
                 </a>
                 <span className="timed-source-meta">
-                  {source.publisher} · truy cập {source.accessedAt}
+                  {source.publisher} · accessed {source.accessedAt}
                 </span>
               </li>
             ))}
